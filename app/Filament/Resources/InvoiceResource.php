@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\InvoiceResource\Pages;
+use App\Filament\Resources\InvoiceResource\RelationManagers;
+use App\Models\Invoice;
+use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class InvoiceResource extends Resource
+{
+    protected static ?string $model = Invoice::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static ?string $navigationGroup = 'Transaksi';
+    protected static ?string $label = 'Faktur';
+    protected static ?string $pluralLabel = 'Faktur Sewa';
+
+    public static function form(Forms\Form $form): Forms\Form
+    {
+        return $form->schema([
+            Grid::make(2)->schema([
+                Select::make('booking_id')
+                    ->label('Booking')
+                    ->relationship('booking', 'id', fn($query) => $query->with('car', 'customer'))
+                    ->getOptionLabelFromRecordUsing(
+                        fn($record) =>
+                        $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
+                    )
+                    ->selectablePlaceholder()
+                    ->required(),
+
+                DatePicker::make('tanggal_invoice')
+                    ->label('Tanggal Invoice')
+                    ->required(),
+                // Select::make('booking.pickup_dropOff')
+                //     ->label('Biaya Pengantaran')
+                //     ->prefix('Rp')
+                //     ->numeric(),
+
+
+
+
+
+                TextInput::make('dp')
+                    ->label('Uang Muka')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->default(0),
+                TextInput::make('pickup_dropOff')
+                    ->label('Biaya Pengantaran')
+                    ->numeric()
+                    ->prefix('Rp'),
+
+                TextInput::make('sisa_pembayaran')
+                    ->label('Sisa Pembayaran')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->default(0),
+                TextInput::make('total')
+                    ->label('Total Biaya')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->required(),
+            ]),
+        ]);
+    }
+
+    public static function table(Tables\Table $table): Tables\Table
+    {
+        return $table->columns([
+            TextColumn::make('booking.id')->label('Booking')->alignCenter(),
+            TextColumn::make('booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
+            TextColumn::make('booking.car.nopol')->label('Mobil')->alignCenter(),
+
+            TextColumn::make('dp')->label('DP')->money('IDR')->alignCenter(),
+            TextColumn::make('sisa_pembayaran')->label('Sisa')->money('IDR')->alignCenter(),
+            TextColumn::make('pickup_dropOff')->label('Biaya Pengantaran')->money('IDR')->alignCenter(),
+            TextColumn::make('total')->label('Total')->money('IDR')->toggleable()->alignCenter(),
+            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->alignCenter(),
+        ])
+            ->defaultSort('tanggal_invoice', 'desc')
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Action::make('download')
+                    // ->label('Unduh PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
+                    ->openUrlInNewTab(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListInvoices::route('/'),
+            'create' => Pages\CreateInvoice::route('/create'),
+            'edit' => Pages\EditInvoice::route('/{record}/edit'),
+        ];
+    }
+}
