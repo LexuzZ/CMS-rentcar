@@ -77,6 +77,10 @@ class CarResource extends Resource
                         ->label('Harga Sewa Harian')
                         ->numeric()
                         ->prefix('Rp'),
+                    TextInput::make('harga_pokok')
+                        ->label('Harga Pokok')
+                        ->numeric()
+                        ->prefix('Rp'),
                     TextInput::make('harga_bulanan')
                         ->label('Harga Sewa Bulanan')
                         ->numeric()
