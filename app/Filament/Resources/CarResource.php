@@ -120,7 +120,7 @@ class CarResource extends Resource
                         'daihatsu' => 'Daihatsu',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter(),
+                TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
                 TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
                     ->label('Status')
