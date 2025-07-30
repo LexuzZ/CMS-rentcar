@@ -58,7 +58,19 @@ class CarResource extends Resource
                     TextInput::make('nama_mobil')
                         ->label('Nama Mobil')
                         ->required(),
+                    TextInput::make('warna')
+                        ->label('Warna Mobil')
+                        ->required(),
 
+                    Select::make('transmisi')
+                        ->label('Transmisi')
+                        ->options([
+                            'matic' => 'Matic',
+                            'manual' => 'Manual',
+
+                        ])
+                        ->default('matic')
+                        ->required(),
                     Select::make('status')
                         ->label('Status')
                         ->options([
