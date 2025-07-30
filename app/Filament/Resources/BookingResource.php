@@ -100,12 +100,40 @@ class BookingResource extends Resource
 
 
 
-                DatePicker::make('tanggal_keluar')
+              DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->rules([
+                        function (\Filament\Forms\Get $get) {
+                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                $carId = $get('car_id');
+                                $tanggalKembali = $get('tanggal_kembali');
+                                $recordId = $get('id'); // untuk pengecualian saat edit
 
+                                if (! $carId || ! $value || ! $tanggalKembali) {
+                                    return;
+                                }
+
+                                $exists = \App\Models\Booking::where('car_id', $carId)
+                                    ->when($recordId, fn($q) => $q->where('id', '!=', $recordId))
+                                    ->where(function ($query) use ($value, $tanggalKembali) {
+                                        $query->whereBetween('tanggal_keluar', [$value, $tanggalKembali])
+                                            ->orWhereBetween('tanggal_kembali', [$value, $tanggalKembali])
+                                            ->orWhere(function ($q) use ($value, $tanggalKembali) {
+                                                $q->where('tanggal_keluar', '<=', $value)
+                                                    ->where('tanggal_kembali', '>=', $tanggalKembali);
+                                            });
+                                    })
+                                    ->exists();
+
+                                if ($exists) {
+                                    $fail("Mobil sudah dibooking pada rentang tanggal tersebut.");
+                                }
+                            };
+                        }
+                    ]),
                 DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
