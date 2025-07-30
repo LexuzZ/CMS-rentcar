@@ -19,6 +19,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,7 +46,12 @@ class PaymentResource extends Resource
                         'INV #' . $record->id . ' - ' . $record->booking->customer->nama
                     )
                     ->selectablePlaceholder()
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $invoice = \App\Models\Invoice::find($state);
+                        $set('pembayaran', $invoice?->total ?? 0);
+                    }),
 
                 DatePicker::make('tanggal_pembayaran')
                     ->label('Tanggal Pembayaran')
@@ -64,7 +70,8 @@ class PaymentResource extends Resource
                     ->label('Jumlah')
                     ->numeric()
                     ->prefix('Rp')
-                    ->required(),
+                    ->required()
+                    ->readOnly(), // Tidak bisa diubah manual
 
                 FileUpload::make('proof')
                     ->label('Bukti Transfer')
@@ -128,7 +135,7 @@ class PaymentResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            
+
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

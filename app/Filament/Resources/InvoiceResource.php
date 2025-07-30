@@ -40,39 +40,65 @@ class InvoiceResource extends Resource
                         $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
                     )
                     ->selectablePlaceholder()
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $booking = \App\Models\Booking::find($state);
+                        $estimasi = $booking?->estimasi_biaya ?? 0;
+                        $pickup = $get('pickup_dropOff') ?? 0;
+
+                        $total = $estimasi + $pickup;
+
+                        $set('total', $total);
+                        $set('dp', 0);
+                        $set('sisa_pembayaran', $total);
+                    }),
 
                 DatePicker::make('tanggal_invoice')
                     ->label('Tanggal Invoice')
                     ->required(),
-                // Select::make('booking.pickup_dropOff')
-                //     ->label('Biaya Pengantaran')
-                //     ->prefix('Rp')
-                //     ->numeric(),
-
-
-
-
 
                 TextInput::make('dp')
                     ->label('Uang Muka')
                     ->prefix('Rp')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $total = $get('total') ?? 0;
+                        $set('sisa_pembayaran', max($total - $state, 0));
+                    }),
+
                 TextInput::make('pickup_dropOff')
                     ->label('Biaya Pengantaran')
                     ->numeric()
-                    ->prefix('Rp'),
+                    ->prefix('Rp')
+                    ->default(0)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $bookingId = $get('booking_id');
+                        $booking = \App\Models\Booking::find($bookingId);
+                        $estimasi = $booking?->estimasi_biaya ?? 0;
+
+                        $total = $estimasi + $state;
+                        $set('total', $total);
+
+                        $dp = $get('dp') ?? 0;
+                        $set('sisa_pembayaran', max($total - $dp, 0));
+                    }),
 
                 TextInput::make('sisa_pembayaran')
                     ->label('Sisa Pembayaran')
                     ->prefix('Rp')
                     ->numeric()
+                    ->readOnly()
                     ->default(0),
+
                 TextInput::make('total')
                     ->label('Total Biaya')
                     ->prefix('Rp')
                     ->numeric()
+                    ->readOnly()
                     ->required(),
             ]),
         ]);

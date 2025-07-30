@@ -12,6 +12,8 @@ class Car extends Model
         'nopol',
         'merek',
         'nama_mobil',
+        'warna',
+        'transmisi',
         'garasi',
         'year',
         'status',

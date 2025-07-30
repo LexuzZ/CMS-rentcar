@@ -21,8 +21,9 @@ return new class extends Migration
             $table->date('tanggal_kembali');
             $table->time('waktu_keluar')->nullable();
             $table->time('waktu_kembali')->nullable();
+            $table->string('total_hari')->default(1);
             $table->decimal('estimasi_biaya', 12, 2)->default(0);
-            $table->string('identity_file')->nullable(); // upload KTP/SIM
+            $table->decimal('harga_harian', 12, 2)->default(0)->nullable(); // upload KTP/SIM
             $table->enum('status', ['booking', 'aktif', 'selesai', 'batal'])->default('booking');
             $table->timestamps();
         });

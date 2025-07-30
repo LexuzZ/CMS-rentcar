@@ -6,12 +6,14 @@ use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,16 +35,36 @@ class CustomerResource extends Resource
                 TextInput::make('nama')
                     ->label('Nama')
                     ->required(),
-
-                TextInput::make('ktp')
-                    ->label('No KTP / SIM')
-                    ->required()
-                    ->unique(ignoreRecord: true),
-
                 TextInput::make('no_telp')
                     ->label('No HP / WhatsApp')
                     ->tel()
                     ->required(),
+
+                TextInput::make('ktp')
+                    ->label('No KTP')
+                    ->required()
+                    ->unique(ignoreRecord: true),
+                TextInput::make('lisence')
+                    ->label('no SIM')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->nullable(),
+                FileUpload::make('identity_file')
+                    ->label('Upload KTP')
+                    ->disk('public')
+                    ->directory('identity_docs')
+                    ->image()
+                    ->visibility('public')
+                    ->nullable(),
+                FileUpload::make('lisence_file')
+                    ->label('Upload SIM')
+                    ->disk('public')
+                    ->directory('license_docs')
+                    ->image()
+                    ->visibility('public')
+                    ->nullable(),
+
+
 
                 Textarea::make('alamat')
                     ->label('Alamat')
@@ -57,8 +79,13 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('lisence_file')->label('Foto')->width(80)
+                    ->height(60),
+                ImageColumn::make('identity_file')->label('Foto')->width(80)
+                    ->height(60),
                 TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
                 TextColumn::make('ktp')->label('No KTP / SIM'),
+                TextColumn::make('lisence')->label('No KTP / SIM'),
                 TextColumn::make('no_telp')->label('HP'),
                 TextColumn::make('alamat')->label('Alamat')->limit(20),
             ])

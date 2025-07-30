@@ -12,6 +12,9 @@ class Customer extends Model
     protected $fillable = [
         'nama',
         'ktp',
+        'lisence',
+        'identity_file',
+        'lisence_file',
         'no_telp',
         'alamat',
     ];

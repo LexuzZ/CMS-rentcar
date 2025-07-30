@@ -106,12 +106,13 @@ class CarResource extends Resource
             ->columns([
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
+                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
                 TextColumn::make('nama_mobil')->label('Nama Mobil')->sortable()->toggleable()->searchable()->alignCenter(),
                 TextColumn::make('merek')
                     ->label('Merk Mobil')
                     ->badge()
                     ->alignCenter()
-                    
+
                     ->formatStateUsing(fn($state) => match ($state) {
                         'toyota' => 'Toyota',
                         'mitsubishi' => 'Mitsubishi',
@@ -135,6 +136,20 @@ class CarResource extends Resource
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
+                        default => ucfirst($state),
+                    }),
+                TextColumn::make('transmisi')
+                    ->label('Transmisi')
+                    ->badge()
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'manual',
+                        'info' => 'matic',
+
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'manual' => 'Manual Transmisi',
+                        'matic' => 'Automatic Transmisi',
                         default => ucfirst($state),
                     }),
 

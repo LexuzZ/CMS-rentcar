@@ -22,9 +22,11 @@ class CarFactory extends Factory
             'nopol' => strtoupper($this->faker->bothify('AB #### ??')), // Contoh: AB 123 XY
             'merek' => $merek,
             'nama_mobil' => ucfirst($this->faker->words(2, true)), // contoh: Avanza G
+            'warna' => ucfirst($this->faker->words(1, true)), // contoh: Avanza G
             'garasi' => $this->faker->city,
             'year' => $this->faker->year,
-            'status' => $this->faker->randomElement(['ready', 'disewa', 'perawatan']),
+            'status' => $this->faker->randomElement(['ready', 'disewa', 'perawatan', 'nonaktif']),
+            'transmisi' => $this->faker->randomElement(['matic', 'manual']),
             'harga_pokok' => $this->faker->numberBetween(250000, 700000),
             'harga_harian' => $this->faker->numberBetween(250000, 700000),
             'harga_bulanan' => $this->faker->optional()->numberBetween(5000000, 15000000),

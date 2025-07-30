@@ -12,10 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cars', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->string('nopol')->unique();
             $table->enum('merek', ['toyota', 'mitsubishi', 'suzuki', 'daihatsu', 'honda'])->default('toyota'); // Nomor Polisi                  // Merek
-            $table->string('nama_mobil');                    // Tipe Mobil
+            $table->string('nama_mobil');
+            $table->string('warna');                    // Tipe Mobil
+            $table->enum('transmisi', ['matic', 'manual',])->default('matic');                  // Tipe Mobil
             $table->string('garasi');                    // Lokasi Garasi            
             $table->year('year');                      // Tahun
             $table->enum('status', ['ready', 'disewa', 'perawatan'])->default('ready');
