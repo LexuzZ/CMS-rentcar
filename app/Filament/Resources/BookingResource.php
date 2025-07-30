@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource\RelationManagers;
 use App\Models\Booking;
+use App\Models\Car;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -31,6 +33,28 @@ class BookingResource extends Resource
     protected static ?string $label = 'Pemesanan';
     protected static ?string $pluralLabel = 'Pemesanan Sewa';
 
+    protected static function calculatePrice(callable $set, callable $get = null)
+    {
+        $tanggalKeluar = $get('tanggal_keluar');
+        $tanggalKembali = $get('tanggal_kembali');
+        $hargaHarian = (int) $get('harga_harian');
+
+        if (! $tanggalKeluar || ! $tanggalKembali || ! $hargaHarian) {
+            $set('estimasi_biaya', 0);
+            $set('total_hari', 0);
+            return;
+        }
+
+        $start = \Carbon\Carbon::parse($tanggalKeluar);
+        $end = \Carbon\Carbon::parse($tanggalKembali);
+        $days = $start->diffInDays($end);
+        $totalHari = $days > 0 ? $days : 1;
+
+        $set('total_hari', $totalHari);
+        $set('estimasi_biaya', $hargaHarian * $totalHari);
+    }
+
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -40,8 +64,17 @@ class BookingResource extends Resource
                     ->relationship('car', 'nopol')
                     ->searchable()
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        if ($state && $car = \App\Models\Car::find($state)) {
+                            $set('harga_harian', $car->harga_harian);
+                        } else {
+                            $set('harga_harian', 0);
+                        }
 
+                        static::calculatePrice($set, $get); // ✅ sudah dikirim lengkap
+                    }),
                 Select::make('customer_id')
                     ->label('Pelanggan')
                     ->relationship('customer', 'nama')
@@ -65,19 +98,21 @@ class BookingResource extends Resource
                     ])
                     ->nullable(),
 
+
+
                 DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get)),
 
                 DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get)),
 
-                TextInput::make('estimasi_biaya')
-                    ->label('Estimasi Biaya')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->required(),
+
                 TimePicker::make('waktu_keluar')
                     ->label('Waktu Keluar')
                     ->nullable()
@@ -86,15 +121,45 @@ class BookingResource extends Resource
                     ->label('Waktu Kembali')
                     ->nullable()
                     ->seconds(false),
+                // TextInput::make('estimasi_biaya')
+                //     ->label('Harga Sewa')
+                //     ->numeric()
+                //     ->prefix('Rp')
+                //     ->required(),
+                TextInput::make('harga_harian')
+                    ->label('Harga Harian')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->dehydrated() // tetap dikirim ke backend walau reactive dan readonly
+                    ->reactive()
+                    ->afterStateHydrated(function (callable $set, $state, $record) {
+                        if ($record && $record->car) {
+                            $set('harga_harian', $record->car->harga_harian);
+                        }
+                    })
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        // Kalau harga_harian diganti manual, hitung ulang estimasi
+                        \App\Filament\Resources\BookingResource::calculatePrice($set, $get);
+                    }),
 
 
-                FileUpload::make('identity_file')
-                    ->label('Upload KTP/SIM')
-                    ->directory('identity_docs')
-                    ->image()
-                    ->disk('public')
-                    ->visibility('public')
-                    ->nullable(),
+                TextInput::make('total_hari')
+                    ->label('Total Hari Sewa')
+                    ->numeric()
+                    ->disabled() // jika ingin hanya tampilan, bukan input
+                    ->dehydrated(), // agar tetap dikirim ke backend saat submit
+
+
+
+
+                TextInput::make('estimasi_biaya')
+                    ->label('Total Sewa')
+                    ->prefix('Rp')
+                    // ->disabled()
+                    ->dehydrated(true)
+                    ->required(),
+
+
 
                 Select::make('status')
                     ->label('Status Pemesanan')
