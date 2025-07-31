@@ -9,6 +9,7 @@ use LaravelDaily\Invoices\Classes\Buyer;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
 // use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use LaravelDaily\Invoices\Classes\Party;
 
@@ -17,14 +18,18 @@ class ExportController extends Controller
     public function download($record)
     {
 
-        $invoiceModel = \App\Models\Invoice::with('booking.customer', 'booking.car')->findOrFail($record);
+        $invoiceModel = \App\Models\Invoice::with('booking.customer', 'booking.car', 'booking.penalty')->findOrFail($record);
+        $tanggalSewa = Carbon::parse($invoiceModel->booking->tanggal_keluar)->format('d M Y') . ' - ' .
+            Carbon::parse($invoiceModel->booking->tanggal_kembali)->format('d M Y');
 
         $buyer = new Buyer([
             'name' => $invoiceModel->booking->customer->nama,
             'custom_fields' => [
                 'Alamat' => $invoiceModel->booking->customer->alamat,
                 'No. Telp'   => $invoiceModel->booking->customer->no_telp,
-                'Mobil Sewa'   => $invoiceModel->booking->car->nama_mobil . ' - ' . $invoiceModel->booking->car->nopol,
+                'Mobil Sewa'   => $invoiceModel->booking->car->nama_mobil,
+                'Tanggal Sewa' => $tanggalSewa,
+                'Total Hari Sewa'   => $invoiceModel->booking->total_hari . ' Hari',
             ],
         ]);
 
