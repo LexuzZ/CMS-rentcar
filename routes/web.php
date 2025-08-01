@@ -58,7 +58,7 @@ Route::get('/api/bookings-calendar', function (Request $request) {
         $start = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_keluar . ' ' . ($booking->waktu_keluar ?? '00:00:00'))->toDateTimeLocalString();
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_kembali . ' ' . ($booking->waktu_kembali ?? '23:59:59'))->toDateTimeLocalString();
         return [
-            'title' => $booking->car->nama_mobil . ' - ' . $booking->customer->nama,
+            'title' => $booking->car->nopol  . ' - ' . $booking->car->nama_mobil . ' (' . $booking->customer->nama . ')',
             'start' => $start,
             'end' => $end,
             'color' => '#333446',

@@ -9,4 +9,12 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBooking extends CreateRecord
 {
     protected static string $resource = BookingResource::class;
+    protected function afterCreate(): void
+    {
+        if ($this->record->status === 'booking' || $this->record->status === 'aktif') {
+            $this->record->car->update([
+                'status' => 'disewa',
+            ]);
+        }
+    }
 }
