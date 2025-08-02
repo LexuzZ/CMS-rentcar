@@ -168,7 +168,7 @@ class CarResource extends Resource
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
                 TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
             ])
-            ->defaultSort('status', 'asc')
+            ->defaultSort('nama_mobil', 'asc')
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
