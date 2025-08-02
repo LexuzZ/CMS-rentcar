@@ -21,6 +21,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -129,6 +130,15 @@ class PaymentResource extends Resource
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     })
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('Status Pembayaran')
+                    ->options([
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas',
+
+                    ]),
             ])
             ->defaultSort('tanggal_pembayaran', 'desc')
             ->actions([

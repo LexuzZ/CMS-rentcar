@@ -61,7 +61,7 @@ class BookingResource extends Resource
             Grid::make(2)->schema([
                 Select::make('car_id')
                     ->label('Mobil (No Polisi)')
-                    ->relationship('car', 'nopol', fn($query) => $query->where('status', 'ready'))
+                    ->relationship('car', 'nopol')
                     ->searchable()
                     ->preload()
                     ->required()
