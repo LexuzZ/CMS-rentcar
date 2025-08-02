@@ -88,6 +88,7 @@ class CarResource extends Resource
                     TextInput::make('harga_harian')
                         ->label('Harga Sewa Harian')
                         ->numeric()
+                        ->required()
                         ->prefix('Rp'),
                     TextInput::make('harga_pokok')
                         ->label('Harga Pokok')
@@ -95,10 +96,11 @@ class CarResource extends Resource
                         ->prefix('Rp'),
                     TextInput::make('harga_bulanan')
                         ->label('Harga Sewa Bulanan')
+                        ->required()
                         ->numeric()
                         ->prefix('Rp'),
 
-                    FileUpload::make('photo')
+                     FileUpload::make('photo')
                         ->label('Foto Mobil')
                         ->image()
                         ->directory('cars')
@@ -108,6 +110,7 @@ class CarResource extends Resource
                         ->panelLayout('integrated')
                         ->disk('public')
                         ->visibility('public')
+                        
                 ]),
             ]);
     }
@@ -168,7 +171,7 @@ class CarResource extends Resource
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
                 TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
             ])
-            ->defaultSort('nama_mobil', 'asc')
+            ->defaultSort('status', 'asc')
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
