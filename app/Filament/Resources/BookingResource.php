@@ -216,7 +216,7 @@ class BookingResource extends Resource
                 TextColumn::make('invoice.booking.car.merek')
                     ->label('Merk Mobil')
                     ->badge()
-                     ->searchable()
+                    ->searchable()
                     ->alignCenter()
                     ->colors([
                         'info' => 'toyota',
@@ -261,10 +261,12 @@ class BookingResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status Pembayaran')
+                    ->label('Status ')
                     ->options([
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
+                        'aktif' => 'Aktif',
+                        'booking' => 'Booking',
+                        'selesai' => 'Selesai',
+                        'batal' => 'Batal',
 
                     ]),
             ])
