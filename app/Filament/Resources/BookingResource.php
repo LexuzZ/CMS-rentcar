@@ -19,6 +19,7 @@ use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -59,6 +60,10 @@ class BookingResource extends Resource
     {
         return $form->schema([
             Grid::make(2)->schema([
+                TextInput::make('id')
+                    ->hidden()
+                    ->dehydrated(), // agar nilainya ikut dikirim ke validasi
+
                 Select::make('car_id')
                     ->label('Mobil (No Polisi)')
                     ->relationship('car', 'nopol')
@@ -100,7 +105,7 @@ class BookingResource extends Resource
 
 
 
-              DatePicker::make('tanggal_keluar')
+                DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
                     ->reactive()
@@ -211,6 +216,7 @@ class BookingResource extends Resource
                 TextColumn::make('invoice.booking.car.merek')
                     ->label('Merk Mobil')
                     ->badge()
+                     ->searchable()
                     ->alignCenter()
                     ->colors([
                         'info' => 'toyota',
@@ -227,7 +233,7 @@ class BookingResource extends Resource
                         'daihatsu' => 'Daihatsu',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter(),
+                TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable(),
                 // TextColumn::make('driver.nama')->label('Sopir')->toggleable(),
                 TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
                 TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
@@ -252,6 +258,15 @@ class BookingResource extends Resource
                         default => ucfirst($state),
                     }),
 
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('Status Pembayaran')
+                    ->options([
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas',
+
+                    ]),
             ])
             ->defaultSort('tanggal_keluar', 'desc')
             ->actions([
