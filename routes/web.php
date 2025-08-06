@@ -52,16 +52,23 @@ Route::get('/api/bookings-calendar', function (Request $request) {
     }
 
     return $query->get()->map(function ($booking) {
-        // Gabungkan tanggal dan waktu
-        // $start = Carbon::parse($booking->tanggal_keluar . ' ' . ($booking->waktu_keluar ?? '00:00:00'))->toDateTimeLocalString();
-
         $start = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_keluar . ' ' . ($booking->waktu_keluar ?? '00:00:00'))->toDateTimeLocalString();
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_kembali . ' ' . ($booking->waktu_kembali ?? '23:59:59'))->toDateTimeLocalString();
+
+        // 🎨 Warna berdasarkan status
+        $statusColor = match ($booking->status) {
+            'booking' => '#3b82f6',    // biru
+            'aktif' => '#10b981',      // hijau
+            'selesai' => '#111827',    // hitam/abu gelap
+            'batal' => '#ef4444',      // merah
+            default => '#9ca3af',      // abu-abu (default fallback)
+        };
+
         return [
             'title' => $booking->car->nopol  . ' - ' . $booking->car->nama_mobil . ' (' . $booking->customer->nama . ')',
             'start' => $start,
             'end' => $end,
-            'color' => '#333446',
+            'color' => $statusColor,
         ];
     });
 });
