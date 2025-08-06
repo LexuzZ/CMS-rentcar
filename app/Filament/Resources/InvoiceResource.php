@@ -33,75 +33,64 @@ class InvoiceResource extends Resource
         return $form->schema([
             Grid::make(2)->schema([
                 Select::make('booking_id')
-                    ->label('Booking')
-                    ->relationship('booking', 'id', fn($query) => $query->with('car', 'customer'))
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) =>
-                        $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
-                    )
-                    ->selectablePlaceholder()
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $booking = \App\Models\Booking::find($state);
-                        $estimasi = $booking?->estimasi_biaya ?? 0;
-                        $pickup = $get('pickup_dropOff') ?? 0;
+                ->label('Booking')
+                ->relationship('booking', 'id', fn($query) => $query->with('car', 'customer'))
+                ->getOptionLabelFromRecordUsing(
+                    fn($record) =>
+                    $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
+                )
+                ->selectablePlaceholder()
+                ->required()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    $booking = \App\Models\Booking::find($state);
+                    $estimasi = $booking?->estimasi_biaya ?? 0;
+                    $pickup = $get('pickup_dropOff') ?? 0;
 
-                        $total = $estimasi + $pickup;
+                    $total = $estimasi + $pickup;
 
-                        $set('total', $total);
-                        $set('dp', 0);
-                        $set('sisa_pembayaran', $total);
-                    }),
+                    $set('total', $total);
+                    $set('dp', 0);
+                    $set('sisa_pembayaran', $total);
+                }),
 
-                DatePicker::make('tanggal_invoice')
-                    ->label('Tanggal Invoice')
-                    ->required(),
+            DatePicker::make('tanggal_invoice')
+                ->label('Tanggal Invoice')
+                ->required(),
 
-                TextInput::make('dp')
-                    ->label('Uang Muka')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->default(0)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $total = $get('total') ?? 0;
-                        $set('sisa_pembayaran', max($total - $state, 0));
-                    }),
+            TextInput::make('dp')
+                ->label('Uang Muka')
+                ->prefix('Rp')
+                ->numeric()
+                ->default(0)
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    $total = $get('total') ?? 0;
+                    $set('sisa_pembayaran', max($total - $state, 0));
+                }),
 
-                TextInput::make('pickup_dropOff')
-                    ->label('Biaya Pengantaran')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->default(0)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $bookingId = $get('booking_id');
-                        $booking = \App\Models\Booking::find($bookingId);
-                        $estimasi = $booking?->estimasi_biaya ?? 0;
+            TextInput::make('pickup_dropOff')
+                ->label('Biaya Pengantaran')
+                ->reactive()
+                ->prefix('Rp')
+                ->numeric()
+                ->default(0),
 
-                        $total = $estimasi + $state;
-                        $set('total', $total);
+            TextInput::make('sisa_pembayaran')
+                ->label('Sisa Pembayaran')
+                ->prefix('Rp')
+                ->numeric()
+                ->readOnly()
+                ->default(0),
 
-                        $dp = $get('dp') ?? 0;
-                        $set('sisa_pembayaran', max($total - $dp, 0));
-                    }),
-
-                TextInput::make('sisa_pembayaran')
-                    ->label('Sisa Pembayaran')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->readOnly()
-                    ->default(0),
-
-                TextInput::make('total')
-                    ->label('Total Biaya')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->readOnly()
-                    ->required(),
-            ]),
-        ]);
+            TextInput::make('total')
+                ->label('Total Biaya')
+                ->prefix('Rp')
+                ->numeric()
+                ->readOnly()
+                ->required(),
+        ]),
+    ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
