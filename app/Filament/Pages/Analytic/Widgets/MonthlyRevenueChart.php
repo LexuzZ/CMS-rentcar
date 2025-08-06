@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\Analytic\Widgets;
 
 use App\Models\Invoice;
 use App\Models\Penalty;
