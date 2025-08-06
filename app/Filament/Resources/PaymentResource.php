@@ -101,9 +101,73 @@ class PaymentResource extends Resource
                 TextColumn::make('invoice.id')->label('Faktur'),
                 TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
                 TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y')->alignCenter(),
-                TextColumn::make('pembayaran')->label('Jumlah')->money('IDR')->alignCenter(),
-                TextColumn::make('metode_pembayaran')
-                    ->label('Metode Pembayaran')
+                
+                
+                    TextColumn::make('pembayaran')->label('Jumlah')->money('IDR')->alignCenter(),
+                TextColumn::make('total_bbm')
+                    ->label('Total BBM')
+                    ->toggleable()
+                    ->getStateUsing(function ($record) {
+                        return $record->invoice
+                            ? $record->invoice->booking->penalty->where('klaim', 'bbm')->sum('amount')
+                            : 0;
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
+                ,
+
+                TextColumn::make('total_overtime')
+                    ->label('Total Overtime')
+                    ->toggleable()
+                    ->getStateUsing(function ($record) {
+                        return $record->invoice
+                            ? $record->invoice->booking->penalty->where('klaim', 'overtime')->sum('amount')
+                            : 0;
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
+                    ->sortable(),
+
+                TextColumn::make('total_baret')
+                    ->label('Total Baret')
+                    ->toggleable()
+                    ->getStateUsing(function ($record) {
+                        return $record->invoice
+                            ? $record->invoice->booking->penalty->where('klaim', 'baret')->sum('amount')
+                            : 0;
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
+                    ->sortable(),
+                TextColumn::make('invoice.booking.penalty.amount')
+                    ->label('Total Denda')
+                    ->alignCenter()
+                    ->formatStateUsing(function ($record) {
+                        $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
+                        return 'Rp ' . number_format($total, 0, ',', '.');
+                    }),
+                    TextColumn::make('total_bayar')
+                    ->label('Jumlah Bayar')
+                    ->alignCenter()
+                    ->getStateUsing(function ($record) {
+                        $invoice = $record->invoice;
+                        $totalInvoice = $invoice?->total ?? 0;
+
+                        // Sum all penalty amounts for the related booking
+                        $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
+
+                        return $totalInvoice + $totalDenda;
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'lunas',
+                        'danger' => 'belum_lunas',
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas',
+                        default => ucfirst($state),
+                    }),
+                    TextColumn::make('metode_pembayaran')
+                    ->label('Metode')
                     ->badge()
                     ->alignCenter()
                     ->colors([
@@ -117,19 +181,7 @@ class PaymentResource extends Resource
                         'qris' => 'QRIS',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'lunas',
-                        'danger' => 'belum_lunas',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-                        default => ucfirst($state),
-                    })
+                    
             ])
             ->filters([
                 SelectFilter::make('status')
