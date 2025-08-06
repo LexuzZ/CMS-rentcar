@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
-            ->darkMode(false)
+            ->darkMode(true)
             ->favicon(asset('semetonpesiar.png'))
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
