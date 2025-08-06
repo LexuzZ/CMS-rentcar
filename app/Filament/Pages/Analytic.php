@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Filament\Pages;
-
-use App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart;
 use Filament\Pages\Page;
 
 class Analytic extends Page
@@ -14,7 +12,8 @@ class Analytic extends Page
     {
         return [
             \App\Filament\Pages\Analytic\Widgets\DashboardOverview::class,
-            MonthlyRevenueChart::class
+            \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
+            
         ];
     }
 }
