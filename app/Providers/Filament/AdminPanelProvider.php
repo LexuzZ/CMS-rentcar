@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 InvoiceTable::class,
                 MobilKembali::class,
                 // \App\Filament\Widgets\DashboardOverview::class,
-                \App\Filament\Widgets\MonthlyRevenueChart::class,
+                // \App\Filament\Widgets\MonthlyRevenueChart::class,
 
             ])
             ->middleware([
