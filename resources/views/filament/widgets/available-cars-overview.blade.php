@@ -1,23 +1,32 @@
+{{-- File: resources/views/filament/widgets/nama-widget-anda.blade.php --}}
+
 <x-filament::widget>
     <x-filament::card>
-        <div class="p-2">
-            <h2 class="text-md font-bold pb-6 text-gray-800">Mobil Tersedia (Ready)</h2>
+        <h2 class="text-xs font-bold mb-4">Mobil Tersedia</h2>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                @forelse ($cars as $car)
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-lg transition-all duration-300 rounded-xl p-5 flex items-center gap-4">
-                        <div class="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 p-3 rounded-full">
-                            <x-heroicon-o-truck class="w-6 h-6" />
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ $car->nama_mobil }}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-300">{{ $car->total }} Unit</div>
-                        </div>
-                    </div>
-                @empty
-                    <p class="text-gray-500">Tidak ada mobil dengan status <strong>ready</strong>.</p>
-                @endforelse
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($cars as $merek => $mobilList)
+            <div class="shadow rounded-lg p-4 dark-text-slate-100">
+                <h3 class="bg-gray-800 dark:text-slate-100 font-semibold text-xs mb-2">
+                    {{ Illuminate\Support\Str::title($merek) }} ({{ $mobilList->count() }} unit)
+                </h3>
+
+                {{-- Beri class 'custom-select' untuk target JavaScript --}}
+                <select class="custom-select w-full bg-gray-800 dark:text-gray-800 text-xs rounded-md">
+                    <option value="" class="text-gray-800">Pilih mobil {{ Illuminate\Support\Str::title($merek) }}</option>
+                    @foreach ($mobilList as $mobil)
+                        {{-- SEKARANG KITA MASUKKAN HTML DI SINI --}}
+                        <option value="{{ $mobil->id }}">
+                            {{ $mobil->nama_mobil }}
+                            <span class='bg-gray-200 text-gray-800 text-xs font-medium ms-2 px-2 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300'>
+                                {{$mobil->nopol}}
+                            </span>
+                        </option>
+                    @endforeach
+                </select>
             </div>
+            @endforeach
         </div>
     </x-filament::card>
 </x-filament::widget>
+

@@ -44,12 +44,15 @@ class ExportController extends Controller
         ]);
 
         $items = [
+            InvoiceItem::make('Biaya Pengantaran')
+                ->pricePerUnit((float) $invoiceModel->pickup_dropOff),
+
+
             InvoiceItem::make('Uang Muka')
                 ->pricePerUnit((float) $invoiceModel->dp),
             InvoiceItem::make('Sisa Pembayaran')
                 ->pricePerUnit((float) $invoiceModel->sisa_pembayaran),
-            InvoiceItem::make('Biaya Pengantaran')
-                ->pricePerUnit((float) $invoiceModel->pickup_dropOff),
+
 
 
 

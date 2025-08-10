@@ -3,27 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
-use App\Filament\Resources\BookingResource\RelationManagers;
 use App\Models\Booking;
 use App\Models\Car;
+use App\Models\CarModel;
+use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Ramsey\Uuid\Type\Time;
 
 class BookingResource extends Resource
 {
@@ -34,13 +29,13 @@ class BookingResource extends Resource
     protected static ?string $label = 'Pemesanan';
     protected static ?string $pluralLabel = 'Pemesanan Sewa';
 
-    protected static function calculatePrice(callable $set, callable $get = null)
+    protected static function calculatePrice(callable $set, callable $get)
     {
         $tanggalKeluar = $get('tanggal_keluar');
         $tanggalKembali = $get('tanggal_kembali');
         $hargaHarian = (int) $get('harga_harian');
 
-        if (! $tanggalKeluar || ! $tanggalKembali || ! $hargaHarian) {
+        if (!$tanggalKeluar || !$tanggalKembali || !$hargaHarian) {
             $set('estimasi_biaya', 0);
             $set('total_hari', 0);
             return;
@@ -49,7 +44,7 @@ class BookingResource extends Resource
         $start = \Carbon\Carbon::parse($tanggalKeluar);
         $end = \Carbon\Carbon::parse($tanggalKembali);
         $days = $start->diffInDays($end);
-        $totalHari = $days > 0 ? $days : 1;
+        $totalHari = $days >= 0 ? $days + 1 : 1; // Menghitung inklusif
 
         $set('total_hari', $totalHari);
         $set('estimasi_biaya', $hargaHarian * $totalHari);
@@ -62,25 +57,25 @@ class BookingResource extends Resource
             Grid::make(2)->schema([
                 TextInput::make('id')
                     ->hidden()
-                    ->dehydrated(), // agar nilainya ikut dikirim ke validasi
+                    ->dehydrated(),
                 DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->live()
+                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->rules([
-                        function (\Filament\Forms\Get $get) {
+                        function (Forms\Get $get) {
                             return function (string $attribute, $value, \Closure $fail) use ($get) {
                                 $carId = $get('car_id');
                                 $tanggalKembali = $get('tanggal_kembali');
-                                $recordId = $get('id'); // untuk pengecualian saat edit
+                                $recordId = $get('id');
 
-                                if (! $carId || ! $value || ! $tanggalKembali) {
+                                if (!$carId || !$value || !$tanggalKembali) {
                                     return;
                                 }
 
                                 $exists = \App\Models\Booking::where('car_id', $carId)
-                                    ->when($recordId, fn($q) => $q->where('id', '!=', $recordId))
+                                    ->when($recordId, fn ($q) => $q->where('id', '!=', $recordId))
                                     ->where(function ($query) use ($value, $tanggalKembali) {
                                         $query->whereBetween('tanggal_keluar', [$value, $tanggalKembali])
                                             ->orWhereBetween('tanggal_kembali', [$value, $tanggalKembali])
@@ -100,9 +95,8 @@ class BookingResource extends Resource
                 DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, callable $set, callable $get) => static::calculatePrice($set, $get)),
-
+                    ->live()
+                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::calculatePrice($set, $get)),
 
                 TimePicker::make('waktu_keluar')
                     ->label('Waktu Keluar')
@@ -113,49 +107,58 @@ class BookingResource extends Resource
                     ->nullable()
                     ->seconds(false),
 
+                Select::make('brand_id')
+                    ->label('Merek')
+                    ->options(Brand::query()->pluck('name', 'id'))
+                    ->live()
+                    ->afterStateUpdated(function (Forms\Set $set) {
+                        $set('car_model_id', null);
+                        $set('car_id', null);
+                    })
+                    ->dehydrated(false),
+
+                Select::make('car_model_id')
+                    ->label('Nama Mobil')
+                    ->options(fn (Forms\Get $get): array => CarModel::query()
+                        ->where('brand_id', $get('brand_id'))
+                        ->pluck('name', 'id')->all()
+                    )
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null))
+                    ->dehydrated(false),
+
                 Select::make('car_id')
-                    ->label('Mobil (No Polisi)')
-                    ->relationship('car', 'nopol')
-                    ->searchable()
-                    ->preload()
+                    ->label('Unit Mobil (No Polisi)')
+                    ->options(fn (Forms\Get $get): array => Car::query()
+                        ->where('car_model_id', $get('car_model_id'))
+                        ->pluck('nopol', 'id')->all()
+                    )
+                    ->live()
                     ->required()
-                    ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         if ($state && $car = \App\Models\Car::find($state)) {
                             $set('harga_harian', $car->harga_harian);
                         } else {
                             $set('harga_harian', 0);
                         }
-
-                        static::calculatePrice($set, $get); // ✅ sudah dikirim lengkap
+                        static::calculatePrice($set, $get);
                     }),
+
                 Select::make('customer_id')
                     ->label('Pelanggan')
                     ->relationship('customer', 'nama')
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
-                        Forms\Components\TextInput::make('nama')
-                            ->label('Nama Pelanggan')
-                            ->required(),
-                        Forms\Components\TextInput::make('no_telp')
-                            ->label('No. HP')
-                            ->tel()
-                            ->required()
-                            ->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('alamat')
-                            ->label('Alamat')
-                            ->required(),
-                            
-                        TextInput::make('ktp')
-                            ->label('No KTP')
-                            ->required()
-                            ->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('nama')->label('Nama Pelanggan')->required(),
+                        Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
+                        TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
                     ->required(),
 
                 Select::make('driver_id')
-                    ->label('Sopir (Opsional)')
+                    ->label('Staff Bertugas')
                     ->relationship('driver', 'nama')
                     ->searchable()
                     ->preload()
@@ -170,48 +173,39 @@ class BookingResource extends Resource
                     ])
                     ->nullable(),
 
+                // -- PENAMBAHAN FIELD BARU DIMULAI DI SINI --
+                Textarea::make('lokasi_pengantaran')
+                    ->label('Lokasi Pengantaran')
+                    ->nullable()
+                    ->rows(2)
+                    ->columnSpanFull(),
 
+                Textarea::make('lokasi_pengembalian')
+                    ->label('Lokasi Pengembalian')
+                    ->nullable()
+                    ->rows(2)
+                    ->columnSpanFull(),
+                // -- PENAMBAHAN FIELD BARU SELESAI --
 
-
-                // TextInput::make('estimasi_biaya')
-                //     ->label('Harga Sewa')
-                //     ->numeric()
-                //     ->prefix('Rp')
-                //     ->required(),
                 TextInput::make('harga_harian')
                     ->label('Harga Harian')
                     ->prefix('Rp')
                     ->numeric()
-                    ->dehydrated() // tetap dikirim ke backend walau reactive dan readonly
-                    ->reactive()
-                    ->afterStateHydrated(function (callable $set, $state, $record) {
-                        if ($record && $record->car) {
-                            $set('harga_harian', $record->car->harga_harian);
-                        }
-                    })
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        // Kalau harga_harian diganti manual, hitung ulang estimasi
-                        \App\Filament\Resources\BookingResource::calculatePrice($set, $get);
-                    }),
-
+                    ->dehydrated()
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
 
                 TextInput::make('total_hari')
                     ->label('Total Hari Sewa')
                     ->numeric()
-                    ->disabled() // jika ingin hanya tampilan, bukan input
-                    ->dehydrated(), // agar tetap dikirim ke backend saat submit
-
-
-
+                    ->disabled()
+                    ->dehydrated(),
 
                 TextInput::make('estimasi_biaya')
                     ->label('Total Sewa')
                     ->prefix('Rp')
-                    // ->disabled()
                     ->dehydrated(true)
                     ->required(),
-
-
 
                 Select::make('status')
                     ->label('Status Pemesanan')
@@ -241,54 +235,25 @@ class BookingResource extends Resource
                         'gray' => 'selesai',
                         'danger' => 'batal',
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'aktif' => 'Aktif',
                         'booking' => 'Booking',
                         'selesai' => 'Selesai',
                         'batal' => 'Batal',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('car.nopol')->label('No Polisi')->alignCenter(),
-                TextColumn::make('car.nama_mobil')->label('Type Mobil')->alignCenter(),
-                // TextColumn::make('invoice.booking.car.merek')
-                //     ->label('Merk Mobil')
-                //     ->badge()
-                //      ->searchable()
-                //     ->alignCenter()
-                //     ->colors([
-                //         'info' => 'toyota',
-                //         'info' => 'mitsubishi',
-                //         'info' => 'suzuki',
-                //         'info' => 'daihatsu',
-                //         'info' => 'honda'
-                //     ])
-                //     ->formatStateUsing(fn($state) => match ($state) {
-                //         'toyota' => 'Toyota',
-                //         'mitsubishi' => 'Mitsubishi',
-                //         'suzuki' => 'Suzuki',
-                //         'honda' => 'Honda',
-                //         'daihatsu' => 'Daihatsu',
-                //         default => ucfirst($state),
-                //     }),
-
+                TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
+                TextColumn::make('car.carModel.name')->label('Type Mobil')->alignCenter()->searchable(),
+                TextColumn::make('car.carModel.brand.name')->label('Merk Mobil')->badge()->alignCenter()->searchable(),
+                
                 TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable(),
-                // TextColumn::make('driver.nama')->label('Sopir')->toggleable(),
                 TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
                 TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
-                TextColumn::make('waktu_keluar')->label('Waktu Keluar')->alignCenter()->time('H:i'),
-                TextColumn::make('waktu_kembali')->label('Waktu Kembali')->alignCenter()->time('H:i'),
                 TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
 
-
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->label('Status Pembayaran')
-                    ->options([
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-
-                    ]),
+                // -- PENAMBAHAN KOLOM BARU DI SINI --
+                TextColumn::make('lokasi_pengantaran')->label('Lokasi Antar')->toggleable(isToggledHiddenByDefault: true)->wrap(),
+                TextColumn::make('lokasi_pengembalian')->label('Lokasi Kembali')->toggleable(isToggledHiddenByDefault: true)->wrap(),
             ])
             ->defaultSort('tanggal_keluar', 'desc')
             ->actions([
@@ -310,7 +275,7 @@ class BookingResource extends Resource
     }
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query(Booking::query()->latest())
+        return static::getModel()::query()
             ->where('status', 'booking')
             ->count();
     }

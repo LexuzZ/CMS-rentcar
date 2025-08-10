@@ -1,0 +1,90 @@
+{{-- File: resources/views/filament/widgets/mobil-kembali-cards.blade.php --}}
+{{-- Struktur yang disederhanakan dan benar --}}
+<x-filament-widgets::widget>
+    {{-- Kita tidak perlu <x-filament::section> atau <x-slot> lagi --}}
+    {{-- Komponen widget di atas sudah otomatis membuat judul dan card --}}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        @forelse ($bookings as $record)
+        {{-- Kode untuk satu kartu (tidak ada perubahan di bagian ini) --}}
+        <div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+            {{-- Header Kartu --}}
+            <div class="flex items-start justify-between">
+                <div>
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+                        {{ $record->car->carModel->brand->name }} {{ $record->car->carModel->name }}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $record->car->nopol }}
+                    </p>
+                    <span class="text-xs font-medium  py-0.5 rounded-full">
+                        Mobil Keluar Hari Ini
+                    </span>
+                </div>
+                {{-- Badge Status --}}
+                @php
+                $status = $record->status;
+                $statusText = match($status) { 'aktif' => 'Aktif', default => ucfirst($status) };
+                $statusColorClasses = match($status) { 'aktif' => 'bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400', default => 'bg-gray-100 text-gray-800' };
+                @endphp
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary-500 text-white">
+                    {{ $statusText }}
+                </span>
+
+            </div>
+
+            <hr class="my-4 border-gray-200 dark:border-gray-700">
+
+            {{-- Detail Konten --}}
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400" text-xs>Penyewa</span>
+                    <span class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
+                    <span class="font-medium bg-green-500 text-gray-900 dark:text-white text-xs" color="success">{{ $record->driver->nama ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Lokasi Pengembalian</span>
+                    <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
+                    <div class="text-right">
+                        <p class="font-semibold text-xs ">
+                            Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WIB
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
+                    
+                    <div class="text-right">
+                        <p class="font-semibold text-xs " >
+                            {{ \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM Y') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tombol Aksi --}}
+            <div class="mt-6 flex items-center justify-end">
+                <x-filament::button
+                    tag="a"
+                    href="{{ route('filament.admin.resources.bookings.edit', ['record' => $record->id]) }}"
+                    target="_blank"
+                    icon="heroicon-o-check-circle"
+                    color="success">
+                    Selesaikan
+                </x-filament::button>
+            </div>
+        </div>
+        @empty
+        {{-- Tampilan jika tidak ada data --}}
+        <div class="col-span-full text-center  text-gray-500 dark:text-gray-400">
+            Tidak ada mobil yang dijadwalkan kembali hari ini.
+        </div>
+        @endforelse
+    </div>
+</x-filament-widgets::widget>

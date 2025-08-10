@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Car;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 
@@ -12,15 +13,16 @@ class AvailableCarsOverview extends Widget
 
     public function getViewData(): array
     {
-        $cars = DB::table('cars')
-            ->select('nama_mobil', DB::raw('count(*) as total'))
-            ->where('status', 'ready')
-            ->groupBy('nama_mobil')
-            ->get();
+         $availableCars = Car::with(['carModel.brand']) // <-- Eager load relasi
+        ->where('status', 'ready')
+        ->get();
 
-        return [
-            'cars' => $cars,
-        ];
+    // Grouping sekarang dilakukan berdasarkan nama merek dari relasi
+    $groupedCars = $availableCars->groupBy('carModel.brand.name');
+
+    return [
+        'cars' => $groupedCars,
+    ];
     }
 }
 

@@ -2,15 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CarResource\BookingsResource\RelationManagers\BookingsRelationManager;
 use App\Filament\Resources\CarResource\Pages;
+use App\Filament\Resources\CarResource\RelationManagers\TempoRelationManager;
 use App\Models\Car;
+use App\Models\CarModel;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid};
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
-
-
 
 class CarResource extends Resource
 {
@@ -26,6 +27,29 @@ class CarResource extends Resource
         return $form
             ->schema([
                 Grid::make(2)->schema([
+                    // Dropdown Merek (menggunakan relasi)
+                    Select::make('brand_id') // Field "virtual" untuk state
+                        ->label('Merek')
+                        ->relationship(name: 'carModel.brand', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_model_id', null))
+                        ->dehydrated(false), // <-- SOLUSINYA DI SINI
+
+                    // Dropdown Nama Mobil (dinamis berdasarkan merek)
+                    Select::make('car_model_id') // Kolom asli di database
+                        ->label('Nama Mobil')
+                        ->options(
+                            fn(Forms\Get $get): array => CarModel::query()
+                                ->where('brand_id', $get('brand_id'))
+                                ->pluck('name', 'id')->all()
+                        )
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->required(),
+
                     TextInput::make('nopol')
                         ->label('Nomor Polisi')
                         ->required()
@@ -38,28 +62,23 @@ class CarResource extends Resource
                         ->maxValue(date('Y') + 1)
                         ->required(),
 
-
-                    Select::make('merek')
-                        ->label('Merek')
-                        ->options([
-                            'toyota' => 'Toyota',
-                            'mitsubishi' => 'Mitsubishi',
-                            'suzuki' => 'Suzuki',
-                            'daihatsu' => 'Daihatsu',
-                            'honda' => 'Honda',
-                        ])
-                        ->default('toyota')
-                        ->required(),
-
                     TextInput::make('garasi')
                         ->label('Garasi')
                         ->required(),
 
-                    TextInput::make('nama_mobil')
-                        ->label('Nama Mobil')
-                        ->required(),
                     TextInput::make('warna')
                         ->label('Warna Mobil')
+                        ->required(),
+
+                    Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'ready' => 'Ready',
+                            'disewa' => 'Disewa',
+                            'perawatan' => 'Perawatan',
+                            'nonaktif' => 'Nonaktif',
+                        ])
+                        ->default('ready')
                         ->required(),
 
                     Select::make('transmisi')
@@ -67,40 +86,26 @@ class CarResource extends Resource
                         ->options([
                             'matic' => 'Matic',
                             'manual' => 'Manual',
-
                         ])
                         ->default('matic')
                         ->required(),
-                    Select::make('status')
-                        ->label('Status')
-                        ->options([
-                            'ready' => 'Ready',
-                            'disewa' => 'Disewa',
-                            'perawatan' => 'Perawatan',
-                        ])
-                        ->default('ready')
-                        ->required(),
-
-
-
-
 
                     TextInput::make('harga_harian')
                         ->label('Harga Sewa Harian')
                         ->numeric()
-                        ->required()
                         ->prefix('Rp'),
+
                     TextInput::make('harga_pokok')
                         ->label('Harga Pokok')
                         ->numeric()
                         ->prefix('Rp'),
+
                     TextInput::make('harga_bulanan')
                         ->label('Harga Sewa Bulanan')
-                        ->required()
                         ->numeric()
                         ->prefix('Rp'),
 
-                     FileUpload::make('photo')
+                    FileUpload::make('photo')
                         ->label('Foto Mobil')
                         ->image()
                         ->directory('cars')
@@ -110,7 +115,7 @@ class CarResource extends Resource
                         ->panelLayout('integrated')
                         ->disk('public')
                         ->visibility('public')
-                        
+                        ->columnSpanFull(), // Agar foto mengambil lebar penuh
                 ]),
             ]);
     }
@@ -121,21 +126,19 @@ class CarResource extends Resource
             ->columns([
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
-                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
-                TextColumn::make('nama_mobil')->label('Nama Mobil')->sortable()->toggleable()->searchable()->alignCenter(),
-                TextColumn::make('merek')
+
+                // Mengambil nama mobil dari relasi carModel
+                TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
+
+                // Mengambil merek dari relasi carModel.brand
+                TextColumn::make('carModel.brand.name')
                     ->label('Merk Mobil')
                     ->badge()
                     ->alignCenter()
+                    ->sortable()
+                    ->searchable(),
 
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'toyota' => 'Toyota',
-                        'mitsubishi' => 'Mitsubishi',
-                        'suzuki' => 'Suzuki',
-                        'honda' => 'Honda',
-                        'daihatsu' => 'Daihatsu',
-                        default => ucfirst($state),
-                    }),
+                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
                 TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
@@ -146,11 +149,13 @@ class CarResource extends Resource
                         'success' => 'ready',
                         'info' => 'disewa',
                         'danger' => 'perawatan',
+                        'gray' => 'nonaktif',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
+                        'nonaktif' => 'Nonaktif',
                         default => ucfirst($state),
                     }),
                 TextColumn::make('transmisi')
@@ -160,14 +165,12 @@ class CarResource extends Resource
                     ->colors([
                         'success' => 'manual',
                         'info' => 'matic',
-
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'manual' => 'Manual Transmisi',
                         'matic' => 'Automatic Transmisi',
                         default => ucfirst($state),
                     }),
-
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
                 TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
             ])
@@ -194,25 +197,51 @@ class CarResource extends Resource
     }
     public static function getRelations(): array
     {
+        // DAFTARKAN RELATION MANAGER DI SINI
         return [
-            \App\Filament\Resources\CarResource\BookingsResource\RelationManagers\BookingsRelationManager::class,
-
+            BookingsRelationManager::class,
+            TempoRelationManager::class,
         ];
     }
     public static function getWidgets(): array
     {
         return [
-            \App\Filament\Resources\CarResource\Widgets\CarStatsOverview::class,
+            // Jika ada widget, biarkan di sini
         ];
     }
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query(Car::query()->latest())
+        return static::getModel()::query()
             ->where('status', 'ready')
             ->count();
     }
     public static function getNavigationBadgeTooltip(): ?string
     {
         return 'Mobil yang siap disewa';
+    }
+    // app/Filament/Resources/CarResource.php
+
+    // Staff boleh melihat daftar mobil
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    // Hanya admin yang bisa membuat data mobil baru
+    public static function canCreate(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    // Hanya admin yang bisa mengedit data mobil
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    // Hanya admin yang bisa menghapus data mobil
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return auth()->user()->isAdmin();
     }
 }

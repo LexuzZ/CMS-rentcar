@@ -95,4 +95,9 @@ class MonthlyRevenueChart extends ChartWidget
             'labels' => $labels,
         ];
     }
+   public static function canViewAny(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat resource ini
+        return auth()->user()->isAdmin();
+    }
 }

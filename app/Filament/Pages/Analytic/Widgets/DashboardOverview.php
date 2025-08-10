@@ -146,4 +146,9 @@ class DashboardOverview extends BaseWidget
 
         ];
     }
+    public static function canViewAny(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat resource ini
+        return auth()->user()->isAdmin();
+    }
 }

@@ -20,6 +20,8 @@ class Booking extends Model
         'estimasi_biaya',
         'identity_file',
         'status',
+        'lokasi_pengantaran',
+        'lokasi_pengembalian',
     ];
 
     public function car()
@@ -45,4 +47,16 @@ class Booking extends Model
     {
         return $this->hasMany(Penalty::class);
     }
+    protected function handleRecordCreation(array $data): Model
+{
+    $record = static::getModel()::create($data);
+
+    // Ubah status booking menjadi 'selesai'
+    if (isset($data['booking_id'])) {
+        Booking::where('id', $data['booking_id'])
+            ->update(['status' => 'selesai']);
+    }
+
+    return $record;
+}
 }

@@ -33,42 +33,58 @@ Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoic
 //     });
 // });
 
-Route::get('/api/bookings-calendar', function (Request $request) {
-    $mobil = $request->query('mobil');
+Route::get('/bookings-calendar', function (Request $request) {
+    $mobilModel = $request->query('mobil'); // Ganti nama variabel agar lebih jelas
     $nopol = $request->query('nopol');
 
-    $query = Booking::with(['car', 'customer']);
+    // 1. Eager load relasi bertingkat untuk efisiensi
+    $query = Booking::with(['car.carModel.brand', 'customer']);
 
-    if ($mobil) {
-        $query->whereHas('car', function ($q) use ($mobil) {
-            $q->where('nama_mobil', $mobil);
+    // 2. Sesuaikan filter untuk mencari di relasi carModel
+    if ($mobilModel) {
+        $query->whereHas('car.carModel', function ($q) use ($mobilModel) {
+            $q->where('name', 'like', "%{$mobilModel}%");
         });
     }
 
     if ($nopol) {
         $query->whereHas('car', function ($q) use ($nopol) {
-            $q->where('nopol', $nopol);
+            $q->where('nopol', 'like', "%{$nopol}%");
         });
     }
 
     return $query->get()->map(function ($booking) {
+        // Pengecekan untuk menghindari error jika ada data relasi yang hilang
+        if (!$booking->car || !$booking->car->carModel || !$booking->car->carModel->brand || !$booking->customer) {
+            return null; // Lewati booking ini jika datanya tidak lengkap
+        }
+
         $start = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_keluar . ' ' . ($booking->waktu_keluar ?? '00:00:00'))->toDateTimeLocalString();
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_kembali . ' ' . ($booking->waktu_kembali ?? '23:59:59'))->toDateTimeLocalString();
 
-        // 🎨 Warna berdasarkan status
         $statusColor = match ($booking->status) {
-            'booking' => '#3b82f6',    // biru
-            'aktif' => '#10b981',      // hijau
-            'selesai' => '#111827',    // hitam/abu gelap
-            'batal' => '#ef4444',      // merah
-            default => '#9ca3af',      // abu-abu (default fallback)
+            'booking' => '#3b82f6',   // biru
+            'aktif' => '#10b981',     // hijau
+            'selesai' => '#6b7280',   // abu-abu
+            'batal' => '#ef4444',     // merah
+            default => '#9ca3af',
         };
 
+        // 3. Sesuaikan pembuatan judul dengan relasi baru
+        $title = sprintf(
+            '%s %s (%s) - %s',
+            $booking->car->carModel->brand->name, // Merek
+            $booking->car->carModel->name,       // Model
+            $booking->car->nopol,                // Nopol
+            $booking->customer->nama             // Nama Pelanggan
+        );
+
         return [
-            'title' => $booking->car->nopol  . ' - ' . $booking->car->nama_mobil . ' (' . $booking->customer->nama . ')',
+            'title' => $title,
             'start' => $start,
             'end' => $end,
             'color' => $statusColor,
+            'id' => $booking->id, // Tambahkan ID untuk referensi
         ];
-    });
+    })->filter(); // ->filter() tanpa argumen akan menghapus semua nilai null
 });

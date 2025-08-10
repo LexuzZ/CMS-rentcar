@@ -4,26 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Car extends Model
 {
+    
     use HasFactory;
-     protected $fillable = [
-        'nopol',
-        'merek',
-        'nama_mobil',
-        'warna',
-        'transmisi',
-        'garasi',
-        'year',
-        'status',
-        'harga_pokok',
-        'harga_harian',
-        'harga_bulanan',
-        'photo',
-    ];
+
+    protected $guarded = [];
+
+    // Satu Mobil (Car) dimiliki oleh satu Model Mobil (CarModel)
+    public function carModel(): BelongsTo
+    {
+        return $this->belongsTo(CarModel::class);
+    }
     public function bookings()
-{
-    return $this->hasMany(Booking::class);
-}
+    {
+        return $this->hasMany(Booking::class);
+    }
+    public function tempos()
+    {
+        return $this->hasMany(Tempo::class);
+    }
 }

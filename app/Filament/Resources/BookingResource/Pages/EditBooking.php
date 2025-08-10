@@ -24,6 +24,7 @@ class EditBooking extends EditRecord
         }
     }
 
+
     protected function getHeaderActions(): array
     {
         return [

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('ktp')->unique(); // KTP / SIM
             $table->string('lisence')->unique()->nullable(); // KTP / SIM
             $table->string('identity_file')->nullable(); // upload KTP
-            $table->string('lisence_file')->nullable();
-            $table->string('ktp')->unique(); // KTP / SIM
+             $table->string('lisence_file')->nullable(); // upload SIM
             $table->string('no_telp')->unique(); // Nomor Telepon
             $table->text('alamat');
             $table->timestamps();

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Pages;
+
+
 use Filament\Pages\Page;
 
 class Analytic extends Page
@@ -13,7 +15,13 @@ class Analytic extends Page
         return [
             \App\Filament\Pages\Analytic\Widgets\DashboardOverview::class,
             \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
-            
+            // \app\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
+
         ];
+    }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return auth()->user()->isAdmin();
     }
 }

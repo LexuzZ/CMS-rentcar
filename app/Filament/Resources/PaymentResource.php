@@ -236,4 +236,26 @@ class PaymentResource extends Resource
     {
         return 'Pembayaran yang belum lunas';
     }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    // Hanya admin yang bisa membuat data mobil baru
+    public static function canCreate(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    // Hanya admin yang bisa mengedit data mobil
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    // Hanya admin yang bisa menghapus data mobil
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
 }

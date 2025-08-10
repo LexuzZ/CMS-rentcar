@@ -37,6 +37,10 @@ class MonthlyResource extends Resource
     // protected static ?string $heading = 'Rekapan Bulanan';
     protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
     protected int | string | array $columnSpan = 'full';
+    protected static ?string $modelLabel = 'Rekapan Bulanan';
+
+    // Untuk label plural (ini yang akan mengubah "Tempos" di judul)
+    protected static ?string $pluralModelLabel = 'Rekapan Bulanan';
 
     public static function form(Form $form): Form
     {

@@ -2,9 +2,14 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\AvailableCarsOverview;
+use App\Filament\Resources\CarResource\Widgets\AvailableCarsOverview;
+use App\Filament\Resources\CarResource\Widgets\MobilReadyStats;
+use App\Filament\Widgets\AvailableCarsOverview as WidgetsAvailableCarsOverview;
 use App\Filament\Widgets\InvoiceTable;
+use App\Filament\Widgets\MobilKeluar;
 use App\Filament\Widgets\MobilKembali;
+use App\Filament\Widgets\TempoDueToday;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -33,12 +38,19 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
+            // ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(true)
             ->favicon(asset('semetonpesiar.png'))
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Violet,
+                'primary' => Color::Sky, // Warna utama sekarang ungu
+                'success' => Color::Lime,   // Warna sukses sekarang hijau limau
+                'danger'  => Color::Rose,   // Warna bahaya sekarang merah mawar
+                'info'    => Color::Blue,    // Warna info menjadi biru langit
+                'warning' => Color::Orange, // Warna peringatan menjadi oranye
+                'gray'    => Color::Slate,  // Warna abu-abu menjadi lebih kebiruan
+
             ])
             // ->theme(asset('css/filament/admin/theme.css'))
             ->sidebarCollapsibleOnDesktop()
@@ -57,13 +69,16 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-                AvailableCarsOverview::class,
-                InvoiceTable::class,
+
+                WidgetsAvailableCarsOverview::class,
                 MobilKembali::class,
-                // \App\Filament\Widgets\DashboardOverview::class,
+                TempoDueToday::class,
+
                 // \App\Filament\Widgets\MonthlyRevenueChart::class,
+                MobilKeluar::class,
+
+                // MobilReadyStats::class,
+
 
             ])
             ->middleware([
