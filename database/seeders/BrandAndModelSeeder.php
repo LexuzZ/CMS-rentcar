@@ -11,7 +11,7 @@ class BrandAndModelSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            'Toyota' => ['Avanza', 'Innova Reborn', 'Rush', 'Fortuner', 'Calya'],
+            'Toyota' => ['Avanza', 'Innova Reborn','Innova Zenix', 'Rush', 'Fortuner', 'Calya'],
             'Mitsubishi' => ['Xpander', 'Pajero Sport', 'Triton'],
             'Suzuki' => ['Ertiga', 'XL7', 'Carry'],
             'Daihatsu' => ['Xenia', 'Terios', 'Sigra', 'Gran Max'],
