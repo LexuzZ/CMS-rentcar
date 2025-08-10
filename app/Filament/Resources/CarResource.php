@@ -125,7 +125,7 @@ class CarResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
-                TextColumn::make('nopol')->label('Nopol')->searchable(),
+                TextColumn::make('nopol')->label('Nopol')->searchable()->alignCenter(),
 
                 // Mengambil nama mobil dari relasi carModel
                 TextColumn::make('carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
@@ -138,7 +138,7 @@ class CarResource extends Resource
                     
                     ->searchable(),
 
-                TextColumn::make('warna')->label('Warna Mobil')->searchable(),
+                TextColumn::make('warna')->label('Warna Mobil')->searchable()->alignCenter(),
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
                 TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
