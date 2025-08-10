@@ -15,7 +15,7 @@
                     @foreach ($mobilList as $mobil)
                         <option value="{{ $mobil->id }}">
                             {{-- PERUBAHAN DI SINI: Mengambil nama model dari relasi --}}
-                            {{ $mobil->carModel->name }}
+                            {{ $mobil->carModel->name }} -
                             <span class='bg-gray-200 text-gray-800 text-xs font-medium ms-2 px-2 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300'>
                                 {{$mobil->nopol}}
                             </span>
