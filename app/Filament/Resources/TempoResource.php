@@ -8,6 +8,7 @@ use App\Models\Car;
 use App\Models\CarModel;
 use App\Models\Tempo;
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -76,6 +77,9 @@ class TempoResource extends Resource
                     ->native(false)
                     ->displayFormat('d/m/Y')
                     ->closeOnDateSelection(),
+                    Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->rows(3),
             ]);
     }
 
@@ -134,6 +138,10 @@ class TempoResource extends Resource
                     ->label('Jatuh Tempo')
                     ->date('d M Y')->alignCenter()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->sortable(),
+                
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('perawatan')

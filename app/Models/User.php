@@ -55,4 +55,12 @@ class User extends Authenticatable
     {
         return $this->role === 'staff';
     }
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
 }

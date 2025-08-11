@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Car extends Model
 {
-    
+
     use HasFactory;
 
     protected $guarded = [];
@@ -25,5 +25,9 @@ class Car extends Model
     public function tempos()
     {
         return $this->hasMany(Tempo::class);
+    }
+    public function serviceHistories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceHistory::class);
     }
 }

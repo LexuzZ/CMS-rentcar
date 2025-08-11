@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarResource\BookingsResource\RelationManagers\BookingsRelationManager;
 use App\Filament\Resources\CarResource\Pages;
+use App\Filament\Resources\CarResource\RelationManagers\ServiceHistoriesRelationManager;
 use App\Filament\Resources\CarResource\RelationManagers\TempoRelationManager;
 use App\Models\Car;
 use App\Models\CarModel;
@@ -93,13 +94,11 @@ class CarResource extends Resource
                     TextInput::make('harga_harian')
                         ->label('Harga Sewa Harian')
                         ->numeric()
-                        ->required()
                         ->prefix('Rp'),
 
                     TextInput::make('harga_pokok')
                         ->label('Harga Pokok')
                         ->numeric()
-                        ->required()
                         ->prefix('Rp'),
 
                     TextInput::make('harga_bulanan')
@@ -127,20 +126,20 @@ class CarResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
-                TextColumn::make('nopol')->label('Nopol')->searchable()->alignCenter(),
+                TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
 
                 // Mengambil nama mobil dari relasi carModel
-                TextColumn::make('carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
+                TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
 
                 // Mengambil merek dari relasi carModel.brand
                 TextColumn::make('carModel.brand.name')
                     ->label('Merk Mobil')
                     ->badge()
                     ->alignCenter()
-                    
+                    ->sortable()
                     ->searchable(),
 
-                TextColumn::make('warna')->label('Warna Mobil')->searchable()->alignCenter(),
+                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
                 TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
@@ -203,6 +202,7 @@ class CarResource extends Resource
         return [
             BookingsRelationManager::class,
             TempoRelationManager::class,
+            ServiceHistoriesRelationManager::class, // <-- TAMBAHKAN INI
         ];
     }
     public static function getWidgets(): array

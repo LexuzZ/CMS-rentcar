@@ -2,11 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Exports\PaymentExporter;
 use App\Filament\Resources\PaymentResource\Pages;
-use App\Filament\Resources\PaymentResource\RelationManagers;
 use App\Models\Payment;
-
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -16,15 +13,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model; // <-- Pastikan ini di-import
 
 class PaymentResource extends Resource
 {
@@ -72,7 +64,7 @@ class PaymentResource extends Resource
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
-                    ->readOnly(), // Tidak bisa diubah manual
+                    ->readOnly(),
 
                 FileUpload::make('proof')
                     ->label('Bukti Transfer')
@@ -89,7 +81,10 @@ class PaymentResource extends Resource
                         'belum_lunas' => 'Belum Lunas',
                     ])
                     ->default('belum_lunas')
-                    ->required(),
+                    ->required()
+                    // -- PERUBAHAN DI SINI --
+                    // Field ini akan nonaktif jika pengguna BUKAN superadmin
+                    ->disabled(fn () => ! auth()->user()->isSuperAdmin()),
             ]),
         ]);
     }
@@ -101,57 +96,16 @@ class PaymentResource extends Resource
                 TextColumn::make('invoice.id')->label('Faktur'),
                 TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
                 TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y')->alignCenter(),
-                
-                
-                    TextColumn::make('pembayaran')->label('Jumlah')->money('IDR')->alignCenter(),
-                TextColumn::make('total_bbm')
-                    ->label('Total BBM')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'bbm')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                ,
-
-                TextColumn::make('total_overtime')
-                    ->label('Total Overtime')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'overtime')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                    ->sortable(),
-
-                TextColumn::make('total_baret')
-                    ->label('Total Baret')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'baret')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                    ->sortable(),
-                TextColumn::make('invoice.booking.penalty.amount')
-                    ->label('Total Denda')
-                    ->alignCenter()
-                    ->formatStateUsing(function ($record) {
-                        $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
-                        return 'Rp ' . number_format($total, 0, ',', '.');
-                    }),
-                    TextColumn::make('total_bayar')
+                TextColumn::make('pembayaran')->label('Jumlah')->money('IDR')->alignCenter(),
+                TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
                     ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
                         $totalInvoice = $invoice?->total ?? 0;
-
-                        // Sum all penalty amounts for the related booking
                         $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
-
                         return $totalInvoice + $totalDenda;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
@@ -166,7 +120,7 @@ class PaymentResource extends Resource
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     }),
-                    TextColumn::make('metode_pembayaran')
+                TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
                     ->alignCenter()
@@ -181,7 +135,6 @@ class PaymentResource extends Resource
                         'qris' => 'QRIS',
                         default => ucfirst($state),
                     }),
-                    
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -189,7 +142,6 @@ class PaymentResource extends Resource
                     ->options([
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
-
                     ]),
             ])
             ->defaultSort('tanggal_pembayaran', 'desc')
@@ -197,7 +149,6 @@ class PaymentResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
@@ -211,51 +162,48 @@ class PaymentResource extends Resource
             'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
     }
-    protected function getHeaderActions(): array
-    {
-        dd('getHeaderActions dipanggil');
-
-        $selectedYear = $this->filterFormData['year'] ?? now()->year;
-
-        return [
-            Action::make('exportPdf')
-                ->label('Export PDF')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('gray')
-                ->url(route('exports.monthly-revenue-pdf', ['year' => $selectedYear]))
-                ->openUrlInNewTab(),
-        ];
-    }
+    
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query(Payment::query()->latest())
+        return static::getModel()::query()
             ->where('status', 'belum_lunas')
             ->count();
     }
+    
     public static function getNavigationBadgeTooltip(): ?string
     {
         return 'Pembayaran yang belum lunas';
     }
+
+    // -- KONTROL AKSES BARU (superadmin, admin, staff) --
+    
     public static function canViewAny(): bool
     {
+        // Semua peran bisa melihat riwayat pembayaran
         return true;
     }
 
-    // Hanya admin yang bisa membuat data mobil baru
     public static function canCreate(): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa mengedit data mobil
-    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canEdit(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa mengakses halaman edit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa menghapus data mobil
-    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canDelete(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin yang bisa menghapus
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin yang bisa hapus massal
+        return auth()->user()->isSuperAdmin();
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             // Tambahkan kolom 'role' setelah kolom 'email'
             // Enum membatasi nilai hanya boleh 'admin' atau 'staff'
             // Defaultnya adalah 'staff' untuk pengguna baru
-            $table->enum('role', ['admin', 'staff'])->default('staff')->after('email');
+            $table->enum('role', ['admin', 'staff', 'superadmin'])->default('staff')->after('email');
         });
     }
 

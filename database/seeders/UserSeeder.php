@@ -16,15 +16,21 @@ class UserSeeder extends Seeder
     {
         // Membuat pengguna Admin
         User::create([
-            'name' => 'Admin SPT',
-            'email' => 'adminsemetonpesiar@gmail.com',
+            'name' => 'Admin',
+            'email' => 'admin@semetonpesiar@gmail.com',
             'password' => Hash::make('adminsemeton2001'), // Ganti dengan password yang aman
             'role' => 'admin',
+        ]);
+        User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadminsemetonpesiar@gmail.com',
+            'password' => Hash::make('superadmin1993'), // Ganti dengan password yang aman
+            'role' => 'superadmin',
         ]);
 
         // Membuat pengguna Staff
         User::create([
-            'name' => 'Staff SPT',
+            'name' => 'Staff',
             'email' => 'staffsemetonpesiar@gmail.com',
             'password' => Hash::make('staffsemeton1993'), // Ganti dengan password yang aman
             'role' => 'staff',
