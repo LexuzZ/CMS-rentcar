@@ -26,6 +26,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MonthlyResource extends Resource
@@ -241,5 +242,34 @@ class MonthlyResource extends Resource
         return [
             'index' => Pages\ListMonthlies::route('/'),
         ];
+    }
+    public static function canViewAny(): bool
+    {
+        // Semua peran bisa melihat daftar mobil
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canCreate(): bool
+    {
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa mengedit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa menghapus
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

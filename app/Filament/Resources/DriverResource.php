@@ -16,6 +16,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DriverResource extends Resource
@@ -87,5 +88,34 @@ class DriverResource extends Resource
             'create' => Pages\CreateDriver::route('/create'),
             'edit' => Pages\EditDriver::route('/{record}/edit'),
         ];
+    }
+    public static function canViewAny(): bool
+    {
+        // Semua peran bisa melihat daftar mobil
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa mengedit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa menghapus
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

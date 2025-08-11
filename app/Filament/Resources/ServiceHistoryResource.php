@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ServiceHistoryResource extends Resource
 {
@@ -107,4 +108,33 @@ class ServiceHistoryResource extends Resource
             'edit' => Pages\EditServiceHistory::route('/{record}/edit'),
         ];
     }    
+    public static function canViewAny(): bool
+    {
+        // Semua peran bisa melihat daftar mobil
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa mengedit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa menghapus
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
 }

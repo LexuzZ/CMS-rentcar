@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid};
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
+use Illuminate\Database\Eloquent\Model; // <-- Pastikan ini di-import
 
 class CarResource extends Resource
 {
@@ -28,21 +29,19 @@ class CarResource extends Resource
         return $form
             ->schema([
                 Grid::make(2)->schema([
-                    // Dropdown Merek (menggunakan relasi)
-                    Select::make('brand_id') // Field "virtual" untuk state
+                    Select::make('brand_id')
                         ->label('Merek')
                         ->relationship(name: 'carModel.brand', titleAttribute: 'name')
                         ->searchable()
                         ->preload()
                         ->live()
-                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_model_id', null))
-                        ->dehydrated(false), // <-- SOLUSINYA DI SINI
+                        ->afterStateUpdated(fn (Forms\Set $set) => $set('car_model_id', null))
+                        ->dehydrated(false),
 
-                    // Dropdown Nama Mobil (dinamis berdasarkan merek)
-                    Select::make('car_model_id') // Kolom asli di database
+                    Select::make('car_model_id')
                         ->label('Nama Mobil')
                         ->options(
-                            fn(Forms\Get $get): array => CarModel::query()
+                            fn (Forms\Get $get): array => CarModel::query()
                                 ->where('brand_id', $get('brand_id'))
                                 ->pluck('name', 'id')->all()
                         )
@@ -116,7 +115,7 @@ class CarResource extends Resource
                         ->panelLayout('integrated')
                         ->disk('public')
                         ->visibility('public')
-                        ->columnSpanFull(), // Agar foto mengambil lebar penuh
+                        ->columnSpanFull(),
                 ]),
             ]);
     }
@@ -127,18 +126,13 @@ class CarResource extends Resource
             ->columns([
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
-
-                // Mengambil nama mobil dari relasi carModel
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
-
-                // Mengambil merek dari relasi carModel.brand
                 TextColumn::make('carModel.brand.name')
                     ->label('Merk Mobil')
                     ->badge()
                     ->alignCenter()
                     ->sortable()
                     ->searchable(),
-
                 TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
                 TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
@@ -152,7 +146,7 @@ class CarResource extends Resource
                         'danger' => 'perawatan',
                         'gray' => 'nonaktif',
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
@@ -167,7 +161,7 @@ class CarResource extends Resource
                         'success' => 'manual',
                         'info' => 'matic',
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'manual' => 'Manual Transmisi',
                         'matic' => 'Automatic Transmisi',
                         default => ucfirst($state),
@@ -198,17 +192,16 @@ class CarResource extends Resource
     }
     public static function getRelations(): array
     {
-        // DAFTARKAN RELATION MANAGER DI SINI
         return [
             BookingsRelationManager::class,
             TempoRelationManager::class,
-            ServiceHistoriesRelationManager::class, // <-- TAMBAHKAN INI
+            ServiceHistoriesRelationManager::class,
         ];
     }
     public static function getWidgets(): array
     {
         return [
-            // Jika ada widget, biarkan di sini
+            //
         ];
     }
     public static function getNavigationBadge(): ?string
@@ -221,29 +214,36 @@ class CarResource extends Resource
     {
         return 'Mobil yang siap disewa';
     }
-    // app/Filament/Resources/CarResource.php
+    
+    // -- KONTROL AKSES BARU (superadmin, admin, staff) --
 
-    // Staff boleh melihat daftar mobil
     public static function canViewAny(): bool
     {
+        // Semua peran bisa melihat daftar mobil
         return true;
     }
 
-    // Hanya admin yang bisa membuat data mobil baru
     public static function canCreate(): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa mengedit data mobil
-    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canEdit(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa mengedit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa menghapus data mobil
-    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canDelete(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa menghapus
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

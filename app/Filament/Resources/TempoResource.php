@@ -169,24 +169,31 @@ class TempoResource extends Resource
     }
     public static function canViewAny(): bool
     {
+        // Semua peran bisa melihat daftar mobil
         return true;
     }
 
-    // Hanya admin yang bisa membuat data mobil baru
     public static function canCreate(): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa mengedit data mobil
-    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canEdit(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa mengedit
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    // Hanya admin yang bisa menghapus data mobil
-    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canDelete(Model $record): bool
     {
-        return auth()->user()->isAdmin();
+        // Hanya superadmin dan admin yang bisa menghapus
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
