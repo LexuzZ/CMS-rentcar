@@ -24,7 +24,7 @@ class TempoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
-    protected static ?string $navigationLabel = 'Jatuh Tempo Perawatan';
+    protected static ?string $navigationLabel = 'Jatuh Tempo ';
     protected static ?string $modelLabel = 'Jatuh Tempo';
     protected static ?string $pluralModelLabel = 'Daftar Jatuh Tempo';
 
@@ -95,14 +95,14 @@ class TempoResource extends Resource
                         if (!$car || !$car->carModel || !$car->carModel->brand) {
                             return new HtmlString('Data Mobil Tidak Lengkap');
                         }
-                        
+
                         $brandName = $car->carModel->brand->name;
                         $modelName = $car->carModel->name;
                         $nopol = $car->nopol;
 
                         $badge = "<span class='bg-primary-500 text-white text-xs font-semibold ms-2 px-2.5 py-0.5 rounded-md'>{$nopol}</span>";
                         $carName = "{$brandName} {$modelName}";
-                        
+
                         // Tampilkan nama mobil dan badge nopol di bawahnya
                         return new HtmlString("<div><p class='font-medium'>{$carName}</p>{$badge}</div>");
                     })
@@ -141,7 +141,7 @@ class TempoResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->label('Deskripsi')
                     ->sortable(),
-                
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('perawatan')

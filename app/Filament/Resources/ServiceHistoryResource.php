@@ -20,6 +20,7 @@ class ServiceHistoryResource extends Resource
     protected static ?string $modelLabel = 'Riwayat Service';
     protected static ?string $pluralModelLabel = 'Riwayat Service';
 
+
     public static function form(Form $form): Form
     {
         return $form
@@ -91,14 +92,14 @@ class ServiceHistoryResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -107,7 +108,7 @@ class ServiceHistoryResource extends Resource
             'create' => Pages\CreateServiceHistory::route('/create'),
             'edit' => Pages\EditServiceHistory::route('/{record}/edit'),
         ];
-    }    
+    }
     public static function canViewAny(): bool
     {
         // Semua peran bisa melihat daftar mobil

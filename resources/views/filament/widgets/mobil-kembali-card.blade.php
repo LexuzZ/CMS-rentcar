@@ -17,9 +17,6 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ $record->car->nopol }}
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        {{ $record->car->garasi }}
-                    </p>
                     <span class="text-xs font-medium  py-0.5 rounded-full">
                         Mobil Keluar Hari Ini
                     </span>
@@ -52,21 +49,17 @@
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Lokasi Pengembalian</span>
                     <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
-                    <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->car->garasi ?? 'N/A' }}</span>
-                </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
                     <div class="text-right">
                         <p class="font-semibold text-xs ">
-                            Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WITA
+                            Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WIB
                         </p>
                     </div>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
-
+                    
                     <div class="text-right">
                         <p class="font-semibold text-xs " >
                             {{ \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM Y') }}

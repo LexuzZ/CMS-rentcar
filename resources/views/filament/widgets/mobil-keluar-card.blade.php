@@ -43,10 +43,6 @@
                     <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->lokasi_pengantaran ?? 'N/A' }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
-                    <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->car->garasi ?? 'N/A' }}</span>
-                </div>
-                <div class="flex justify-between">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
                     <span class="font-medium bg-green-500 text-gray-900 dark:text-white text-xs" >{{ $record->driver->nama ?? 'N/A' }}</span>
                 </div>
@@ -54,7 +50,7 @@
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Jadwal Keluar</span>
                     <div class="text-right">
                         <p class="font-semibold text-xs">
-                            Pukul {{ \Carbon\Carbon::parse($record->waktu_keluar)->format('H:i') }} WITA
+                            Pukul {{ \Carbon\Carbon::parse($record->waktu_keluar)->format('H:i') }} WIB
                         </p>
                     </div>
                 </div>

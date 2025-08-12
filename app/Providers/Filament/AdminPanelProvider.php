@@ -8,6 +8,7 @@ use App\Filament\Widgets\AvailableCarsOverview as WidgetsAvailableCarsOverview;
 use App\Filament\Widgets\InvoiceTable;
 use App\Filament\Widgets\MobilKeluar;
 use App\Filament\Widgets\MobilKembali;
+use App\Filament\Widgets\StaffRankingWidget;
 use App\Filament\Widgets\TempoDueToday;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -71,6 +72,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
 
                 WidgetsAvailableCarsOverview::class,
+                StaffRankingWidget::class,
+
                 MobilKembali::class,
                 TempoDueToday::class,
 
