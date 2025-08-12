@@ -52,6 +52,10 @@
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Lokasi Pengembalian</span>
                     <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
                 </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
+                    <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->car->garasi ?? 'N/A' }}</span>
+                </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
                     <div class="text-right">
