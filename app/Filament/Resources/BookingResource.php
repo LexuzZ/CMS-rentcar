@@ -210,7 +210,7 @@ class BookingResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return true;
     }
 
     public static function canDelete(Model $record): bool

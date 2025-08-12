@@ -42,6 +42,10 @@
                     <span class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
                 </div>
                 <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
+                    <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->car->garasi ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
                     <span class="font-medium bg-green-500 text-gray-900 dark:text-white text-xs" color="success">{{ $record->driver->nama ?? 'N/A' }}</span>
                 </div>
@@ -59,7 +63,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
-                    
+
                     <div class="text-right">
                         <p class="font-semibold text-xs " >
                             {{ \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM Y') }}
