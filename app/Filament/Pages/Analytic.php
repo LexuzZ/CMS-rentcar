@@ -22,6 +22,6 @@ class Analytic extends Page
     public static function canAccess(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
-        return auth()->user()->isAdmin();
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
