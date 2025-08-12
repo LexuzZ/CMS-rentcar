@@ -2,7 +2,7 @@
 
 <x-filament::widget>
     <x-filament::card>
-        <h2 class="text-xs font-bold mb-4">Mobil Tersedia</h2>
+        <h2 class="text-sm font-bold mb-4">Mobil Tersedia</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($cars as $merek => $mobilList)
