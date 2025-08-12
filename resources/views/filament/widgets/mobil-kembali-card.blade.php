@@ -53,13 +53,13 @@
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
                     <div class="text-right">
                         <p class="font-semibold text-xs ">
-                            Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WIB
+                            Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WITA
                         </p>
                     </div>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
-                    
+
                     <div class="text-right">
                         <p class="font-semibold text-xs " >
                             {{ \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM Y') }}
