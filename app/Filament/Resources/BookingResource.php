@@ -43,13 +43,13 @@ class BookingResource extends Resource
         $end = \Carbon\Carbon::parse($tanggalKembali);
         $days = $start->diffInDays($end);
 
-        // PERUBAHAN DI SINI: Menghitung selisih hari, bukan inklusif
-        // Jika tanggal sama (0 hari), dihitung sebagai 1 hari sewa.
         $totalHari = $days > 0 ? $days : 1;
 
         $set('total_hari', $totalHari);
         $set('estimasi_biaya', $hargaHarian * $totalHari);
     }
+
+    // Method mutateFormDataBeforeFill() sudah tidak diperlukan lagi dengan pendekatan ini
 
     public static function form(Form $form): Form
     {
@@ -72,55 +72,41 @@ class BookingResource extends Resource
                 Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false),
                 Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false),
 
-                // -- Dependent Dropdown untuk Memilih Mobil --
-                Forms\Components\Select::make('brand_id')
-                    ->label('Merek')
-                    ->options(Brand::query()->pluck('name', 'id'))
-                    ->live()
-                    ->afterStateUpdated(function (Forms\Set $set) {
-                        $set('car_model_id', null);
-                        $set('car_id', null);
-                    })
-                    ->dehydrated(false), // Field virtual, tidak disimpan
-
-                Forms\Components\Select::make('car_model_id')
-                    ->label('Nama Mobil')
-                    ->options(fn (Forms\Get $get): array => CarModel::query()
-                        ->where('brand_id', $get('brand_id'))
-                        ->pluck('name', 'id')->all())
-                    ->live()
-                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null))
-                    ->dehydrated(false), // Field virtual, tidak disimpan
-
+                // -- PERUBAHAN UTAMA: SATU DROPDOWN UNTUK MEMILIH MOBIL --
                 Forms\Components\Select::make('car_id')
-                    ->label('Unit Mobil Tersedia (No Polisi)')
-                    ->options(function (Forms\Get $get): array {
-                        $carModelId = $get('car_model_id');
-                        $startDate = $get('tanggal_keluar');
-                        $endDate = $get('tanggal_kembali');
-                        $recordId = $get('id'); // Untuk mengecualikan booking saat ini (mode edit)
+                    ->label('Unit Mobil Tersedia')
+                    ->relationship(
+                        name: 'car',
+                        titleAttribute: 'nopol', // Atribut dasar, akan ditimpa oleh getOptionLabelFromRecordUsing
+                        modifyQueryUsing: function (Builder $query, Forms\Get $get) {
+                            $startDate = $get('tanggal_keluar');
+                            $endDate = $get('tanggal_kembali');
+                            $recordId = $get('id');
 
-                        if (!$carModelId || !$startDate || !$endDate) {
-                            return []; // Jangan tampilkan opsi jika data belum lengkap
+                            // Jika tanggal belum diisi, jangan tampilkan mobil apa pun
+                            if (!$startDate || !$endDate) {
+                                return $query->whereRaw('1 = 0'); // Trik untuk tidak menampilkan hasil
+                            }
+
+                            // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
+                            return $query
+                                ->whereNotIn('status', ['perawatan', 'nonaktif'])
+                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
+                                    $bookingQuery->where('id', '!=', $recordId)
+                                        ->where(function (Builder $q) use ($startDate, $endDate) {
+                                            $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
+                                              ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                              ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                                  $subQ->where('tanggal_keluar', '<=', $startDate)
+                                                       ->where('tanggal_kembali', '>=', $endDate);
+                                              });
+                                        });
+                                });
                         }
-
-                        // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
-                        return Car::query()
-                            ->where('car_model_id', $carModelId)
-                            ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                            ->whereDoesntHave('bookings', function (Builder $query) use ($startDate, $endDate, $recordId) {
-                                $query->where('id', '!=', $recordId) // Abaikan booking yang sedang diedit
-                                    ->where(function (Builder $q) use ($startDate, $endDate) {
-                                        $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                          ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                          ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                              $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                   ->where('tanggal_kembali', '>=', $endDate);
-                                          });
-                                    });
-                            })
-                            ->pluck('nopol', 'id')->all();
-                    })
+                    )
+                    ->getOptionLabelFromRecordUsing(fn (Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
+                    ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
+                    ->preload()
                     ->live()
                     ->required()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -128,7 +114,7 @@ class BookingResource extends Resource
                         $set('harga_harian', $car?->harga_harian ?? 0);
                         static::calculatePrice($set, $get);
                     }),
-                // -- Batas Dependent Dropdown --
+                // -- BATAS PERUBAHAN --
 
                 Forms\Components\Select::make('customer_id')
                     ->label('Pelanggan')
