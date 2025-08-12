@@ -42,6 +42,9 @@ class BookingResource extends Resource
         $start = \Carbon\Carbon::parse($tanggalKeluar);
         $end = \Carbon\Carbon::parse($tanggalKembali);
         $days = $start->diffInDays($end);
+
+        // PERUBAHAN DI SINI: Menghitung selisih hari, bukan inklusif
+        // Jika tanggal sama (0 hari), dihitung sebagai 1 hari sewa.
         $totalHari = $days > 0 ? $days : 1;
 
         $set('total_hari', $totalHari);
@@ -104,7 +107,6 @@ class BookingResource extends Resource
                         // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
                         return Car::query()
                             ->where('car_model_id', $carModelId)
-                            // PERUBAHAN DI SINI: Hanya filter mobil yang benar-benar tidak bisa disewa
                             ->whereNotIn('status', ['perawatan', 'nonaktif'])
                             ->whereDoesntHave('bookings', function (Builder $query) use ($startDate, $endDate, $recordId) {
                                 $query->where('id', '!=', $recordId) // Abaikan booking yang sedang diedit
@@ -222,7 +224,7 @@ class BookingResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-         return true;
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
