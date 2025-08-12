@@ -42,7 +42,7 @@ class BookingResource extends Resource
         $start = \Carbon\Carbon::parse($tanggalKeluar);
         $end = \Carbon\Carbon::parse($tanggalKembali);
         $days = $start->diffInDays($end);
-        $totalHari = $days >= 0 ? $days + 1 : 1; // Menghitung hari secara inklusif
+        $totalHari = $days > 0 ? $days : 1;
 
         $set('total_hari', $totalHari);
         $set('estimasi_biaya', $hargaHarian * $totalHari);
