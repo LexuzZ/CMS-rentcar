@@ -17,6 +17,9 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ $record->car->nopol }}
                     </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ $record->car->garasi }}
+                    </p>
                     <span class="text-xs font-medium  py-0.5 rounded-full">
                         Mobil Keluar Hari Ini
                     </span>
