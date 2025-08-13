@@ -17,7 +17,7 @@ class EditBooking extends EditRecord
             ]);
         }
 
-        if ($this->record->status === 'aktif' || $this->record->status === 'booking') {
+        if ($this->record->status === 'disewa' || $this->record->status === 'booking') {
             $this->record->car->update([
                 'status' => 'disewa',
             ]);

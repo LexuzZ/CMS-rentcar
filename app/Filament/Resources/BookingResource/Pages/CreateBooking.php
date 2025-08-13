@@ -11,7 +11,7 @@ class CreateBooking extends CreateRecord
     protected static string $resource = BookingResource::class;
     protected function afterCreate(): void
     {
-        if ($this->record->status === 'booking' || $this->record->status === 'aktif') {
+        if ($this->record->status === 'booking' || $this->record->status === 'disewa') {
             $this->record->car->update([
                 'status' => 'disewa',
             ]);
