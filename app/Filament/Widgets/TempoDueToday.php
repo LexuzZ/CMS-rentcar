@@ -8,7 +8,7 @@ use Filament\Widgets\Widget;
 class TempoDueToday extends Widget
 {
     // Arahkan ke file Blade yang akan kita modifikasi
-    protected static string $view = 'filament.widgets.tempo-due-today-cards';
+    protected static string $view = 'filament.widgets.tempo-due-today-card';
 
     // Ubah judul widget agar lebih sesuai
     protected static ?string $heading = 'Jadwal Perawatan Mendatang';
