@@ -127,12 +127,6 @@ class CarResource extends Resource
 
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
-                TextColumn::make('carModel.brand.name')
-                    ->label('Merk Mobil')
-                    ->badge()
-                    ->alignCenter()
-                    ->sortable()
-                    ->searchable(),
 
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
 
