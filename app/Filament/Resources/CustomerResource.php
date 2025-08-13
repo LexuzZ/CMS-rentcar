@@ -39,8 +39,12 @@ class CustomerResource extends Resource
                 TextInput::make('no_telp')
                     ->label('No HP / WhatsApp')
                     ->tel()
-                    ->required(),
+                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
 
+                    // 3. Tetap membersihkan nomor sebelum disimpan ke database, ini sangat penting
+                    ->dehydrateStateUsing(fn(string $state): string => preg_replace('/[^0-9]/', '', $state))
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 TextInput::make('ktp')
                     ->label('No KTP')
                     ->required()

@@ -61,13 +61,13 @@ class BookingResource extends Resource
                     ->label('Tanggal Keluar')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
 
                 Forms\Components\DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
 
                 Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false),
                 Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false),
@@ -95,16 +95,16 @@ class BookingResource extends Resource
                                     $bookingQuery->where('id', '!=', $recordId)
                                         ->where(function (Builder $q) use ($startDate, $endDate) {
                                             $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                              ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                              ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                                  $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                       ->where('tanggal_kembali', '>=', $endDate);
-                                              });
+                                                ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                                ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                                    $subQ->where('tanggal_keluar', '<=', $startDate)
+                                                        ->where('tanggal_kembali', '>=', $endDate);
+                                                });
                                         });
                                 });
                         }
                     )
-                    ->getOptionLabelFromRecordUsing(fn (Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
+                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
                     ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
                     ->preload()
                     ->live()
@@ -122,7 +122,12 @@ class BookingResource extends Resource
                     ->searchable()->preload()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('nama')->label('Nama Pelanggan')->required(),
-                        Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
+
+                            // 3. Tetap membersihkan nomor sebelum disimpan ke database, ini sangat penting
+                            ->dehydrateStateUsing(fn(string $state): string => preg_replace('/[^0-9]/', '', $state))
+                            ->required()
+                            ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
                         Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
@@ -134,7 +139,7 @@ class BookingResource extends Resource
                 Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull(),
                 Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull(),
 
-                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
                 Forms\Components\TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->disabled()->dehydrated(),
                 Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required(),
 
@@ -154,7 +159,13 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
                     ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
-                    ->formatStateUsing(fn ($state) => match ($state) { 'aktif' => 'Aktif', 'booking' => 'Booking', 'selesai' => 'Selesai', 'batal' => 'Batal', default => ucfirst($state) }),
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'aktif' => 'Aktif',
+                        'booking' => 'Booking',
+                        'selesai' => 'Selesai',
+                        'batal' => 'Batal',
+                        default => ucfirst($state)
+                    }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.name')->label('Type Mobil')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.brand.name')->label('Merk Mobil')->badge()->alignCenter()->searchable(),
