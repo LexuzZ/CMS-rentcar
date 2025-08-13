@@ -49,10 +49,11 @@ class BookingResource extends Resource
         $set('estimasi_biaya', $hargaHarian * $totalHari);
     }
 
-    // Method mutateFormDataBeforeFill() sudah tidak diperlukan lagi dengan pendekatan ini
-
     public static function form(Form $form): Form
     {
+        // Kondisi untuk menonaktifkan field jika pengguna BUKAN admin atau superadmin
+        $isNotAdmin = !auth()->user()->hasAnyRole(['superadmin', 'admin']);
+
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
                 Forms\Components\TextInput::make('id')->hidden()->dehydrated(),
@@ -60,35 +61,34 @@ class BookingResource extends Resource
                 Forms\Components\DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
-                    ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->disabled($isNotAdmin),
 
                 Forms\Components\DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
-                    ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->disabled($isNotAdmin),
 
-                Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false),
-                Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false),
+                Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
+                Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false)->disabled($isNotAdmin),
 
-                // -- PERUBAHAN UTAMA: SATU DROPDOWN UNTUK MEMILIH MOBIL --
                 Forms\Components\Select::make('car_id')
                     ->label('Unit Mobil Tersedia')
                     ->relationship(
                         name: 'car',
-                        titleAttribute: 'nopol', // Atribut dasar, akan ditimpa oleh getOptionLabelFromRecordUsing
+                        titleAttribute: 'nopol',
                         modifyQueryUsing: function (Builder $query, Forms\Get $get) {
                             $startDate = $get('tanggal_keluar');
                             $endDate = $get('tanggal_kembali');
                             $recordId = $get('id');
 
-                            // Jika tanggal belum diisi, jangan tampilkan mobil apa pun
                             if (!$startDate || !$endDate) {
-                                return $query->whereRaw('1 = 0'); // Trik untuk tidak menampilkan hasil
+                                return $query->whereRaw('1 = 0');
                             }
 
-                            // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
                                 ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
@@ -113,8 +113,8 @@ class BookingResource extends Resource
                         $car = Car::find($state);
                         $set('harga_harian', $car?->harga_harian ?? 0);
                         static::calculatePrice($set, $get);
-                    }),
-                // -- BATAS PERUBAHAN --
+                    })
+                    ->disabled($isNotAdmin),
 
                 Forms\Components\Select::make('customer_id')
                     ->label('Pelanggan')
@@ -126,18 +126,23 @@ class BookingResource extends Resource
                         Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
                         Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
-                    ->required(),
+                    ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
+                    ->required()
+                    ->disabled($isNotAdmin),
 
+                // STAFF BISA MENGEDIT FIELD INI
                 Forms\Components\Select::make('driver_id')->label('Staff Bertugas')->relationship('driver', 'nama')->searchable()->preload()->nullable(),
-                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable(),
 
-                Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull(),
-                Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull(),
+                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable()->disabled($isNotAdmin),
 
-                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get)),
+                Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
+                Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
+
+                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->disabled()->dehydrated(),
-                Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required(),
+                Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
 
+                // STAFF BISA MENGEDIT FIELD INI
                 Forms\Components\Select::make('status')
                     ->label('Status Pemesanan')
                     ->options(['booking' => 'Booking', 'aktif' => 'Aktif', 'selesai' => 'Selesai', 'batal' => 'Batal'])
@@ -210,7 +215,8 @@ class BookingResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        // Semua peran bisa masuk ke halaman edit, tetapi field akan dikontrol di dalam form
+        return true;
     }
 
     public static function canDelete(Model $record): bool
