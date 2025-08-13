@@ -35,13 +35,13 @@ class CarResource extends Resource
                         ->searchable()
                         ->preload()
                         ->live()
-                        ->afterStateUpdated(fn (Forms\Set $set) => $set('car_model_id', null))
+                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_model_id', null))
                         ->dehydrated(false),
 
                     Select::make('car_model_id')
                         ->label('Nama Mobil')
                         ->options(
-                            fn (Forms\Get $get): array => CarModel::query()
+                            fn(Forms\Get $get): array => CarModel::query()
                                 ->where('brand_id', $get('brand_id'))
                                 ->pluck('name', 'id')->all()
                         )
@@ -124,7 +124,7 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
+
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
                 TextColumn::make('carModel.brand.name')
@@ -133,9 +133,9 @@ class CarResource extends Resource
                     ->alignCenter()
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
+
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
-                TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
+
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -146,28 +146,16 @@ class CarResource extends Resource
                         'danger' => 'perawatan',
                         'gray' => 'nonaktif',
                     ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
                         'nonaktif' => 'Nonaktif',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('transmisi')
-                    ->label('Transmisi')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'manual',
-                        'info' => 'matic',
-                    ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'manual' => 'Manual Transmisi',
-                        'matic' => 'Automatic Transmisi',
-                        default => ucfirst($state),
-                    }),
+
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
-                TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
+
             ])
             ->defaultSort('status', 'asc')
             ->filters([])
@@ -214,7 +202,7 @@ class CarResource extends Resource
     {
         return 'Mobil yang siap disewa';
     }
-    
+
     // -- KONTROL AKSES BARU (superadmin, admin, staff) --
 
     public static function canViewAny(): bool
