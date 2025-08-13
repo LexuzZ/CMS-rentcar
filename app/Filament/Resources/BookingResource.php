@@ -162,7 +162,6 @@ class BookingResource extends Resource
                     ->formatStateUsing(fn ($state) => match ($state) { 'aktif' => 'Aktif', 'booking' => 'Booking', 'selesai' => 'Selesai', 'batal' => 'Batal', default => ucfirst($state) }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.name')->label('Type Mobil')->alignCenter()->searchable(),
-                Tables\Columns\TextColumn::make('car.carModel.brand.name')->label('Merk Mobil')->badge()->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
