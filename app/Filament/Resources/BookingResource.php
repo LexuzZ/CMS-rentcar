@@ -49,10 +49,11 @@ class BookingResource extends Resource
         $set('estimasi_biaya', $hargaHarian * $totalHari);
     }
 
-    // Method mutateFormDataBeforeFill() sudah tidak diperlukan lagi dengan pendekatan ini
-
     public static function form(Form $form): Form
     {
+        // Kondisi untuk menonaktifkan field jika pengguna bukan admin atau superadmin
+        $isNotAdmin = !auth()->user()->hasAnyRole(['superadmin', 'admin']);
+
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
                 Forms\Components\TextInput::make('id')->hidden()->dehydrated(),
@@ -60,92 +61,102 @@ class BookingResource extends Resource
                 Forms\Components\DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
-                    ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->disabled($isNotAdmin), // <-- Diterapkan di sini
 
                 Forms\Components\DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
-                    ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
+                    ->live()
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->disabled($isNotAdmin),
 
-                Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false),
-                Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false),
+                Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
+                Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false)->disabled($isNotAdmin),
 
-                // -- PERUBAHAN UTAMA: SATU DROPDOWN UNTUK MEMILIH MOBIL --
+                Forms\Components\Select::make('brand_id')
+                    ->label('Merek')
+                    ->options(Brand::query()->pluck('name', 'id'))
+                    ->live()
+                    ->afterStateUpdated(function (Forms\Set $set) {
+                        $set('car_model_id', null);
+                        $set('car_id', null);
+                    })
+                    ->dehydrated(false)
+                    ->disabled($isNotAdmin),
+
+                Forms\Components\Select::make('car_model_id')
+                    ->label('Nama Mobil')
+                    ->options(fn (Forms\Get $get): array => CarModel::query()
+                        ->where('brand_id', $get('brand_id'))
+                        ->pluck('name', 'id')->all())
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null))
+                    ->dehydrated(false)
+                    ->disabled($isNotAdmin),
+
                 Forms\Components\Select::make('car_id')
-                    ->label('Unit Mobil Tersedia')
-                    ->relationship(
-                        name: 'car',
-                        titleAttribute: 'nopol', // Atribut dasar, akan ditimpa oleh getOptionLabelFromRecordUsing
-                        modifyQueryUsing: function (Builder $query, Forms\Get $get) {
-                            $startDate = $get('tanggal_keluar');
-                            $endDate = $get('tanggal_kembali');
-                            $recordId = $get('id');
-
-                            // Jika tanggal belum diisi, jangan tampilkan mobil apa pun
-                            if (!$startDate || !$endDate) {
-                                return $query->whereRaw('1 = 0'); // Trik untuk tidak menampilkan hasil
-                            }
-
-                            // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
-                            return $query
-                                ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
-                                    $bookingQuery->where('id', '!=', $recordId)
-                                        ->where(function (Builder $q) use ($startDate, $endDate) {
-                                            $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                                ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                                ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                                    $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                        ->where('tanggal_kembali', '>=', $endDate);
-                                                });
-                                        });
-                                });
-                        }
-                    )
-                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
-                    ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
-                    ->preload()
+                    ->label('Unit Mobil Tersedia (No Polisi)')
+                    ->options(function (Forms\Get $get): array {
+                        // ... (logika ketersediaan mobil tetap sama)
+                        $carModelId = $get('car_model_id');
+                        $startDate = $get('tanggal_keluar');
+                        $endDate = $get('tanggal_kembali');
+                        $recordId = $get('id');
+                        if (!$carModelId || !$startDate || !$endDate) { return []; }
+                        return Car::query()
+                            ->where('car_model_id', $carModelId)
+                            ->whereNotIn('status', ['perawatan', 'nonaktif'])
+                            ->whereDoesntHave('bookings', function (Builder $query) use ($startDate, $endDate, $recordId) {
+                                $query->where('id', '!=', $recordId)
+                                    ->where(function (Builder $q) use ($startDate, $endDate) {
+                                        $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
+                                          ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                          ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                              $subQ->where('tanggal_keluar', '<=', $startDate)
+                                                   ->where('tanggal_kembali', '>=', $endDate);
+                                          });
+                                    });
+                            })
+                            ->pluck('nopol', 'id')->all();
+                    })
                     ->live()
                     ->required()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $car = Car::find($state);
                         $set('harga_harian', $car?->harga_harian ?? 0);
                         static::calculatePrice($set, $get);
-                    }),
-                // -- BATAS PERUBAHAN --
+                    })
+                    ->disabled($isNotAdmin),
 
                 Forms\Components\Select::make('customer_id')
                     ->label('Pelanggan')
                     ->relationship('customer', 'nama')
                     ->searchable()->preload()
                     ->createOptionForm([
-                        Forms\Components\TextInput::make('nama')->label('Nama Pelanggan')->required(),
-                        Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-
-                            // 3. Tetap membersihkan nomor sebelum disimpan ke database, ini sangat penting
-                            ->dehydrateStateUsing(fn(string $state): string => preg_replace('/[^0-9]/', '', $state))
-                            ->required()
-                            ->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
-                        Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
+                        // ... (form pelanggan)
                     ])
-                    ->required(),
+                    ->createOptionDisabled($isNotAdmin) // <-- Tombol '+' juga dinonaktifkan
+                    ->required()
+                    ->disabled($isNotAdmin),
 
+                // STAFF BISA MENGEDIT FIELD INI
                 Forms\Components\Select::make('driver_id')->label('Staff Bertugas')->relationship('driver', 'nama')->searchable()->preload()->nullable(),
-                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable(),
 
-                Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull(),
-                Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull(),
+                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable()->disabled($isNotAdmin),
 
-                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get)),
+                Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
+                Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
+
+                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->disabled()->dehydrated(),
-                Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required(),
+                Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
 
+                // STAFF BISA MENGEDIT FIELD INI
                 Forms\Components\Select::make('status')
                     ->label('Status Pemesanan')
-                    ->options(['booking' => 'Booking', 'disewa' => 'Disewa', 'selesai' => 'Selesai', 'batal' => 'Batal'])
+                    ->options(['booking' => 'Booking', 'aktif' => 'Aktif', 'selesai' => 'Selesai', 'batal' => 'Batal'])
                     ->default('booking')
                     ->required(),
             ]),
@@ -158,14 +169,8 @@ class BookingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
-                    ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'disewa' => 'Disewa',
-                        'booking' => 'Booking',
-                        'selesai' => 'Selesai',
-                        'batal' => 'Batal',
-                        default => ucfirst($state)
-                    }),
+                    ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
+                    ->formatStateUsing(fn ($state) => match ($state) { 'aktif' => 'Aktif', 'booking' => 'Booking', 'selesai' => 'Selesai', 'batal' => 'Batal', default => ucfirst($state) }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.name')->label('Type Mobil')->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.brand.name')->label('Merk Mobil')->badge()->alignCenter()->searchable(),
@@ -221,6 +226,7 @@ class BookingResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
+        // Semua peran bisa masuk ke halaman edit, tetapi field akan dikontrol di dalam form
         return true;
     }
 
