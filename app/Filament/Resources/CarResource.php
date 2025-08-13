@@ -125,8 +125,8 @@ class CarResource extends Resource
         return $table
             ->columns([
 
-                TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
-                TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
+                TextColumn::make('nopol')->label('Nopol')->searchable(),
+                TextColumn::make('carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
 
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
 
