@@ -96,7 +96,6 @@ class PaymentResource extends Resource
                 TextColumn::make('invoice.id')->label('Faktur'),
                 TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
                 TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y')->alignCenter(),
-                TextColumn::make('pembayaran')->label('Jumlah')->money('IDR')->alignCenter(),
                 TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
                     ->alignCenter()
@@ -162,21 +161,21 @@ class PaymentResource extends Resource
             'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
     }
-    
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::query()
             ->where('status', 'belum_lunas')
             ->count();
     }
-    
+
     public static function getNavigationBadgeTooltip(): ?string
     {
         return 'Pembayaran yang belum lunas';
     }
 
     // -- KONTROL AKSES BARU (superadmin, admin, staff) --
-    
+
     public static function canViewAny(): bool
     {
         // Semua peran bisa melihat riwayat pembayaran
