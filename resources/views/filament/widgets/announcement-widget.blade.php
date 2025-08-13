@@ -25,7 +25,13 @@
                         <div class="ml-3">
                             <h3 class="text-sm font-medium">{{ $announcement['title'] }}</h3>
                             <div class="mt-2 text-sm">
-                                <p>{{ $announcement['content'] }}</p>
+                                {{-- PERUBAHAN DI SINI: Menggunakan daftar berpoin --}}
+                                <ul class="list-disc space-y-1 pl-5">
+                                    <li>Pastikan kondisi mobil selalu siap pakai.</li>
+                                    <li>Semua update data wajib dilakukan di aplikasi secara <strong>real-time</strong>.</li>
+                                    <li>Semua dokumentasi (foto mobil) wajib diunggah ke aplikasi.</li>
+                                    <li>Tidak diperkenankan meminjamkan mobil di luar sistem aplikasi.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
