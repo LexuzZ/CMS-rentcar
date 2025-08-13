@@ -3,24 +3,27 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Tempo;
-use Filament\Widgets\Widget; // <-- 1. Ganti menjadi Widget dasar
+use Filament\Widgets\Widget;
 
 class TempoDueToday extends Widget
 {
-    // 2. Definisikan file Blade yang akan kita gunakan
-    protected static string $view = 'filament.widgets.tempo-due-today-card';
+    // Arahkan ke file Blade yang akan kita modifikasi
+    protected static string $view = 'filament.widgets.tempo-due-today-cards';
 
-    // 3. Tambahkan heading untuk judul widget
-    protected static ?string $heading = 'Jatuh Tempo Hari Ini';
+    // Ubah judul widget agar lebih sesuai
+    protected static ?string $heading = 'Jadwal Perawatan Mendatang';
 
     protected int|string|array $columnSpan = 'full';
 
-    // 4. Method untuk mengambil dan mengirim data ke view
+    // Method untuk mengambil dan mengirim data ke view
     protected function getViewData(): array
     {
         $tempos = Tempo::query()
-            ->with('car')
-            ->whereDate('jatuh_tempo', today())
+            ->with(['car.carModel.brand']) // Eager load untuk efisiensi
+            // Ambil semua tempo yang jatuh tempo hari ini atau di masa depan
+            ->where('jatuh_tempo', '>=', today())
+            // Urutkan dari yang paling dekat tanggalnya
+            ->orderBy('jatuh_tempo', 'asc')
             ->get();
 
         return [
