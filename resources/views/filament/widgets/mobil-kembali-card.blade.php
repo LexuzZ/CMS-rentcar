@@ -24,8 +24,8 @@
                 {{-- Badge Status --}}
                 @php
                 $status = $record->status;
-                $statusText = match($status) { 'aktif' => 'Aktif', default => ucfirst($status) };
-                $statusColorClasses = match($status) { 'aktif' => 'bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400', default => 'bg-gray-100 text-gray-800' };
+                $statusText = match($status) { 'disewa' => 'Disewa', default => ucfirst($status) };
+                $statusColorClasses = match($status) { 'disewa' => 'bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400', default => 'bg-gray-100 text-gray-800' };
                 @endphp
                 <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary-500 text-white">
                     {{ $statusText }}
