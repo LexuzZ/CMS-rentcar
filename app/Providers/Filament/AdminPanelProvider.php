@@ -74,13 +74,14 @@ class AdminPanelProvider extends PanelProvider
 
                 WidgetsAvailableCarsOverview::class,
                 StaffRankingWidget::class,
+                MonthlyStaffRankingWidget::class,
 
                 MobilKembali::class,
                 TempoDueToday::class,
 
                 // \App\Filament\Widgets\MonthlyRevenueChart::class,
                 MobilKeluar::class,
-                MonthlyStaffRankingWidget::class,
+
 
                 // MobilReadyStats::class,
 
