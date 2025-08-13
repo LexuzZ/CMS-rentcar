@@ -135,9 +135,15 @@ class BookingResource extends Resource
                     ->relationship('customer', 'nama')
                     ->searchable()->preload()
                     ->createOptionForm([
-                        // ... (form pelanggan)
+                        Forms\Components\TextInput::make('nama')->label('Nama Pelanggan')->required(),
+                        Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
+                        Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
-                    ->createOptionDisabled($isNotAdmin) // <-- Tombol '+' juga dinonaktifkan
+                    // -- PERBAIKAN DI SINI --
+                    ->createOptionAction(
+                        fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin)
+                    )
                     ->required()
                     ->disabled($isNotAdmin),
 
