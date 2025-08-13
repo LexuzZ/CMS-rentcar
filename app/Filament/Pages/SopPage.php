@@ -10,7 +10,7 @@ class SopPage extends Page
 
     protected static string $view = 'filament.pages.sop-page';
 
-    protected static ?string $navigationGroup = 'Panduan';
+
 
     protected static ?string $title = 'Standar Operasional Prosedur (SOP)';
 
