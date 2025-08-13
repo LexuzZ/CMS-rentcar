@@ -2,239 +2,100 @@
 
 namespace App\Filament\Resources;
 
-use App\Events\ExportCompleted;
 use App\Filament\Exports\PaymentExporter;
 use App\Filament\Resources\MonthlyResource\Pages;
-use App\Filament\Resources\MonthlyResource\RelationManagers;
-use App\Models\Booking;
-use App\Models\Invoice;
-use App\Models\Monthly;
 use App\Models\Payment;
-use Filament\Actions\Exports\Models\Export;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MonthlyResource extends Resource
 {
+    // 1. Menentukan model utama untuk resource ini
+    protected static ?string $model = Payment::class;
 
-
-    // protected static ?string $model = Invoice::class;
     protected static ?string $navigationLabel = 'Rekapan Bulanan';
-    // protected static ?string $heading = 'Rekapan Bulanan';
     protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
-    protected int | string | array $columnSpan = 'full';
     protected static ?string $modelLabel = 'Rekapan Bulanan';
-
-    // Untuk label plural (ini yang akan mengubah "Tempos" di judul)
     protected static ?string $pluralModelLabel = 'Rekapan Bulanan';
 
+    // Resource ini hanya untuk menampilkan data, jadi form tidak diperlukan
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            // Sesuai kebutuhan kamu
-        ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            // 2. Mengoptimalkan query dengan eager loading
             ->query(
-                // Invoice::with(['booking.penalty', 'booking.customer', 'booking.car', 'payment'])
-                //     ->latest(),
-                Payment::query()
+                Payment::query()->with([
+                    'invoice.booking.customer',
+                    'invoice.booking.car.carModel.brand',
+                    'invoice.booking.penalty'
+                ])
             )
-
-
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->toggleable()
-                    ->alignCenter()
-                    ->sortable(),
+                TextColumn::make('invoice.id')->label('ID Faktur')->sortable(),
+                TextColumn::make('tanggal_pembayaran')->label('Tanggal Bayar')->date('d M Y')->sortable(),
+                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
 
-                TextColumn::make('invoice.booking.customer.nama')
-                    ->label('Pelanggan')
-                    ->searchable()
-                    ->toggleable()
-                    ->alignCenter(),
-
-                TextColumn::make('invoice.booking.car.nopol')
-                    ->label('No. Polisi')
-                    ->toggleable()
-                    ->alignCenter(),
-
-                TextColumn::make('invoice.booking.car.merek')
-                    ->label('Merk Mobil')
-                    ->toggleable()
-                    ->alignCenter(),
-                TextColumn::make('invoice.booking.car.merek')
+                // 3. Memperbaiki relasi untuk menampilkan merek mobil
+                TextColumn::make('invoice.booking.car.carModel.brand.name')
                     ->label('Merk Mobil')
                     ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'info' => 'toyota',
-                        'info' => 'mitsubishi',
-                        'info' => 'suzuki',
-                        'info' => 'daihatsu',
-                        'info' => 'honda'
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'toyota' => 'Toyota',
-                        'mitsubishi' => 'Mitsubishi',
-                        'suzuki' => 'Suzuki',
-                        'honda' => 'Honda',
-                        'daihatsu' => 'Daihatsu',
-                        default => ucfirst($state),
-                    }),
+                    ->searchable(),
 
+                TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
 
+                TextColumn::make('pembayaran')->label('Sewa')->money('IDR'),
 
-                TextColumn::make('invoice.booking.penalty.klaim')
-                    ->label('Klaim Garasi')
-                    ->toggleable()
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'bbm',
-                        'danger' => 'baret',
-                        'danger' => 'overtime',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'bbm' => 'BBM',
-                        'overtime' => 'Overtime',
-                        'baret' => 'Baret/Kerusakan',
-                        default => ucfirst($state),
-                    }),
-
-                TextColumn::make('invoice.booking.tanggal_keluar')
-                    ->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
-                TextColumn::make('invoice.booking.tanggal_kembali')
-                    ->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
-                TextColumn::make('invoice.tanggal_invoice')->label('Tanggal Invoice')->date('d M Y')->alignCenter(),
-                TextColumn::make('metode_pembayaran')
-                    ->label('Metode Pembayaran'),
-                TextColumn::make('metode_pembayaran')
-                    ->label('Metode Pembayaran')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'tunai',
-                        'info' => 'transfer',
-                        'gray' => 'qris',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'tunai' => 'Tunai',
-                        'transfer' => 'Transfer',
-                        'qris' => 'QRIS',
-                        default => ucfirst($state),
-                    }),
-                TextColumn::make('invoice.booking.car.harga_harian')
-                    ->label('Harga Harian')
-                    ->toggleable()
-                    ->alignCenter()
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
-
-                TextColumn::make('invoice.total')
-                    ->toggleable()
-                    ->label('Total Invoice')
-                    ->alignCenter()
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
-
-                TextColumn::make('total_bbm')
-                    ->label('Total BBM')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'bbm')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                ,
-
-                TextColumn::make('total_overtime')
-                    ->label('Total Overtime')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'overtime')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                    ->sortable(),
-
-                TextColumn::make('total_baret')
-                    ->label('Total Baret')
-                    ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        return $record->invoice
-                            ? $record->invoice->booking->penalty->where('klaim', 'baret')->sum('amount')
-                            : 0;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                    ->sortable(),
-                TextColumn::make('invoice.booking.penalty.amount')
+                // Kolom denda sekarang lebih efisien karena data sudah di-load
+                TextColumn::make('total_denda')
                     ->label('Total Denda')
-                    ->alignCenter()
-                    ->formatStateUsing(function ($record) {
-                        $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
-                        return 'Rp ' . number_format($total, 0, ',', '.');
-                    }),
+                    ->money('IDR')
+                    ->getStateUsing(fn (Payment $record): float => $record->invoice?->booking?->penalty->sum('amount') ?? 0),
 
                 TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
-                    ->alignCenter()
-                    ->getStateUsing(function ($record) {
-                        $invoice = $record->invoice;
-                        $totalInvoice = $invoice?->total ?? 0;
+                    ->money('IDR')
+                    ->getStateUsing(function (Payment $record): float {
+                        $totalSewa = $record->pembayaran ?? 0;
+                        $totalDenda = $record->invoice?->booking?->penalty->sum('amount') ?? 0;
+                        return $totalSewa + $totalDenda;
+                    }),
 
-                        // Sum all penalty amounts for the related booking
-                        $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
-
-                        return $totalInvoice + $totalDenda;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) // Tanpa 2 digit desimal
-                    ->sortable(),
                 TextColumn::make('status')
-                    ->label('Status')
                     ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'lunas',
-                        'danger' => 'belum_lunas',
+                    ->colors(['success' => 'lunas', 'danger' => 'belum_lunas'])
+                    ->formatStateUsing(fn ($state) => match ($state) { 'lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas', default => ucfirst($state) }),
+            ])
+            // 4. MENAMBAHKAN FITUR FILTER TANGGAL
+            ->filters([
+                Filter::make('tanggal_pembayaran')
+                    ->form([
+                        DatePicker::make('dari_tanggal')->label('Dari Tanggal'),
+                        DatePicker::make('sampai_tanggal')->label('Sampai Tanggal'),
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-                        default => ucfirst($state),
-                    })
-
-
-
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['dari_tanggal'], fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '>=', $date))
+                            ->when($data['sampai_tanggal'], fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '<=', $date));
+                    }),
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exporter(PaymentExporter::class)
-                    ->after(function (Export $export) {
-                        broadcast(new ExportCompleted(
-                            PaymentExporter::getCompletedNotificationBody($export)
-                        ));
-                    })
+                ExportAction::make()->exporter(PaymentExporter::class)
             ])
-            ->bulkActions([
-                ExportBulkAction::make()
-                    ->exporter(PaymentExporter::class)
-            ]);
+            ->actions([]) // Menghapus tombol aksi per baris karena ini adalah laporan
+            ->bulkActions([]); // Menghapus aksi massal
     }
 
     public static function getPages(): array
@@ -243,33 +104,11 @@ class MonthlyResource extends Resource
             'index' => Pages\ListMonthlies::route('/'),
         ];
     }
+
+    // -- KONTROL AKSES (superadmin, admin, staff) --
+    // Staff tidak perlu melihat rekapan ini
     public static function canViewAny(): bool
     {
-        // Semua peran bisa melihat daftar mobil
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
-    }
-
-    public static function canCreate(): bool
-    {
-        // Hanya superadmin dan admin yang bisa membuat data baru
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        // Hanya superadmin dan admin yang bisa mengedit
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        // Hanya superadmin dan admin yang bisa menghapus
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
-    }
-
-    public static function canDeleteAny(): bool
-    {
-        // Hanya superadmin dan admin yang bisa hapus massal
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
