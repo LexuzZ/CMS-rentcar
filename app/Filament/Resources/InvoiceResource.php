@@ -100,9 +100,6 @@ class InvoiceResource extends Resource
             TextColumn::make('booking.id')->label('Booking')->alignCenter(),
             TextColumn::make('booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
             TextColumn::make('booking.car.nopol')->label('Mobil')->alignCenter(),
-
-            TextColumn::make('dp')->label('DP')->money('IDR')->alignCenter(),
-            TextColumn::make('sisa_pembayaran')->label('Sisa')->money('IDR')->alignCenter(),
             TextColumn::make('pickup_dropOff')->label('Biaya Pengantaran')->money('IDR')->alignCenter(),
             TextColumn::make('total')->label('Total')->money('IDR')->toggleable()->alignCenter(),
             TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->alignCenter(),
