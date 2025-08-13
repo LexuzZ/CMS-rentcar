@@ -25,7 +25,7 @@ class TempoDueToday extends Widget
             // Urutkan dari yang paling dekat tanggalnya
             ->orderBy('jatuh_tempo', 'asc')
             // PERUBAHAN DI SINI: Ambil hanya 5 data teratas
-            ->take(5)
+            ->take(4)
             ->get();
 
         return [
