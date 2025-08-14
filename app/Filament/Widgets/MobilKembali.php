@@ -18,7 +18,7 @@ class MobilKembali extends Widget
     protected function getViewData(): array
     {
         $bookings = Booking::with(['car', 'customer', 'driver'])
-            ->where('status', 'aktif')
+            ->where('status', 'disewa')
             ->whereDate('tanggal_kembali', \Carbon\Carbon::today())
             ->get();
 
