@@ -130,15 +130,6 @@ class CarResource extends Resource
                 ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
-                TextColumn::make('carModel.brand.name')
-                    ->label('Merk Mobil')
-                    ->badge()
-                    ->alignCenter()
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
-                TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
-                TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -156,21 +147,7 @@ class CarResource extends Resource
                         'nonaktif' => 'Nonaktif',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('transmisi')
-                    ->label('Transmisi')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'manual',
-                        'info' => 'matic',
-                    ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'manual' => 'Manual Transmisi',
-                        'matic' => 'Automatic Transmisi',
-                        default => ucfirst($state),
-                    }),
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
-                TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
             ])
             ->defaultSort('status', 'asc')
             ->filters([
