@@ -55,7 +55,7 @@
                             const bookingId = info.event.id;
                             if (bookingId) {
                                 // PERBAIKAN DI SINI: Menggunakan path admin yang diketahui
-                                window.open(`/admin/bookings/${bookingId}/edit`, '_blank');
+                                window.open(`/admin/bookings/${bookingId}`, '_blank');
                             }
                         }
                     });
