@@ -11,8 +11,10 @@ use App\Models\CarModel;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid};
+use Filament\Forms\Components\{DatePicker, TextInput, Select, FileUpload, Grid};
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
+use Filament\Tables\Filters\Filter;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model; // <-- Pastikan ini di-import
 
 class CarResource extends Resource
@@ -152,7 +154,37 @@ class CarResource extends Resource
 
             ])
             ->defaultSort('status', 'asc')
-            ->filters([])
+            ->filters([
+                Filter::make('availability')
+                    ->label('Cek Ketersediaan Mobil')
+                    ->form([
+                        DatePicker::make('start_date')->label('Dari Tanggal'),
+                        DatePicker::make('end_date')->label('Sampai Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        $startDate = $data['start_date'];
+                        $endDate = $data['end_date'];
+
+                        // Jalankan query hanya jika kedua tanggal diisi
+                        if (!$startDate || !$endDate) {
+                            return $query;
+                        }
+
+                        return $query
+                            ->whereNotIn('status', ['perawatan', 'nonaktif'])
+                            ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
+                                $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
+                                    $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
+                                        ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                        ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                            $subQ->where('tanggal_keluar', '<=', $startDate)
+                                                ->where('tanggal_kembali', '>=', $endDate);
+                                        });
+                                });
+                            });
+                    }),
+            ])
+
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
