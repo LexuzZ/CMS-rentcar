@@ -226,13 +226,14 @@ class BookingResource extends Resource
 
                 Infolists\Components\Section::make('Detail Jadwal & Biaya')
                     ->schema([
-                        Infolists\Components\Grid::make(2)->schema([
+                        Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('tanggal_keluar')->dateTime('d M Y'),
                             Infolists\Components\TextEntry::make('tanggal_kembali')->dateTime('d M Y'),
+                            Infolists\Components\TextEntry::make('total_hari')->suffix(' Hari'),
                             Infolists\Components\TextEntry::make('waktu_keluar')->dateTime('H:i')->suffix(' WITA'),
 
                             Infolists\Components\TextEntry::make('waktu_kembali')->dateTime('H:i')->suffix(' WITA'),
-                            Infolists\Components\TextEntry::make('total_hari')->suffix(' Hari'),
+
                             Infolists\Components\TextEntry::make('estimasi_biaya')->money('IDR'),
                         ]),
                     ]),
