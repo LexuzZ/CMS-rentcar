@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use Illuminate\Support\Str;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Models\Booking;
 use App\Models\Brand;
@@ -152,7 +152,7 @@ class BookingResource extends Resource
     {
         return $infolist
             ->schema([
-                 Infolists\Components\Section::make('Kirim ke Penyewa')
+                Infolists\Components\Section::make('Kirim ke Penyewa')
                     ->schema([
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('whatsapp')
@@ -176,7 +176,12 @@ class BookingResource extends Resource
                                     $waktuKeluar = $record->waktu_keluar ? ' pukul ' . \Carbon\Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA' : '';
                                     $tglKembali = \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM YYYY');
                                     $waktuKembali = $record->waktu_kembali ? ' pukul ' . \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA' : '';
-                                    $paket = match($record->paket) { 'lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour', default => '-' };
+                                    $paket = match ($record->paket) {
+                                        'lepas_kunci' => 'Lepas Kunci',
+                                        'dengan_driver' => 'Dengan Driver',
+                                        'tour' => 'Paket Tour',
+                                        default => '-'
+                                    };
                                     $totalBiaya = 'Rp ' . number_format($record->estimasi_biaya, 0, ',', '.');
                                     $totalHari = ($record->total_hari) . ' Hari ';
 
@@ -242,7 +247,10 @@ class BookingResource extends Resource
                     ->schema([
                         Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('car.carModel.brand.name')->label('Merek')->badge('success'),
-                            Infolists\Components\TextEntry::make('car.carModel.name')->label('Model')->badge('success')->strtoupper(),
+                            Infolists\Components\TextEntry::make('car.carModel.name')
+                                ->label('Model')
+                                ->badge('success')
+                                ->formatStateUsing(fn(string $state): string => Str::upper($state)),
                             Infolists\Components\TextEntry::make('car.nopol')->label('No. Polisi')->badge('success'),
                         ])
                     ]),
