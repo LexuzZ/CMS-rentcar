@@ -242,7 +242,7 @@ class BookingResource extends Resource
                     ->schema([
                         Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('car.carModel.brand.name')->label('Merek')->badge('success'),
-                            Infolists\Components\TextEntry::make('car.carModel.name')->label('Model')->badge('success')->ucfirst(),
+                            Infolists\Components\TextEntry::make('car.carModel.name')->label('Model')->badge('success')->strtoupper(),
                             Infolists\Components\TextEntry::make('car.nopol')->label('No. Polisi')->badge('success'),
                         ])
                     ]),
