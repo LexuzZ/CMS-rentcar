@@ -127,7 +127,6 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
                 TextColumn::make('status')
