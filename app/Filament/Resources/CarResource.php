@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarResource\BookingsResource\RelationManagers\BookingsRelationManager;
-use App\Filament\Resources\CarResource\Pages;
+use App\Filament\Resources\CarResource\Pages; // <-- Pastikan ini di-import
 use App\Filament\Resources\CarResource\RelationManagers\ServiceHistoriesRelationManager;
 use App\Filament\Resources\CarResource\RelationManagers\TempoRelationManager;
 use App\Models\Car;
@@ -11,11 +11,12 @@ use App\Models\CarModel;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\{DatePicker, TextInput, Select, FileUpload, Grid};
+use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker};
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
 use Filament\Tables\Filters\Filter;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model; // <-- Pastikan ini di-import
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class CarResource extends Resource
 {
@@ -37,13 +38,13 @@ class CarResource extends Resource
                         ->searchable()
                         ->preload()
                         ->live()
-                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_model_id', null))
+                        ->afterStateUpdated(fn (Forms\Set $set) => $set('car_model_id', null))
                         ->dehydrated(false),
 
                     Select::make('car_model_id')
                         ->label('Nama Mobil')
                         ->options(
-                            fn(Forms\Get $get): array => CarModel::query()
+                            fn (Forms\Get $get): array => CarModel::query()
                                 ->where('brand_id', $get('brand_id'))
                                 ->pluck('name', 'id')->all()
                         )
@@ -126,12 +127,18 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-
-                TextColumn::make('nopol')->label('Nopol')->searchable(),
-                TextColumn::make('carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
-
+                ImageColumn::make('photo')->label('Foto')->width(80)->height(50)->toggleable()->alignCenter(),
+                TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
+                TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
+                TextColumn::make('carModel.brand.name')
+                    ->label('Merk Mobil')
+                    ->badge()
+                    ->alignCenter()
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('warna')->label('Warna Mobil')->sortable()->searchable(),
                 TextColumn::make('garasi')->label('Garasi')->toggleable()->alignCenter()->searchable(),
-
+                TextColumn::make('year')->label('Tahun')->toggleable()->alignCenter(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -142,16 +149,28 @@ class CarResource extends Resource
                         'danger' => 'perawatan',
                         'gray' => 'nonaktif',
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
                         'nonaktif' => 'Nonaktif',
                         default => ucfirst($state),
                     }),
-
+                TextColumn::make('transmisi')
+                    ->label('Transmisi')
+                    ->badge()
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'manual',
+                        'info' => 'matic',
+                    ])
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'manual' => 'Manual Transmisi',
+                        'matic' => 'Automatic Transmisi',
+                        default => ucfirst($state),
+                    }),
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
-
+                TextColumn::make('harga_pokok')->label('Pokok')->money('IDR')->toggleable()->alignCenter(),
             ])
             ->defaultSort('status', 'asc')
             ->filters([
@@ -165,7 +184,6 @@ class CarResource extends Resource
                         $startDate = $data['start_date'];
                         $endDate = $data['end_date'];
 
-                        // Jalankan query hanya jika kedua tanggal diisi
                         if (!$startDate || !$endDate) {
                             return $query;
                         }
@@ -175,16 +193,45 @@ class CarResource extends Resource
                             ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
                                 $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
                                     $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                        ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                        ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                            $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                ->where('tanggal_kembali', '>=', $endDate);
-                                        });
+                                      ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                      ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                          $subQ->where('tanggal_keluar', '<=', $startDate)
+                                               ->where('tanggal_kembali', '>=', $endDate);
+                                      });
                                 });
                             });
                     }),
             ])
+            ->headerActions([
+                Action::make('sendWhatsapp')
+                    ->label('Kirim Daftar via WA')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->visible(function (Pages\ListCars $livewire): bool {
+                        $filters = $livewire->tableFilters;
+                        return !empty($filters['availability']['start_date']) && !empty($filters['availability']['end_date']);
+                    })
+                    ->url(function (Pages\ListCars $livewire): string {
+                        $cars = $livewire->getFilteredTableQuery()->get();
+                        $filters = $livewire->tableFilters;
+                        $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->isoFormat('D MMMM Y');
+                        $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->isoFormat('D MMMM Y');
 
+                        $message = "Halo,\n\nBerikut adalah daftar mobil yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
+                        foreach ($cars as $index => $car) {
+                            $message .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
+                        }
+                        $message .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.";
+
+                        // -- PERUBAHAN DI SINI --
+                        // 1. Tentukan nomor WA tujuan
+                        $phoneNumber = '6281907367197'; // Ganti 0 di depan dengan 62
+
+                        // 2. Buat URL WhatsApp dengan nomor tujuan
+                        return 'https://wa.me/' . $phoneNumber . '?text=' . urlencode($message);
+                    })
+                    ->openUrlInNewTab(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -233,31 +280,26 @@ class CarResource extends Resource
 
     public static function canViewAny(): bool
     {
-        // Semua peran bisa melihat daftar mobil
         return true;
     }
 
     public static function canCreate(): bool
     {
-        // Hanya superadmin dan admin yang bisa membuat data baru
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa mengedit
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa menghapus
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
-        // Hanya superadmin dan admin yang bisa hapus massal
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
