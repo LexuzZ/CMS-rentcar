@@ -16,11 +16,11 @@
             <table class="w-full text-xs text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-4 py-3">Rank</th>
-                        <th scope="col" class="px-4 py-3">Staff</th>
-                        <th scope="col" class="px-4 py-3 text-center">Total</th>
-                        <th scope="col" class="px-4 py-3 text-center">Penyerahan</th>
-                        <th scope="col" class="px-4 py-3 text-center">Pengembalian</th>
+                        <th scope="col" class="px-2 py-3">Rank</th>
+                        <th scope="col" class="px-2 py-3">Staff</th>
+                        <th scope="col" class="px-2 py-3 text-center">Total</th>
+                        <th scope="col" class="px-2 py-3 text-center">Penyerahan</th>
+                        <th scope="col" class="px-2 py-3 text-center">Pengembalian</th>
                     </tr>
                 </thead>
                 <tbody>
