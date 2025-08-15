@@ -17,7 +17,7 @@ class StaffRankingWidget extends Widget implements HasForms
     use InteractsWithForms;
 
     protected static string $view = 'filament.widgets.staff-ranking-widget';
-    protected int | string | array $columnSpan = 8;
+    protected int | string | array $columnSpan = 4;
 
     public ?array $data = [];
 
