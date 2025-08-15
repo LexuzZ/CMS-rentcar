@@ -26,7 +26,7 @@
                 <tbody>
                     @forelse ($stats as $stat)
                         <tr class="border-b dark:border-gray-700 @if($loop->first) bg-yellow-50 dark:bg-yellow-900/20 @endif">
-                            <td class="px-4 py-3 text-xs text-gray-900 whitespace-nowrap dark:text-white">
+                            <td class="px-2 py-3 text-xs text-gray-900 whitespace-nowrap dark:text-white">
                                 @if($loop->first)
                                     <span>🏆</span>
                                 @else
