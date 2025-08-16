@@ -13,7 +13,7 @@
                         <tr class="bg-gray-100 dark:bg-gray-800">
                             {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 0;">Mobil</th>
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 200px;">Nopol</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 0;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
