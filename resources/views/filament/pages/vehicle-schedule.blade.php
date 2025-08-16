@@ -24,7 +24,6 @@
                             <tr class="border-t">
                                 <td class="border p-2 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-900 z-10" x-text="car.model"></td>
                                 <td class="border p-2 whitespace-nowrap sticky left-[150px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
-                                <td class="border p-2 whitespace-nowrap sticky left-[250px] bg-white dark:bg-gray-900 z-10" x-text="car.garasi"></td>
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs" {{-- Hapus padding dari td --}}
                                         :style="
