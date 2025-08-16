@@ -26,17 +26,31 @@
                                 <td class="border p-2 whitespace-nowrap sticky left-[150px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
                                 <td class="border p-2 whitespace-nowrap sticky left-[250px] bg-white dark:bg-gray-900 z-10" x-text="car.garasi"></td>
                                 <template x-for="day in scheduleData.daysInMonth">
-                                    {{-- PERBAIKAN DI SINI: Menggunakan inline style --}}
-                                    <td class="border p-1 text-center text-xs"
+                                    <td class="border p-0 text-center text-xs" {{-- Hapus padding dari td --}}
                                         :style="
                                             car.schedule[day] ? {
-                                                'booking': 'background-color: #bee3f8; color: #2c5282;',
-                                                'disewa':   'background-color: #c6f6d5; color: #22543d;',
-                                                'selesai': 'background-color: #e2e8f0; color: #4a5568;',
-                                                'batal':   'background-color: #fed7d7; color: #9b2c2c;'
+                                                'booking': 'background-color: #bee3f8;',
+                                                'aktif':   'background-color: #c6f6d5;',
+                                                'selesai': 'background-color: #e2e8f0;',
+                                                'batal':   'background-color: #fed7d7;'
                                             }[car.schedule[day].status] || '' : ''
                                         ">
-                                        <span x-text="car.schedule[day] ? car.schedule[day].customer : ''"></span>
+                                        {{-- PERUBAHAN DI SINI: Menambahkan link --}}
+                                        <template x-if="car.schedule[day]">
+                                            <a :href="`/admin/bookings/${car.schedule[day].booking_id}`"
+                                               target="_blank"
+                                               class="w-full h-full flex items-center justify-center p-1 hover:underline"
+                                               :style="
+                                                    car.schedule[day] ? {
+                                                        'booking': 'color: #2c5282;',
+                                                        'aktif':   'color: #22543d;',
+                                                        'selesai': 'color: #4a5568;',
+                                                        'batal':   'color: #9b2c2c;'
+                                                    }[car.schedule[day].status] || '' : ''
+                                               ">
+                                                <span x-text="car.schedule[day].display_text"></span>
+                                            </a>
+                                        </template>
                                     </td>
                                 </template>
                             </tr>

@@ -73,7 +73,8 @@ class VehicleSchedule extends Page implements HasForms
         $daysInMonth = $startDate->daysInMonth;
 
         $cars = Car::with(['carModel.brand', 'bookings' => function ($query) use ($startDate, $endDate) {
-            $query->with('customer')->where(function ($q) use ($startDate, $endDate) {
+            // Eager load relasi customer dan invoice
+            $query->with(['customer', 'invoice'])->where(function ($q) use ($startDate, $endDate) {
                 $q->where('tanggal_keluar', '<=', $endDate)
                   ->where('tanggal_kembali', '>=', $startDate);
             });
@@ -95,9 +96,11 @@ class VehicleSchedule extends Page implements HasForms
                 for ($day = 1; $day <= $daysInMonth; $day++) {
                     $currentDay = Carbon::create($year, $month, $day);
                     if ($currentDay->between($bookingStart, $bookingEnd)) {
+                        // PERUBAHAN DI SINI: Menyiapkan data untuk ditampilkan
                         $dailySchedule[$day] = [
-                            'customer' => $booking->customer->nama,
+                            'display_text' => $booking->invoice ? 'INV #' . $booking->invoice->id : $booking->customer->nama,
                             'status' => $booking->status,
+                            'booking_id' => $booking->id, // Kirim ID booking untuk link
                         ];
                     }
                 }
