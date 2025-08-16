@@ -38,13 +38,13 @@ class CarResource extends Resource
                         ->searchable()
                         ->preload()
                         ->live()
-                        ->afterStateUpdated(fn (Forms\Set $set) => $set('car_model_id', null))
+                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_model_id', null))
                         ->dehydrated(false),
 
                     Select::make('car_model_id')
                         ->label('Nama Mobil')
                         ->options(
-                            fn (Forms\Get $get): array => CarModel::query()
+                            fn(Forms\Get $get): array => CarModel::query()
                                 ->where('brand_id', $get('brand_id'))
                                 ->pluck('name', 'id')->all()
                         )
@@ -96,11 +96,13 @@ class CarResource extends Resource
                     TextInput::make('harga_harian')
                         ->label('Harga Sewa Harian')
                         ->numeric()
+                        ->required()
                         ->prefix('Rp'),
 
                     TextInput::make('harga_pokok')
                         ->label('Harga Pokok')
                         ->numeric()
+                        ->required()
                         ->prefix('Rp'),
 
                     TextInput::make('harga_bulanan')
@@ -139,7 +141,7 @@ class CarResource extends Resource
                         'danger' => 'perawatan',
                         'gray' => 'nonaktif',
                     ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'ready' => 'Ready',
                         'disewa' => 'Disewa',
                         'perawatan' => 'Maintenance',
@@ -169,11 +171,11 @@ class CarResource extends Resource
                             ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
                                 $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
                                     $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                      ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                      ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                          $subQ->where('tanggal_keluar', '<=', $startDate)
-                                               ->where('tanggal_kembali', '>=', $endDate);
-                                      });
+                                        ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
+                                        ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
+                                            $subQ->where('tanggal_keluar', '<=', $startDate)
+                                                ->where('tanggal_kembali', '>=', $endDate);
+                                        });
                                 });
                             });
                     }),
