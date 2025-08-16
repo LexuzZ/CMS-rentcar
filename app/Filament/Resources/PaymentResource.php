@@ -2,114 +2,196 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenaltyResource\Pages;
-use App\Filament\Resources\PenaltyResource\RelationManagers;
-use App\Models\Penalty;
+use App\Filament\Resources\PaymentResource\Pages;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model;
 
-class PenaltyResource extends Resource
+class PaymentResource extends Resource
 {
-    protected static ?string $model = Penalty::class;
+    protected static ?string $model = Payment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
-    protected static ?string $navigationLabel = 'Klaim Garasi';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationGroup = 'Transaksi';
+    protected static ?string $label = 'Pembayaran';
+    protected static ?string $pluralLabel = 'Riwayat Pembayaran';
 
-    public static function form(Form $form): Form
+    // -- PERBAIKAN DI SINI: Menambahkan mutateFormDataBeforeFill --
+    /**
+     * Memodifikasi data sebelum form edit diisi.
+     */
+    public static function mutateFormDataBeforeFill(array $data): array
     {
-        return $form
-            ->schema([
-                Select::make('booking_id')
-                    ->label('Booking')
-                    ->relationship('booking', 'id')
-                    ->getOptionLabelFromRecordUsing(function ($record) {
-                        $tanggalKeluar = \Carbon\Carbon::parse($record->tanggal_keluar)->format('d M Y');
-                        $tanggalKembali = \Carbon\Carbon::parse($record->tanggal_kembali)->format('d M Y');
+        // Ambil invoice_id dari data yang ada
+        $invoiceId = $data['invoice_id'] ?? null;
 
-                        return '#BK' . str_pad($record->id, 3, '0', STR_PAD_LEFT) .
-                            ' - ' . $record->customer->nama .
-                            ' - ' . $record->car->nopol .
-                            ' - ' . $record->car->nama_mobil .
-                            ', ' . $tanggalKeluar . ' s/d ' . $tanggalKembali;
-                    })
+        if ($invoiceId) {
+            // Cari invoice beserta relasi yang dibutuhkan
+            $invoice = Invoice::with('booking.penalty')->find($invoiceId);
+            if ($invoice) {
+                $totalInvoice = $invoice->total ?? 0;
+                $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
 
-                    ->required()
-                    ->selectablePlaceholder(),
+                // Hitung ulang total pembayaran dan masukkan ke dalam data form
+                $data['pembayaran'] = $totalInvoice + $totalDenda;
+            }
+        }
 
-
-                Select::make('klaim')
-                    ->label('Klaim Garasi')
-                    ->options([
-                        'baret' => 'Baret',
-                        'bbm' => 'BBM',
-                        'overtime' => 'Overtime',
-                        'no_penalty' => 'Tidak Ada Denda',
-                    ])
-                    ->default('no_penalty')
-                    ->required(),
-
-                Textarea::make('description')
-                    ->label('Deskripsi')
-                    ->rows(3),
-
-                TextInput::make('amount')
-                    ->label('Jumlah Denda (Rp)')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->required(),
-            ]);
+        return $data;
     }
 
-    public static function table(Table $table): Table
+    public static function form(Forms\Form $form): Forms\Form
+    {
+        return $form->schema([
+            Forms\Components\Grid::make(2)->schema([
+                Forms\Components\Select::make('invoice_id')
+                    ->label('Faktur')
+                    ->relationship('invoice', 'id', fn($query) => $query->with(['booking.customer', 'booking.penalty']))
+                    ->getOptionLabelFromRecordUsing(fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama)
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function (Forms\Set $set, ?string $state) {
+                        $invoice = Invoice::with('booking.penalty')->find($state);
+                        $totalInvoice = $invoice?->total ?? 0;
+                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+                        $set('pembayaran', $totalInvoice + $totalDenda);
+                    }),
+                Forms\Components\DatePicker::make('tanggal_pembayaran')
+                    ->required()
+                    ->default(now()),
+                Forms\Components\Select::make('metode_pembayaran')
+                    ->options(['tunai' => 'Tunai', 'transfer' => 'Transfer', 'qris' => 'QRIS'])
+                    ->required(),
+                Forms\Components\TextInput::make('pembayaran')
+                    ->label('Jumlah Pembayaran')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->required()
+                    ->readOnly(),
+                Forms\Components\Select::make('status')
+                    ->options(['lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas'])
+                    ->default('belum_lunas')
+                    ->required()
+                    ->disabled(fn () => ! auth()->user()->isSuperAdmin()),
+            ])
+        ]);
+    }
+
+    public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('booking.id')->label('ID')->alignCenter(),
-                TextColumn::make('klaim')
-                    ->label('Klaim Garasi')
-                    ->toggleable()
+                Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
+                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('total_bayar')
+                    ->label('Jumlah Bayar')
+                    ->alignCenter()
+                    ->getStateUsing(function ($record) {
+                        $invoice = $record->invoice;
+                        $totalInvoice = $invoice?->total ?? 0;
+                        $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
+                        return $totalInvoice + $totalDenda;
+                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
                     ->alignCenter()
                     ->colors([
-                        'success' => 'bbm',
-                        'danger' => 'baret',
-                        'danger' => 'overtime',
+                        'success' => 'lunas',
+                        'danger' => 'belum_lunas',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'bbm' => 'BBM',
-                        'overtime' => 'Overtime',
-                        'baret' => 'Baret/Kerusakan',
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     }),
-                Tables\Columns\TextColumn::make('amount')->money('IDR')->label('Nominal')->alignCenter(),
-                Tables\Columns\TextColumn::make('created_at')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('metode_pembayaran')
+                    ->label('Metode')
+                    ->badge()
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'tunai',
+                        'info' => 'transfer',
+                        'gray' => 'qris',
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'tunai' => 'Tunai',
+                        'transfer' => 'Transfer',
+                        'qris' => 'QRIS',
+                        default => ucfirst($state),
+                    }),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Status Pembayaran')
+                    ->options([
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas',
+                    ]),
+            ])
+            ->defaultSort('tanggal_pembayaran', 'desc')
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenalties::route('/'),
-            'create' => Pages\CreatePenalty::route('/create'),
-            'edit' => Pages\EditPenalty::route('/{record}/edit'),
+            'index' => Pages\ListPayments::route('/'),
+            'create' => Pages\CreatePayment::route('/create'),
+            'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::query()
+            ->where('status', 'belum_lunas')
+            ->count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Pembayaran yang belum lunas';
+    }
+
+    // -- KONTROL AKSES BARU (superadmin, admin, staff) --
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
     }
 }
