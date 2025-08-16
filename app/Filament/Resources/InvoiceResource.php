@@ -100,9 +100,18 @@ class InvoiceResource extends Resource
             ->schema([
                 Infolists\Components\Section::make('Aksi Cepat')
                     ->schema([
-                        Infolists\Components\Actions::make()
-                            ->schema([
-                                // TOMBOL BARU UNTUK MENGIRIM INVOICE VIA WA
+                        Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('addPayment')
+                                ->label('Tambah Pembayaran')
+                                ->icon('heroicon-o-banknotes')
+                                ->color('success')
+                                ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
+                            Infolists\Components\Actions\Action::make('download')
+                                ->label('Unduh PDF')
+                                ->icon('heroicon-o-arrow-down-tray')
+                                ->color('gray')
+                                ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
+                                ->openUrlInNewTab(),
                                 Infolists\Components\Actions\Action::make('sendWhatsapp')
                                     ->label('Kirim Faktur via WA')
                                     ->icon('heroicon-o-chat-bubble-left-right')
@@ -144,63 +153,54 @@ class InvoiceResource extends Resource
                                         return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
                                     })
                                     ->openUrlInNewTab(),
-                                Infolists\Components\Actions\Action::make('addPayment')
-                                    ->label('Tambah Pembayaran')
-                                    ->icon('heroicon-o-banknotes')
-                                    ->color('primary')
-                                    ->url(fn (Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
-                                Infolists\Components\Actions\Action::make('download')
-                                    ->label('Unduh PDF')
-                                    ->icon('heroicon-o-arrow-down-tray')
-                                    ->color('gray')
-                                    ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
-                                    ->openUrlInNewTab(),
-                            ])->fullWidth(),
+                        ])->fullWidth(),
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
                         Infolists\Components\Grid::make(3)->schema([
-                            Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->money('IDR'),
-                            Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->money('IDR'),
-                            Infolists\Components\TextEntry::make('total_denda')
-                                ->label('Total Denda')
-                                ->money('IDR')
-                                ->state(fn (Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
-                            Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->money('IDR'),
-                            Infolists\Components\TextEntry::make('sisa_pembayaran')
-                                ->money('IDR')
-                                ->state(function (Invoice $record): float {
-                                    $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                                    $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                    $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                                    $dp = $record->dp ?? 0;
-                                    return $totalTagihan - $dp;
-                                }),
-                            Infolists\Components\TextEntry::make('total')
-                                ->label('Total Tagihan')
-                                ->money('IDR')
-                                ->size('lg')
-                                ->weight('bold')
-                                ->state(function (Invoice $record): float {
-                                    $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                                    $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                    return $biayaSewa + $biayaAntarJemput + $totalDenda;
-                                }),
+                            Infolists\Components\Grid::make(3)->schema([
+                                Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->money('IDR'),
+                                Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->money('IDR'),
+                                Infolists\Components\TextEntry::make('total_denda')
+                                    ->label('Total Denda')
+                                    ->money('IDR')
+                                    ->state(fn(Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
+                                Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->money('IDR'),
+                                Infolists\Components\TextEntry::make('sisa_pembayaran')
+                                    ->money('IDR')
+                                    ->state(function (Invoice $record): float {
+                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                                        $dp = $record->dp ?? 0;
+                                        return $totalTagihan - $dp;
+                                    }),
+                                Infolists\Components\TextEntry::make('total')
+                                    ->label('Total Tagihan')
+                                    ->money('IDR')
+                                    ->size('lg')
+                                    ->weight('bold')
+                                    ->state(function (Invoice $record): float {
+                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                        return $biayaSewa + $biayaAntarJemput + $totalDenda;
+                                    }),
+                            ]),
                         ]),
-                    ]),
-                Infolists\Components\Section::make('Informasi Terkait')
-                    ->schema([
-                        Infolists\Components\Grid::make(3)->schema([
-                            Infolists\Components\TextEntry::make('id')->label('ID Faktur'),
-                            Infolists\Components\TextEntry::make('booking.id')->label('ID Booking'),
-                            Infolists\Components\TextEntry::make('tanggal_invoice')->date('d M Y'),
-                            Infolists\Components\TextEntry::make('booking.customer.nama')->label('Pelanggan'),
-                            Infolists\Components\TextEntry::make('booking.car.carModel.name')->label('Mobil'),
-                            Infolists\Components\TextEntry::make('booking.car.nopol')->label('No. Polisi'),
-                        ]),
-                    ]),
+                        Infolists\Components\Section::make('Informasi Terkait')
+                            ->schema([
+                                Infolists\Components\Grid::make(3)->schema([
+                                    Infolists\Components\TextEntry::make('id')->label('ID Faktur'),
+                                    Infolists\Components\TextEntry::make('booking.id')->label('ID Booking'),
+                                    Infolists\Components\TextEntry::make('tanggal_invoice')->date('d M Y'),
+                                    Infolists\Components\TextEntry::make('booking.customer.nama')->label('Pelanggan'),
+                                    Infolists\Components\TextEntry::make('booking.car.carModel.name')->label('Mobil'),
+                                    Infolists\Components\TextEntry::make('booking.car.nopol')->label('No. Polisi'),
+                                ])
+                            ]),
+                    ])
             ]);
     }
 
