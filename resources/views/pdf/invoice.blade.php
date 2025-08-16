@@ -115,17 +115,17 @@
                     $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
                 @endphp
                 <tr>
-                    <td>Subtotal</td>
-                    <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
+                    <td>Sisa Pembayaran</td>
+                    <td class="text-right">Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>Uang Muka (DP)</td>
                     <td class="text-right">- Rp {{ number_format($invoice->dp, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td><strong>Sisa Pembayaran</strong></td>
-                    <td class="text-right"><strong>Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
-                </tr>
+                    <td> <strong>Subtotal</strong></td>
+                    <td class="text-right"><strong>Rp {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
+                 </tr>
             </table>
         </div>
 
