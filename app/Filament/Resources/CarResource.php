@@ -114,7 +114,7 @@ class CarResource extends Resource
                         ->label('Foto Mobil')
                         ->image()
                         ->directory('cars')
-                        ->imagePreviewHeight('150')
+                        ->imagePreviewHeight('50')
                         ->loadingIndicatorPosition('left')
                         ->panelAspectRatio('2:1')
                         ->panelLayout('integrated')
