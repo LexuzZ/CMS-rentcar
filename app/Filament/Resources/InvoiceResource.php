@@ -11,6 +11,8 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -32,87 +34,149 @@ class InvoiceResource extends Resource
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            Grid::make(2)->schema([
-                Select::make('booking_id')
-                ->label('Booking')
-                ->relationship('booking', 'id', fn($query) => $query->with('car', 'customer'))
-                ->getOptionLabelFromRecordUsing(
-                    fn($record) =>
-                    $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
-                )
-                ->selectablePlaceholder()
-                ->required()
-                ->reactive()
-                ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                    $booking = \App\Models\Booking::find($state);
-                    $estimasi = $booking?->estimasi_biaya ?? 0;
-                    $pickup = $get('pickup_dropOff') ?? 0;
+            Forms\Components\Grid::make(2)->schema([
+                Forms\Components\Select::make('booking_id')
+                    ->label('Booking')
+                    ->relationship('booking', 'id', fn($query) => $query->with('car', 'customer'))
+                    ->getOptionLabelFromRecordUsing(
+                        fn($record) =>
+                        $record->id . ' - ' . $record->car->nopol . ' (' . $record->customer->nama . ')'
+                    )
+                    ->selectablePlaceholder()
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $booking = \App\Models\Booking::find($state);
+                        $estimasi = $booking?->estimasi_biaya ?? 0;
+                        $pickup = $get('pickup_dropOff') ?? 0;
+                        $total = $estimasi + $pickup;
+                        $set('total', $total);
+                        $set('dp', 0);
+                        $set('sisa_pembayaran', $total);
+                    }),
 
-                    $total = $estimasi + $pickup;
+                Forms\Components\DatePicker::make('tanggal_invoice')
+                    ->label('Tanggal Invoice')
+                    ->required(),
 
-                    $set('total', $total);
-                    $set('dp', 0);
-                    $set('sisa_pembayaran', $total);
-                }),
+                Forms\Components\TextInput::make('dp')
+                    ->label('Uang Muka')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->default(0)
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $total = $get('total') ?? 0;
+                        $set('sisa_pembayaran', max($total - $state, 0));
+                    }),
 
-            DatePicker::make('tanggal_invoice')
-                ->label('Tanggal Invoice')
-                ->required(),
+                Forms\Components\TextInput::make('pickup_dropOff')
+                    ->label('Biaya Pengantaran')
+                    ->live()
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->default(0),
 
-            TextInput::make('dp')
-                ->label('Uang Muka')
-                ->prefix('Rp')
-                ->numeric()
-                ->default(0)
-                ->reactive()
-                ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                    $total = $get('total') ?? 0;
-                    $set('sisa_pembayaran', max($total - $state, 0));
-                }),
+                Forms\Components\TextInput::make('sisa_pembayaran')
+                    ->label('Sisa Pembayaran')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->readOnly()
+                    ->default(0),
 
-            TextInput::make('pickup_dropOff')
-                ->label('Biaya Pengantaran')
-                ->reactive()
-                ->prefix('Rp')
-                ->numeric()
-                ->default(0),
+                Forms\Components\TextInput::make('total')
+                    ->label('Total Biaya')
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->readOnly()
+                    ->required(),
+            ]),
+        ]);
+    }
 
-            TextInput::make('sisa_pembayaran')
-                ->label('Sisa Pembayaran')
-                ->prefix('Rp')
-                ->numeric()
-                ->readOnly()
-                ->default(0),
-
-            TextInput::make('total')
-                ->label('Total Biaya')
-                ->prefix('Rp')
-                ->numeric()
-                ->readOnly()
-                ->required(),
-        ]),
-    ]);
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Aksi Cepat')
+                    ->schema([
+                        Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('addPayment')
+                                ->label('Tambah Pembayaran')
+                                ->icon('heroicon-o-banknotes')
+                                ->color('success')
+                                ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
+                            Infolists\Components\Actions\Action::make('download')
+                                ->label('Unduh PDF')
+                                ->icon('heroicon-o-arrow-down-tray')
+                                ->color('gray')
+                                ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
+                                ->openUrlInNewTab(),
+                        ])->fullWidth(),
+                    ]),
+                Infolists\Components\Section::make('Rincian Biaya')
+                    ->schema([
+                        Infolists\Components\Grid::make(3)->schema([
+                            Infolists\Components\Grid::make(3)->schema([
+                                Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->money('IDR'),
+                                Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->money('IDR'),
+                                Infolists\Components\TextEntry::make('total_denda')
+                                    ->label('Total Denda')
+                                    ->money('IDR')
+                                    ->state(fn(Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
+                                Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->money('IDR'),
+                                Infolists\Components\TextEntry::make('sisa_pembayaran')
+                                    ->money('IDR')
+                                    ->state(function (Invoice $record): float {
+                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                                        $dp = $record->dp ?? 0;
+                                        return $totalTagihan - $dp;
+                                    }),
+                                Infolists\Components\TextEntry::make('total')
+                                    ->label('Total Tagihan')
+                                    ->money('IDR')
+                                    ->size('lg')
+                                    ->weight('bold')
+                                    ->state(function (Invoice $record): float {
+                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                        return $biayaSewa + $biayaAntarJemput + $totalDenda;
+                                    }),
+                            ]),
+                        ]),
+                        Infolists\Components\Section::make('Informasi Terkait')
+                            ->schema([
+                                Infolists\Components\Grid::make(3)->schema([
+                                    Infolists\Components\TextEntry::make('id')->label('ID Faktur'),
+                                    Infolists\Components\TextEntry::make('booking.id')->label('ID Booking'),
+                                    Infolists\Components\TextEntry::make('tanggal_invoice')->date('d M Y'),
+                                    Infolists\Components\TextEntry::make('booking.customer.nama')->label('Pelanggan'),
+                                    Infolists\Components\TextEntry::make('booking.car.carModel.name')->label('Mobil'),
+                                    Infolists\Components\TextEntry::make('booking.car.nopol')->label('No. Polisi'),
+                                ])
+                            ]),
+                    ])
+            ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table->columns([
-            TextColumn::make('booking.id')->label('Booking')->alignCenter(),
-            TextColumn::make('booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
-            TextColumn::make('booking.car.nopol')->label('Mobil')->alignCenter(),
-            TextColumn::make('pickup_dropOff')->label('Biaya Pengantaran')->money('IDR')->alignCenter(),
-            TextColumn::make('total')->label('Total')->money('IDR')->toggleable()->alignCenter(),
-            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->alignCenter(),
+            TextColumn::make('id')->label('ID Faktur')->searchable()->sortable(),
+            TextColumn::make('booking.customer.nama')->label('Pelanggan')->searchable(),
+            TextColumn::make('booking.car.nopol')->label('Mobil'),
+            TextColumn::make('total')->label('Total Tagihan')->money('IDR')->sortable(),
+            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->money('IDR')->sortable(),
+            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->sortable(),
         ])
             ->defaultSort('tanggal_invoice', 'desc')
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Action::make('download')
-                    ->label('Unduh Invoice')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
-                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -124,6 +188,7 @@ class InvoiceResource extends Resource
         return [
             'index' => Pages\ListInvoices::route('/'),
             'create' => Pages\CreateInvoice::route('/create'),
+            'view' => Pages\ViewInvoice::route('/{record}'), // <-- Daftarkan halaman view
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }

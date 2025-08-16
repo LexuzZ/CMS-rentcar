@@ -16,4 +16,5 @@ class EditPayment extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+
 use Illuminate\Support\Str;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Models\Booking;
@@ -155,6 +156,24 @@ class BookingResource extends Resource
                 Infolists\Components\Section::make('Kirim ke Penyewa')
                     ->schema([
                         Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('createInvoice')
+                                ->label('Buat Faktur Sewa')
+                                ->icon('heroicon-o-document-plus')
+                                ->color('primary')
+                                ->visible(fn(Booking $record) => !$record->invoice)
+                                ->url(fn(Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
+                            Infolists\Components\Actions\Action::make('addPayment')
+                                ->label('Tambah Pembayaran')
+                                ->icon('heroicon-o-banknotes')
+                                ->color('success')
+                                ->visible(fn(Booking $record) => $record->invoice)
+                                ->url(fn(Booking $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->invoice->id])),
+
+                            Infolists\Components\Actions\Action::make('addPenalty')
+                                ->label('Tambah Klaim / Denda')
+                                ->icon('heroicon-o-exclamation-triangle')
+                                ->color('danger')
+                                ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('whatsapp')
                                 ->label('Hubungi Pelanggan via WhatsApp')
                                 ->icon('heroicon-o-chat-bubble-left-right')
@@ -201,7 +220,9 @@ class BookingResource extends Resource
                                     // 5. Buat URL WhatsApp
                                     return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
                                 })
-                                ->openUrlInNewTab(),
+                                ->openUrlInNewTab()
+
+
                         ]),
                     ]),
                 Infolists\Components\Section::make('Informasi Booking')

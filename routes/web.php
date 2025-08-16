@@ -37,6 +37,8 @@ Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoic
 Route::group(['middleware' => ['web', Authenticate::class]], function () {
 
     // URL diubah menjadi /admin/bookings-calendar agar lebih konsisten
+    Route::get('/invoices/{invoice}/pdf/download', [PdfController::class, 'downloadInvoice'])
+        ->name('invoices.pdf.download');
     Route::get('/admin/bookings-calendar', function (Request $request) {
         $mobilModel = $request->query('mobil');
         $nopol = $request->query('nopol');
