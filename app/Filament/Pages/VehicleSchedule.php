@@ -78,7 +78,10 @@ class VehicleSchedule extends Page implements HasForms
                 $q->where('tanggal_keluar', '<=', $endDate)
                   ->where('tanggal_kembali', '>=', $startDate);
             });
-        }])->get();
+        }])
+        // PERUBAHAN DI SINI: Menambahkan filter garasi
+        ->where('garasi', 'SPT')
+        ->get();
 
         $data = [
             'cars' => [],
@@ -96,7 +99,7 @@ class VehicleSchedule extends Page implements HasForms
                 for ($day = 1; $day <= $daysInMonth; $day++) {
                     $currentDay = Carbon::create($year, $month, $day);
                     if ($currentDay->between($bookingStart, $bookingEnd)) {
-                        // PERUBAHAN DI SINI: Menyiapkan data untuk ditampilkan
+                        // Menyiapkan data untuk ditampilkan
                         $dailySchedule[$day] = [
                             'display_text' => $booking->invoice ? 'INV #' . $booking->invoice->id : $booking->customer->nama,
                             'status' => $booking->status,
