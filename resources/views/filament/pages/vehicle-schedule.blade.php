@@ -25,7 +25,7 @@
                             <tr class="border-t">
                                 {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
                                                 <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 0;" x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 200px;" x-text="car.nopol"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 0;" x-text="car.nopol"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
