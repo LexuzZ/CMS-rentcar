@@ -12,8 +12,10 @@
                     <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
                             {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 0;">Mobil</th>
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 0;">Nopol</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Mobil</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
@@ -24,32 +26,29 @@
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
                                 {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
-                                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 0;" x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 0;" x-text="car.nopol"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.nopol"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
-                                        :style="
-                                            car.schedule[day] ? {
-                                                'booking': 'background-color: #bee3f8;',
-                                                'disewa':   'background-color: #c6f6d5;',
-                                                'selesai': 'background-color: #e2e8f0;',
-                                                'batal':   'background-color: #fed7d7;'
-                                            }[car.schedule[day].status] || '' : ''
-                                        ">
+                                        :style="car.schedule[day] ? {
+                                            'booking': 'background-color: #bee3f8;',
+                                            'disewa': 'background-color: #c6f6d5;',
+                                            'selesai': 'background-color: #e2e8f0;',
+                                            'batal': 'background-color: #fed7d7;'
+                                        } [car.schedule[day].status] || '' : ''">
                                         <template x-if="car.schedule[day]">
-                                            <a :href="`/admin/bookings/${car.schedule[day].booking_id}`"
-                                               target="_blank"
-                                               class="w-full h-full flex items-center justify-center p-1 hover:underline"
-                                               :style="
-                                                    car.schedule[day] ? {
-                                                        'booking': 'color: #2c5282;',
-                                                        'disewa':   'color: #22543d;',
-                                                        'selesai': 'color: #4a5568;',
-                                                        'batal':   'color: #9b2c2c;'
-                                                    }[car.schedule[day].status] || '' : ''
-                                               ">
+                                            <a :href="`/admin/bookings/${car.schedule[day].booking_id}`" target="_blank"
+                                                class="w-full h-full flex items-center justify-center p-1 hover:underline"
+                                                :style="car.schedule[day] ? {
+                                                    'booking': 'color: #2c5282;',
+                                                    'disewa': 'color: #22543d;',
+                                                    'selesai': 'color: #4a5568;',
+                                                    'batal': 'color: #9b2c2c;'
+                                                } [car.schedule[day].status] || '' : ''">
                                                 <span x-text="car.schedule[day].display_text"></span>
                                             </a>
                                         </template>
