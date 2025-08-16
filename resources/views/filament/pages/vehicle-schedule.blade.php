@@ -30,7 +30,7 @@
                                         :style="
                                             car.schedule[day] ? {
                                                 'booking': 'background-color: #bee3f8;',
-                                                'aktif':   'background-color: #c6f6d5;',
+                                                'disewa':   'background-color: #c6f6d5;',
                                                 'selesai': 'background-color: #e2e8f0;',
                                                 'batal':   'background-color: #fed7d7;'
                                             }[car.schedule[day].status] || '' : ''
@@ -43,7 +43,7 @@
                                                :style="
                                                     car.schedule[day] ? {
                                                         'booking': 'color: #2c5282;',
-                                                        'aktif':   'color: #22543d;',
+                                                        'disewa':   'color: #22543d;',
                                                         'selesai': 'color: #4a5568;',
                                                         'batal':   'color: #9b2c2c;'
                                                     }[car.schedule[day].status] || '' : ''
