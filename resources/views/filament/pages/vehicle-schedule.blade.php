@@ -31,7 +31,7 @@
                                         :style="
                                             car.schedule[day] ? {
                                                 'booking': 'background-color: #bee3f8; color: #2c5282;',
-                                                'aktif':   'background-color: #c6f6d5; color: #22543d;',
+                                                'disewa':   'background-color: #c6f6d5; color: #22543d;',
                                                 'selesai': 'background-color: #e2e8f0; color: #4a5568;',
                                                 'batal':   'background-color: #fed7d7; color: #9b2c2c;'
                                             }[car.schedule[day].status] || '' : ''
