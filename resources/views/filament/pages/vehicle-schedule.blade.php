@@ -9,16 +9,11 @@
         <x-filament::section class="mt-6">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm border-collapse">
-                    <thead class="sticky top-0 z-10">
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
-                            {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
-                            <th class="border p-2 font-semibold text-left sticky left-0 bg-gray-100 dark:bg-gray-800 z-20">Mobil</th>
-                            {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
-                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
-                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
-                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
-                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
-                            {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
+                            {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 0;">Mobil</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20" style="position: sticky; left: 200px;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
@@ -29,12 +24,8 @@
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
                                 {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
-                                <td class="border p-2 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-900 z-10" x-text="car.model"></td>
-                                {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
-                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
-                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
-                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
-                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
+                                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 0;" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10" style="position: sticky; left: 200px;" x-text="car.nopol"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
