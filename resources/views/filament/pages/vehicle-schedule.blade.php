@@ -11,9 +11,12 @@
                 <table class="w-full text-sm border-collapse">
                     <thead class="sticky top-0 z-10">
                         <tr class="bg-gray-100 dark:bg-gray-800">
+                            {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
                             <th class="border p-2 font-semibold text-left sticky left-0 bg-gray-100 dark:bg-gray-800 z-20">Mobil</th>
-                            <th class="border p-2 font-semibold text-left sticky left-[150px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
-                            <th class="border p-2 font-semibold text-left sticky left-[250px] bg-gray-100 dark:bg-gray-800 z-20">Garasi</th>
+                            {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
+                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
+                            {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
+
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
@@ -22,10 +25,14 @@
                     <tbody>
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
+                                {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
                                 <td class="border p-2 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-900 z-10" x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap sticky left-[150px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
+                                {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
+                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
+                                {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
+
                                 <template x-for="day in scheduleData.daysInMonth">
-                                    <td class="border p-0 text-center text-xs" {{-- Hapus padding dari td --}}
+                                    <td class="border p-0 text-center text-xs"
                                         :style="
                                             car.schedule[day] ? {
                                                 'booking': 'background-color: #bee3f8;',
@@ -34,7 +41,6 @@
                                                 'batal':   'background-color: #fed7d7;'
                                             }[car.schedule[day].status] || '' : ''
                                         ">
-                                        {{-- PERUBAHAN DI SINI: Menambahkan link --}}
                                         <template x-if="car.schedule[day]">
                                             <a :href="`/admin/bookings/${car.schedule[day].booking_id}`"
                                                target="_blank"
