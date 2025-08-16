@@ -15,6 +15,9 @@
                             <th class="border p-2 font-semibold text-left sticky left-0 bg-gray-100 dark:bg-gray-800 z-20">Mobil</th>
                             {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
                             <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
+                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
+                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
+                            <th class="border p-2 font-semibold text-left sticky left-[200px] bg-gray-100 dark:bg-gray-800 z-20">Nopol</th>
                             {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                             <template x-for="day in scheduleData.daysInMonth">
@@ -28,6 +31,9 @@
                                 {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
                                 <td class="border p-2 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-900 z-10" x-text="car.model"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini juga akan "membeku" --}}
+                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
+                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
+                                <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
                                 <td class="border p-2 whitespace-nowrap sticky left-[200px] bg-white dark:bg-gray-900 z-10" x-text="car.nopol"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
