@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\PdfController;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Filament\Http\Middleware\Authenticate;
