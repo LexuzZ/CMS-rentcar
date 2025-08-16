@@ -102,9 +102,9 @@ class InvoiceResource extends Resource
                     ->schema([
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('addPayment')
-                                ->label('Tambah Pembayaran')
+                                ->label('Pembayaran')
                                 ->icon('heroicon-o-banknotes')
-                                ->color('success')
+                                ->color('info')
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
@@ -113,7 +113,7 @@ class InvoiceResource extends Resource
                                 ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
                                 ->openUrlInNewTab(),
                                 Infolists\Components\Actions\Action::make('sendWhatsapp')
-                                    ->label('Kirim Faktur via WA')
+                                    ->label('Faktur via WA')
                                     ->icon('heroicon-o-chat-bubble-left-right')
                                     ->color('success')
                                     ->url(function (Invoice $record) {
