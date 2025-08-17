@@ -44,9 +44,8 @@ class MonthlyResource extends Resource
                 ])
             )
             ->columns([
-                TextColumn::make('invoice.id')->label('ID Faktur')->sortable(),
-                TextColumn::make('tanggal_pembayaran')->label('Tanggal Bayar')->date('d M Y')->sortable(),
-                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
+                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
 
                 // 3. Memperbaiki relasi untuk menampilkan merek mobil
                 TextColumn::make('invoice.booking.car.carModel.brand.name')
@@ -62,7 +61,7 @@ class MonthlyResource extends Resource
                 TextColumn::make('total_denda')
                     ->label('Total Denda')
                     ->money('IDR')
-                    ->getStateUsing(fn (Payment $record): float => $record->invoice?->booking?->penalty->sum('amount') ?? 0),
+                    ->getStateUsing(fn(Payment $record): float => $record->invoice?->booking?->penalty->sum('amount') ?? 0),
 
                 TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
@@ -76,7 +75,7 @@ class MonthlyResource extends Resource
                 TextColumn::make('status')
                     ->badge()
                     ->colors(['success' => 'lunas', 'danger' => 'belum_lunas'])
-                    ->formatStateUsing(fn ($state) => match ($state) { 'lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas', default => ucfirst($state) }),
+                    ->formatStateUsing(fn($state) => match ($state) { 'lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas', default => ucfirst($state)}),
             ])
             // 4. MENAMBAHKAN FITUR FILTER TANGGAL
             ->filters([
@@ -87,8 +86,8 @@ class MonthlyResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['dari_tanggal'], fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '>=', $date))
-                            ->when($data['sampai_tanggal'], fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '<=', $date));
+                            ->when($data['dari_tanggal'], fn(Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '>=', $date))
+                            ->when($data['sampai_tanggal'], fn(Builder $query, $date): Builder => $query->whereDate('tanggal_pembayaran', '<=', $date));
                     }),
             ])
             ->headerActions([
