@@ -84,15 +84,14 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('lisence_file')->label('Foto')->width(80)
-                    ->height(60),
-                ImageColumn::make('identity_file')->label('Foto')->width(80)
-                    ->height(60),
-                TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
+
+                TextColumn::make('nama')->label('Nama')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
                 TextColumn::make('ktp')->label('No KTP / SIM'),
                 TextColumn::make('lisence')->label('No KTP / SIM'),
                 TextColumn::make('no_telp')->label('HP'),
-                TextColumn::make('alamat')->label('Alamat')->limit(20),
+                TextColumn::make('alamat')->label('Alamat')->limit(20)->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
             ])
             ->defaultSort('nama')
             ->actions([
