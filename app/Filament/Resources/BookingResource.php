@@ -297,6 +297,12 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
+                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
+                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
                     ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
@@ -307,12 +313,6 @@ class BookingResource extends Resource
                         'batal' => 'Batal',
                         default => ucfirst($state)
                     }),
-                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
-                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
-                    ->width(150),
-                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
 
             ])
             ->defaultSort('tanggal_keluar', 'desc')
