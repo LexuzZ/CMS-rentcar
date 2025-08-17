@@ -81,7 +81,7 @@ class PaymentResource extends Resource
                     ->options(['lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas'])
                     ->default('belum_lunas')
                     ->required()
-                    ->disabled(fn () => ! auth()->user()->isSuperAdmin()),
+                    ->disabled(fn() => !auth()->user()->isSuperAdmin()),
             ])
         ]);
     }
@@ -161,8 +161,8 @@ class PaymentResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['month'], fn (Builder $query, $month): Builder => $query->whereMonth('tanggal_pembayaran', $month))
-                            ->when($data['year'], fn (Builder $query, $year): Builder => $query->whereYear('tanggal_pembayaran', $year));
+                            ->when($data['month'], fn(Builder $query, $month): Builder => $query->whereMonth('tanggal_pembayaran', $month))
+                            ->when($data['year'], fn(Builder $query, $year): Builder => $query->whereYear('tanggal_pembayaran', $year));
                     })
                     ->indicateUsing(function (array $data): ?string {
                         if (!$data['month'] && !$data['year']) {

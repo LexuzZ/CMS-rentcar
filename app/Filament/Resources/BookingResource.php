@@ -308,7 +308,8 @@ class BookingResource extends Resource
                         default => ucfirst($state)
                     }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
-                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable(),
+                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
                 Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
