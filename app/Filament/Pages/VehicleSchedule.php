@@ -16,9 +16,9 @@ class VehicleSchedule extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
-    protected static ?string $title = 'Jadwal Mobil (Excel View)';
+    protected static ?string $title = 'Jadwal Unit Mobil';
     protected static ?string $navigationGroup = 'Transaksi';
-    protected static ?string $navigationLabel = 'Jadwal Excel';
+    protected static ?string $navigationLabel = 'Jadwal Unit';
 
     protected static string $view = 'filament.pages.vehicle-schedule';
 
