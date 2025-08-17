@@ -51,6 +51,7 @@ class MonthlyResource extends Resource
                 TextColumn::make('invoice.booking.car.carModel.name')
                     ->label('Merk Mobil')
                     ->badge()
+                    ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
@@ -74,6 +75,7 @@ class MonthlyResource extends Resource
 
                 TextColumn::make('status')
                     ->badge()
+                    ->alignCenter()
                     ->colors(['success' => 'lunas', 'danger' => 'belum_lunas'])
                     ->formatStateUsing(fn($state) => match ($state) { 'lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas', default => ucfirst($state)}),
             ])
