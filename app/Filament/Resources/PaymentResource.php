@@ -5,12 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PaymentResource\Pages;
 use App\Models\Invoice;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class PaymentResource extends Resource
@@ -22,7 +26,6 @@ class PaymentResource extends Resource
     protected static ?string $label = 'Pembayaran';
     protected static ?string $pluralLabel = 'Riwayat Pembayaran';
 
-    // -- PERBAIKAN DI SINI: Menambahkan mutateFormDataBeforeFill --
     /**
      * Memodifikasi data sebelum form edit diisi.
      */
@@ -88,7 +91,8 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
-                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter(),
+                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->toggleable()->alignCenter()->weight(FontWeight::Bold)->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(150),
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
@@ -96,7 +100,7 @@ class PaymentResource extends Resource
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
                         $totalInvoice = $invoice?->total ?? 0;
-                        $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
+                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
                         return $totalInvoice + $totalDenda;
                     })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
@@ -136,6 +140,39 @@ class PaymentResource extends Resource
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                     ]),
+
+                Filter::make('tanggal_pembayaran')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('month')
+                                    ->label('Bulan')
+                                    ->options(array_reduce(range(1, 12), function ($carry, $month) {
+                                        $carry[$month] = Carbon::create(null, $month)->isoFormat('MMMM');
+                                        return $carry;
+                                    }, [])),
+                                Forms\Components\Select::make('year')
+                                    ->label('Tahun')
+                                    ->options(function () {
+                                        $years = range(now()->year, now()->year - 5);
+                                        return array_combine($years, $years);
+                                    }),
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['month'], fn (Builder $query, $month): Builder => $query->whereMonth('tanggal_pembayaran', $month))
+                            ->when($data['year'], fn (Builder $query, $year): Builder => $query->whereYear('tanggal_pembayaran', $year));
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['month'] && !$data['year']) {
+                            return null;
+                        }
+                        // PERBAIKAN DI SINI: Mengubah string menjadi integer
+                        $monthName = $data['month'] ? Carbon::create()->month((int) $data['month'])->isoFormat('MMMM') : '';
+                        return 'Periode: ' . $monthName . ' ' . $data['year'];
+                    })
+                    ->columnSpan(2)->columns(2),
             ])
             ->defaultSort('tanggal_pembayaran', 'desc')
             ->actions([
