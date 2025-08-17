@@ -48,7 +48,7 @@ class MonthlyResource extends Resource
                     ->width(150),
 
                 // 3. Memperbaiki relasi untuk menampilkan merek mobil
-                TextColumn::make('invoice.booking.car.carModel.brand.name')
+                TextColumn::make('invoice.booking.car.carModel.name')
                     ->label('Merk Mobil')
                     ->badge()
                     ->searchable(),
