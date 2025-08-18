@@ -12,7 +12,8 @@
                             Mobil Telah Dihapus
                         @endif
                     </h3>
-                    <span class="bg-primary-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-md">
+                    {{-- PERBAIKAN 1: Menggunakan inline style untuk badge nopol --}}
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-md" style="background-color: #4f46e5; color: white;">
                         {{ $record->car->nopol ?? 'N/A' }}
                     </span>
                 </div>
@@ -30,15 +31,31 @@
                                 default   => ucfirst($record->perawatan)
                             };
                         @endphp
-                        <span class="font-medium text-gray-900 dark:text-white">
+                        <span class="font-semibold text-gray-900 dark:text-white" style="color: #ef4444;">
                             {{ $perawatanText }}
                         </span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500 dark:text-gray-400">Jatuh Tempo</span>
-                        {{-- Menggunakan Carbon::diffForHumans() untuk sisa waktu --}}
-                        <span class="font-semibold text-danger-500">
-                            {{ \Carbon\Carbon::parse($record->jatuh_tempo)->diffForHumans() }}
+                        {{-- PERBAIKAN 2: Menggunakan inline style untuk teks jatuh tempo --}}
+                        @php
+                            $dueDate = \Carbon\Carbon::parse($record->jatuh_tempo);
+                            $daysRemaining = now()->diffInDays($dueDate, false); // false agar bisa negatif
+
+                            $color = '';
+                            if ($daysRemaining < 0) {
+                                $color = '#9B2C2C'; // Merah tua untuk yang sudah lewat
+                            } elseif ($daysRemaining <= 7) {
+                                $color = '#EF4444'; // Merah untuk 7 hari ke depan
+                            } elseif ($daysRemaining <= 30) {
+                                $color = '#F59E0B'; // Kuning/Amber untuk 1 bulan ke depan
+                            } else {
+                                $color = '#10B981'; // Hijau untuk yang masih lama
+                            }
+                        @endphp
+
+                        <span class="font-bold" style="color: {{ $color }};">
+                            {{ $dueDate->locale('id')->diffForHumans() }}
                         </span>
                     </div>
                 </div>
