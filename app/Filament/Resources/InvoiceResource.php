@@ -175,7 +175,7 @@ class InvoiceResource extends Resource
                                     ->label('Total Denda')
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->state(fn(Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
-                                Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->money('IDR'),
+                                Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 Infolists\Components\TextEntry::make('sisa_pembayaran')
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->state(function (Invoice $record): float {
