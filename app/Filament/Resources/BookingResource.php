@@ -321,7 +321,7 @@ class BookingResource extends Resource
 
                 Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
+                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR', 0)->alignCenter(),
 
             ])
             ->defaultSort('tanggal_keluar', 'desc')
