@@ -169,15 +169,15 @@ class InvoiceResource extends Resource
                     ->schema([
                         Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\Grid::make(3)->schema([
-                                Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->money('IDR'),
-                                Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->money('IDR'),
+                                Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                                Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 Infolists\Components\TextEntry::make('total_denda')
                                     ->label('Total Denda')
-                                    ->money('IDR')
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->state(fn(Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
                                 Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->money('IDR'),
                                 Infolists\Components\TextEntry::make('sisa_pembayaran')
-                                    ->money('IDR')
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->state(function (Invoice $record): float {
                                         $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
                                         $biayaAntarJemput = $record->pickup_dropOff ?? 0;
@@ -188,7 +188,7 @@ class InvoiceResource extends Resource
                                     }),
                                 Infolists\Components\TextEntry::make('total')
                                     ->label('Total Tagihan')
-                                    ->money('IDR')
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->size('lg')
                                     ->weight('bold')
                                     ->state(function (Invoice $record): float {
@@ -220,8 +220,8 @@ class InvoiceResource extends Resource
             TextColumn::make('id')->label('ID Faktur')->searchable()->sortable(),
             TextColumn::make('booking.customer.nama')->label('Pelanggan')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil'),
-            TextColumn::make('total')->label('Total Tagihan')->money('IDR')->sortable(),
-            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->money('IDR')->sortable(),
+            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
+            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
             TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->sortable(),
         ])
             ->defaultSort('tanggal_invoice', 'desc')
