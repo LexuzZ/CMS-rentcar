@@ -143,7 +143,7 @@ class BookingResource extends Resource
                 Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
                 Forms\Components\Select::make('status')
                     ->label('Status Pemesanan')
-                    ->options(['booking' => 'Booking', 'aktif' => 'Aktif', 'selesai' => 'Selesai', 'batal' => 'Batal'])
+                    ->options(['booking' => 'Booking', 'disewa' => 'Disewa', 'selesai' => 'Selesai', 'batal' => 'Batal'])
                     ->default('booking')
                     ->required(),
             ]),
