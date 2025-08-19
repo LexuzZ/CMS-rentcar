@@ -267,7 +267,7 @@ class BookingResource extends Resource
 
                             Infolists\Components\TextEntry::make('waktu_kembali')->dateTime('H:i')->suffix(' WITA'),
 
-                            Infolists\Components\TextEntry::make('estimasi_biaya')->money('IDR'),
+                            Infolists\Components\TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                         ]),
                     ]),
 
