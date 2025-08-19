@@ -109,7 +109,7 @@ class BookingResource extends Resource
                         }
                     )
                     ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
-                    ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
+                    // ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
                     ->preload()
                     ->live()
                     ->required()
