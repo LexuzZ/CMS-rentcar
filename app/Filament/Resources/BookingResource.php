@@ -315,7 +315,7 @@ class BookingResource extends Resource
                         default => ucfirst($state)
                     }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
-                TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
+                TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter()->wrap()->width(50),
                 Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(250),
 
