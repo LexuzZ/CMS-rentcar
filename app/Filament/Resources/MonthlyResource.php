@@ -56,17 +56,17 @@ class MonthlyResource extends Resource
 
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
 
-                TextColumn::make('pembayaran')->label('Sewa')->money('IDR'),
+                TextColumn::make('pembayaran')->label('Sewa')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                 // Kolom denda sekarang lebih efisien karena data sudah di-load
                 TextColumn::make('total_denda')
                     ->label('Total Denda')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->getStateUsing(fn(Payment $record): float => $record->invoice?->booking?->penalty->sum('amount') ?? 0),
 
                 TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->getStateUsing(function (Payment $record): float {
                         $totalSewa = $record->pembayaran ?? 0;
                         $totalDenda = $record->invoice?->booking?->penalty->sum('amount') ?? 0;
