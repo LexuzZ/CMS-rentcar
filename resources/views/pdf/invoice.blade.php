@@ -47,7 +47,7 @@
             <div class="company-details">
                 <h1>FAKTUR SEWA</h1>
                 <p>Semeton Pesiar Lombok</p>
-                <p>Jalan Pariwisata, Lombok, NTB | Telp: 0819-0736-7197</p>
+                <p>Jl. Panji Tilar Negara Jl. Batu Ringgit No.218, Tj. Karang, Kec. Mataram, Kota Mataram, Nusa Tenggara Bar. 83117 | Telp: 0819-0736-7197</p>
             </div>
             <div class="clear"></div>
         </div>
