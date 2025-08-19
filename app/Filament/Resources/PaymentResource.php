@@ -81,7 +81,15 @@ class PaymentResource extends Resource
                     ->options(['lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas'])
                     ->default('belum_lunas')
                     ->required()
-                    ->disabled(fn() => !auth()->user()->isSuperAdmin()),
+                    // -- PERBAIKAN DI SINI --
+                    ->disabled(function (string $operation): bool {
+                        // Jika halaman adalah 'create', field ini tidak pernah disabled
+                        if ($operation === 'create') {
+                            return false;
+                        }
+                        // Jika halaman adalah 'edit', field ini disabled jika bukan superadmin
+                        return ! auth()->user()->isSuperAdmin();
+                    }),
             ])
         ]);
     }
