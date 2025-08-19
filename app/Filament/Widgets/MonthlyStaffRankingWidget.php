@@ -140,7 +140,7 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
     protected function getViewData(): array
     {
         $state = $this->form->getState();
-        $dateForHumans = Carbon::createFromDate($state['selectedYear'], $state['selectedMonth'], 1)
+        $dateForHumans = Carbon::createFromDate($state['selectedYear'], $state['selectedMonth'], 1)->locale('id')
             ->isoFormat('MMMM YYYY');
 
         return [
