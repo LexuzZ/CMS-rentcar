@@ -22,7 +22,7 @@ class MobilKeluar extends Widget
     {
         $bookings = Booking::with(['car', 'customer', 'driver'])
             ->where('status', 'booking')
-            ->whereDate('tanggal_keluar', \Carbon\Carbon::today())
+            ->whereDate('tanggal_keluar', \Carbon\Carbon::today()->locale('id'))
             ->get();
 
         return [
