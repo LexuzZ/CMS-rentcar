@@ -14,6 +14,7 @@ use Filament\Infolists; // <-- 1. Import Infolist
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -168,14 +169,20 @@ class BookingResource extends Resource
                                 ->color('success')
                                 ->visible(fn(Booking $record) => $record->invoice)
                                 ->url(fn(Booking $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->invoice->id])),
-
+                            Infolists\Components\Actions\Action::make('viewPayment')
+                                ->label('Lihat Pembayaran')
+                                ->icon('heroicon-o-eye')
+                                ->color('gray')
+                                // Hanya muncul jika pembayaran SUDAH ada
+                                ->visible(fn(Booking $record) => $record->invoice && $record->invoice->payment)
+                                ->url(fn(Booking $record) => PaymentResource::getUrl('edit', ['record' => $record->invoice->payment->id])),
                             Infolists\Components\Actions\Action::make('addPenalty')
                                 ->label('Tambah Klaim / Denda')
                                 ->icon('heroicon-o-exclamation-triangle')
                                 ->color('danger')
                                 ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('whatsapp')
-                                ->label('Hubungi Pelanggan via WhatsApp')
+                                ->label('Via WhatsApp')
                                 ->icon('heroicon-o-chat-bubble-left-right')
                                 ->color('success')
                                 ->url(function (Booking $record) {
@@ -297,12 +304,6 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
-                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
-                    ->width(150),
-                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
                     ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
@@ -313,6 +314,14 @@ class BookingResource extends Resource
                         'batal' => 'Batal',
                         default => ucfirst($state)
                     }),
+                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
+                TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter(),
+                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(250),
+
+                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->money('IDR')->alignCenter(),
 
             ])
             ->defaultSort('tanggal_keluar', 'desc')

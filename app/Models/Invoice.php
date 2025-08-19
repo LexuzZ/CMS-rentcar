@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Invoice extends Model
 {
@@ -19,10 +20,10 @@ class Invoice extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-    public function payment()
+     public function payment(): HasOne
     {
-        return $this->belongsTo(Payment::class);
+        return $this->hasOne(Payment::class);
     }
-    
-    
+
+
 }
