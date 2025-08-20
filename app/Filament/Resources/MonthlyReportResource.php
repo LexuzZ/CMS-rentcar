@@ -32,7 +32,7 @@ class MonthlyReportResource extends Resource
                         DB::raw('COUNT(*) as transaction_count'),
                         DB::raw('SUM(pembayaran) as total_revenue')
                     )
-                    ->where('status', 'lunas')
+                    // ->where('status', 'lunas')
                     ->groupBy('year', 'month')
             )
             ->columns([
