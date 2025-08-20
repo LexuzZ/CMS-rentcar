@@ -58,7 +58,7 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('pembayaran')->label('Jumlah')->money('IDR', 0),
             ])
             ->headerActions([
-                ExportAction::make()->exporter(PaymentExporter::class)
+                ExportAction::make()->label('Export Excel')->exporter(PaymentExporter::class)
             ]);
     }
 }
