@@ -1,31 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #{{ $invoice->id }}</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; font-size: 12px; color: #333; }
-        .container { width: 100%; margin: 0 auto; }
-        .header-section { margin-bottom: 20px; }
-        .logo { width: 150px; height: auto; float: left; }
-        .company-details { text-align: right; float: right; }
-        .company-details h1 { margin: 0; font-size: 24px; color: #000; }
-        .company-details p { margin: 0; }
-        .invoice-details { margin-bottom: 20px; }
-        .invoice-details table { width: 100%; }
-        .billing-details h3, .items-table h3, .payment-details h3 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px; }
-        .items-table table { width: 100%; border-collapse: collapse; }
-        .items-table th, .items-table td { border: 1px solid #eee; padding: 8px; text-align: left; }
-        .items-table th { background-color: #f8f8f8; }
-        .totals-table { width: 40%; float: right; margin-top: 20px; }
-        .totals-table td { padding: 5px 8px; }
-        .payment-details { margin-top: 40px; }
-        .text-right { text-align: right; }
-        .footer { text-align: center; margin-top: 50px; font-size: 10px; color: #777; position: absolute; bottom: 0; width: 100%; }
-        .clear { clear: both; }
+        body {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+            float: left;
+        }
+
+        .company-details {
+            text-align: right;
+            float: right;
+        }
+
+        .company-details h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #000;
+        }
+
+        .company-details p {
+            margin: 0;
+        }
+
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice-details table {
+            width: 100%;
+        }
+
+        .billing-details h3,
+        .items-table h3,
+        .payment-details h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .items-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .items-table th,
+        .items-table td {
+            border: 1px solid #eee;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .items-table th {
+            background-color: #f8f8f8;
+        }
+
+        .totals-table {
+            width: 40%;
+            float: right;
+            margin-top: 20px;
+        }
+
+        .totals-table td {
+            padding: 5px 8px;
+        }
+
+        .payment-details {
+            margin-top: 40px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 10px;
+            color: #777;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .clear {
+            clear: both;
+        }
+        .signature-section {
+            margin-top: 50px;
+            text-align: center;
+            width: 250px;
+            float: right;
+        }
+        .signature-container {
+            position: relative; /* Wadah untuk menumpuk gambar */
+            height: 70px; /* Beri ruang yang cukup */
+        }
+        .signature-image, .stamp-image {
+            position: absolute;
+            width: 90px;
+            height: auto;
+            left: 50%;
+            margin-left: -120px; /* Tarik gambar ke kiri sejauh setengah lebarnya */
+        }
+        .signature-image {
+            top: 0;
+            z-index: 10;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header-section">
@@ -40,8 +151,8 @@
                     $src = ''; // Kosongkan jika logo tidak ditemukan
                 }
             @endphp
-            @if($src)
-                <img src="{{ $src }}" alt="Logo" class="logo"/>
+            @if ($src)
+                <img src="{{ $src }}" alt="Logo" class="logo" />
             @endif
 
             <div class="company-details">
@@ -57,7 +168,8 @@
                 <tr>
                     <td>
                         <strong>Faktur No:</strong> #{{ $invoice->id }}<br>
-                        <strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}<br>
+                        <strong>Tanggal:</strong>
+                        {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}<br>
                         <strong>Booking ID:</strong> #{{ $invoice->booking->id }}
                     </td>
                     <td class="text-right">
@@ -82,27 +194,30 @@
                 <tbody>
                     <tr>
                         <td>
-                            Sewa Mobil: {{ $invoice->booking->car->carModel->brand->name }} {{ $invoice->booking->car->carModel->name }} ({{ $invoice->booking->car->nopol }})
+                            Sewa Mobil: {{ $invoice->booking->car->carModel->brand->name }}
+                            {{ $invoice->booking->car->carModel->name }} ({{ $invoice->booking->car->nopol }})
                             <br>
                             <small>
                                 Dari: {{ \Carbon\Carbon::parse($invoice->booking->tanggal_keluar)->format('d M Y') }}
-                                Sampai: {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}
+                                Sampai:
+                                {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}
                                 ({{ $invoice->booking->total_hari }} hari)
                             </small>
                         </td>
-                        <td class="text-right">Rp {{ number_format($invoice->booking->estimasi_biaya, 0, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($invoice->booking->estimasi_biaya, 0, ',', '.') }}
+                        </td>
                     </tr>
-                    @if($invoice->pickup_dropOff > 0)
-                    <tr>
-                        <td>Biaya Antar / Jemput</td>
-                        <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
-                    </tr>
+                    @if ($invoice->pickup_dropOff > 0)
+                        <tr>
+                            <td>Biaya Antar / Jemput</td>
+                            <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
+                        </tr>
                     @endif
-                    @foreach($invoice->booking->penalty as $penalty)
-                    <tr>
-                        <td>Denda: {{ ucfirst($penalty->klaim) }}</td>
-                        <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
-                    </tr>
+                    @foreach ($invoice->booking->penalty as $penalty)
+                        <tr>
+                            <td>Denda: {{ ucfirst($penalty->klaim) }}</td>
+                            <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -125,7 +240,7 @@
                 <tr>
                     <td> <strong>Subtotal</strong></td>
                     <td class="text-right"><strong>Rp {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
-                 </tr>
+                </tr>
             </table>
         </div>
 
@@ -141,10 +256,44 @@
             </ul>
             <p>Mohon konfirmasi setelah melakukan pembayaran. Terima kasih.</p>
         </div>
+        <div class="clear"></div>
+
+        <div class="signature-section">
+            @php
+                // PERBAIKAN 1: Menggunakan nama file yang benar
+                $signaturePath = public_path('ttd.png');
+                $stampPath = public_path('stempel.png');
+
+                $signatureData = file_exists($signaturePath)
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath))
+                    : '';
+                $stampData = file_exists($stampPath)
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
+                    : '';
+            @endphp
+
+            <p>Hormat kami,</p>
+
+            {{-- PERBAIKAN 2: Hanya menggunakan satu blok untuk menampilkan gambar --}}
+            <div class="signature-container">
+                @if ($stampData)
+                    <img src="{{ $stampData }}" alt="Tanda Tangan" class="signature-image">
+                @endif
+                @if ($signatureData)
+                    <img src="{{ $signatureData }}" alt="Stempel"
+                        style="height: 80px; width: auto; opacity: 0.75; display: inline-block; vertical-align: middle;">
+                @endif
+            </div>
+
+            <p class="signature-name">ACHMAD MUZAMMIL</p>
+            <p>CEO Company</p>
+        </div>
+        <div class="clear"></div>
 
         <div class="footer">
             <p>Terima kasih telah menggunakan jasa Semeton Pesiar.</p>
         </div>
     </div>
 </body>
+
 </html>
