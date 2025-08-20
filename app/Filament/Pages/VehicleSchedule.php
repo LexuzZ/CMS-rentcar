@@ -68,7 +68,7 @@ class VehicleSchedule extends Page implements HasForms
         $month = $state['month'];
         $year = $state['year'];
 
-        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
+        $startDate = Carbon::create($year, $month, 1)->locale('id')->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
         $daysInMonth = $startDate->daysInMonth;
 
