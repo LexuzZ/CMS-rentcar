@@ -11,6 +11,8 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
@@ -40,9 +42,7 @@ class CustomerResource extends Resource
                     ->label('No HP / WhatsApp')
                     ->tel()
                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-
-                    // 3. Tetap membersihkan nomor sebelum disimpan ke database, ini sangat penting
-                    ->dehydrateStateUsing(fn(string $state): string => preg_replace('/[^0-9]/', '', $state))
+                    ->dehydrateStateUsing(fn (string $state): string => preg_replace('/[^0-9]/', '', $state))
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('ktp')
@@ -68,9 +68,6 @@ class CustomerResource extends Resource
                     ->image()
                     ->visibility('public')
                     ->nullable(),
-
-
-
                 Textarea::make('alamat')
                     ->label('Alamat')
                     ->rows(3)
@@ -80,21 +77,41 @@ class CustomerResource extends Resource
         ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Informasi Pribadi')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('nama'),
+                        Infolists\Components\TextEntry::make('no_telp')->label('No. HP'),
+                        Infolists\Components\TextEntry::make('ktp')->label('No. KTP'),
+                        Infolists\Components\TextEntry::make('lisence')->label('No. SIM'),
+                        Infolists\Components\TextEntry::make('alamat')->columnSpanFull(),
+                    ])->columns(2),
+                Infolists\Components\Section::make('Dokumen')
+                    ->schema([
+                        Infolists\Components\ImageEntry::make('identity_file')->label('Scan KTP'),
+                        Infolists\Components\ImageEntry::make('lisence_file')->label('Scan SIM'),
+                    ])->columns(2),
+            ]);
+    }
+
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
-
-                TextColumn::make('nama')->label('Nama')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                TextColumn::make('nama')->label('Nama')->searchable()->wrap()
                     ->width(150),
                 TextColumn::make('ktp')->label('No KTP / SIM'),
                 TextColumn::make('lisence')->label('No KTP / SIM'),
                 TextColumn::make('no_telp')->label('HP'),
-                TextColumn::make('alamat')->label('Alamat')->limit(20)->wrap() // <-- Tambahkan wrap agar teks turun
+                TextColumn::make('alamat')->label('Alamat')->limit(20)->wrap()
                     ->width(150),
             ])
             ->defaultSort('nama')
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -103,41 +120,44 @@ class CustomerResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\BookingsRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
+            'view' => Pages\ViewCustomer::route('/{record}'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }
     public static function canViewAny(): bool
     {
-        // Semua peran bisa melihat daftar mobil
         return true;
     }
 
     public static function canCreate(): bool
     {
-        // Hanya superadmin dan admin yang bisa membuat data baru
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa mengedit
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa menghapus
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
-        // Hanya superadmin dan admin yang bisa hapus massal
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
