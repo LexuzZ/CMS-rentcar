@@ -56,7 +56,7 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('invoice.booking.total_hari')->label('Total Hari Sewa'),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi'),
                 TextColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran')->date('d M Y'),
-                TextColumn::make('pembayaran')->label('Jumlah')->money('IDR', 0),
+                TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
             ->headerActions([
                 ExportAction::make()->label('Export Excel')->exporter(PaymentExporter::class)

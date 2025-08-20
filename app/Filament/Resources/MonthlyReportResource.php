@@ -49,7 +49,7 @@ class MonthlyReportResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_revenue')
                     ->label('Total Pendapatan')
-                    ->money('IDR', 0)
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
             ])
             ->filters([
