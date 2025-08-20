@@ -81,6 +81,7 @@ class VehicleSchedule extends Page implements HasForms
         }])
         // PERUBAHAN DI SINI: Menambahkan filter garasi
         ->where('garasi', 'SPT')
+        ->orderBy('car_models.name', 'asc')
         ->get();
 
         $data = [
