@@ -38,7 +38,7 @@ class MonthlyReportResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('month')
                     ->label('Bulan')
-                    ->formatStateUsing(fn (string $state): string => \Carbon\Carbon::create()->month((int) $state)->isoFormat('MMMM'))
+                    ->formatStateUsing(fn (string $state): string => \Carbon\Carbon::create()->month((int) $state)->locale('id')->isoFormat('MMMM'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
                     ->label('Tahun')
