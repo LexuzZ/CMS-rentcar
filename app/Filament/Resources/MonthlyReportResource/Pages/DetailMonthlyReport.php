@@ -55,7 +55,7 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
                 TextColumn::make('invoice.booking.total_hari')->label('Total Hari Sewa'),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi'),
-                TextColumn::make('tanggal_pembayaran')->label('Tanggal')->date('d M Y'),
+                TextColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran')->date('d M Y'),
                 TextColumn::make('pembayaran')->label('Jumlah')->money('IDR', 0),
             ])
             ->headerActions([
