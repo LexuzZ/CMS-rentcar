@@ -34,7 +34,7 @@ class DetailMonthlyReport extends Page implements HasTable
     {
         [$year, $month] = explode('-', $this->record);
 
-        $monthName = \Carbon\Carbon::create()->month((int) $month)->isoFormat('MMMM');
+        $monthName = \Carbon\Carbon::create()->month((int) $month)->locale('id')->isoFormat('MMMM');
 
         return "Detail Rekapan - {$monthName} {$year}";
     }
