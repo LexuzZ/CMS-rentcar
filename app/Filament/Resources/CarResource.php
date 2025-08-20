@@ -190,22 +190,22 @@ class CarResource extends Resource
                         return !empty($filters['availability']['start_date']) && !empty($filters['availability']['end_date']);
                     })
                     ->url(function (Pages\ListCars $livewire): string {
-                        $cars = $livewire->getFilteredTableQuery()->get();
+                        // PERUBAHAN DI SINI: Menambahkan filter garasi
+                        $cars = $livewire->getFilteredTableQuery()
+                            ->where('garasi', 'SPT')
+                            ->get();
+
                         $filters = $livewire->tableFilters;
                         $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->isoFormat('D MMMM Y');
                         $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->isoFormat('D MMMM Y');
 
-                        $message = "Halo,\n\nBerikut adalah daftar mobil yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
+                        $message = "Halo,\n\nBerikut adalah daftar mobil dari garasi SPT yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
                         foreach ($cars as $index => $car) {
                             $message .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
                         $message .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.";
 
-                        // -- PERUBAHAN DI SINI --
-                        // 1. Tentukan nomor WA tujuan
-                        $phoneNumber = '6281907367197'; // Ganti 0 di depan dengan 62
-
-                        // 2. Buat URL WhatsApp dengan nomor tujuan
+                        $phoneNumber = '6281907367197';
                         return 'https://wa.me/' . $phoneNumber . '?text=' . urlencode($message);
                     })
                     ->openUrlInNewTab(),
