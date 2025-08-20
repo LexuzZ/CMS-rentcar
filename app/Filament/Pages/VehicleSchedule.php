@@ -79,9 +79,11 @@ class VehicleSchedule extends Page implements HasForms
                   ->where('tanggal_kembali', '>=', $startDate);
             });
         }])
-        // PERUBAHAN DI SINI: Menambahkan filter garasi
-        ->where('garasi', 'SPT')
-        ->orderBy('car_models.name', 'asc')
+        // PERUBAHAN DI SINI: Menambahkan join dan orderBy
+        ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
+        ->where('cars.garasi', 'SPT')
+        ->orderBy('car_models.name', 'asc') // Mengurutkan berdasarkan nama model
+        ->select('cars.*') // Memilih semua kolom dari tabel cars
         ->get();
 
         $data = [
