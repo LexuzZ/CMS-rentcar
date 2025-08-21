@@ -73,6 +73,7 @@ class InvoiceResource extends Resource
                 Forms\Components\TextInput::make('pickup_dropOff')
                     ->label('Biaya Pengantaran')
                     ->live()
+                    ->required()
                     ->prefix('Rp')
                     ->numeric()
                     ->default(0),

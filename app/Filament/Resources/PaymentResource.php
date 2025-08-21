@@ -82,14 +82,10 @@ class PaymentResource extends Resource
                     ->default('belum_lunas')
                     ->required()
                     // -- PERBAIKAN DI SINI --
-                    ->disabled(function (string $operation): bool {
-                        // Jika halaman adalah 'create', field ini tidak pernah disabled
-                        if ($operation === 'create') {
-                            return false;
-                        }
-                        // Jika halaman adalah 'edit', field ini disabled jika bukan superadmin
-                        return ! auth()->user()->isSuperAdmin();
-                    }),
+                    // Sembunyikan di halaman 'create'
+                    ->hidden(fn (string $operation): bool => $operation === 'create')
+                    // Di halaman 'edit', nonaktifkan jika bukan superadmin
+                    ->disabled(fn (string $operation): bool => $operation === 'edit' && ! auth()->user()->isSuperAdmin()),
             ])
         ]);
     }
