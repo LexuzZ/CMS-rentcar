@@ -106,23 +106,31 @@
         .clear {
             clear: both;
         }
+
         .signature-section {
             margin-top: 50px;
             text-align: center;
-            width: 250px;
+            width: 170px;
             float: right;
         }
+
         .signature-container {
-            position: relative; /* Wadah untuk menumpuk gambar */
-            height: 70px; /* Beri ruang yang cukup */
+            position: relative;
+            /* Wadah untuk menumpuk gambar */
+            height: 70px;
+            /* Beri ruang yang cukup */
         }
-        .signature-image, .stamp-image {
+
+        .signature-image,
+        .stamp-image {
             position: absolute;
             width: 90px;
             height: auto;
             left: 50%;
-            margin-left: -120px; /* Tarik gambar ke kiri sejauh setengah lebarnya */
+            margin-left: -120px;
+            /* Tarik gambar ke kiri sejauh setengah lebarnya */
         }
+
         .signature-image {
             top: 0;
             z-index: 10;
@@ -261,12 +269,10 @@
         <div class="signature-section">
             @php
                 // PERBAIKAN 1: Menggunakan nama file yang benar
-                $signaturePath = public_path('ttd.png');
+                // $signaturePath = public_path('ttd.png');
                 $stampPath = public_path('stempel.png');
 
-                $signatureData = file_exists($signaturePath)
-                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath))
-                    : '';
+                // $signatureData = file_exists($signaturePath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath)) : '';
                 $stampData = file_exists($stampPath)
                     ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
                     : '';
@@ -276,11 +282,11 @@
 
             {{-- PERBAIKAN 2: Hanya menggunakan satu blok untuk menampilkan gambar --}}
             <div class="signature-container">
+                {{-- @if ($stampData)
+                    <img src="{{  $stampData }}" alt="Tanda Tangan" class="signature-image">
+                @endif --}}
                 @if ($stampData)
-                    <img src="{{ $stampData }}" alt="Tanda Tangan" class="signature-image">
-                @endif
-                @if ($signatureData)
-                    <img src="{{ $signatureData }}" alt="Stempel"
+                    <img src="{{ $stampData }}" alt="Stempel"
                         style="height: 80px; width: auto; opacity: 0.75; display: inline-block; vertical-align: middle;">
                 @endif
             </div>
