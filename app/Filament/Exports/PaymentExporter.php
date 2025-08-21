@@ -33,6 +33,7 @@ class PaymentExporter extends Exporter
             ExportColumn::make('invoice.booking.tanggal_keluar')
                 ->label('Tanggal Keluar'),
             ExportColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali'),
+            ExportColumn::make('invoice.booking.total_hari')->label('Total Hari'),
             ExportColumn::make('invoice.tanggal_invoice')
                 ->label('Tanggal Invoice'),
             ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
