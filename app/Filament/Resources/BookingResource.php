@@ -65,15 +65,15 @@ class BookingResource extends Resource
                 Forms\Components\DatePicker::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
                     ->required()
-                    ->live()
-                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->live() // Penting untuk memicu refresh pada dropdown mobil
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 Forms\Components\DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
-                    ->live()
-                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->live() // Penting untuk memicu refresh pada dropdown mobil
+                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
@@ -93,23 +93,20 @@ class BookingResource extends Resource
                                 return $query->whereRaw('1 = 0');
                             }
 
+                            // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
                                 ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
                                     $bookingQuery->where('id', '!=', $recordId)
+                                        // PERBAIKAN: Menggunakan logika overlap yang lebih sederhana dan andal
                                         ->where(function (Builder $q) use ($startDate, $endDate) {
-                                            $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                                ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                                ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                                    $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                        ->where('tanggal_kembali', '>=', $endDate);
-                                                });
+                                            $q->where('tanggal_keluar', '<', $endDate)
+                                              ->where('tanggal_kembali', '>', $startDate);
                                         });
                                 });
                         }
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->brand->name} {$record->carModel->name} ({$record->nopol})")
-                    // ->searchable(['nopol', 'carModel.name', 'carModel.brand.name'])
+                    ->getOptionLabelFromRecordUsing(fn (Car $record) => "{$record->carModel->name} ({$record->nopol})")
                     ->preload()
                     ->live()
                     ->required()
@@ -130,7 +127,7 @@ class BookingResource extends Resource
                         Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
                         Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
-                    ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
+                    ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                     ->required()
                     ->disabled($isNotAdmin),
 
@@ -138,9 +135,11 @@ class BookingResource extends Resource
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
-                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
+                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->disabled()->dehydrated(),
                 Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
+
+                // PERUBAHAN 1: Menyamakan nilai status
                 Forms\Components\Select::make('status')
                     ->label('Status Pemesanan')
                     ->options(['booking' => 'Booking', 'disewa' => 'Disewa', 'selesai' => 'Selesai', 'batal' => 'Batal'])
