@@ -13,12 +13,12 @@ class AvailableCarsOverview extends Widget
 
     public function getViewData(): array
     {
-         $availableCars = Car::with(['carModel.brand']) // <-- Eager load relasi
+         $availableCars = Car::with(['carModel']) // <-- Eager load relasi
         ->where('status', 'ready')
         ->get();
 
     // Grouping sekarang dilakukan berdasarkan nama merek dari relasi
-    $groupedCars = $availableCars->groupBy('carModel.brand.name');
+    $groupedCars = $availableCars->groupBy('carModel.name');
 
     return [
         'cars' => $groupedCars,
