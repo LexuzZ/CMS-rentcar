@@ -27,8 +27,11 @@ class MonthlyReportResource extends Resource
             ->query(
                 Payment::query()
                     ->select(
-                        DB::raw('YEAR(tanggal_pembayaran) as year'),
+                         DB::raw('YEAR(tanggal_pembayaran) as year'),
                         DB::raw('MONTH(tanggal_pembayaran) as month'),
+                        DB::raw("SUM(CASE WHEN status = 'lunas' THEN pembayaran ELSE 0 END) as net_revenue"),
+                        // Menjumlahkan tagihan dari yang belum lunas
+                        DB::raw("SUM(CASE WHEN status = 'belum_lunas' THEN pembayaran ELSE 0 END) as pending_revenue"),
                         DB::raw('COUNT(*) as transaction_count'),
                         DB::raw('SUM(pembayaran) as total_revenue')
                     )
@@ -38,19 +41,29 @@ class MonthlyReportResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('month')
                     ->label('Bulan')
-                    ->formatStateUsing(fn (string $state): string => \Carbon\Carbon::create()->month((int) $state)->locale('id')->isoFormat('MMMM'))
+                    ->formatStateUsing(fn(string $state): string => \Carbon\Carbon::create()->month((int) $state)->isoFormat('MMMM'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
                     ->label('Tahun')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('transaction_count')
-                    ->label('Total Transaksi')
+                    ->label('Transaksi')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('total_revenue')
+                    ,
+                Tables\Columns\TextColumn::make('net_revenue')
+                    ->label('Pendapatan (Lunas)')
+                    ->money('IDR', 0)
+                    ,
+                // Kolom baru untuk menampilkan tagihan yang belum lunas
+                Tables\Columns\TextColumn::make('pending_revenue')
+                    ->label('Tagihan (Belum Lunas)')
+                    ->money('IDR', 0)
+                    ->color('danger') // Memberi warna merah untuk menandakan tagihan
+                    ,
+                    Tables\Columns\TextColumn::make('total_revenue')
                     ->label('Total Pendapatan')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ->sortable(),
+                    ,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('year')
