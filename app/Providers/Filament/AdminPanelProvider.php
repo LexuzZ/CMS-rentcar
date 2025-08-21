@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
             // ->theme(asset('css/filament/admin/theme.css'))
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
-            ->sidebarWidth('20rem')
+            ->sidebarWidth('18rem')
             ->font('0.2rem')
             ->brandName('Semeton Pesiar')
             ->font('Inter')
