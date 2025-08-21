@@ -27,7 +27,7 @@ class MonthlyReportResource extends Resource
             ->query(
                 Payment::query()
                     ->select(
-                         DB::raw('YEAR(tanggal_pembayaran) as year'),
+                        DB::raw('YEAR(tanggal_pembayaran) as year'),
                         DB::raw('MONTH(tanggal_pembayaran) as month'),
                         DB::raw("SUM(CASE WHEN status = 'lunas' THEN pembayaran ELSE 0 END) as net_revenue"),
                         // Menjumlahkan tagihan dari yang belum lunas
@@ -49,21 +49,21 @@ class MonthlyReportResource extends Resource
                 Tables\Columns\TextColumn::make('transaction_count')
                     ->label('Transaksi')
                     ->numeric()
-                    ,
+                ,
                 Tables\Columns\TextColumn::make('net_revenue')
                     ->label('Pendapatan (Lunas)')
-                    ->money('IDR', 0)
-                    ,
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ,
                 // Kolom baru untuk menampilkan tagihan yang belum lunas
                 Tables\Columns\TextColumn::make('pending_revenue')
                     ->label('Tagihan (Belum Lunas)')
-                    ->money('IDR', 0)
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color('danger') // Memberi warna merah untuk menandakan tagihan
-                    ,
-                    Tables\Columns\TextColumn::make('total_revenue')
+                ,
+                Tables\Columns\TextColumn::make('total_revenue')
                     ->label('Total Pendapatan')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ,
+                ,
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('year')
@@ -79,7 +79,7 @@ class MonthlyReportResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['value'],
-                            fn (Builder $query, $value) => $query->whereYear('tanggal_pembayaran', $value)
+                            fn(Builder $query, $value) => $query->whereYear('tanggal_pembayaran', $value)
                         );
                     }),
             ])
@@ -87,7 +87,7 @@ class MonthlyReportResource extends Resource
                 Tables\Actions\Action::make('viewDetails')
                     ->label('Lihat Detail')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (Model $record): string => static::getUrl('details', ['record' => $record->year . '-' . $record->month])),
+                    ->url(fn(Model $record): string => static::getUrl('details', ['record' => $record->year . '-' . $record->month])),
             ])
             ->bulkActions([]);
     }
@@ -100,7 +100,13 @@ class MonthlyReportResource extends Resource
         ];
     }
 
-    public static function canCreate(): bool { return false; }
+    public static function canCreate(): bool
+    {
+        return false;
+    }
     // PERBAIKAN DI SINI: Method canView() dihapus
-    public static function canEdit(Model $record): bool { return false; }
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
 }
