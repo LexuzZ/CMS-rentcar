@@ -18,10 +18,9 @@ class PaymentExporter extends Exporter
                 ->label('ID'),
             ExportColumn::make('invoice.booking.customer.nama')
                 ->label('Customer'),
-            ExportColumn::make('invoice.booking.car.nama_mobil')
-                ->label('Mobil'),
-            ExportColumn::make('invoice.booking.car.nopol')
-                ->label('No. Polisi'),
+            ExportColumn::make('invoice.booking.car.carModel.brand.name')->label('Merek'),
+            ExportColumn::make('invoice.booking.car.carModel.name')->label('Model Mobil'),
+            ExportColumn::make('invoice.booking.car.nopol')->label('No. Polisi'),
             ExportColumn::make('invoice.booking.car.garasi')
                 ->label('Garasi'),
             // ExportColumn::make('invoice.booking.penalty.klaim')
