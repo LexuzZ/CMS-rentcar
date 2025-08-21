@@ -58,6 +58,7 @@ class PaymentResource extends Resource
                     ->relationship('invoice', 'id', fn($query) => $query->with(['booking.customer', 'booking.penalty']))
                     ->getOptionLabelFromRecordUsing(fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama)
                     ->required()
+                    ->searchable()
                     ->live()
                     ->afterStateUpdated(function (Forms\Set $set, ?string $state) {
                         $invoice = Invoice::with('booking.penalty')->find($state);
