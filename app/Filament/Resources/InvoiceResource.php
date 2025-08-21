@@ -102,11 +102,11 @@ class InvoiceResource extends Resource
                 Infolists\Components\Section::make('Aksi Cepat')
                     ->schema([
                         Infolists\Components\Actions::make([
-                            // Infolists\Components\Actions\Action::make('addPayment')
-                            //     ->label('Tambah Pembayaran')
-                            //     ->icon('heroicon-o-banknotes')
-                            //     ->color('success')
-                            //     ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
+                            Infolists\Components\Actions\Action::make('addPayment')
+                                ->label('Tambah Pembayaran')
+                                ->icon('heroicon-o-banknotes')
+                                ->color('success')
+                                ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
 
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
