@@ -52,7 +52,8 @@ class DetailMonthlyReport extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('invoice.id')->label('Faktur'),
-                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
+                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(250),
                 TextColumn::make('invoice.booking.total_hari')->label('Total Hari Sewa'),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('invoice.booking.car.garasi')->label('Vendor')->searchable(),
