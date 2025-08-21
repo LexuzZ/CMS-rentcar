@@ -58,7 +58,7 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('invoice.booking.car.garasi')->label('Vendor')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(250),
-                TextColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran')->date('d M Y'),
+                TextColumn::make('tanggal_pembayaran')->label('Tgl Pembayaran')->date('d M Y'),
                 TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('status')
                     ->label('Status')
