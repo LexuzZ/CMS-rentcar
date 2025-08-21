@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\CarResource\BookingsResource\RelationManagers;
 
+use App\Filament\Exports\PaymentExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,6 +25,9 @@ class BookingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('tanggal_keluar')->date(),
                 Tables\Columns\TextColumn::make('tanggal_kembali')->date(),
                 Tables\Columns\TextColumn::make('status')->badge(),
+            ])
+            ->headerActions([
+                ExportAction::make()->label('Export Excel')->exporter(PaymentExporter::class)
             ]);
     }
 }
