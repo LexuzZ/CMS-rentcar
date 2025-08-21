@@ -15,6 +15,7 @@ use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker};
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
 use Filament\Tables\Filters\Filter;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -181,16 +182,16 @@ class CarResource extends Resource
                     }),
             ])
             ->headerActions([
-                Action::make('sendWhatsapp')
-                    ->label('Kirim Daftar via WA')
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->color('success')
+                Action::make('copyList')
+                    ->label('Copy Daftar Mobil')
+                    ->icon('heroicon-o-clipboard-document')
+                    ->color('gray')
                     ->visible(function (Pages\ListCars $livewire): bool {
                         $filters = $livewire->tableFilters;
                         return !empty($filters['availability']['start_date']) && !empty($filters['availability']['end_date']);
                     })
-                    ->url(function (Pages\ListCars $livewire): string {
-                        // PERUBAHAN DI SINI: Menambahkan filter garasi
+                    // Membuka modal dengan konten dari file Blade
+                    ->modalContent(function (Pages\ListCars $livewire): View {
                         $cars = $livewire->getFilteredTableQuery()
                             ->where('garasi', 'SPT')
                             ->get();
@@ -199,16 +200,17 @@ class CarResource extends Resource
                         $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->isoFormat('D MMMM Y');
                         $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->isoFormat('D MMMM Y');
 
-                        $message = "Halo,\n\nBerikut adalah daftar mobil dari garasi SPT yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
+                        $textToCopy = "Halo,\n\nBerikut adalah daftar mobil dari garasi SPT yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
                         foreach ($cars as $index => $car) {
-                            $message .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
+                            $textToCopy .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
-                        $message .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.";
+                        $textToCopy .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.";
 
-                        $phoneNumber = '6281907367197';
-                        return 'https://wa.me/' . $phoneNumber . '?text=' . urlencode($message);
+                        return view('filament.actions.copy-car-list', ['textToCopy' => $textToCopy]);
                     })
-                    ->openUrlInNewTab(),
+                    // Menyembunyikan tombol default modal
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
