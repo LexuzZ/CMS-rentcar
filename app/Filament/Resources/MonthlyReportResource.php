@@ -16,7 +16,6 @@ class MonthlyReportResource extends Resource
     protected static ?string $model = Payment::class;
     protected static bool $shouldRegisterNavigation = true;
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
-    protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $modelLabel = 'Rekapan Bulanan';
     protected static ?string $pluralModelLabel = 'Rekapan Bulanan';
     protected static ?string $slug = 'laporan-bulanan';
