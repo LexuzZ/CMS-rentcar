@@ -19,7 +19,7 @@ class CarPerformanceReport extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?string $title = 'Laporan Mobil Bulanan';
 
-    protected static ?string $navigationLabel = 'Kinerja Mobil (Prorata)';
+    protected static ?string $navigationLabel = 'Laporan Mobil Bulanan';
 
     protected static string $view = 'filament.pages.car-performance-report';
 
