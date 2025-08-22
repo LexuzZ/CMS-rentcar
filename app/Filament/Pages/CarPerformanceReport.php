@@ -132,6 +132,7 @@ class CarPerformanceReport extends Page implements HasForms
                 }
 
                 $bookingsInMonth[] = [
+                    'id' => $booking->id, // <-- PERBAIKAN DI SINI
                     'customer' => $booking->customer->nama,
                     'start' => $booking->tanggal_keluar,
                     'end' => $booking->tanggal_kembali,
