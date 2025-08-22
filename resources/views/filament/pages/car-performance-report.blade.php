@@ -87,7 +87,8 @@
                                             <span x-text="new Date(booking.start).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })"></span> -
                                             <span x-text="new Date(booking.end).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                                         </td>
-                                        <td class="px-4 py-3 text-right" x-text="`Rp ${Number(booking.revenue).toLocaleString('id-ID')}`"></td>
+                                        {{-- PERBAIKAN DI SINI --}}
+                                        <td class="px-4 py-3 text-right" x-text="`Rp ${Number(booking.revenue).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`"></td>
                                     </tr>
                                 </template>
                             </tbody>
