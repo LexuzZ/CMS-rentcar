@@ -66,7 +66,7 @@
 
                     <div class="text-right">
                         <p class="font-semibold text-xs " >
-                            {{ \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM Y') }}
+                            {{ \Carbon\Carbon::parse($record->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y') }}
                         </p>
                     </div>
                 </div>
