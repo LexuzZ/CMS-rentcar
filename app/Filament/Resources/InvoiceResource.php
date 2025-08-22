@@ -99,7 +99,7 @@ class InvoiceResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Aksi Cepat')
+                Infolists\Components\Section::make('')
                     ->schema([
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('addPayment')
