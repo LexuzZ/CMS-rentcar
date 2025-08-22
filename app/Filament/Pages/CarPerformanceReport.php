@@ -153,4 +153,9 @@ class CarPerformanceReport extends Page implements HasForms
         $this->reportDateString = $startDate->format('Y-m'); // <-- Menyimpan Y-m untuk URL
         $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
     }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+    }
 }
