@@ -3,7 +3,9 @@
     <div x-data="{
             isModalOpen: false,
             modalBookings: [],
-            modalCarName: ''
+            modalCarName: '',
+            modalCarId: null,
+            reportDateString: @js($reportDateString)
         }">
         {{-- Filter Section --}}
         <x-filament::section>
@@ -24,7 +26,7 @@
                             <th scope="col" class="px-4 py-3">No. Polisi</th>
                             <th scope="col" class="px-4 py-3 text-center">Total Hari Disewa</th>
                             <th scope="col" class="px-4 py-3 text-right">Perkiraan Pendapatan</th>
-                            <th scope="col" class="px-4 py-3 text-center">Aksi</th> {{-- Kolom baru untuk tombol --}}
+                            <th scope="col" class="px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,9 +39,8 @@
                                 <td class="px-4 py-3 text-center">{{ $data['days_rented'] }} hari</td>
                                 <td class="px-4 py-3 text-right">Rp {{ number_format($data['revenue'], 0, ',', '.') }}</td>
                                 <td class="px-4 py-3 text-center">
-                                    {{-- Tombol untuk membuka modal --}}
                                     <button
-                                        @click="isModalOpen = true; modalBookings = @js($data['bookings']); modalCarName = '{{ $data['model'] }} ({{ $data['nopol'] }})'"
+                                        @click="isModalOpen = true; modalBookings = @js($data['bookings']); modalCarName = '{{ $data['model'] }} ({{ $data['nopol'] }})'; modalCarId = {{ $data['car_id'] }}"
                                         class="text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-400 font-medium">
                                         Lihat Detail
                                     </button>
@@ -92,7 +93,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-6 text-right">
+                    <div class="mt-6 flex justify-between items-center">
+                        {{-- Tombol Export Excel --}}
+                        <a :href="`/reports/export-car-bookings/${modalCarId}/${reportDateString.split('-')[0]}/${reportDateString.split('-')[1]}`"
+                           class="fi-btn fi-btn-color-success">
+                            Export Excel
+                        </a>
+                        {{-- Tombol Tutup --}}
                         <button @click="isModalOpen = false" class="fi-btn fi-btn-color-gray">Tutup</button>
                     </div>
                 </div>

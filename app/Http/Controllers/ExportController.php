@@ -2,97 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Payment;
-use LaravelDaily\Invoices\Invoice;
-use LaravelDaily\Invoices\Classes\Buyer;
-use LaravelDaily\Invoices\Classes\InvoiceItem;
-// use App\Models\Invoice;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Car;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use LaravelDaily\Invoices\Classes\Party;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
 {
-    public function download($record)
+    public function exportCarBookings(Car $car, int $year, int $month): StreamedResponse
     {
+        $startDate = Carbon::create($year, $month, 1)->startOfDay();
+        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
 
-        $invoiceModel = \App\Models\Invoice::with('booking.customer', 'booking.car', 'booking.penalty')->findOrFail($record);
-        $tanggalSewa = Carbon::parse($invoiceModel->booking->tanggal_keluar)->format('d M Y') . ' - ' .
-            Carbon::parse($invoiceModel->booking->tanggal_kembali)->format('d M Y');
+        $bookings = $car->bookings()
+            ->with('customer')
+            ->where('status', '!=', 'batal')
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->where('tanggal_keluar', '<=', $endDate)
+                  ->where('tanggal_kembali', '>=', $startDate);
+            })
+            ->get();
 
-        $buyer = new Buyer([
-            'name' => $invoiceModel->booking->customer->nama,
-            'custom_fields' => [
-                'Alamat' => $invoiceModel->booking->customer->alamat,
-                'No. Telp'   => $invoiceModel->booking->customer->no_telp,
-                'Mobil Sewa'   => $invoiceModel->booking->car->nama_mobil,
-                'Tanggal Sewa' => $tanggalSewa,
-                'Total Hari Sewa'   => $invoiceModel->booking->total_hari . ' Hari',
-            ],
-        ]);
+        $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.csv";
 
-        $seller = new Party([
-            'name' => 'PT Semeton Pesiar Trans',
-            'address' => 'Jl. Panji Tilar Negara Jl. Batu Ringgit No.218, Tj. Karang, Kec. Mataram, Kota Mataram, Nusa Tenggara Bar. 83117',
-            'custom_fields' => [
-                'METODE PEMBAYARAN' => '',
-                'Mandiri' => '1610006892835 (ACHMAD MUZAMMIL)',
-                'BCA' => '2320418758 (SRI NOVYANA)',
-            ],
-        ]);
-
-        $items = [
-            InvoiceItem::make('Biaya Pengantaran')
-                ->pricePerUnit((float) $invoiceModel->pickup_dropOff),
-
-
-            InvoiceItem::make('Uang Muka')
-                ->pricePerUnit((float) $invoiceModel->dp),
-            InvoiceItem::make('Sisa Pembayaran')
-                ->pricePerUnit((float) $invoiceModel->sisa_pembayaran),
-
-
-
-
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
         ];
 
+        $columns = ['Pelanggan', 'Tanggal Keluar', 'Tanggal Kembali', 'Pendapatan (Rp)'];
 
+        $callback = function() use($bookings, $columns, $startDate, $endDate) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
 
+            foreach ($bookings as $booking) {
+                $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
+                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->startOfDay();
+                $effectiveStartDate = $bookingStart->copy()->max($startDate);
+                $effectiveEndDate = $bookingEnd->copy()->min($endDate);
+                $daysInMonth = $effectiveStartDate->diffInDays($effectiveEndDate) + 1;
 
+                $revenueInMonth = 0;
+                if ($booking->total_hari > 0) {
+                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
+                    $revenueInMonth = $dailyRate * $daysInMonth;
+                }
 
+                $row = [
+                    $booking->customer->nama,
+                    $booking->tanggal_keluar,
+                    $booking->tanggal_kembali,
+                    round($revenueInMonth)
+                ];
 
+                fputcsv($file, $row);
+            }
 
+            fclose($file);
+        };
 
-
-
-
-        $invoice = Invoice::make('Invoice')
-            ->series('BIG')
-            // ability to include translated invoice status
-            // in case it was paid
-            ->sequence(667)
-            ->serialNumberFormat('{SEQUENCE}/{SERIES}')
-            ->date(now())
-            ->dateFormat('m/d/Y')
-            ->payUntilDays(14)
-            ->currencySymbol('Rp ')
-            ->currencyCode('IDR')
-            ->currencyFormat('{SYMBOL}{VALUE}')
-            ->currencyThousandsSeparator('.')
-            ->currencyDecimalPoint(',')
-            ->logo(public_path('spt.png'))
-            ->seller($seller)
-            ->buyer($buyer)
-            ->addItems($items)
-            // You can additionally save generated invoice to configured disk
-            ->save('public');
-
-        $link = $invoice->url();
-        // Then send email to party with link
-
-        // And return invoice itself to browser or have a different view
-        return $invoice->stream();
+        return response()->stream($callback, 200, $headers);
     }
 }

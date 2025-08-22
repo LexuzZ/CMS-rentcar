@@ -18,15 +18,16 @@ class CarPerformanceReport extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $title = 'Laporan Kinerja Mobil Bulanan';
-
-    protected static ?string $navigationLabel = 'Laporan Mobil Bulanan';
+    protected static ?string $title = 'Laporan Kinerja Mobil (Prorata)';
+    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationLabel = 'Kinerja Mobil (Prorata)';
 
     protected static string $view = 'filament.pages.car-performance-report';
 
     public ?array $filterData = [];
     public array $reportTableData = [];
     public string $reportTitle = '';
+    public string $reportDateString = ''; // Properti baru untuk menyimpan Y-m
 
     public function mount(): void
     {
@@ -119,9 +120,8 @@ class CarPerformanceReport extends Page implements HasForms
                 $effectiveStartDate = $bookingStart->copy()->max($startDate);
                 $effectiveEndDate = $bookingEnd->copy()->min($endDate);
 
-                // PERBAIKAN LOGIKA PERHITUNGAN HARI
                 $days = $effectiveStartDate->diffInDays($effectiveEndDate);
-                $daysInMonth = $days > 0 ? $days : 1; // Jika selisih 0 (sewa 1 hari), hitung sebagai 1
+                $daysInMonth = $days >= 0 ? $days + 1 : 1;
 
                 $totalDaysInMonth += $daysInMonth;
 
@@ -132,7 +132,7 @@ class CarPerformanceReport extends Page implements HasForms
                 }
 
                 $bookingsInMonth[] = [
-                    'id' => $booking->id, // <-- PERBAIKAN DI SINI
+                    'id' => $booking->id,
                     'customer' => $booking->customer->nama,
                     'start' => $booking->tanggal_keluar,
                     'end' => $booking->tanggal_kembali,
@@ -141,15 +141,17 @@ class CarPerformanceReport extends Page implements HasForms
             }
 
             $data[] = [
-                'model' => $car->carModel->brand->name . ' ' . $car->carModel->name,
-                'nopol' => $car->nopol,
+                'car_id'    => $car->id, // <-- Menambahkan ID mobil
+                'model'     => $car->carModel->brand->name . ' ' . $car->carModel->name,
+                'nopol'     => $car->nopol,
                 'days_rented' => $totalDaysInMonth,
-                'revenue' => $totalRevenueInMonth,
-                'bookings' => $bookingsInMonth,
+                'revenue'   => $totalRevenueInMonth,
+                'bookings'  => $bookingsInMonth,
             ];
         }
 
         $this->reportTitle = $startDate->isoFormat('MMMM YYYY');
+        $this->reportDateString = $startDate->format('Y-m'); // <-- Menyimpan Y-m untuk URL
         $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
     }
 }
