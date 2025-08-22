@@ -18,9 +18,9 @@ class CarPerformanceReport extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $title = 'Laporan Kinerja Mobil (Prorata)';
-    protected static ?string $navigationGroup = 'Laporan';
-    protected static ?string $navigationLabel = 'Kinerja Mobil (Prorata)';
+    protected static ?string $title = 'Laporan Kinerja Mobil Bulanan';
+
+    protected static ?string $navigationLabel = 'Laporan Kinerja Mobil Bulanan';
 
     protected static string $view = 'filament.pages.car-performance-report';
 
