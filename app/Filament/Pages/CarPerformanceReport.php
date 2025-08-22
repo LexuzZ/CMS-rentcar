@@ -49,7 +49,7 @@ class CarPerformanceReport extends Page implements HasForms
                     Select::make('month')
                         ->label('Pilih Bulan')
                         ->options(array_reduce(range(1, 12), function ($carry, $month) {
-                            $carry[$month] = Carbon::create(null, $month)->isoFormat('MMMM');
+                            $carry[$month] = Carbon::create(null, $month)->locale('id')->isoFormat('MMMM');
                             return $carry;
                         }, []))
                         ->live(),
