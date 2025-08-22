@@ -49,9 +49,8 @@
                                 $color = '#EF4444'; // Merah untuk 7 hari ke depan
                             } elseif ($daysRemaining <= 30) {
                                 $color = '#F59E0B'; // Kuning/Amber untuk 1 bulan ke depan
-                            } else {
-                                $color = '#10B981'; // Hijau untuk yang masih lama
                             }
+
                         @endphp
 
                         <span class="font-bold" style="color: {{ $color }};">

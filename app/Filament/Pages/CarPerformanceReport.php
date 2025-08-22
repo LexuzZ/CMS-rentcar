@@ -120,7 +120,7 @@ class CarPerformanceReport extends Page implements HasForms
                 $effectiveEndDate = $bookingEnd->copy()->min($endDate);
 
                 $days = $effectiveStartDate->diffInDays($effectiveEndDate);
-                $daysInMonth = $days >= 0 ? $days + 1 : 1;
+                $daysInMonth = $days >= 0 ? $days : 1;
 
                 $totalDaysInMonth += $daysInMonth;
 
