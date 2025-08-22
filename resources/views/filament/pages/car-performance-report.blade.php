@@ -97,7 +97,7 @@
                     <div class="mt-6 flex justify-between items-center">
                         {{-- Tombol Export Excel --}}
                         <a :href="`/reports/export-car-bookings/${modalCarId}/${reportDateString.split('-')[0]}/${reportDateString.split('-')[1]}`"
-                           class="fi-btn fi-btn-color-success">
+                           style="color: #10b981; text-decoration: none; font-weight: 500; ">
                             Export Excel
                         </a>
                         {{-- Tombol Tutup --}}
