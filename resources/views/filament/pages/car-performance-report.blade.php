@@ -24,8 +24,8 @@
                         <tr>
                             <th scope="col" class="px-4 py-3">Mobil</th>
                             <th scope="col" class="px-4 py-3">No. Polisi</th>
-                            <th scope="col" class="px-4 py-3 text-center">Total Hari Disewa</th>
-                            <th scope="col" class="px-4 py-3 text-right">Perkiraan Pendapatan</th>
+                            <th scope="col" class="px-4 py-3 text-center">Total Hari</th>
+                            <th scope="col" class="px-4 py-3 text-right">Pendapatan</th>
                             <th scope="col" class="px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>

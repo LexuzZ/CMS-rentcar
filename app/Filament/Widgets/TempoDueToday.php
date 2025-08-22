@@ -20,12 +20,10 @@ class TempoDueToday extends Widget
     {
         $tempos = Tempo::query()
             ->with(['car.carModel.brand']) // Eager load untuk efisiensi
-            // Ambil semua tempo yang jatuh tempo hari ini atau di masa depan
-            ->where('jatuh_tempo', '>=', today())
+            // PERUBAHAN DI SINI: Mengambil data antara hari ini dan 30 hari ke depan
+            ->whereBetween('jatuh_tempo', [today(), today()->addMonth()])
             // Urutkan dari yang paling dekat tanggalnya
             ->orderBy('jatuh_tempo', 'asc')
-            // PERUBAHAN DI SINI: Ambil hanya 5 data teratas
-            ->take(4)
             ->get();
 
         return [
