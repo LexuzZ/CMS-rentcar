@@ -15,6 +15,7 @@ class AvailableCarsOverview extends Widget
     {
          $availableCars = Car::with(['carModel']) // <-- Eager load relasi
         ->where('status', 'ready')
+        ->where('garasi', 'SPT')
         ->get();
 
     // Grouping sekarang dilakukan berdasarkan nama merek dari relasi
