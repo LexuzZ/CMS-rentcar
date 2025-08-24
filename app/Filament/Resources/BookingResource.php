@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Brand;
 use App\Models\Car;
 use App\Models\CarModel;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists; // <-- 1. Import Infolist
@@ -15,6 +16,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -324,6 +326,46 @@ class BookingResource extends Resource
 
             ])
             ->defaultSort('tanggal_keluar', 'desc')
+            ->filters([
+                Filter::make('tanggal_keluar')
+                    ->form([
+                        Forms\Components\DatePicker::make('tanggal_keluar')
+                            ->label('Tanggal Keluar'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['tanggal_keluar'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_keluar', $date)
+                        );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (! $data['tanggal_keluar']) {
+                            return null;
+                        }
+                        $date = Carbon::parse($data['tanggal_keluar'])->isoFormat('D MMM Y');
+                        return "Tanggal Keluar: {$date}";
+                    }),
+
+                // -- PENAMBAHAN FILTER BARU DI SINI --
+                Filter::make('tanggal_kembali')
+                    ->form([
+                        Forms\Components\DatePicker::make('tanggal_kembali')
+                            ->label('Tanggal Kembali'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['tanggal_kembali'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_kembali', $date)
+                        );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (! $data['tanggal_kembali']) {
+                            return null;
+                        }
+                        $date = Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
+                        return "Tanggal Kembali: {$date}";
+                    }),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
