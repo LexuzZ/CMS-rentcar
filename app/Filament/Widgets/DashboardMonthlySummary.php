@@ -13,9 +13,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DashboardMonthlySummary extends BaseWidget
 {
-    protected static ?string $heading = 'Ikhtisar Bulanan';
-    protected static ?int $sort = 1;
-    protected int|string|array $columnSpan = 'full';
+
 
     protected function getStats(): array
     {
@@ -49,6 +47,7 @@ class DashboardMonthlySummary extends BaseWidget
                 ->description("Jumlah Booking Bulan Ini")
                 ->icon('heroicon-o-truck')
                 ->color('primary'),
+
 
 
 
