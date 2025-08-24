@@ -15,18 +15,25 @@ class MobilKeluar extends Widget
     // Properti dari widget lama Anda
     protected static ?string $heading = 'Mobil Keluar Hari Ini';
     protected static ?int $sort = 2;
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     // Pindahkan query ke getViewData()
     protected function getViewData(): array
     {
-        $bookings = Booking::with(['car', 'customer', 'driver'])
+        $today = \Carbon\Carbon::today();
+        $tomorrow = \Carbon\Carbon::tomorrow();
+
+        $bookings = Booking::with(['car.carModel.brand', 'customer', 'driver'])
             ->where('status', 'booking')
-            ->whereDate('tanggal_keluar', \Carbon\Carbon::today()->locale('id'))
+            ->whereDate('tanggal_keluar', '>=', $today)
+            ->whereDate('tanggal_keluar', '<=', $tomorrow) // ambil hari ini & besok
+            ->orderBy('tanggal_keluar')
+            ->orderBy('waktu_keluar')
             ->get();
 
         return [
             'bookings' => $bookings,
         ];
     }
+
 }
