@@ -13,9 +13,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DashboardMonthlySummary extends BaseWidget
 {
+    protected static ?string $heading = 'Ikhtisar Bulanan';
+    protected static ?int $sort = 1;
     protected int|string|array $columnSpan = 'full';
 
-   protected function getStats(): array
+    protected function getStats(): array
     {
         $today = Carbon::today();
         $returnsToday = Booking::whereDate('tanggal_kembali', $today)->count();
@@ -43,6 +45,10 @@ class DashboardMonthlySummary extends BaseWidget
                 ->description('Jumlah mobil yang kembali hari ini')
                 ->icon('heroicon-o-bell-alert')
                 ->color($returnsToday > 0 ? 'warning' : 'gray'),
+            Stat::make('Mobil Disewa', $carsRented)
+                ->description("Jumlah Booking Bulan Ini")
+                ->icon('heroicon-o-truck')
+                ->color('primary'),
 
 
 
