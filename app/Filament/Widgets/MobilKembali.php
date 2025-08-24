@@ -17,13 +17,19 @@ class MobilKembali extends Widget
     // 2. Method untuk mengambil dan mengirim data ke view
     protected function getViewData(): array
     {
-        $bookings = Booking::with(['car', 'customer', 'driver'])
-            ->where('status', 'disewa')
-            ->whereDate('tanggal_kembali', \Carbon\Carbon::today()->locale('id'))
+        $today = \Carbon\Carbon::today();
+        $tomorrow = \Carbon\Carbon::tomorrow();
+
+        $bookings = Booking::with(['car.carModel.brand', 'customer', 'driver'])
+            ->where('status', 'booking')
+            ->whereDate('tanggal_kembali', '>=', $today)
+            ->whereDate('tanggal_kembali', '<=', $tomorrow) // ambil hari ini & besok
+            ->orderBy('tanggal_kembali')
+            ->orderBy('waktu_kembali')
             ->get();
 
         return [
-            'bookings' => $bookings, // Kirim data dengan nama 'bookings'
+            'bookings' => $bookings,
         ];
     }
 }
