@@ -72,12 +72,12 @@ class AdminPanelProvider extends PanelProvider
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 WidgetsAvailableCarsOverview::class,
-                StaffRankingWidget::class,
-                MonthlyStaffRankingWidget::class,
                 DashboardMonthlySummary::class,
                 MobilKembali::class,
                 TempoDueToday::class,
                 MobilKeluar::class,
+                StaffRankingWidget::class,
+                MonthlyStaffRankingWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
