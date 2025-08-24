@@ -12,7 +12,7 @@ class MobilKembali extends Widget
 
     protected static ?string $heading = 'Mobil Kembali Hari Ini';
     protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     // 2. Method untuk mengambil dan mengirim data ke view
     protected function getViewData(): array
@@ -21,11 +21,8 @@ class MobilKembali extends Widget
         $tomorrow = \Carbon\Carbon::tomorrow();
 
         $bookings = Booking::with(['car.carModel.brand', 'customer', 'driver'])
-            ->where('status', 'booking')
-            ->whereDate('tanggal_kembali', '>=', $today)
-            ->whereDate('tanggal_kembali', '<=', $tomorrow) // ambil hari ini & besok
-            ->orderBy('tanggal_kembali')
-            ->orderBy('waktu_kembali')
+            ->where('status', 'disewa')
+            ->whereBetween('tanggal_kembali', [$today, $tomorrow])
             ->get();
 
         return [
