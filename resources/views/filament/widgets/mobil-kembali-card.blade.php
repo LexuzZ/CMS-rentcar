@@ -71,7 +71,7 @@
                         <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
                         <div class="text-right">
                             <p class="font-semibold text-xs">
-                                Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') }} WIB
+                                Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->locale('id')->format('H:i') }} WITA
                             </p>
                         </div>
                     </div>
