@@ -20,6 +20,7 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
     // Arahkan ke file view yang baru
     protected static string $view = 'filament.widgets.monthly-staff-ranking-widget';
     protected int|string|array $columnSpan = 'full';
+    protected static ?int $sort = 7;
     public ?array $data = [];
 
     /**
