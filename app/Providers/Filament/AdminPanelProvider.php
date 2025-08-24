@@ -6,6 +6,7 @@ use App\Filament\Resources\CarResource\Widgets\AvailableCarsOverview;
 use App\Filament\Resources\CarResource\Widgets\MobilReadyStats;
 use App\Filament\Widgets\AnnouncementWidget;
 use App\Filament\Widgets\AvailableCarsOverview as WidgetsAvailableCarsOverview;
+use App\Filament\Widgets\DashboardMonthlySummary;
 use App\Filament\Widgets\InvoiceTable;
 use App\Filament\Widgets\MobilKeluar;
 use App\Filament\Widgets\MobilKembali;
@@ -49,20 +50,18 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky, // Warna utama sekarang ungu
                 'success' => Color::Lime,   // Warna sukses sekarang hijau limau
-                'danger'  => Color::Rose,   // Warna bahaya sekarang merah mawar
-                'info'    => Color::Blue,    // Warna info menjadi biru langit
+                'danger' => Color::Rose,   // Warna bahaya sekarang merah mawar
+                'info' => Color::Blue,    // Warna info menjadi biru langit
                 'warning' => Color::Orange, // Warna peringatan menjadi oranye
-                'gray'    => Color::Slate,  // Warna abu-abu menjadi lebih kebiruan
+                'gray' => Color::Slate,  // Warna abu-abu menjadi lebih kebiruan
 
             ])
-            // ->theme(asset('css/filament/admin/theme.css'))
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
             ->sidebarWidth('18rem')
             ->font('0.2rem')
             ->brandName('Semeton Pesiar')
             ->font('Inter')
-            // ->viteTheme('resources/css/app.css')
             ->databaseNotifications()
             ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -72,22 +71,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-
-
                 WidgetsAvailableCarsOverview::class,
                 StaffRankingWidget::class,
                 MonthlyStaffRankingWidget::class,
-
+                DashboardMonthlySummary::class,
                 MobilKembali::class,
                 TempoDueToday::class,
-
-                // \App\Filament\Widgets\MonthlyRevenueChart::class,
                 MobilKeluar::class,
-
-
-                // MobilReadyStats::class,
-
-
             ])
             ->middleware([
                 EncryptCookies::class,
