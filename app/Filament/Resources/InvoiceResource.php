@@ -145,7 +145,7 @@ class InvoiceResource extends Resource
                                         $message .= "-----------------------------------\n";
                                         $message .= "*Rincian Sewa:*\n";
                                         $message .= "• *Mobil:* {$carDetails}\n";
-                                        $message .= "• *Harga Harian:* {$carPrice}\n";
+                                        $message .= "• *Harga Harian:*  " . 'Rp ' . number_format($carPrice, 0, ',', '.') . "\n";
                                         $message .= "• *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
                                         $message .= "• *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
                                         if ($record->pickup_dropOff > 0) {
