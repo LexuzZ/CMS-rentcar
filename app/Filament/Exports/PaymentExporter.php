@@ -86,7 +86,7 @@ class PaymentExporter extends Exporter
                     $totalDenda = $invoice?->booking?->penalty?->sum('amount') ?? 0;
 
                     return $totalInvoice + $totalDenda;
-                })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                }),
             ExportColumn::make('metode_pembayaran'),
 
             ExportColumn::make('status'),
