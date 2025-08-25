@@ -231,7 +231,7 @@
             </table>
         </div>
 
-        <div class="totals-table">
+        <div style="width: 40%; vertical-align: top;">
             <table class="totals-table">
                 @php
                     $totalDenda = $invoice->booking->penalty->sum('amount');
