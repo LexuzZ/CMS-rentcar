@@ -35,7 +35,7 @@ class DashboardMonthlySummary extends BaseWidget
 
 
         return [
-            Stat::make('Pemesanan Hari Ini', $bookingsToday)
+            Stat::make('Mobil Keluar Hari Ini', $bookingsToday)
                 ->description('Pemesanan yang dimulai hari ini')
                 ->icon('heroicon-o-calendar')
                 ->color('primary'),
