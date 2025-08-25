@@ -236,7 +236,6 @@
                 @php
                     $totalDenda = $invoice->booking->penalty->sum('amount');
                     $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
-                     $sisaPembayaran = $totalTagihan - $record->dp;
                 @endphp
                 <tr>
                     <td>Subtotal</td>
@@ -249,7 +248,7 @@
                 <tr>
                     <td><strong>Sisa Pembayaran</strong></td>
                     <td class="text-right"><strong>Rp
-                            {{ number_format($sisa_pembayaran, 0, ',', '.') }}</strong></td>
+                            {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
                 </tr>
             </table>
         </div>
