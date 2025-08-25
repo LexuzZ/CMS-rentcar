@@ -3,30 +3,66 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Booking;
-use Filament\Widgets\Widget; // <-- Ganti menjadi Widget dasar
+use Filament\Notifications\Notification;
+use Filament\Widgets\Widget;
 
 class MobilKembali extends Widget
 {
-    // 1. Definisikan file Blade yang akan kita gunakan
     protected static string $view = 'filament.widgets.mobil-kembali-card';
 
-    protected static ?string $heading = 'Mobil Kembali Hari Ini';
+    protected static ?string $heading = 'Mobil Kembali Hari Ini & Besok';
     protected static ?int $sort = 3;
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 
-    // 2. Method untuk mengambil dan mengirim data ke view
+    /**
+     * Aksi ini akan dipanggil oleh tombol "Selesaikan" pada setiap kartu.
+     */
+    public function selesaikanBooking(int $bookingId): void
+    {
+        $booking = Booking::find($bookingId);
+
+        if ($booking) {
+            // Ubah status booking menjadi 'selesai'
+            $booking->status = 'selesai';
+            // Ubah juga status mobil menjadi 'ready'
+            $booking->car->status = 'ready';
+
+            $booking->save();
+            $booking->car->save();
+
+            Notification::make()
+                ->title('Sewa Selesai')
+                ->body("Booking untuk mobil {$booking->car->nopol} telah berhasil diselesaikan.")
+                ->success()
+                ->send();
+        }
+    }
+
+    /**
+     * Mengambil data untuk dikirim ke view.
+     */
     protected function getViewData(): array
     {
-        $today = \Carbon\Carbon::today();
-        $tomorrow = \Carbon\Carbon::tomorrow();
+        $today = \Carbon\Carbon::today('Asia/Jakarta');
+        $tomorrow = \Carbon\Carbon::tomorrow('Asia/Jakarta');
 
-        $bookings = Booking::with(['car.carModel.brand', 'customer', 'driver'])
+        // Mengambil data untuk hari ini
+        $bookingsToday = Booking::with(['car.carModel.brand', 'customer', 'driver'])
             ->where('status', 'disewa')
-            ->whereBetween('tanggal_kembali', [$today, $tomorrow])
+            ->whereDate('tanggal_kembali', $today)
+            ->orderBy('waktu_kembali')
+            ->get();
+
+        // Mengambil data untuk besok
+        $bookingsTomorrow = Booking::with(['car.carModel.brand', 'customer', 'driver'])
+            ->where('status', 'disewa')
+            ->whereDate('tanggal_kembali', $tomorrow)
+            ->orderBy('waktu_kembali')
             ->get();
 
         return [
-            'bookings' => $bookings,
+            'bookingsToday' => $bookingsToday,
+            'bookingsTomorrow' => $bookingsTomorrow,
         ];
     }
 }

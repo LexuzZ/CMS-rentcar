@@ -4,6 +4,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Booking;
+use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 
 // Ganti nama kelasnya
@@ -17,6 +18,26 @@ class MobilKeluar extends Widget
     protected static ?int $sort = 2;
     protected int|string|array $columnSpan = 'full';
 
+    public function pickupBooking(int $bookingId): void
+    {
+        $booking = Booking::with('car')->find($bookingId);
+
+        if ($booking) {
+            // Ubah status booking menjadi 'disewa'
+            $booking->status = 'disewa';
+            // Ubah juga status mobil menjadi 'disewa'
+            $booking->car->status = 'disewa';
+
+            $booking->save();
+            $booking->car->save();
+
+            Notification::make()
+                ->title('Mobil Telah Diambil')
+                ->body("Booking untuk mobil {$booking->car->nopol} telah diubah menjadi 'Disewa'.")
+                ->success()
+                ->send();
+        }
+    }
     // Pindahkan query ke getViewData()
     protected function getViewData(): array
     {
