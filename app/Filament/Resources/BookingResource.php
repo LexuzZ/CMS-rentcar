@@ -126,7 +126,13 @@ class BookingResource extends Resource
                                 });
                         }
                     )
-                    ->getOptionLabelFromRecordUsing(fn (Car $record) => "{$record->carModel->name} ({$record->nopol}) - {$record->garasi}")
+                    ->getOptionLabelFromRecordUsing(function (Car $record) {
+                        $label = "{$record->carModel->name} ({$record->nopol})";
+                        if ($record->garasi !== 'SPT') {
+                            $label .= " - {$record->garasi}";
+                        }
+                        return $label;
+                    })
                     ->preload()
                     ->live()
                     ->required()
