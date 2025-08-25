@@ -132,7 +132,6 @@ class InvoiceResource extends Resource
 
                                         // Mengambil detail mobil dan tanggal
                                         $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
-                                        $carPrice = $record->booking->car->harga_harian;
                                         $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y');
                                         $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y');
                                         $totalHari = $record->booking->total_hari;
