@@ -39,26 +39,26 @@ class PaymentExporter extends Exporter
             ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
             // ExportColumn::make('invoice.booking.penalty.amount'),
             ExportColumn::make('invoice.total')
-                ->label('Total Invoice'),
+                ->label('Total Invoice')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('invoice.booking.car.harga_pokok')
-                ->label('Harga Pokok').
+                ->label('Harga Pokok')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('invoice.booking.car.harga_harian')
-                ->label('Harga Harian'),
+                ->label('Harga Harian')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('total_bbm')
                 ->label('Total BBM')
                 ->getStateUsing(function ($record) {
                     return $record->invoice
                         ? $record->invoice->booking->penalty->where('klaim', 'bbm')->sum('amount')
                         : 0;
-                }), // Tanpa 2 digit desimal
+                }),
             ExportColumn::make('total_overtime')
                 ->label('Total Overtime')
                 ->getStateUsing(function ($record) {
                     return $record->invoice
                         ? $record->invoice->booking->penalty->where('klaim', 'overtime')->sum('amount')
                         : 0;
-                }),// Tanpa 2 digit desimal
-
+                })
+            ,
 
             ExportColumn::make('total_baret')
                 ->label('Total Baret')
@@ -66,11 +66,16 @@ class PaymentExporter extends Exporter
                     return $record->invoice
                         ? $record->invoice->booking->penalty->where('klaim', 'baret')->sum('amount')
                         : 0;
-                }) // Tanpa 2 digit desimal
+                })
             ,
+            // ExportColumn::make('invoice.booking.penalty.amount')
+            //     ->label('Total Denda')
+            //     ->formatStateUsing(function ($record) {
+            //         $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
+            //         return 'Rp ' . number_format($total, 0, ',', '.');
+            //     })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) ,
 
-
-            ExportColumn::make('pembayaran')
+            ExportColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->label('Pembayaran'),
             ExportColumn::make('total_bayar')
                 ->label('Jumlah Bayar')->getStateUsing(function ($record) {
