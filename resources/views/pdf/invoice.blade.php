@@ -248,7 +248,7 @@
                 <tr>
                     <td><strong>Sisa Pembayaran</strong></td>
                     <td class="text-right"><strong>Rp
-                         {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
+                            {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
                 </tr>
             </table>
         </div>
