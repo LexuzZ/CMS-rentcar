@@ -231,26 +231,27 @@
             </table>
         </div>
 
-        <td style="width: 40%; vertical-align: top;">
-                        <table class="totals-table">
-                            @php
-                                $totalDenda = $invoice->booking->penalty->sum('amount');
-                                $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
-                            @endphp
-                            <tr>
-                                <td>Subtotal</td>
-                                <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td>Uang Muka (DP)</td>
-                                <td class="text-right">- Rp {{ number_format($invoice->dp, 0, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sisa Pembayaran</strong></td>
-                                <td class="text-right"><strong>Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
-                            </tr>
-                        </table>
-                    </td>
+        <div class="totals-table">
+            <table class="totals-table">
+                @php
+                    $totalDenda = $invoice->booking->penalty->sum('amount');
+                    $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
+                @endphp
+                <tr>
+                    <td>Subtotal</td>
+                    <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Uang Muka (DP)</td>
+                    <td class="text-right">- Rp {{ number_format($invoice->dp, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Sisa Pembayaran</strong></td>
+                    <td class="text-right"><strong>Rp
+                         {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</strong></td>
+                </tr>
+            </table>
+        </div>
 
         <div class="clear"></div>
 
