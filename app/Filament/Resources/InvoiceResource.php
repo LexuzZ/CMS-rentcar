@@ -132,6 +132,7 @@ class InvoiceResource extends Resource
 
                                         // Mengambil detail mobil dan tanggal
                                         $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
+                                        $carPrice = $record->booking->car->harga_harian;
                                         $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y');
                                         $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y');
                                         $totalHari = $record->booking->total_hari;
@@ -144,6 +145,7 @@ class InvoiceResource extends Resource
                                         $message .= "-----------------------------------\n";
                                         $message .= "*Rincian Sewa:*\n";
                                         $message .= "• *Mobil:* {$carDetails}\n";
+                                        $message .= "• *Harga Harian:* {$carPrice}\n";
                                         $message .= "• *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
                                         $message .= "• *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
                                         if ($record->pickup_dropOff > 0) {
