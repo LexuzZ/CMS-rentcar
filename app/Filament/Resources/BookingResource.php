@@ -81,6 +81,16 @@ class BookingResource extends Resource
                 Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
                 Forms\Components\TimePicker::make('waktu_kembali')->label('Waktu Kembali')->seconds(false)->disabled($isNotAdmin),
 
+                Forms\Components\Select::make('garasi_type')
+                    ->label('Pilih Garasi')
+                    ->options([
+                        'spt' => 'Garasi SPT',
+                        'vendor' => 'Garasi Vendor',
+                    ])
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null)) // Kosongkan pilihan mobil
+                    ->dehydrated(false), // Field ini virtual, tidak disimpan
+
                 Forms\Components\Select::make('car_id')
                     ->label('Unit Mobil Tersedia')
                     ->relationship(
@@ -90,17 +100,25 @@ class BookingResource extends Resource
                             $startDate = $get('tanggal_keluar');
                             $endDate = $get('tanggal_kembali');
                             $recordId = $get('id');
+                            $garasiType = $get('garasi_type'); // Ambil nilai dari filter garasi
 
-                            if (!$startDate || !$endDate) {
+                            // Jika tanggal atau tipe garasi belum diisi, jangan tampilkan mobil
+                            if (!$startDate || !$endDate || !$garasiType) {
                                 return $query->whereRaw('1 = 0');
                             }
 
-                            // Query untuk mencari mobil yang TIDAK memiliki booking yang tumpang tindih
+                            // Terapkan filter garasi
+                            if ($garasiType === 'spt') {
+                                $query->where('garasi', 'SPT');
+                            } else {
+                                $query->where('garasi', '!=', 'SPT');
+                            }
+
+                            // Terapkan filter ketersediaan tanggal
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
                                 ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
                                     $bookingQuery->where('id', '!=', $recordId)
-                                        // PERBAIKAN: Menggunakan logika overlap yang lebih sederhana dan andal
                                         ->where(function (Builder $q) use ($startDate, $endDate) {
                                             $q->where('tanggal_keluar', '<', $endDate)
                                               ->where('tanggal_kembali', '>', $startDate);
