@@ -234,8 +234,12 @@
         <div class="totals-table">
             <table>
                 @php
-                    $totalDenda = $invoice->booking->penalty->sum('amount');
-                    $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
+                    // $totalDenda = $invoice->booking->penalty->sum('amount');
+                    // $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
+
+                    $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
+                    $totalTagihan = $invoice->booking?->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
+                    $sisaPembayaran = $totalTagihan - $record->dp;
                 @endphp
                 <tr>
                     <td>Sisa Pembayaran</td>
