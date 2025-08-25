@@ -76,7 +76,7 @@
         }
 
         .totals-table {
-            width: 40%;
+            width: 50%;
             float: right;
             margin-top: 20px;
         }
