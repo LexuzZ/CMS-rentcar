@@ -13,27 +13,33 @@ class MobilKeluar extends Widget
     protected static string $view = 'filament.widgets.mobil-keluar-card';
 
     // Properti dari widget lama Anda
-    protected static ?string $heading = 'Mobil Keluar Hari Ini';
+    protected static ?string $heading = 'Mobil Keluar Hari Ini & Besok';
     protected static ?int $sort = 2;
     protected int|string|array $columnSpan = 'full';
 
     // Pindahkan query ke getViewData()
     protected function getViewData(): array
     {
-        $today = \Carbon\Carbon::today();
-        $tomorrow = \Carbon\Carbon::tomorrow();
+        $today = \Carbon\Carbon::today('Asia/Jakarta');
+        $tomorrow = \Carbon\Carbon::tomorrow('Asia/Jakarta');
 
-        $bookings = Booking::with(['car.carModel.brand', 'customer', 'driver'])
+        // Mengambil data untuk hari ini
+        $bookingsToday = Booking::with(['car.carModel.brand', 'customer', 'driver'])
             ->where('status', 'booking')
-            ->whereDate('tanggal_keluar', '>=', $today)
-            ->whereDate('tanggal_keluar', '<=', $tomorrow) // ambil hari ini & besok
-            ->orderBy('tanggal_keluar')
+            ->whereDate('tanggal_keluar', $today)
+            ->orderBy('waktu_keluar')
+            ->get();
+
+        // Mengambil data untuk besok
+        $bookingsTomorrow = Booking::with(['car.carModel.brand', 'customer', 'driver'])
+            ->where('status', 'booking')
+            ->whereDate('tanggal_keluar', $tomorrow)
             ->orderBy('waktu_keluar')
             ->get();
 
         return [
-            'bookings' => $bookings,
+            'bookingsToday' => $bookingsToday,
+            'bookingsTomorrow' => $bookingsTomorrow,
         ];
     }
-
 }
