@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceHistoryResource extends Resource
 {
@@ -119,24 +120,25 @@ class ServiceHistoryResource extends Resource
     public static function canCreate(): bool
     {
         // Hanya superadmin dan admin yang bisa membuat data baru
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+
     }
 
     public static function canEdit(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa mengedit
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa menghapus
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
         // Hanya superadmin dan admin yang bisa hapus massal
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

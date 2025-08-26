@@ -21,6 +21,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BookingResource extends Resource
 {
@@ -47,8 +48,8 @@ class BookingResource extends Resource
             return;
         }
 
-        $start = \Carbon\Carbon::parse($tanggalKeluar);
-        $end = \Carbon\Carbon::parse($tanggalKembali);
+        $start = Carbon::parse($tanggalKeluar);
+        $end = Carbon::parse($tanggalKembali);
         $days = $start->diffInDays($end);
 
         $totalHari = $days > 0 ? $days : 1;
@@ -60,7 +61,7 @@ class BookingResource extends Resource
     public static function form(Form $form): Form
     {
         // PERBAIKAN: Mengembalikan skema form yang lengkap
-        $isNotAdmin = !auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin']);
 
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
@@ -225,10 +226,10 @@ class BookingResource extends Resource
                                     }
 
                                     $carDetails = "{$record->car->carModel->brand->name} {$record->car->carModel->name} ({$record->car->nopol})";
-                                    $tglKeluar = \Carbon\Carbon::parse($record->tanggal_keluar)->isoFormat('dddd, D MMMM YYYY');
-                                    $waktuKeluar = $record->waktu_keluar ? ' pukul ' . \Carbon\Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA' : '';
-                                    $tglKembali = \Carbon\Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM YYYY');
-                                    $waktuKembali = $record->waktu_kembali ? ' pukul ' . \Carbon\Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA' : '';
+                                    $tglKeluar = Carbon::parse($record->tanggal_keluar)->isoFormat('dddd, D MMMM YYYY');
+                                    $waktuKeluar = $record->waktu_keluar ? ' pukul ' . Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA' : '';
+                                    $tglKembali = Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM YYYY');
+                                    $waktuKembali = $record->waktu_kembali ? ' pukul ' . Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA' : '';
                                     $paket = match ($record->paket) {
                                         'lepas_kunci' => 'Lepas Kunci',
                                         'dengan_driver' => 'Dengan Driver',
@@ -440,7 +441,7 @@ class BookingResource extends Resource
 
     public static function canCreate(): bool
     {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
@@ -451,11 +452,11 @@ class BookingResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()->isSuperAdmin(); // Hanya superadmin
+        return Auth::user()->isSuperAdmin(); // Hanya superadmin
     }
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()->isSuperAdmin(); // Hanya superadmin
+        return Auth::user()->isSuperAdmin(); // Hanya superadmin
     }
 }

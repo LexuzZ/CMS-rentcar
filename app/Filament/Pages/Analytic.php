@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class Analytic extends Page
 {
@@ -22,6 +23,6 @@ class Analytic extends Page
     public static function canAccess(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

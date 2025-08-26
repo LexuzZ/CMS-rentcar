@@ -10,6 +10,7 @@ use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardOverview extends BaseWidget
 {
@@ -149,6 +150,6 @@ class DashboardOverview extends BaseWidget
     public static function canViewAny(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat resource ini
-        return auth()->user()->isAdmin();
+        return Auth::user()->isAdmin();
     }
 }

@@ -12,6 +12,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class CarPerformanceReport extends Page implements HasForms
 {
@@ -156,6 +157,6 @@ class CarPerformanceReport extends Page implements HasForms
     public static function canAccess(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
