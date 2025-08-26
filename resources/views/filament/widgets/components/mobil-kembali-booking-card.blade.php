@@ -1,5 +1,19 @@
-{{-- Kode HTML untuk satu kartu mobil kembali --}}
-<div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+@php
+    // PERBAIKAN 1: Menentukan warna dinamis untuk tombol dan badge
+    $badgeColor = match ($theme ?? 'default') {
+        'danger' => '#ef4444', // Merah untuk hari ini
+        'info'   => '#10b981', // Hijau untuk besok
+        default  => '#6b7280;', // Abu-abu sebagai default
+    };
+    $buttonColor = match ($theme ?? 'default') {
+        'danger' => 'danger',
+        'info'   => 'success',
+        default  => 'gray',
+    };
+@endphp
+
+{{-- Menghapus style latar belakang dari div utama --}}
+<div class="p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800 dark:ring-white/10">
     {{-- Header Kartu --}}
     <div class="flex items-start justify-between">
         <div>
@@ -18,7 +32,8 @@
                 default => ucfirst($status),
             };
         @endphp
-        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-success-500 text-white" style="background-color: green">
+        {{-- PERBAIKAN 2: Menerapkan warna dinamis pada badge --}}
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full text-white" style="background-color: {{ $badgeColor }};">
             {{ $statusText }}
         </span>
     </div>
@@ -39,7 +54,7 @@
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
-            <span class="font-medium bg-green-500 text-gray-900 dark:text-white text-xs">
+            <span class="font-medium text-gray-900 dark:text-white text-xs">
                 {{ $record->driver->nama ?? 'N/A' }}
             </span>
         </div>
@@ -71,8 +86,9 @@
 
     {{-- Tombol Aksi --}}
     <div class="mt-6 flex items-center justify-end">
+        {{-- PERBAIKAN 3: Menerapkan warna dinamis pada tombol --}}
         <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle" color="success">
+            icon="heroicon-o-check-circle" color="{{ $buttonColor }}">
             Selesaikan
         </x-filament::button>
     </div>

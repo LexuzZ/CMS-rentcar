@@ -1,4 +1,16 @@
-{{-- Kode HTML untuk satu kartu mobil keluar --}}
+@php
+    // PERBAIKAN 1: Menentukan warna dinamis untuk tombol dan badge
+    $badgeColor = match ($theme ?? 'default') {
+        'danger' => '#ef4444', // Merah untuk hari ini
+        'info'   => '#005b8f', // Hijau untuk besok
+        default  => '#6b7280;', // Abu-abu sebagai default
+    };
+    $buttonColor = match ($theme ?? 'default') {
+        'danger' => 'danger',
+        'info'   => 'info',
+        default  => 'gray',
+    };
+@endphp
 <div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
     {{-- Header Kartu --}}
     <div class="flex items-start justify-between">
@@ -18,7 +30,7 @@
                 default => ucfirst($status),
             };
         @endphp
-        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary-500 text-white">
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary-500 text-white" style="background-color: {{ $badgeColor }};">
             {{ $statusText }}
         </span>
     </div>
@@ -80,7 +92,7 @@
             wire:click="pickupBooking({{ $record->id }})"
             wire:loading.attr="disabled"
             icon="heroicon-o-arrow-top-right-on-square"
-            color="info">
+            style="background-color: {{ $badgeColor }};">
             Pick Up
         </x-filament::button>
     </div>
