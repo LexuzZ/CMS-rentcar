@@ -15,7 +15,7 @@
     {{-- Cek apakah ada data untuk besok --}}
     @if ($bookingsTomorrow->isNotEmpty())
         <div>
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 pt-4">Mobil Kembali Besok</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 pt-4" style="color: yellow">Mobil Kembali Besok</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach ($bookingsTomorrow as $record)
                     {{-- Menyertakan view kartu yang terpisah --}}
