@@ -351,7 +351,7 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
-            ->defaultSort('tanggal_keluar', 'asc')
+            ->defaultSort('created_at', 'asc')
             ->filters([
                 SelectFilter::make('status')
                     ->options([
