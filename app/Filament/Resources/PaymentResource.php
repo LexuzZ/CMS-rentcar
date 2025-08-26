@@ -16,6 +16,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentResource extends Resource
 {
@@ -86,7 +87,7 @@ class PaymentResource extends Resource
                     // Sembunyikan di halaman 'create'
                     ->hidden(fn (string $operation): bool => $operation === 'create')
                     // Di halaman 'edit', nonaktifkan jika bukan superadmin
-                    ->disabled(fn (string $operation): bool => $operation === 'edit' && ! auth()->user()->isSuperAdmin()),
+                    ->disabled(fn (string $operation): bool => $operation === 'edit' && ! Auth::user()->isSuperAdmin()),
             ])
         ]);
     }
@@ -219,21 +220,21 @@ class PaymentResource extends Resource
 
     public static function canCreate(): bool
     {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+       return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return Auth::user()->isSuperAdmin();
     }
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return Auth::user()->isSuperAdmin();
     }
 }
