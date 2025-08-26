@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -350,8 +351,15 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
-            ->defaultSort('tanggal_keluar', 'desc')
+            ->defaultSort('tanggal_keluar', 'asc')
             ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'booking' => 'Booking',
+                        'disewa' => 'Disewa',
+                        'selesai' => 'Selesai',
+                        'batal' => 'Batal',
+                    ]),
                 Filter::make('tanggal_keluar')
                     ->form([
                         Forms\Components\DatePicker::make('tanggal_keluar')
