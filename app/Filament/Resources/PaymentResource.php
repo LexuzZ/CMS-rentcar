@@ -179,7 +179,7 @@ class PaymentResource extends Resource
                     })
                     ->columnSpan(2)->columns(2),
             ])
-            ->defaultSort('tanggal_pembayaran', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

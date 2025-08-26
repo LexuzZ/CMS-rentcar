@@ -226,7 +226,7 @@ class InvoiceResource extends Resource
             TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
             TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->sortable(),
         ])
-            ->defaultSort('tanggal_invoice', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),

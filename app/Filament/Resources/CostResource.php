@@ -62,8 +62,9 @@ class CostResource extends Resource
                 TextColumn::make('description')->label('Deskripsi Pengeluaran'),
                 TextColumn::make('tanggal_pengeluaran')->label('Tanggal Pengeluaran')->date('d M Y'),
                 TextColumn::make('pembayaran')->label('Pembayaran')->money('IDR'),
-                
+
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
@@ -122,5 +123,5 @@ class CostResource extends Resource
         // Hanya superadmin dan admin yang bisa hapus massal
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
-    
+
 }

@@ -80,6 +80,7 @@ class ServiceHistoryResource extends Resource
                     ->date('d M Y')
                     ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

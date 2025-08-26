@@ -109,7 +109,7 @@ class CustomerResource extends Resource
                 TextColumn::make('alamat')->label('Alamat')->limit(20)->wrap()
                     ->width(150),
             ])
-            ->defaultSort('nama')
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),

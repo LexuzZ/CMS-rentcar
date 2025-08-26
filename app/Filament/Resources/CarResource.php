@@ -151,7 +151,7 @@ class CarResource extends Resource
                     }),
                 TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
             ])
-            ->defaultSort('status', 'asc')
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('availability')
                     ->label('Cek Ketersediaan Mobil')

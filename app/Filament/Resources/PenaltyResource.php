@@ -45,7 +45,7 @@ class PenaltyResource extends Resource
 
                     ->required()
                     ->selectablePlaceholder(),
-                
+
 
                 Select::make('klaim')
                     ->label('Klaim Garasi')
@@ -82,7 +82,7 @@ class PenaltyResource extends Resource
                     ->alignCenter()
                     ->colors([
                         'success' => 'bbm',
-                        'danger' => 'baret',
+                        'primary' => 'baret',
                         'danger' => 'overtime',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -94,6 +94,7 @@ class PenaltyResource extends Resource
                 Tables\Columns\TextColumn::make('amount')->money('IDR')->label('Nominal')->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')->date('d M Y')->alignCenter(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ]);
