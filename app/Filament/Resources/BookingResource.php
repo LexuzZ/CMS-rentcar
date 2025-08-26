@@ -33,10 +33,7 @@ class BookingResource extends Resource
     /**
      * Fungsi terpusat untuk menghitung total hari dan estimasi biaya.
      */
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->whereIn('status', ['booking', 'disewa']);
-    }
+
     protected static function calculatePrice(callable $set, callable $get)
     {
         $tanggalKeluar = $get('tanggal_keluar');
