@@ -10,6 +10,8 @@
             font-family: 'Helvetica', sans-serif;
             font-size: 12px;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -17,6 +19,13 @@
             margin: 0 auto;
         }
 
+        .clear {
+            clear: both;
+        }
+
+        /* =========================
+   Header
+   ========================= */
         .header-section {
             margin-bottom: 20px;
         }
@@ -28,8 +37,8 @@
         }
 
         .company-details {
-            text-align: right;
             float: right;
+            text-align: right;
         }
 
         .company-details h1 {
@@ -42,6 +51,9 @@
             margin: 0;
         }
 
+        /* =========================
+   Invoice & Billing Details
+   ========================= */
         .invoice-details {
             margin-bottom: 20px;
         }
@@ -50,13 +62,18 @@
             width: 100%;
         }
 
-        .billing-details h3,
-        .items-table h3,
-        .payment-details h3 {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+        .text-right {
+            text-align: right;
+        }
+
+        /* =========================
+   Items Table
+   ========================= */
+        .items-table h3 {
             font-size: 14px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
         }
 
         .items-table table {
@@ -75,50 +92,48 @@
             background-color: #f8f8f8;
         }
 
+        /* =========================
+   Totals
+   ========================= */
         .totals-table {
-            width: 40%;
-            float: right;
+            width: 55%;
             margin-top: 20px;
+            float: right;
+            border-collapse: collapse;
         }
 
         .totals-table td {
             padding: 5px 8px;
         }
 
+        /* =========================
+   Payment Details
+   ========================= */
         .payment-details {
             margin-top: 40px;
         }
 
-        .text-right {
-            text-align: right;
+        .payment-details h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 10px;
-            color: #777;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .clear {
-            clear: both;
-        }
-
+        /* =========================
+   Signature Section
+   ========================= */
         .signature-section {
+            width: 170px;
             margin-top: 50px;
             text-align: center;
-            width: 170px;
             float: right;
         }
 
         .signature-container {
             position: relative;
-            /* Wadah untuk menumpuk gambar */
             height: 70px;
-            /* Beri ruang yang cukup */
+            /* ruang cukup untuk gambar */
         }
 
         .signature-image,
@@ -128,7 +143,6 @@
             height: auto;
             left: 50%;
             margin-left: -120px;
-            /* Tarik gambar ke kiri sejauh setengah lebarnya */
         }
 
         .signature-image {
@@ -138,9 +152,22 @@
 
         .signature-name {
             font-weight: bold;
-            border-top: 1px solid #333;
-            padding-top: 5px;
             margin-top: 10px;
+            padding-top: 5px;
+            border-top: 1px solid #333;
+        }
+
+        /* =========================
+   Footer
+   ========================= */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 10px;
+            color: #777;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
@@ -211,8 +238,15 @@
                                 {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}
                                 ({{ $invoice->booking->total_hari }} hari)
                             </small>
+                            <br>
+                            <small>
+                                Harga per Hari: Rp
+                                {{ number_format($invoice->booking->estimasi_biaya / $invoice->booking->total_hari, 0, ',', '.') }}
+
+                            </small>
                         </td>
-                        <td class="text-right">Rp {{ number_format($invoice->booking->estimasi_biaya, 0, ',', '.') }}
+                        <td class="text-right">
+                            Rp {{ number_format($invoice->booking->estimasi_biaya, 0, ',', '.') }}
                         </td>
                     </tr>
                     @if ($invoice->pickup_dropOff > 0)
