@@ -6,8 +6,8 @@
         default  => '#6b7280;', // Abu-abu sebagai default
     };
     $buttonColor = match ($theme ?? 'default') {
-        'danger' => 'danger',
-        'warning'   => 'warning',
+        'danger' => '#ef4444',
+        'info'   => '#FFCC00',
         default  => '#6b7280;',
     };
 @endphp
