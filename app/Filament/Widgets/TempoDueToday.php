@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Tempo;
+use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 
 class TempoDueToday extends Widget
@@ -16,14 +17,32 @@ class TempoDueToday extends Widget
     protected int|string|array $columnSpan = 'full';
 
     // Method untuk mengambil dan mengirim data ke view
+    public function selesaikanTempo(int $tempoId): void
+    {
+        $tempo = Tempo::find($tempoId);
+
+        if ($tempo) {
+            // Hapus data tempo dari database
+            $tempo->delete();
+
+            // Kirim notifikasi sukses
+            Notification::make()
+                ->title('Jadwal Selesai')
+                ->body('Jadwal perawatan telah ditandai sebagai selesai dan dihapus dari daftar.')
+                ->success()
+                ->send();
+        }
+    }
     protected function getViewData(): array
     {
         $tempos = Tempo::query()
             ->with(['car.carModel.brand']) // Eager load untuk efisiensi
-            // PERUBAHAN DI SINI: Mengambil data antara hari ini dan 30 hari ke depan
-            ->whereBetween('jatuh_tempo', [today(), today()->addMonth()])
+            // Ambil semua tempo yang jatuh tempo hari ini atau di masa depan
+            ->where('jatuh_tempo', '>=', today())
             // Urutkan dari yang paling dekat tanggalnya
             ->orderBy('jatuh_tempo', 'asc')
+            // PERUBAHAN DI SINI: Ambil hanya 5 data teratas
+            ->take(4)
             ->get();
 
         return [
