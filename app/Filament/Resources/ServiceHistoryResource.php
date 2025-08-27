@@ -3,12 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceHistoryResource\Pages;
+use App\Models\Car;
 use App\Models\ServiceHistory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,24 +24,46 @@ class ServiceHistoryResource extends Resource
     protected static ?string $pluralModelLabel = 'Riwayat Service';
 
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('car', function (Builder $query) {
+                $query->where('garasi', 'SPT');
+            });
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('car_id')
-                    ->relationship('car', 'nopol')
-                    ->searchable()
+                // PERBAIKAN 2: Memfilter dropdown mobil
+                 Forms\Components\Select::make('car_id')
+                    ->relationship(
+                        name: 'car',
+                        titleAttribute: 'nopol',
+                        // Menambahkan closure untuk memodifikasi query relasi
+                        modifyQueryUsing: fn (Builder $query) => $query->where('garasi', 'SPT')->with('carModel')
+                    )
+                    // Mengubah format label yang ditampilkan
+                    ->getOptionLabelFromRecordUsing(fn (Car $record) => "{$record->carModel->name} ({$record->nopol})")
+                    // Mengizinkan pencarian berdasarkan model dan nopol
+                    ->searchable(['nopol', 'carModel.name'])
                     ->preload()
                     ->required(),
                 Forms\Components\DatePicker::make('service_date')
                     ->label('Tanggal Service')
                     ->required(),
+                Forms\Components\Select::make('jenis_service')
+                    ->label('Jenis Service')
+                    ->options(['service' => 'Service & Tune Up', 'ganti_aki' => 'Pergantian Aki', 'ganti_ban' => 'Pergantian Ban'])
+                    ->default('service') // Mengubah default agar valid
+                    ->required(),
                 Forms\Components\TextInput::make('current_km')
                     ->label('KM Saat Ini')
                     ->numeric()
-                    ->required(),
+                    ->nullable(),
                 Forms\Components\Textarea::make('description')
-                    ->label('Jenis Pekerjaan / Deskripsi')
+                    ->label('Deskripsi')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('workshop')
@@ -58,30 +82,42 @@ class ServiceHistoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('car.nopol')
-                    ->label('No Polisi')
-                    ->searchable()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('car.carModel.name')
+                    ->label('Mobil')
+                    ->description(fn (ServiceHistory $record): string => $record->car->nopol)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                                     ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
                     ->date('d M Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('current_km')
-                    ->label('KM Service')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('jenis_service')
+                    ->label('Jenis Service')
+                    ->badge()->alignCenter()
+                    ->colors(['success' => 'service', 'info' => 'ganti_aki', 'primary' => 'ganti_ban'])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'service' => 'Service & Tune Up',
+                        'ganti_aki' => 'Pergantian Aki',
+                        'ganti_ban' => 'Pergantian Ban',
+                        default => ucfirst($state)
+                    })->wrap()
+                    ->width(150),
                 Tables\Columns\TextColumn::make('next_km')
                     ->label('Next Km')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('workshop')
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap()
+                    ->width(150),
                 Tables\Columns\TextColumn::make('next_service_date')
                     ->label('Jadwal Berikutnya')
                     ->date('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap()
+                    ->width(150),
             ])
-            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

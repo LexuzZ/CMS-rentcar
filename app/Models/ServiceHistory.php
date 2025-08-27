@@ -14,6 +14,7 @@ class ServiceHistory extends Model
     protected $fillable = [
         'car_id',
         'service_date',
+        'jenis_service',
         'current_km',
         'description',
         'workshop',
