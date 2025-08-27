@@ -88,7 +88,7 @@
     <div class="mt-6 flex items-center justify-end">
         {{-- PERBAIKAN 3: Menerapkan warna dinamis pada tombol --}}
         <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }};">
+            icon="heroicon-o-check-circle"  style="background-color: {{ $badgeColor }};">
             Selesaikan
         </x-filament::button>
     </div>
