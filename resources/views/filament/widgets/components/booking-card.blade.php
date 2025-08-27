@@ -6,9 +6,14 @@
         default  => '#6b7280;', // Abu-abu sebagai default
     };
     $buttonColor = match ($theme ?? 'default') {
-        'danger' => 'danger',
-        'info'   => 'info',
-        default  => 'gray',
+        'danger' => '#8AA624', // Merah untuk hari ini
+        'info'   => '#005b8f', // Hijau untuk besok
+        default  => '#6b7280;', // Abu-abu sebagai default
+    };
+    $buttonHover = match ($theme ?? 'default') {
+        'danger' => '#117554',
+        'info'   => '#1C6EA4',
+        default  => '#6b7280;',
     };
 @endphp
 <div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
@@ -92,7 +97,9 @@
             wire:click="pickupBooking({{ $record->id }})"
             wire:loading.attr="disabled"
             icon="heroicon-o-arrow-top-right-on-square"
-            style="background-color: {{ $badgeColor }};">
+            style="background-color: {{ $buttonColor }};"
+            onmouseover="this.style.backgroundColor='{{ $buttonHover }}';"
+            onmouseout="this.style.backgroundColor='{{ $buttonColor }}';">
             Pick Up
         </x-filament::button>
     </div>
