@@ -10,6 +10,11 @@
         'info'   => '#FFCC00',
         default  => '#6b7280;',
     };
+    $buttonHover = match ($theme ?? 'default') {
+        'danger' => '#DC2626',
+        'info'   => '#E6B800',
+        default  => '#6b7280;',
+    };
 @endphp
 
 {{-- Menghapus style latar belakang dari div utama --}}
@@ -88,7 +93,7 @@
     <div class="mt-6 flex items-center justify-end">
         {{-- PERBAIKAN 3: Menerapkan warna dinamis pada tombol --}}
         <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }}; ">
+            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }}; " onmouseover="this.style.backgroundColor='{{ $buttonHover }}';" onmouseout="this.style.backgroundColor='{{ $buttonColor }}';">
             Selesaikan
         </x-filament::button>
     </div>
