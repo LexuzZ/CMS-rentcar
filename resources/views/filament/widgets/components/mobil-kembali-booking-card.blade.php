@@ -7,7 +7,7 @@
     };
     $buttonColor = match ($theme ?? 'default') {
         'danger' => 'danger',
-        'info'   => 'warning',
+        'warning'   => 'warning',
         default  => '#6b7280;',
     };
 @endphp
