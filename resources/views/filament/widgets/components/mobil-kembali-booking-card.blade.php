@@ -7,7 +7,7 @@
     };
     $buttonColor = match ($theme ?? 'default') {
         'danger' => 'danger',
-        'info'   => 'success',
+        'info'   => 'info',
         default  => 'gray',
     };
 @endphp
