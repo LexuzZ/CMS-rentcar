@@ -13,7 +13,7 @@
 @endphp
 
 {{-- Menghapus style latar belakang dari div utama --}}
-<div class="p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800 dark:ring-white/10">
+<div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
     {{-- Header Kartu --}}
     <div class="flex items-start justify-between">
         <div>
