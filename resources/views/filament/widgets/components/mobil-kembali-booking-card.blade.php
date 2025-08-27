@@ -6,8 +6,8 @@
         default  => '#6b7280;', // Abu-abu sebagai default
     };
     $buttonColor = match ($theme ?? 'default') {
-        'danger' => '#ef4444',
-        'info'   => '#FFCC00',
+        'danger' => 'danger',
+        'info'   => 'warning',
         default  => '#6b7280;',
     };
 @endphp
@@ -88,7 +88,7 @@
     <div class="mt-6 flex items-center justify-end">
         {{-- PERBAIKAN 3: Menerapkan warna dinamis pada tombol --}}
         <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }};">
+            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }}; ">
             Selesaikan
         </x-filament::button>
     </div>
