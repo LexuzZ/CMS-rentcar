@@ -1,7 +1,7 @@
 @php
     // PERBAIKAN 1: Menentukan warna dinamis untuk tombol dan badge
     $badgeColor = match ($theme ?? 'default') {
-        'danger' => '#ef4444', // Merah untuk hari ini
+        'danger' => '#8AA624', // Merah untuk hari ini
         'info'   => '#005b8f', // Hijau untuk besok
         default  => '#6b7280;', // Abu-abu sebagai default
     };
