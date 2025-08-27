@@ -6,7 +6,7 @@
         default  => '#6b7280;', // Abu-abu sebagai default
     };
     $buttonColor = match ($theme ?? 'default') {
-        'danger' => '#ef4444',
+        'danger' => 'bg-red-500 hover:bg-red-600 text-white',
         'info'   => '#FFCC00',
         default  => '#6b7280;',
     };
