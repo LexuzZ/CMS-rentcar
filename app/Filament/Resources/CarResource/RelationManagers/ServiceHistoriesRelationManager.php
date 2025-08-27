@@ -27,7 +27,7 @@ class ServiceHistoriesRelationManager extends RelationManager
                     ->numeric()
                     ->required(),
                 Forms\Components\Textarea::make('description')
-                    ->label('Jenis Pekerjaan / Deskripsi')
+                    ->label('Deskripsi')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('workshop')
@@ -47,16 +47,38 @@ class ServiceHistoriesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
                     ->date('d M Y')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('current_km')
-                    ->label('KM Service')
-                    ->numeric(),
+                    ,
+                Tables\Columns\TextColumn::make('jenis_service')
+                    ->label('Jenis Service')
+                    ->badge()->alignCenter()
+                    ->colors(['success' => 'service', 'info' => 'ganti_aki', 'primary' => 'ganti_ban'])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'service' => 'Service & Tune Up',
+                        'ganti_aki' => 'Pergantian Aki',
+                        'ganti_ban' => 'Pergantian Ban',
+                        default => ucfirst($state)
+                    })
+                    ->wrap()
+                    ->width(150)
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('description')
-                    ->limit(40)
-                    ->wrap(),
+                    ->limit(1000)
+                    ->wrap()
+                    ->width(550),
+                Tables\Columns\TextColumn::make('next_km')
+                    ->label('Next Km')
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('workshop')
+                    ->searchable()
+                    ->wrap()
+                    ->width(150),
                 Tables\Columns\TextColumn::make('next_service_date')
                     ->label('Jadwal Berikutnya')
-                    ->date('d M Y'),
+                    ->date('d M Y')
+
+                    ->wrap()
+                    ->width(150),
             ])
             ->filters([
                 //

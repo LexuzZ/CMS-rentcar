@@ -236,7 +236,6 @@ class CarResource extends Resource
     {
         return [
             BookingsRelationManager::class,
-            TempoRelationManager::class,
             ServiceHistoriesRelationManager::class,
         ];
     }
