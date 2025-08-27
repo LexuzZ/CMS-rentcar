@@ -36,17 +36,14 @@ class TempoDueToday extends Widget
     protected function getViewData(): array
     {
         $tempos = Tempo::query()
-            ->with(['car.carModel.brand']) // Eager load untuk efisiensi
-            // Ambil semua tempo yang jatuh tempo hari ini atau di masa depan
-            ->where('jatuh_tempo', '>=', today())
-            // Urutkan dari yang paling dekat tanggalnya
+            ->with(['car.carModel.brand'])
+            // Mengambil data antara hari ini dan 1 bulan ke depan
+            ->whereBetween('jatuh_tempo', [today(), today()->addMonth()])
             ->orderBy('jatuh_tempo', 'asc')
-            // PERUBAHAN DI SINI: Ambil hanya 5 data teratas
-            ->take(4)
             ->get();
 
         return [
-            'tempos' => $tempos, // Kirim data dengan nama 'tempos'
+            'tempos' => $tempos,
         ];
     }
 }

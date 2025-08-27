@@ -139,9 +139,6 @@ class TempoResource extends Resource
                     ->label('Jatuh Tempo')
                     ->date('d M Y')->alignCenter()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Deskripsi')
-                    ->sortable(),
 
             ])
             ->defaultSort('created_at', 'desc')
