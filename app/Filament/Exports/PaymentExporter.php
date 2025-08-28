@@ -34,6 +34,10 @@ class PaymentExporter extends Exporter
                 ->label('Tanggal Keluar'),
             ExportColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali'),
             ExportColumn::make('invoice.booking.total_hari')->label('Total Hari'),
+            ExportColumn::make('metode_pembayaran'),
+
+            ExportColumn::make('status'),
+            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
             ExportColumn::make('invoice.booking.car.harga_pokok')
                 ->label('Harga Pokok')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('invoice.booking.car.harga_harian')
@@ -46,10 +50,7 @@ class PaymentExporter extends Exporter
             // ExportColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
             //     ->label('Pembayaran'),
 
-            ExportColumn::make('metode_pembayaran'),
 
-            ExportColumn::make('status'),
-            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
             ExportColumn::make('total_denda')
                 ->label('Total Denda')
                 ->getStateUsing(fn(Payment $record): int => (int) ($record->invoice?->booking?->penalty->sum('amount') ?? 0)),
