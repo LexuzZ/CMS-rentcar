@@ -115,57 +115,57 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
                                 ->openUrlInNewTab(),
-                                Infolists\Components\Actions\Action::make('sendWhatsapp')
-                                    ->label('Faktur via WA')
-                                    ->icon('heroicon-o-chat-bubble-left-right')
-                                    ->color('success')
-                                    ->url(function (Invoice $record) {
-                                        $phone = $record->booking->customer->no_telp;
-                                        $cleanedPhone = preg_replace('/[^0-9]/', '', $phone);
-                                        if (substr($cleanedPhone, 0, 1) === '0') {
-                                            $cleanedPhone = '62' . substr($cleanedPhone, 1);
-                                        }
+                            Infolists\Components\Actions\Action::make('sendWhatsapp')
+                                ->label('Faktur via WA')
+                                ->icon('heroicon-o-chat-bubble-left-right')
+                                ->color('success')
+                                ->url(function (Invoice $record) {
+                                    $phone = $record->booking->customer->no_telp;
+                                    $cleanedPhone = preg_replace('/[^0-9]/', '', $phone);
+                                    if (substr($cleanedPhone, 0, 1) === '0') {
+                                        $cleanedPhone = '62' . substr($cleanedPhone, 1);
+                                    }
 
-                                        // Menghitung total
-                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                        $totalTagihan = $record->booking?->estimasi_biaya + $record->pickup_dropOff + $totalDenda;
-                                        $sisaPembayaran = $totalTagihan - $record->dp;
+                                    // Menghitung total
+                                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                    $totalTagihan = $record->booking?->estimasi_biaya + $record->pickup_dropOff + $totalDenda;
+                                    $sisaPembayaran = $totalTagihan - $record->dp;
 
-                                        // Mengambil detail mobil dan tanggal
-                                        $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
-                                        $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y');
-                                        $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y');
-                                        $totalHari = $record->booking->total_hari;
+                                    // Mengambil detail mobil dan tanggal
+                                    $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
+                                    $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y');
+                                    $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y');
+                                    $totalHari = $record->booking->total_hari;
 
-                                        // Membuat template pesan yang lebih detail
-                                        $message = "Halo *{$record->booking->customer->nama}*,\n\n";
-                                        $message .= "Berikut kami kirimkan detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
-                                        $message .= "*No. Faktur:* #{$record->id}\n";
-                                        $message .= "*Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n";
-                                        $message .= "-----------------------------------\n";
-                                        $message .= "*Rincian Sewa:*\n";
-                                        $message .= "• *Mobil:* {$carDetails}\n";
-                                        $message .= "• *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
-                                        $message .= "• *Biaya Sewa Harian:* Rp " . number_format($record->booking->harga_harian, 0, ',', '.') . "\n";
-                                        $message .= "• *Total Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
-                                        if ($record->pickup_dropOff > 0) {
-                                            $message .= "• *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
-                                        }
-                                        if ($totalDenda > 0) {
-                                            $message .= "• *Total Denda:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
-                                        }
-                                        $message .= "-----------------------------------\n";
-                                        $message .= "*Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
-                                        $message .= "*Uang Muka (DP):* - Rp " . number_format($record->dp, 0, ',', '.') . "\n";
-                                        $message .= "*Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
-                                        $message .= "Mohon lakukan sisa pembayaran ke salah satu rekening berikut:\n";
-                                        $message .= "*- Mandiri:* 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
-                                        $message .= "*- BCA:* 2320418758 (a.n. SRI NOVYANA)\n\n";
-                                        $message .= "Terima kasih 🙏";
+                                    // Membuat template pesan yang lebih detail
+                                    $message = "Halo *{$record->booking->customer->nama}*,\n\n";
+                                    $message .= "Berikut kami kirimkan detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
+                                    $message .= "*No. Faktur:* #{$record->id}\n";
+                                    $message .= "*Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n";
+                                    $message .= "-----------------------------------\n";
+                                    $message .= "*Rincian Sewa:*\n";
+                                    $message .= "• *Mobil:* {$carDetails}\n";
+                                    $message .= "• *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
+                                    $message .= "• *Biaya Sewa Harian:* Rp " . number_format($record->booking->harga_harian, 0, ',', '.') . "\n";
+                                    $message .= "• *Total Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
+                                    if ($record->pickup_dropOff > 0) {
+                                        $message .= "• *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
+                                    }
+                                    if ($totalDenda > 0) {
+                                        $message .= "• *Total Denda:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
+                                    }
+                                    $message .= "-----------------------------------\n";
+                                    $message .= "*Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                                    $message .= "*Uang Muka (DP):* - Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                                    $message .= "*Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
+                                    $message .= "Mohon lakukan sisa pembayaran ke salah satu rekening berikut:\n";
+                                    $message .= "*- Mandiri:* 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
+                                    $message .= "*- BCA:* 2320418758 (a.n. SRI NOVYANA)\n\n";
+                                    $message .= "Terima kasih 🙏";
 
-                                        return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
-                                    })
-                                    ->openUrlInNewTab(),
+                                    return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
+                                })
+                                ->openUrlInNewTab(),
                         ])->fullWidth(),
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
@@ -223,8 +223,21 @@ class InvoiceResource extends Resource
             TextColumn::make('id')->label('ID Faktur')->searchable()->sortable(),
             TextColumn::make('booking.customer.nama')->label('Pelanggan')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil'),
-            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
-            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
+            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ->state(function (Invoice $record): float {
+                    $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                    $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                    $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                    $dp = $record->dp ?? 0;
+                    return $totalTagihan - $dp;
+                }),
+            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable()->state(function (Invoice $record): float {
+                $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+                $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+                $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                return $biayaSewa + $biayaAntarJemput + $totalDenda;
+            }),
             TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->sortable(),
         ])
             ->defaultSort('created_at', 'desc')
