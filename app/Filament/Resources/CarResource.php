@@ -201,7 +201,7 @@ class CarResource extends Resource
                         $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->locale('id')->isoFormat('D MMMM Y');
                         $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->locale('id')->isoFormat('D MMMM Y');
 
-                        $textToCopy = "Halo,✋ Lombok 😊\n\nBerikut adalah daftar mobil dari garasi SPT yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
+                        $textToCopy = "Halo,✋ Lombok 😊\n\nBerikut adalah daftar mobil dari garasi Semeton Pesiar yang tersedia untuk tanggal *{$startDate}* sampai *{$endDate}*:\n\n";
                         foreach ($cars as $index => $car) {
                             $textToCopy .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
