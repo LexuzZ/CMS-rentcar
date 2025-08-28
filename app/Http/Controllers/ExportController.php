@@ -11,52 +11,69 @@ class ExportController extends Controller
 {
     public function exportCarBookings(Car $car, int $year, int $month): StreamedResponse
     {
-        $startDate = Carbon::create($year, $month, 1)->startOfDay();
-        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
+        $startOfMonth = Carbon::create($year, $month, 1)->startOfDay();
+        $endOfMonth = $startOfMonth->copy()->endOfMonth()->startOfDay();
 
         $bookings = $car->bookings()
             ->with('customer')
             ->where('status', '!=', 'batal')
-            ->where(function ($q) use ($startDate, $endDate) {
-                $q->where('tanggal_keluar', '<=', $endDate)
-                  ->where('tanggal_kembali', '>=', $startDate);
+            ->where(function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->where('tanggal_keluar', '<=', $endOfMonth)
+                    ->where('tanggal_kembali', '>=', $startOfMonth);
             })
             ->get();
 
         $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.csv";
 
         $headers = [
-            "Content-type"        => "text/csv",
+            "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
         ];
 
-        $columns = ['Pelanggan', 'Tanggal Keluar', 'Tanggal Kembali', 'Pendapatan (Rp)'];
+        $columns = [
+            'Booking ID',
+            'Pelanggan',
+            'Tgl Keluar (Asli)',
+            'Tgl Kembali (Asli)',
+            'Total Hari (Asli)',
+            'Hari Dihitung (Bulan Ini)',
+            'Pendapatan Prorata (Rp)',
+        ];
 
-        $callback = function() use($bookings, $columns, $startDate, $endDate) {
+        $callback = function () use ($bookings, $columns, $startOfMonth, $endOfMonth) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($bookings as $booking) {
                 $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
-                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->startOfDay();
-                $effectiveStartDate = $bookingStart->copy()->max($startDate);
-                $effectiveEndDate = $bookingEnd->copy()->min($endDate);
-                $daysInMonth = $effectiveStartDate->diffInDays($effectiveEndDate) + 1;
+                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->endOfDay();
 
+                $periodeMulai = $bookingStart->greaterThan($startOfMonth) ? $bookingStart : $startOfMonth;
+                $periodeSelesai = $bookingEnd->lessThan($endOfMonth) ? $bookingEnd : $endOfMonth;
+
+                $hariDalamBulan = 0;
+                if ($periodeMulai <= $periodeSelesai) {
+                    $hariDalamBulan = $periodeMulai->diffInDays($periodeSelesai) - 1;
+                }
+
+                // hitung prorata pendapatan
                 $revenueInMonth = 0;
-                if ($booking->total_hari > 0) {
+                if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
                     $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
-                    $revenueInMonth = $dailyRate * $daysInMonth;
+                    $revenueInMonth = $dailyRate * $hariDalamBulan;
                 }
 
                 $row = [
-                    $booking->customer->nama,
+                    $booking->id,
+                    $booking->customer->nama ?? '-',
                     $booking->tanggal_keluar,
                     $booking->tanggal_kembali,
-                    round($revenueInMonth)
+                    $booking->total_hari,
+                    $hariDalamBulan,
+                    round($revenueInMonth),
                 ];
 
                 fputcsv($file, $row);
