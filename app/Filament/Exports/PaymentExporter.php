@@ -65,8 +65,7 @@ class PaymentExporter extends Exporter
 
             ExportColumn::make('status'),
             ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
-            ExportColumn::make('invoice.tanggal_invoice')
-                ->label('Tanggal Invoice'),
+
 
         ];
     }
