@@ -34,38 +34,16 @@ class PaymentExporter extends Exporter
                 ->label('Tanggal Keluar'),
             ExportColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali'),
             ExportColumn::make('invoice.booking.total_hari')->label('Total Hari'),
-            ExportColumn::make('invoice.tanggal_invoice')
-                ->label('Tanggal Invoice'),
-            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
-            // ExportColumn::make('invoice.booking.penalty.amount'),
             ExportColumn::make('invoice.booking.car.harga_pokok')
                 ->label('Harga Pokok')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('invoice.booking.car.harga_harian')
                 ->label('Harga Harian')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-            ExportColumn::make('total_bbm')
-                ->label('Total BBM')
-                ->getStateUsing(function ($record) {
-                    return $record->invoice
-                        ? $record->invoice->booking->penalty->where('klaim', 'bbm')->sum('amount')
-                        : 0;
-                }),
-            ExportColumn::make('total_overtime')
-                ->label('Total Overtime')
-                ->getStateUsing(function ($record) {
-                    return $record->invoice
-                        ? $record->invoice->booking->penalty->where('klaim', 'overtime')->sum('amount')
-                        : 0;
-                })
-            ,
 
-            ExportColumn::make('total_baret')
-                ->label('Total Baret')
-                ->getStateUsing(function ($record) {
-                    return $record->invoice
-                        ? $record->invoice->booking->penalty->where('klaim', 'baret')->sum('amount')
-                        : 0;
-                })
-            ,
+            ExportColumn::make('invoice.tanggal_invoice')
+                ->label('Tanggal Invoice'),
+            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
+            // ExportColumn::make('invoice.booking.penalty.amount'),
+
 
             // ExportColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
             //     ->label('Pembayaran'),
