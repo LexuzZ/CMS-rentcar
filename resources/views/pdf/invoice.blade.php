@@ -234,6 +234,7 @@
                             <br>
                             <small>
                                 Dari: {{ \Carbon\Carbon::parse($invoice->booking->tanggal_keluar)->format('d M Y') }}
+                                <br>
                                 Sampai:
                                 {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}
                                 ({{ $invoice->booking->total_hari }} hari)
