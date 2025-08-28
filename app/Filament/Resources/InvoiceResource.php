@@ -171,7 +171,7 @@ class InvoiceResource extends Resource
                                     return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
                                 })
                                 ->openUrlInNewTab(),
-                        ])->fullWidth(),
+                        ]),
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
