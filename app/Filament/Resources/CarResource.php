@@ -58,7 +58,10 @@ class CarResource extends Resource
                     TextInput::make('nopol')
                         ->label('Nomor Polisi')
                         ->required()
-                        ->unique(ignoreRecord: true),
+                        ->unique(ignoreRecord: true)
+                        ->validationMessages([
+                            'unique' => 'Nomor polisi ini sudah terdaftar di sistem.',
+                        ]),
 
                     TextInput::make('year')
                         ->label('Tahun')
