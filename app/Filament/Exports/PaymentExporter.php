@@ -68,12 +68,12 @@ class PaymentExporter extends Exporter
                         : 0;
                 })
             ,
-            // ExportColumn::make('invoice.booking.penalty.amount')
-            //     ->label('Total Denda')
-            //     ->formatStateUsing(function ($record) {
-            //         $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
-            //         return 'Rp ' . number_format($total, 0, ',', '.');
-            //     })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) ,
+            ExportColumn::make('invoice.booking.penalty.amount')
+                ->label('Total Denda')
+                ->formatStateUsing(function ($record) {
+                    $total = optional($record->invoice?->booking?->penalty)->sum('amount') ?? 0;
+                    return 'Rp ' . number_format($total, 0, ',', '.');
+                })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')) ,
 
             ExportColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->label('Pembayaran'),
