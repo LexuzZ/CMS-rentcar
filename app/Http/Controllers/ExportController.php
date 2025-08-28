@@ -38,7 +38,7 @@ class ExportController extends Controller
             'Pelanggan',
             'Tgl Keluar ',
             'Tgl Kembali ',
-            'Total Hari (Bulan Ini)',
+            'Total Hari ',
             'Hari Dihitung (Bulan Ini)',
             'Pendapatan Bulan Ini (Rp) ',
         ];
