@@ -88,6 +88,17 @@ class MonthlyReportResource extends Resource
                     ->label('Lihat Detail')
                     ->icon('heroicon-o-eye')
                     ->url(fn(Model $record): string => static::getUrl('details', ['record' => $record->year . '-' . $record->month])),
+                    Tables\Actions\Action::make('viewCarPerformance')
+                        ->label('Laporan Kinerja Mobil')
+                        ->icon('heroicon-o-chart-bar')
+                        ->color('gray')
+                        ->url(function (Model $record): string {
+                            $month = $record->month;
+                            $year = $record->year;
+                            // Membuat URL ke halaman laporan kinerja dengan filter yang sudah terisi
+                            $url = \App\Filament\Pages\CarPerformanceReport::getUrl();
+                            return $url . '?filterData[month]=' . $month . '&filterData[year]=' . $year;
+                        }),
             ])
             ->bulkActions([]);
     }
