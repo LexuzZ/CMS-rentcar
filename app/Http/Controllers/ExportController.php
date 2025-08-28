@@ -36,11 +36,11 @@ class ExportController extends Controller
         $columns = [
             'Booking ID',
             'Pelanggan',
-            'Tgl Keluar (Asli)',
-            'Tgl Kembali (Asli)',
-            'Total Hari (Asli)',
+            'Tgl Keluar ',
+            'Tgl Kembali ',
+            'Total Hari (Bulan Ini)',
             'Hari Dihitung (Bulan Ini)',
-            'Pendapatan Prorata (Rp)',
+            'Pendapatan Bulan Ini (Rp) ',
         ];
 
         $callback = function () use ($bookings, $columns, $startOfMonth, $endOfMonth) {
