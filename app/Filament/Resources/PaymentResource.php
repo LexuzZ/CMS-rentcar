@@ -32,18 +32,16 @@ class PaymentResource extends Resource
      */
     public static function mutateFormDataBeforeFill(array $data): array
     {
-        // Ambil invoice_id dari data yang ada
         $invoiceId = $data['invoice_id'] ?? null;
 
         if ($invoiceId) {
-            // Cari invoice beserta relasi yang dibutuhkan
             $invoice = Invoice::with('booking.penalty')->find($invoiceId);
             if ($invoice) {
-                $totalInvoice = $invoice->total ?? 0;
+                $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
+                $biayaAntarJemput = $invoice->pickup_dropOff ?? 0;
                 $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
 
-                // Hitung ulang total pembayaran dan masukkan ke dalam data form
-                $data['pembayaran'] = $totalInvoice + $totalDenda;
+                $data['pembayaran'] = $biayaSewa + $biayaAntarJemput + $totalDenda;
             }
         }
 
@@ -63,9 +61,12 @@ class PaymentResource extends Resource
                     ->live()
                     ->afterStateUpdated(function (Forms\Set $set, ?string $state) {
                         $invoice = Invoice::with('booking.penalty')->find($state);
-                        $totalInvoice = $invoice?->total ?? 0;
+
+                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
                         $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-                        $set('pembayaran', $totalInvoice + $totalDenda);
+
+                        $set('pembayaran', $biayaSewa + $biayaAntarJemput + $totalDenda);
                     }),
                 Forms\Components\DatePicker::make('tanggal_pembayaran')
                     ->required()
@@ -85,9 +86,9 @@ class PaymentResource extends Resource
                     ->required()
                     // -- PERBAIKAN DI SINI --
                     // Sembunyikan di halaman 'create'
-                    ->hidden(fn (string $operation): bool => $operation === 'create')
+                    ->hidden(fn(string $operation): bool => $operation === 'create')
                     // Di halaman 'edit', nonaktifkan jika bukan superadmin
-                    ->disabled(fn (string $operation): bool => $operation === 'edit' && ! Auth::user()->isSuperAdmin()),
+                    ->disabled(fn(string $operation): bool => $operation === 'edit' && !Auth::user()->isSuperAdmin()),
             ])
         ]);
     }
@@ -105,10 +106,13 @@ class PaymentResource extends Resource
                     ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
-                        $totalInvoice = $invoice?->total ?? 0;
+                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
                         $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-                        return $totalInvoice + $totalDenda;
-                    })->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+
+                        return $biayaSewa + $biayaAntarJemput + $totalDenda;
+                    })
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
@@ -225,7 +229,7 @@ class PaymentResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-       return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
