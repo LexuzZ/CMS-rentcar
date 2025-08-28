@@ -23,14 +23,14 @@
                     {{-- Daftar mobil di dalam kartu --}}
                     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach ($mobilList as $mobil)
-                            <li class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <li class="px-4 py-3  transition">
                                 <div class="flex items-center justify-between">
                                     {{-- Nama Model Mobil --}}
-                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                                    <p class="text-sm font-medium text-black dark:text-white truncate">
                                         {{ $mobil->carModel->name }}
                                     </p>
                                     {{-- Badge Nomor Polisi --}}
-                                    <span class="text-xs font-semibold text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded-md">
+                                    <span class="text-xs font-semibold text-black  dark:text-white px-2 py-1 rounded-md">
                                         {{ $mobil->nopol }}
                                     </span>
                                 </div>
