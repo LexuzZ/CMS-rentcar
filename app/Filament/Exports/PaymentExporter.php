@@ -38,9 +38,7 @@ class PaymentExporter extends Exporter
                 ->label('Harga Pokok')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ExportColumn::make('invoice.booking.car.harga_harian')
                 ->label('Harga Harian')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
-            ExportColumn::make('invoice.tanggal_invoice')
-                ->label('Tanggal Invoice'),
+
 
             // ExportColumn::make('invoice.booking.penalty.amount'),
 
@@ -66,6 +64,9 @@ class PaymentExporter extends Exporter
             ExportColumn::make('metode_pembayaran'),
 
             ExportColumn::make('status'),
+            ExportColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran'),
+            ExportColumn::make('invoice.tanggal_invoice')
+                ->label('Tanggal Invoice'),
 
         ];
     }
