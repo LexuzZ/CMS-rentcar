@@ -36,7 +36,8 @@ Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoic
 // });
 
 Route::group(['middleware' => ['web', Authenticate::class]], function () {
-    Route::get('/reports/export-car-bookings/{car}/{year}/{month}', [ExportController::class, 'exportCarBookings'])
+
+        Route::get('/reports/export-car-bookings/{car}/{year}/{month}', [ExportController::class, 'exportCarBookings'])
         ->name('reports.export.car.bookings');
     // URL diubah menjadi /admin/bookings-calendar agar lebih konsisten
     Route::get('/invoices/{invoice}/pdf/download', [PdfController::class, 'downloadInvoice'])
