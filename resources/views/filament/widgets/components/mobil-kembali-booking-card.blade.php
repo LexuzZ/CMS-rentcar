@@ -2,18 +2,18 @@
     // PERBAIKAN 1: Menentukan warna dinamis untuk tombol dan badge
     $badgeColor = match ($theme ?? 'default') {
         'danger' => '#ef4444', // Merah untuk hari ini
-        'info'   => '#FFCC00', // Hijau untuk besok
-        default  => '#6b7280;', // Abu-abu sebagai default
+        'info' => '#FFCC00', // Hijau untuk besok
+        default => '#6b7280;', // Abu-abu sebagai default
     };
     $buttonColor = match ($theme ?? 'default') {
         'danger' => '#ef4444',
-        'info'   => '#FFCC00',
-        default  => '#6b7280;',
+        'info' => '#FFCC00',
+        default => '#6b7280;',
     };
     $buttonHover = match ($theme ?? 'default') {
         'danger' => '#DC2626',
-        'info'   => '#E6B800',
-        default  => '#6b7280;',
+        'info' => '#E6B800',
+        default => '#6b7280;',
     };
 @endphp
 
@@ -38,7 +38,8 @@
             };
         @endphp
         {{-- PERBAIKAN 2: Menerapkan warna dinamis pada badge --}}
-        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full text-white" style="background-color: {{ $badgeColor }};">
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full text-white"
+            style="background-color: {{ $badgeColor }};">
             {{ $statusText }}
         </span>
     </div>
@@ -49,7 +50,8 @@
     <div class="space-y-3 text-sm">
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Penyewa</span>
-            <span class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
+            <span
+                class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
@@ -94,9 +96,11 @@
     @if ($canPerformActions)
         <div class="mt-6 flex items-center justify-end">
             <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle" color="{{ $buttonColor }}">
-            Selesaikan
-        </x-filament::button>
+                icon="heroicon-o-check-circle" style="background-color: {{ $buttonColor }}; "
+                onmouseover="this.style.backgroundColor='{{ $buttonHover }}';"
+                onmouseout="this.style.backgroundColor='{{ $buttonColor }}';">
+                Selesaikan
+            </x-filament::button>
         </div>
     @endif
 </div>
