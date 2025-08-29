@@ -20,7 +20,7 @@ class MobilKembali extends Widget
      */
     public function selesaikanBooking(int $bookingId): void
     {
-        if (! Auth::user()->hasAnyRole(['superadmin', 'admin'])) {
+        if (! Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor'])) {
             return;
         }
         $booking = Booking::find($bookingId);

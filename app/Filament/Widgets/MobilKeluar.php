@@ -21,7 +21,7 @@ class MobilKeluar extends Widget
 
     public function pickupBooking(int $bookingId): void
     {
-        if (! Auth::user()->hasAnyRole(['superadmin', 'admin'])) {
+        if (! Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor'])) {
             return;
         }
         $booking = Booking::with('car')->find($bookingId);
