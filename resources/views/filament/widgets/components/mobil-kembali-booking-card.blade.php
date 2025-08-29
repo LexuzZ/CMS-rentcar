@@ -90,11 +90,13 @@
     </div>
 
     {{-- Tombol Aksi --}}
-    <div class="mt-6 flex items-center justify-end">
-        {{-- PERBAIKAN 3: Menerapkan warna dinamis pada tombol --}}
-        <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
-            icon="heroicon-o-check-circle"  style="background-color: {{ $buttonColor }}; " onmouseover="this.style.backgroundColor='{{ $buttonHover }}';" onmouseout="this.style.backgroundColor='{{ $buttonColor }}';">
+
+    @if ($canPerformActions)
+        <div class="mt-6 flex items-center justify-end">
+            <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
+            icon="heroicon-o-check-circle" color="{{ $buttonColor }}">
             Selesaikan
         </x-filament::button>
-    </div>
+        </div>
+    @endif
 </div>

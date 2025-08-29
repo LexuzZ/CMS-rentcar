@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Booking;
 use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Auth;
 
 class MobilKembali extends Widget
 {
@@ -19,6 +20,9 @@ class MobilKembali extends Widget
      */
     public function selesaikanBooking(int $bookingId): void
     {
+        if (! Auth::user()->hasAnyRole(['superadmin', 'admin'])) {
+            return;
+        }
         $booking = Booking::find($bookingId);
 
         if ($booking) {
@@ -63,6 +67,7 @@ class MobilKembali extends Widget
         return [
             'bookingsToday' => $bookingsToday,
             'bookingsTomorrow' => $bookingsTomorrow,
+            'canPerformActions' => Auth::user()->hasAnyRole(['superadmin', 'admin']),
         ];
     }
 }
