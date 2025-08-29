@@ -89,18 +89,18 @@ class CarPerformanceReport extends Page implements HasForms
         $carsQuery = Car::query()
             ->with(['carModel.brand', 'bookings' => function ($query) use ($startDate, $endDate) {
                 $query->with('customer')
-                      ->where('status', '!=', 'batal')
-                      ->where(function ($q) use ($startDate, $endDate) {
-                          $q->where('tanggal_keluar', '<=', $endDate)
+                    ->where('status', '!=', 'batal')
+                    ->where(function ($q) use ($startDate, $endDate) {
+                        $q->where('tanggal_keluar', '<=', $endDate)
                             ->where('tanggal_kembali', '>=', $startDate);
-                      });
+                    });
             }])
             ->whereHas('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where('status', '!=', 'batal')
-                      ->where(function ($q) use ($startDate, $endDate) {
-                          $q->where('tanggal_keluar', '<=', $endDate)
+                    ->where(function ($q) use ($startDate, $endDate) {
+                        $q->where('tanggal_keluar', '<=', $endDate)
                             ->where('tanggal_kembali', '>=', $startDate);
-                      });
+                    });
             })
             // Menambahkan kondisi pencarian nopol ke query
             ->when($nopolSearch, function ($query) use ($nopolSearch) {
@@ -123,11 +123,13 @@ class CarPerformanceReport extends Page implements HasForms
                 $effectiveStartDate = $bookingStart->copy()->max($startDate);
                 $effectiveEndDate = $bookingEnd->copy()->min($endDate);
 
+                // Logika perhitungan hari non-inklusif
                 $days = $effectiveStartDate->diffInDays($effectiveEndDate);
-                $daysInMonth = $days >= 0 ? $days : 1;
+                $daysInMonth = $days > 0 ? $days : 1;
 
                 $totalDaysInMonth += $daysInMonth;
 
+                $revenueInMonth = 0;
                 if ($booking->total_hari > 0) {
                     $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
                     $revenueInMonth = $dailyRate * $daysInMonth;
@@ -144,7 +146,7 @@ class CarPerformanceReport extends Page implements HasForms
             }
 
             $data[] = [
-                'car_id'    => $car->id, // <-- Menambahkan ID mobil
+                'car_id'    => $car->id,
                 'model'     => $car->carModel->brand->name . ' ' . $car->carModel->name,
                 'nopol'     => $car->nopol,
                 'days_rented' => $totalDaysInMonth,
@@ -153,8 +155,8 @@ class CarPerformanceReport extends Page implements HasForms
             ];
         }
 
-        $this->reportTitle = $startDate->isoFormat('MMMM YYYY');
-        $this->reportDateString = $startDate->format('Y-m'); // <-- Menyimpan Y-m untuk URL
+        $this->reportTitle = $startDate->locale('id')->isoFormat('MMMM YYYY');
+        $this->reportDateString = $startDate->format('Y-m');
         $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
     }
 
@@ -214,9 +216,100 @@ class CarPerformanceReport extends Page implements HasForms
             $filename
         );
     }
+
+    // -- METHOD BARU UNTUK EKSPOR DETAIL --
+    public function exportCarDetail(int $carId, int $year, int $month): StreamedResponse
+    {
+        $car = Car::with(['bookings.customer'])->findOrFail($carId);
+
+        $startOfMonth = Carbon::create($year, $month, 1)->startOfDay();
+        $endOfMonth   = $startOfMonth->copy()->endOfMonth()->endOfDay();
+
+        $bookings = $car->bookings()
+            ->with('customer')
+            ->where('status', '!=', 'batal')
+            ->where(function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->where('tanggal_keluar', '<=', $endOfMonth)
+                  ->where('tanggal_kembali', '>=', $startOfMonth);
+            })
+            ->get();
+
+        $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.csv";
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = [
+            'Booking ID',
+            'Pelanggan',
+            'Tgl Keluar',
+            'Tgl Kembali',
+            'Total Hari',
+            'Hari Dalam Bulan Ini',
+            'Pendapatan Bulan Ini (Rp)',
+        ];
+
+        $callback = function () use ($bookings, $columns, $startOfMonth, $endOfMonth) {
+            $file = fopen('php://output', 'w');
+
+            // judul
+            fputcsv($file, ["Detail Booking Mobil"]);
+            fputcsv($file, ["Periode: {$startOfMonth->isoFormat('MMMM YYYY')}"]);
+            fputcsv($file, []); // baris kosong
+
+            // header
+            fputcsv($file, $columns);
+
+            $totalRevenue = 0;
+            foreach ($bookings as $booking) {
+                $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
+                $bookingEnd   = Carbon::parse($booking->tanggal_kembali)->endOfDay();
+
+                $periodeMulai   = $bookingStart->greaterThan($startOfMonth) ? $bookingStart : $startOfMonth;
+                $periodeSelesai = $bookingEnd->lessThan($endOfMonth) ? $bookingEnd : $endOfMonth;
+
+                $hariDalamBulan = 0;
+                if ($periodeMulai <= $periodeSelesai) {
+                    $hariDalamBulan = $periodeMulai->diffInDays($periodeSelesai) + 1;
+                }
+
+                $revenueInMonth = 0;
+                if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
+                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
+                    $revenueInMonth = $dailyRate * $hariDalamBulan;
+                }
+
+                $totalRevenue += $revenueInMonth;
+
+                fputcsv($file, [
+                    $booking->id,
+                    $booking->customer->nama ?? '-',
+                    $booking->tanggal_keluar,
+                    $booking->tanggal_kembali,
+                    $booking->total_hari,
+                    $hariDalamBulan,
+                    round($revenueInMonth),
+                ]);
+            }
+
+            fputcsv($file, []); // spasi
+            fputcsv($file, ['', '', '', '', '', 'TOTAL', round($totalRevenue)]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public static function canAccess(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
+
