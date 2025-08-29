@@ -6,6 +6,7 @@ namespace App\Filament\Widgets;
 use App\Models\Booking;
 use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Auth;
 
 // Ganti nama kelasnya
 class MobilKeluar extends Widget
@@ -20,6 +21,9 @@ class MobilKeluar extends Widget
 
     public function pickupBooking(int $bookingId): void
     {
+        if (! Auth::user()->hasAnyRole(['superadmin', 'admin'])) {
+            return;
+        }
         $booking = Booking::with('car')->find($bookingId);
 
         if ($booking) {
@@ -61,6 +65,7 @@ class MobilKeluar extends Widget
         return [
             'bookingsToday' => $bookingsToday,
             'bookingsTomorrow' => $bookingsTomorrow,
+            'canPerformActions' => Auth::user()->hasAnyRole(['superadmin', 'admin']),
         ];
     }
 }
