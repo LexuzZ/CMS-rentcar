@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleSchedule extends Page implements HasForms
 {
@@ -134,5 +135,10 @@ class VehicleSchedule extends Page implements HasForms
         }
 
         $this->scheduleData = $data;
+    }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
