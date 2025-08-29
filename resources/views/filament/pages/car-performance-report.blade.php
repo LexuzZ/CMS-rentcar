@@ -1,11 +1,10 @@
 <x-filament-panels::page>
-    {{-- Inisialisasi Alpine.js dengan state untuk modal --}}
     <div x-data="{
             isModalOpen: false,
             modalBookings: [],
             modalCarName: '',
             modalCarId: null,
-            reportDateString: @js($reportDateString)
+            reportDateString: @entangle('reportDateString')
         }">
         {{-- Filter Section --}}
         <x-filament::section>
@@ -15,7 +14,19 @@
         {{-- Report Table Section --}}
         <x-filament::section class="mt-6">
             <x-slot name="heading">
-                Ringkasan Kinerja untuk Bulan {{ $reportTitle }}
+                {{-- PERUBAHAN DI SINI: Menambahkan tombol Export --}}
+                <div class="flex justify-between items-center">
+                    <span>Ringkasan Kinerja untuk Bulan {{ $reportTitle }}</span>
+                    <x-filament::button
+                        wire:click="exportReport"
+                        icon="heroicon-o-arrow-down-tray"
+                        color="gray"
+                        wire:loading.attr="disabled"
+                        wire:target="exportReport"
+                    >
+                        Export Excel
+                    </x-filament::button>
+                </div>
             </x-slot>
 
             <div class="overflow-x-auto">
@@ -87,7 +98,6 @@
                                             <span x-text="new Date(booking.start).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })"></span> -
                                             <span x-text="new Date(booking.end).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                                         </td>
-                                        {{-- PERBAIKAN DI SINI --}}
                                         <td class="px-4 py-3 text-right" x-text="`Rp ${Number(booking.revenue).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`"></td>
                                     </tr>
                                 </template>
@@ -95,13 +105,10 @@
                         </table>
                     </div>
                     <div class="mt-6 flex justify-between items-center">
-                        {{-- Tombol Export Excel --}}
                         <a :href="`/reports/export-car-bookings/${modalCarId}/${reportDateString.split('-')[0]}/${reportDateString.split('-')[1]}`"
-                           style="color: #fff; text-decoration: none; font-weight: 500; background-color: #10b981; padding: 0.25rem; border-radius: 0.375rem; hover::background-color: #059669;">
-                            {{-- class="fi-btn fi-btn-color-success" --}}
+                           class="fi-btn fi-btn-color-success">
                             Export Excel
                         </a>
-                        {{-- Tombol Tutup --}}
                         <button @click="isModalOpen = false" class="fi-btn fi-btn-color-gray">Tutup</button>
                     </div>
                 </div>
@@ -109,3 +116,4 @@
         </div>
     </div>
 </x-filament-panels::page>
+

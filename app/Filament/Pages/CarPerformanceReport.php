@@ -13,6 +13,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CarPerformanceReport extends Page implements HasForms
 {
@@ -153,6 +156,63 @@ class CarPerformanceReport extends Page implements HasForms
         $this->reportTitle = $startDate->isoFormat('MMMM YYYY');
         $this->reportDateString = $startDate->format('Y-m'); // <-- Menyimpan Y-m untuk URL
         $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
+    }
+
+    public function exportReport(): StreamedResponse
+    {
+        $reportData = $this->reportTableData;
+        $reportTitle = $this->reportTitle;
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Judul
+        $sheet->setCellValue('A1', 'Laporan Kinerja Mobil');
+        $sheet->setCellValue('A2', "Periode: {$reportTitle}");
+        $sheet->mergeCells('A1:D1');
+        $sheet->mergeCells('A2:D2');
+        $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+        $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal('center');
+
+        // Header
+        $sheet->fromArray(['Mobil', 'No. Polisi', 'Total Hari Disewa', 'Pendapatan (Prorata)'], null, 'A4');
+        $sheet->getStyle('A4:D4')->getFont()->setBold(true);
+
+        $row = 5;
+        $totalDays = 0;
+        $totalRevenue = 0;
+
+        foreach ($reportData as $data) {
+            $sheet->setCellValue("A{$row}", $data['model']);
+            $sheet->setCellValue("B{$row}", $data['nopol']);
+            $sheet->setCellValue("C{$row}", $data['days_rented']);
+            $sheet->setCellValue("D{$row}", $data['revenue']);
+            $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+
+            $totalDays += $data['days_rented'];
+            $totalRevenue += $data['revenue'];
+            $row++;
+        }
+
+        // Total
+        $summaryRow = $row + 1;
+        $sheet->setCellValue("A{$summaryRow}", 'TOTAL');
+        $sheet->setCellValue("C{$summaryRow}", $totalDays);
+        $sheet->setCellValue("D{$summaryRow}", $totalRevenue);
+        $sheet->getStyle("A{$summaryRow}:D{$summaryRow}")->getFont()->setBold(true);
+        $sheet->getStyle("D{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+
+        foreach (range('A', 'D') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'laporan_kinerja_mobil_' . str_replace(' ', '_', $reportTitle) . '.xlsx';
+
+        return response()->streamDownload(
+            fn () => $writer->save('php://output'),
+            $filename
+        );
     }
     public static function canAccess(): bool
     {
