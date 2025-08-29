@@ -195,4 +195,9 @@ class TempoResource extends Resource
         // Hanya superadmin dan admin yang bisa hapus massal
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
 }

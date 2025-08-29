@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PenaltyResource extends Resource
 {
@@ -112,5 +113,10 @@ class PenaltyResource extends Resource
             'create' => Pages\CreatePenalty::route('/create'),
             'edit' => Pages\EditPenalty::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
