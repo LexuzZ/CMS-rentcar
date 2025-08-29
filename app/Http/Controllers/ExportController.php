@@ -33,7 +33,7 @@ class ExportController extends Controller
         // Judul
         $sheet->setCellValue('A1', 'Laporan Kinerja Mobil');
         $sheet->setCellValue('A2', $car->carModel->brand->name . ' ' . $car->carModel->name . ' - ' . $car->nopol);
-        $sheet->setCellValue('A3', $startDate->isoFormat('MMMM YYYY'));
+        $sheet->setCellValue('A3', $startDate->locale('id')->isoFormat('MMMM YYYY'));
         $sheet->mergeCells('A1:E1');
         $sheet->mergeCells('A2:E2');
         $sheet->mergeCells('A3:E3');
