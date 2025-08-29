@@ -436,7 +436,7 @@ class BookingResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return true; // Semua peran bisa melihat
+       return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
     }
 
     public static function canCreate(): bool
