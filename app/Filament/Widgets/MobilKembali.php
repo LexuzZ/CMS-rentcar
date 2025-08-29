@@ -67,7 +67,7 @@ class MobilKembali extends Widget
         return [
             'bookingsToday' => $bookingsToday,
             'bookingsTomorrow' => $bookingsTomorrow,
-            'canPerformActions' => Auth::user()->hasAnyRole(['superadmin', 'admin']),
+            'canPerformActions' => Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']),
         ];
     }
 }
