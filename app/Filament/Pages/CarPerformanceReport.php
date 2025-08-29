@@ -234,17 +234,19 @@ class CarPerformanceReport extends Page implements HasForms
             })
             ->get();
 
-        $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.csv";
+        // Buat spreadsheet baru
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
+        // Judul
+        $sheet->setCellValue('A1', "Detail Booking Mobil: {$car->model} ({$car->nopol})");
+        $sheet->setCellValue('A2', "Periode: " . $startOfMonth->isoFormat('MMMM YYYY'));
+
+        // Bold untuk judul
+        $sheet->getStyle('A1:A2')->getFont()->setBold(true);
+
+        // Header kolom
         $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        ];
-
-        $columns = [
             'Booking ID',
             'Pelanggan',
             'Tgl Keluar',
@@ -254,56 +256,68 @@ class CarPerformanceReport extends Page implements HasForms
             'Pendapatan Bulan Ini (Rp)',
         ];
 
-        $callback = function () use ($bookings, $columns, $startOfMonth, $endOfMonth) {
-            $file = fopen('php://output', 'w');
+        $sheet->fromArray($headers, null, 'A4');
+        $sheet->getStyle('A4:G4')->getFont()->setBold(true);
+        $sheet->getStyle('A4:G4')->getAlignment()->setHorizontal('center');
 
-            // judul
-            fputcsv($file, ["Detail Booking Mobil"]);
-            fputcsv($file, ["Periode: {$startOfMonth->isoFormat('MMMM YYYY')}"]);
-            fputcsv($file, []); // baris kosong
+        // Isi data
+        $row = 5;
+        $totalRevenue = 0;
 
-            // header
-            fputcsv($file, $columns);
+        foreach ($bookings as $booking) {
+            $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
+            $bookingEnd   = Carbon::parse($booking->tanggal_kembali)->endOfDay();
 
-            $totalRevenue = 0;
-            foreach ($bookings as $booking) {
-                $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
-                $bookingEnd   = Carbon::parse($booking->tanggal_kembali)->endOfDay();
+            $periodeMulai   = $bookingStart->greaterThan($startOfMonth) ? $bookingStart : $startOfMonth;
+            $periodeSelesai = $bookingEnd->lessThan($endOfMonth) ? $bookingEnd : $endOfMonth;
 
-                $periodeMulai   = $bookingStart->greaterThan($startOfMonth) ? $bookingStart : $startOfMonth;
-                $periodeSelesai = $bookingEnd->lessThan($endOfMonth) ? $bookingEnd : $endOfMonth;
-
-                $hariDalamBulan = 0;
-                if ($periodeMulai <= $periodeSelesai) {
-                    $hariDalamBulan = $periodeMulai->diffInDays($periodeSelesai) + 1;
-                }
-
-                $revenueInMonth = 0;
-                if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
-                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
-                    $revenueInMonth = $dailyRate * $hariDalamBulan;
-                }
-
-                $totalRevenue += $revenueInMonth;
-
-                fputcsv($file, [
-                    $booking->id,
-                    $booking->customer->nama ?? '-',
-                    $booking->tanggal_keluar,
-                    $booking->tanggal_kembali,
-                    $booking->total_hari,
-                    $hariDalamBulan,
-                    round($revenueInMonth),
-                ]);
+            $hariDalamBulan = 0;
+            if ($periodeMulai <= $periodeSelesai) {
+                $hariDalamBulan = $periodeMulai->diffInDays($periodeSelesai) + 1;
             }
 
-            fputcsv($file, []); // spasi
-            fputcsv($file, ['', '', '', '', '', 'TOTAL', round($totalRevenue)]);
+            $revenueInMonth = 0;
+            if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
+                $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
+                $revenueInMonth = $dailyRate * $hariDalamBulan;
+            }
 
-            fclose($file);
-        };
+            $totalRevenue += $revenueInMonth;
 
-        return response()->stream($callback, 200, $headers);
+            $sheet->fromArray([
+                $booking->id,
+                $booking->customer->nama ?? '-',
+                $booking->tanggal_keluar,
+                $booking->tanggal_kembali,
+                $booking->total_hari,
+                $hariDalamBulan,
+                round($revenueInMonth),
+            ], null, "A{$row}");
+
+            $row++;
+        }
+
+        // Tambahkan total
+        $sheet->setCellValue("F{$row}", 'TOTAL');
+        $sheet->setCellValue("G{$row}", round($totalRevenue));
+        $sheet->getStyle("F{$row}:G{$row}")->getFont()->setBold(true);
+
+        // Auto-size semua kolom
+        foreach (range('A', 'G') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Stream file ke browser
+        $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.xlsx";
+
+        return new StreamedResponse(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => "attachment;filename=\"{$fileName}\"",
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 
     public static function canAccess(): bool
