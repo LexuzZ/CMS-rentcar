@@ -91,7 +91,7 @@ class DetailMonthlyReport extends Page implements HasTable
                     ->whereMonth('bookings.tanggal_keluar', $month)
             )
             ->columns([
-                TextColumn::make('invoice.id')->label('Faktur'),
+                // TextColumn::make('invoice.id')->label('Faktur'),
                 TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()
                     ->weight(FontWeight::Bold)
                     ->wrap()
