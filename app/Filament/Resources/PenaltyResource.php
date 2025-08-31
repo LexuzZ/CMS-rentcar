@@ -87,12 +87,14 @@ class PenaltyResource extends Resource
                         'primary' => 'baret',
                         'danger' => 'overtime',
                         'danger' => 'overland',
+                        'success' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'bbm' => 'BBM',
                         'overtime' => 'Overtime',
                         'baret' => 'Baret/Kerusakan',
                         'overland' => 'Overland',
+                        'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
                 Tables\Columns\TextColumn::make('amount')->money('IDR')->label('Nominal')->alignCenter(),
