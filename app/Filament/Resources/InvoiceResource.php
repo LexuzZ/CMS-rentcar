@@ -227,7 +227,7 @@ class InvoiceResource extends Resource
     {
         return $table->columns([
             TextColumn::make('id')->label('ID Faktur')->searchable()->sortable(),
-            TextColumn::make('booking.customer.nama')->label('Pelanggan')->searchable()->wrap()->width(150),
+            TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),
             TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->state(function (Invoice $record): float {

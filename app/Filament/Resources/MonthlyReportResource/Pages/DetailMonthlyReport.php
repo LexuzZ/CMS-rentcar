@@ -9,6 +9,7 @@ use App\Models\Payment;
 
 use Filament\Actions\Action; // <-- Import Action
 use Filament\Resources\Pages\Page;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -91,23 +92,18 @@ class DetailMonthlyReport extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('invoice.id')->label('Faktur'),
-                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
+                TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()
+                    ->weight(FontWeight::Bold)
+                    ->wrap()
+                    ->width(150),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('invoice.booking.tanggal_keluar')->label('Tanggal Keluar')->date('d M Y'),
                 TextColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali')->date('d M Y'),
                 TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'lunas',
-                        'danger' => 'belum_lunas',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-                        default => ucfirst($state),
+                TextColumn::make('status')->label('Status')->badge()->alignCenter()->colors([
+                    'success' => 'lunas',
+                    'danger' => 'belum_lunas',
+                ])->formatStateUsing(fn($state) => match ($state) { 'lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas', default => ucfirst($state),
                     }),
             ])
             ->filters([

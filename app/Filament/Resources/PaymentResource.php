@@ -99,7 +99,7 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 // Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
-                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable()->alignCenter()->weight(FontWeight::Bold)->wrap() // <-- Tambahkan wrap agar teks turun
+                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()->alignCenter()->weight(FontWeight::Bold)->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(150),
                 TextColumn::make('invoice.booking.tanggal_keluar')
                     ->label('Tanggal Keluar')

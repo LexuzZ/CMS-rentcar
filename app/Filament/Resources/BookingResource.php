@@ -150,11 +150,11 @@ class BookingResource extends Resource
 
 
                 Forms\Components\Select::make('customer_id')
-                    ->label('Pelanggan')
+                    ->label('Penyewa')
                     ->relationship('customer', 'nama')
                     ->searchable()->preload()
                     ->createOptionForm([
-                        Forms\Components\TextInput::make('nama')->label('Nama Pelanggan')->required(),
+                        Forms\Components\TextInput::make('nama')->label('Nama Penyewa')->required(),
                         Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
                         Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
@@ -347,7 +347,7 @@ class BookingResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
                 TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter()->wrap()->width(50),
-                Tables\Columns\TextColumn::make('customer.nama')->label('Pelanggan')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                Tables\Columns\TextColumn::make('customer.nama')->label('Penyewa')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(250),
 
                 Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
