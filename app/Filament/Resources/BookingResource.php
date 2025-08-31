@@ -71,14 +71,14 @@ class BookingResource extends Resource
                     ->label('Tanggal Keluar')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 Forms\Components\DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 Forms\Components\TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
@@ -91,7 +91,7 @@ class BookingResource extends Resource
                         'vendor' => 'Garasi Vendor',
                     ])
                     ->live()
-                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null)) // Kosongkan pilihan mobil
+                    ->afterStateUpdated(fn(Forms\Set $set) => $set('car_id', null)) // Kosongkan pilihan mobil
                     ->dehydrated(false), // Field ini virtual, tidak disimpan
 
                 Forms\Components\Select::make('car_id')
@@ -99,34 +99,36 @@ class BookingResource extends Resource
                     ->relationship(
                         name: 'car',
                         titleAttribute: 'nopol',
-                        modifyQueryUsing: function (Builder $query, Forms\Get $get) {
+                        modifyQueryUsing: function (Builder $query, Forms\Get $get, ?Model $record) {
+                            // Saat EDIT, tampilkan mobil yg sudah dipilih tanpa filter ketat
+                            if ($record && $record->exists) {
+                                return $query->orWhere('id', $record->car_id);
+                            }
+
                             $startDate = $get('tanggal_keluar');
                             $endDate = $get('tanggal_kembali');
-                            $recordId = $get('id');
-                            $garasiType = $get('garasi_type'); // Ambil nilai dari filter garasi
+                            $garasiType = $get('garasi_type');
 
-                            // Jika tanggal atau tipe garasi belum diisi, jangan tampilkan mobil
                             if (!$startDate || !$endDate || !$garasiType) {
                                 return $query->whereRaw('1 = 0');
                             }
 
-                            // Terapkan filter garasi
+                            // Filter berdasarkan garasi
                             if ($garasiType === 'spt') {
                                 $query->where('garasi', 'SPT');
                             } else {
                                 $query->where('garasi', '!=', 'SPT');
                             }
 
-                            // Terapkan filter ketersediaan tanggal
+                            // Filter ketersediaan mobil
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $recordId) {
-                                    $bookingQuery->where('id', '!=', $recordId)
-                                        ->where(function (Builder $q) use ($startDate, $endDate) {
-                                            $q->where('tanggal_keluar', '<', $endDate)
-                                              ->where('tanggal_kembali', '>', $startDate);
-                                        });
+                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
+                                $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
+                                    $q->where('tanggal_keluar', '<', $endDate)
+                                        ->where('tanggal_kembali', '>', $startDate);
                                 });
+                            });
                         }
                     )
                     ->getOptionLabelFromRecordUsing(function (Car $record) {
@@ -146,6 +148,7 @@ class BookingResource extends Resource
                     })
                     ->disabled($isNotAdmin),
 
+
                 Forms\Components\Select::make('customer_id')
                     ->label('Pelanggan')
                     ->relationship('customer', 'nama')
@@ -156,7 +159,7 @@ class BookingResource extends Resource
                         Forms\Components\TextInput::make('alamat')->label('Alamat')->required(),
                         Forms\Components\TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
-                    ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
+                    ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                     ->required()
                     ->disabled($isNotAdmin),
 
@@ -164,7 +167,7 @@ class BookingResource extends Resource
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour'])->nullable()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
-                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
+                Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->disabled()->dehydrated(),
                 Forms\Components\TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
 
@@ -369,11 +372,11 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_keluar'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_keluar', $date)
+                            fn(Builder $query, $date): Builder => $query->whereDate('tanggal_keluar', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (! $data['tanggal_keluar']) {
+                        if (!$data['tanggal_keluar']) {
                             return null;
                         }
                         $date = Carbon::parse($data['tanggal_keluar'])->isoFormat('D MMM Y');
@@ -389,11 +392,11 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_kembali'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_kembali', $date)
+                            fn(Builder $query, $date): Builder => $query->whereDate('tanggal_kembali', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (! $data['tanggal_kembali']) {
+                        if (!$data['tanggal_kembali']) {
                             return null;
                         }
                         $date = Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
@@ -436,7 +439,7 @@ class BookingResource extends Resource
 
     public static function canViewAny(): bool
     {
-       return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
     }
 
     public static function canCreate(): bool
