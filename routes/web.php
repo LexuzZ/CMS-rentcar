@@ -42,6 +42,8 @@ Route::group(['middleware' => ['web', Authenticate::class]], function () {
     // URL diubah menjadi /admin/bookings-calendar agar lebih konsisten
     Route::get('/invoices/{invoice}/pdf/download', [PdfController::class, 'downloadInvoice'])
         ->name('invoices.pdf.download');
+    Route::get('/reports/monthly-recap/{year}/{month}/pdf', [PdfController::class, 'downloadMonthlyRecapPdf'])
+        ->name('reports.monthly-recap.pdf');
 
 
 

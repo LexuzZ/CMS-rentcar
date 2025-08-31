@@ -7,6 +7,7 @@ use App\Filament\Exports\PaymentExporter;
 use App\Filament\Resources\MonthlyReportResource;
 use App\Models\Payment;
 
+use Filament\Actions\Action; // <-- Import Action
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -39,6 +40,27 @@ class DetailMonthlyReport extends Page implements HasTable
         return "Detail Rekapan - {$monthName} {$year}";
     }
 
+    // -- PERUBAHAN DI SINI: Mengubah headerActions menjadi method --
+    protected function getHeaderActions(): array
+    {
+        [$year, $month] = explode('-', $this->record);
+
+        return [
+            // Action::make()
+            //     ->label('Export Excel')
+            //     ->exporter(PaymentExporter::class),
+
+            // -- TOMBOL BARU UNTUK PDF --
+            Action::make('exportPdf')
+                ->label('Export Rekapan PDF')
+                ->color('gray')
+                ->icon('heroicon-o-document-arrow-down')
+                ->url(route('reports.monthly-recap.pdf', ['year' => $year, 'month' => $month]))
+                ->openUrlInNewTab(),
+        ];
+    }
+
+
     public function table(Table $table): Table
     {
         [$year, $month] = explode('-', $this->record);
@@ -48,18 +70,13 @@ class DetailMonthlyReport extends Page implements HasTable
                 Payment::query()
                     ->whereYear('tanggal_pembayaran', $year)
                     ->whereMonth('tanggal_pembayaran', $month)
-
             )
             ->columns([
                 TextColumn::make('invoice.id')->label('Faktur'),
-                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
-                    ->width(250),
-                TextColumn::make('invoice.booking.total_hari')->label('Hari'),
+                TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
-                TextColumn::make('invoice.booking.car.garasi')->label('Vendor')->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
-                    ->width(250),
-                TextColumn::make('tanggal_pembayaran')->label('Tgl Pembayaran')->date('d M Y'),
-                TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                TextColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran')->date('d M Y'),
+                TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -68,14 +85,12 @@ class DetailMonthlyReport extends Page implements HasTable
                         'success' => 'lunas',
                         'danger' => 'belum_lunas',
                     ])
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()->label('Export Excel')->exporter(PaymentExporter::class)
             ]);
     }
 }
+
