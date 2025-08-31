@@ -27,21 +27,33 @@ class PdfController extends Controller
         // Unduh file PDF dengan nama file yang dinamis
         return $pdf->download('invoice-' . $invoice->id . '-' . $invoice->booking->customer->nama . '.pdf');
     }
-    public function downloadMonthlyRecapPdf(int $year, int $month): Response
+    public function downloadMonthlyRecapPdf(Request $request, int $year, int $month): Response
     {
         $startDate = Carbon::create($year, $month, 1)->startOfDay();
         $endDate = $startDate->copy()->endOfMonth()->endOfDay();
 
-        // Ambil semua data pembayaran yang relevan
-        $payments = Payment::with([
+        // Ambil ID pelanggan dari query string URL
+        $customerId = $request->query('customer_id');
+
+        // Mulai query dasar
+        $query = Payment::with([
                 'invoice.booking.customer',
-                'invoice.booking.car.carModel',
+                'invoice.booking.car.carModel.brand',
                 'invoice.booking.penalty'
             ])
-            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->get();
+            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate]);
 
-        // Hitung data ringkasan
+        // Terapkan filter pelanggan jika ada
+        $query->when($customerId, function ($q) use ($customerId) {
+            $q->whereHas('invoice.booking', function ($subQ) use ($customerId) {
+                $subQ->where('customer_id', $customerId);
+            });
+        });
+
+        // Ambil data yang sudah difilter
+        $payments = $query->get();
+
+        // Hitung data ringkasan berdasarkan data yang sudah difilter
         $summary = [
             'total_transactions' => $payments->count(),
             'status_breakdown' => $payments->countBy('status'),

@@ -14,6 +14,8 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TextFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class DetailMonthlyReport extends Page implements HasTable
@@ -55,7 +57,21 @@ class DetailMonthlyReport extends Page implements HasTable
                 ->label('Export Rekapan PDF')
                 ->color('gray')
                 ->icon('heroicon-o-document-arrow-down')
-                ->url(route('reports.monthly-recap.pdf', ['year' => $year, 'month' => $month]))
+                // -- PERBAIKAN DI SINI: URL sekarang menyertakan filter aktif --
+                ->url(function (): string {
+                    [$year, $month] = explode('-', $this->record);
+
+                    // Siapkan parameter dasar
+                    $routeParams = ['year' => $year, 'month' => $month];
+
+                    // Ambil nilai filter pelanggan yang aktif
+                    $customerFilter = $this->tableFilters['customer']['value'] ?? null;
+                    if ($customerFilter) {
+                        $routeParams['customer_id'] = $customerFilter;
+                    }
+
+                    return route('reports.monthly-recap.pdf', $routeParams);
+                })
                 ->openUrlInNewTab(),
         ];
     }
@@ -76,7 +92,7 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('invoice.booking.customer.nama')->label('Pelanggan')->searchable(),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('tanggal_pembayaran')->label('Tanggal Pembayaran')->date('d M Y'),
-                TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -85,11 +101,18 @@ class DetailMonthlyReport extends Page implements HasTable
                         'success' => 'lunas',
                         'danger' => 'belum_lunas',
                     ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     }),
+            ])
+            ->filters([
+                SelectFilter::make('customer')
+                    ->label('Filter Pelanggan')
+                    ->relationship('invoice.booking.customer', 'nama')
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 }
