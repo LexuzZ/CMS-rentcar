@@ -30,7 +30,7 @@ class DashboardMonthlySummary extends BaseWidget
             ->first();
 
         // Mobil dengan status "Disewa"
-        $carsRented = Car::where('status', 'Disewa')->count();
+        $carsRented = Car::withCount('bookings');
         // $invoiceCount = Invoice::where('status', 'Belum Lunas')->count();
 
 
