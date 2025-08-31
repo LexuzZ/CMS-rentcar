@@ -45,6 +45,7 @@ class InvoiceResource extends Resource
                     )
                     ->selectablePlaceholder()
                     ->required()
+                    ->searchable()
                     ->live()
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $booking = \App\Models\Booking::find($state);
