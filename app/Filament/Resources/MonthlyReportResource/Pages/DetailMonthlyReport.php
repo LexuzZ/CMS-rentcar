@@ -98,7 +98,7 @@ class DetailMonthlyReport extends Page implements HasTable
                     ->width(150),
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('invoice.booking.tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->sortable(),
-                TextColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali')->date('d M Y'),
+                TextColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->sortable(),
                 TextColumn::make('pembayaran')->label('Jumlah')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('status')->label('Status')->badge()->alignCenter()->colors([
                     'success' => 'lunas',
