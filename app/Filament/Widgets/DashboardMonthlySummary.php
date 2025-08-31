@@ -18,6 +18,9 @@ class DashboardMonthlySummary extends BaseWidget
     protected function getStats(): array
     {
         $today = Carbon::today();
+        $now = now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
         $returnsToday = Booking::whereDate('tanggal_kembali', $today)->count();
 
         // Pemesanan mulai hari ini
@@ -30,7 +33,9 @@ class DashboardMonthlySummary extends BaseWidget
             ->first();
 
         // Mobil dengan status "Disewa"
-        $carsRented = Car::count();
+        $carsRented = Booking::whereMonth('tanggal_keluar', $currentMonth)
+            ->whereYear('tanggal_keluar', $currentYear)
+            ->count();
         // $invoiceCount = Invoice::where('status', 'Belum Lunas')->count();
 
 
@@ -43,8 +48,8 @@ class DashboardMonthlySummary extends BaseWidget
                 ->description('Jumlah mobil yang kembali hari ini')
                 ->icon('heroicon-o-bell-alert')
                 ->color($returnsToday > 0 ? 'warning' : 'gray'),
-            Stat::make('Mobil Disewa', $carsRented)
-                ->description("Jumlah Pesanan Bulan Ini")
+           Stat::make('Mobil Disewa', $carsRented)
+                ->description("Jumlah Booking Bulan Ini")
                 ->icon('heroicon-o-truck')
                 ->color('primary'),
 
