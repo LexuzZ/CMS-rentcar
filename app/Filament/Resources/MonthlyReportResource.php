@@ -52,6 +52,7 @@ class MonthlyReportResource extends Resource
                 ,
                 Tables\Columns\TextColumn::make('net_revenue')
                     ->label('Pendapatan (Lunas)')
+                    ->color('success')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
                 // Kolom baru untuk menampilkan tagihan yang belum lunas
