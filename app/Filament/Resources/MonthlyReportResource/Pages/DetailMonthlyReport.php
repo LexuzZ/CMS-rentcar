@@ -84,8 +84,10 @@ class DetailMonthlyReport extends Page implements HasTable
         return $table
             ->query(
                 Payment::query()
-                    ->whereYear('tanggal_pembayaran', $year)
-                    ->whereMonth('tanggal_pembayaran', $month)
+                    ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+                    ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
+                    ->whereYear('bookings.tanggal_keluar', $year)
+                    ->whereMonth('bookings.tanggal_keluar', $month)
             )
             ->columns([
                 TextColumn::make('invoice.id')->label('Faktur'),
