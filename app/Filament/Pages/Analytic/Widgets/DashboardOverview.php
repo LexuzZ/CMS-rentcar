@@ -5,6 +5,7 @@ namespace App\Filament\Pages\Analytic\Widgets;
 use App\Models\Booking;
 use App\Models\Car;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\Penalty;
 use App\Models\Pengeluaran;
 use Carbon\Carbon;
@@ -39,8 +40,8 @@ class DashboardOverview extends BaseWidget
         $monthName = Carbon::create()->month($currentMonth)->locale('id')->isoFormat('MMMM');
 
         // 💰 Total Pendapatan Bulan Ini (Sewa + Denda)
-        $totalInvoice = Invoice::whereMonth('tanggal_invoice', $currentMonth)
-            ->whereYear('tanggal_invoice', $currentYear)
+        $totalInvoice = Payment::whereMonth('tanggal_pembayaran', $currentMonth)
+            ->whereYear('tanggal_pembayaran', $currentYear)
             ->sum('total');
 
         $totalPenalty = Penalty::whereMonth('created_at', $currentMonth)
@@ -111,7 +112,7 @@ class DashboardOverview extends BaseWidget
             //     ->description('Paling banyak disewa (' . ($mostBookedCar?->bookings_count ?? 0) . 'x)')
             //     ->icon('heroicon-o-star')
             //     ->color('info'),
-            Stat::make('Pengeluaran Bulan Ini',  number_format($totalPengeluaranBulanIni, 0, ',', '.'))
+            Stat::make('Pengeluaran Bulan Ini', number_format($totalPengeluaranBulanIni, 0, ',', '.'))
                 // ->description('Total Pengeluaran')
                 ->description($monthName . ' ' . $currentYear)
                 ->icon('heroicon-o-currency-dollar')
