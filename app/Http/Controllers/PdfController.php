@@ -37,12 +37,13 @@ class PdfController extends Controller
 
         // Mulai query dasar
         $query = Payment::with([
-                'invoice.booking.customer',
-                'invoice.booking.car.carModel.brand',
-                'invoice.booking.penalty'
-            ])
-            ->whereBetween('invoice.booking.tanggal_keluar', [$startDate, $endDate]);
-
+            'invoice.booking.customer',
+            'invoice.booking.car.carModel.brand',
+            'invoice.booking.penalty'
+        ])
+            ->whereHas('invoice.booking', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('tanggal_keluar', [$startDate, $endDate]);
+            });
         // Terapkan filter pelanggan jika ada
         $query->when($customerId, function ($q) use ($customerId) {
             $q->whereHas('invoice.booking', function ($subQ) use ($customerId) {
