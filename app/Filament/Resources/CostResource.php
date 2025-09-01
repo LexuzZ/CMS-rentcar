@@ -51,8 +51,7 @@ class CostResource extends Resource
                 Textarea::make('description')
                     ->label('Deskripsi Pengeluaran')
                     ->rows(3)
-                    ->columnSpanFull()
-                    ->required(),
+                    ->columnSpanFull(),
                 TextInput::make('pembayaran')
                     ->label('Nominal Pembayaran')
                     ->numeric()
