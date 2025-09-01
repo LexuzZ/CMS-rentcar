@@ -73,7 +73,14 @@ class ArusKasTable extends BaseWidget
             )
             ->columns([
                 TextColumn::make('tanggal')->label('Tanggal')->date('d M Y')->alignCenter(),
-                TextColumn::make('keterangan')->label('Keterangan')->alignCenter(),
+                TextColumn::make('keterangan')->label('Keterangan')->alignCenter()
+                 ->formatStateUsing(fn($state) => match ($state) {
+                        'gaji' => 'Gaji Karyawan',
+                        'pajak' => 'Pajak/STNK',
+                        'perawatan' => 'Perawatan',
+                        'operasional' => 'Operasional Kantor',
+                        default => ucfirst($state),
+                    }),
                 TextColumn::make('jenis')->label('Jenis')->alignCenter()->badge()
                     ->colors([
                         'success' => 'Kas Masuk',
