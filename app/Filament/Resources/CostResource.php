@@ -28,8 +28,8 @@ class CostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationGroup = 'Data ';
-    protected static ?string $label = 'Pengeluaran';
-    protected static ?string $pluralLabel = 'Data Pengeluaran';
+    protected static ?string $label = 'Kas Keluar';
+    protected static ?string $pluralLabel = 'Kas Keluar';
 
     public static function form(Form $form): Form
     {
