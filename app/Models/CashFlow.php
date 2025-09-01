@@ -18,7 +18,7 @@ class Cashflow extends Model
                 'id',
                 'tanggal_pengeluaran as tanggal',
                 'nama_pengeluaran as keterangan',
-                DB::raw("'keluar' as jenis"),
+                DB::raw("'Kas Keluar' as jenis"),
                 'pembayaran'
             )
             ->unionAll(
@@ -26,8 +26,8 @@ class Cashflow extends Model
                     ->select(
                         'id',
                         'tanggal_pembayaran as tanggal',
-                        DB::raw("'Pembayaran Invoice' as keterangan"),
-                        DB::raw("'masuk' as jenis"),
+                        DB::raw("'Pembayaran Sewa' as keterangan"),
+                        DB::raw("'Kas Masuk' as jenis"),
                         'pembayaran'
                     )
             );
