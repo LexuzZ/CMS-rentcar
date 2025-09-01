@@ -41,7 +41,7 @@ class PdfController extends Controller
                 'invoice.booking.car.carModel.brand',
                 'invoice.booking.penalty'
             ])
-            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate]);
+            ->whereBetween('invoice.booking.tanggal_keluar', [$startDate, $endDate]);
 
         // Terapkan filter pelanggan jika ada
         $query->when($customerId, function ($q) use ($customerId) {
