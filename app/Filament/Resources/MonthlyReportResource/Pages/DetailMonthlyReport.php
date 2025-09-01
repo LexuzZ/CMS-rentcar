@@ -83,13 +83,7 @@ class DetailMonthlyReport extends Page implements HasTable
         [$year, $month] = explode('-', $this->record);
 
         return $table
-            ->query(
-                Payment::query()
-                    ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-                    ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
-                    ->whereYear('bookings.tanggal_keluar', $year)
-                    ->whereMonth('bookings.tanggal_keluar', $month)
-            )
+            ->query(Payment::query()->whereYear('tanggal_pembayaran', $year)->whereMonth('tanggal_pembayaran', $month))
             ->columns([
                 // TextColumn::make('invoice.id')->label('Faktur'),
                 TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()
