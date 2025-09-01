@@ -180,7 +180,7 @@
                         <th style="width: 10%;" class="text-center">DURASI</th>
                         <th style="width: 30%;">RINCIAN BIAYA</th>
                         <th style="width: 15%;" class="text-right">TOTAL</th>
-                        <th style="width: 15%;" class="text-right">Sisa Pembayaran</th>
+                        <th style="width: 20%;" class="text-right">Sisa Pembayaran</th>
                         <th style="width: 10%;" class="text-center">STATUS</th>
                     </tr>
                 </thead>
