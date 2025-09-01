@@ -23,7 +23,10 @@ class Piutang extends BaseWidget
             })
             ->columns([
                 // Tables\Columns\TextColumn::make('id')->label('ID'),
-                Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')->label('Tanggal')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')
+                ->label('Tanggal')
+                ->alignCenter()
+                ->toggleable(),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->wrap()
