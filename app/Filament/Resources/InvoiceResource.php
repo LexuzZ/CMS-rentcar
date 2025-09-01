@@ -108,9 +108,10 @@ class InvoiceResource extends Resource
                                 ->label('Tambah Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
+                                ->visible(fn(Invoice $record) => $record && !$record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('viewPayment')
-                                ->label('Lihat Pembayaran')
+                                ->label('Edit Pembayaran')
                                 ->icon('heroicon-o-eye')
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)

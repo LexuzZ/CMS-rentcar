@@ -198,8 +198,10 @@ class BookingResource extends Resource
                                 ->label('Tambah Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
-                                ->visible(fn(Booking $record) => $record->invoice)
-                                ->url(fn(Booking $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->invoice->id])),
+                                ->visible(fn(Booking $record) => $record->invoice && !$record->invoice->payment) // ✅ hanya muncul jika ada invoice, tapi belum ada payment
+                                ->url(fn(Booking $record) => \App\Filament\Resources\PaymentResource::getUrl('create', [
+                                    'invoice_id' => $record->invoice->id
+                                ])),
                             Infolists\Components\Actions\Action::make('viewPayment')
                                 ->label('Lihat Pembayaran')
                                 ->icon('heroicon-o-eye')
