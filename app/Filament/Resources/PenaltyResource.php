@@ -55,6 +55,7 @@ class PenaltyResource extends Resource
                         'bbm' => 'BBM',
                         'overtime' => 'Overtime',
                         'overland' => 'Overland',
+                        'Washer' => 'Washer',
                         'no_penalty' => 'Tidak Ada Denda',
                     ])
                     ->default('no_penalty')
@@ -87,6 +88,7 @@ class PenaltyResource extends Resource
                         'primary' => 'baret',
                         'danger' => 'overtime',
                         'danger' => 'overland',
+                        'primary' => 'washer',
                         'success' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -94,6 +96,7 @@ class PenaltyResource extends Resource
                         'overtime' => 'Overtime',
                         'baret' => 'Baret/Kerusakan',
                         'overland' => 'Overland',
+                        'washer' => 'Washer',
                         'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
