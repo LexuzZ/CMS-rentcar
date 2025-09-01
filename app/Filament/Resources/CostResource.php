@@ -9,6 +9,7 @@ use App\Models\Pengeluaran;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -34,8 +35,14 @@ class CostResource extends Resource
     {
         return $form->schema([
             Grid::make(2)->schema([
-                TextInput::make('nama_pengeluaran')
-                    ->label('Nama Pengeluaran')
+                    Select::make('nama_pengeluaran')
+                    ->label('Jenis Pengeluaran')
+                    ->options([
+                        'gaji' => 'Gaji Karyawan',
+                        'pajak' => 'Pajak/STNK',
+                        'perawatan' => 'Perawatan',
+                        'operasional' => 'Operasional Kantor',
+                    ])
                     ->required(),
                 DatePicker::make('tanggal_pengeluaran')
                     ->label('Tanggal Pengeluaran')
@@ -59,13 +66,28 @@ class CostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nama_pengeluaran')->label('Nama Pengeluaran'),
+                TextColumn::make('nama_pengeluaran')
+                    ->label('Jenis Pengeluaran')
+                    ->badge()
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'gaji',
+                        'warning' => 'pajak',
+                        'danger' => 'perawatan',
+                        'primary' => 'operasional',
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'gaji' => 'Gaji Karyawan',
+                        'pajak' => 'Pajak/STNK',
+                        'perawatan' => 'Perawatan',
+                        'operasional' => 'Operasional Kantor',
+                        default => ucfirst($state),
+                    }),
                 TextColumn::make('description')->label('Deskripsi Pengeluaran'),
                 TextColumn::make('tanggal_pengeluaran')->label('Tanggal Pengeluaran')->date('d M Y'),
                 TextColumn::make('pembayaran')->label('Pembayaran')->money('IDR'),
 
             ])
-            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
@@ -104,25 +126,25 @@ class CostResource extends Resource
     public static function canCreate(): bool
     {
         // Hanya superadmin dan admin yang bisa membuat data baru
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa mengedit
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa menghapus
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
         // Hanya superadmin dan admin yang bisa hapus massal
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
     public static function canAccess(): bool
     {
