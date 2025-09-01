@@ -26,7 +26,7 @@ class Piutang extends BaseWidget
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')
                 ->label('Tanggal')
                 ->alignCenter()
-                ->toggleable(),
+                ->sortable(),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->wrap()
