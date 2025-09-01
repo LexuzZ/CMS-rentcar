@@ -195,7 +195,8 @@
                                 <strong>INV #{{ $payment->invoice->id }} / BOOK #{{ $booking->id }}</strong><br>
                                 {{ $booking->customer->nama }}<br>
                                 {{ $booking->car->carModel->name }} ({{ $booking->car->nopol }})<br>
-                                Harga Harian: Rp {{ number_format($booking->harga_harian, 0, ',', '.') }}<br>
+                                <small>Harga Harian: Rp
+                                    {{ number_format($booking->harga_harian, 0, ',', '.') }}</small><br>
                                 <small>{{ $booking->tanggal_keluar }} s/d {{ $booking->tanggal_kembali }} </small>
                                 <br>
                                 <small>{{ $booking->waktu_keluar }} WITA s/d {{ $booking->waktu_kembali }} WITA
