@@ -39,16 +39,17 @@ class DashboardOverview extends BaseWidget
         $monthName = Carbon::create()->month($currentMonth)->locale('id')->isoFormat('MMMM');
 
         // 💰 Total Pendapatan Bulan Ini (Sewa + Denda)
-        $totalInvoice = Invoice::whereMonth('tanggal_invoice', $currentMonth)
-            ->whereYear('tanggal_invoice', $currentYear)
-            ->sum('total');
+        $total = Invoice::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->where('status', 'paid') // kalau ada status paid
+            ->sum('total_amount');
 
 
         $totalPenalty = Penalty::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->sum('amount');
 
-        $totalRevenue = $totalInvoice + $totalPenalty;
+        $totalRevenue = $total + $totalPenalty;
         $totalPengeluaranBulanIni = Pengeluaran::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->sum('pembayaran');
