@@ -25,7 +25,7 @@ class DriverResource extends Resource
     protected static ?string $model = Driver::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Data ';
+    protected static ?string $navigationGroup = 'Data';
     protected static ?string $label = 'Staff';
     protected static ?string $pluralLabel = 'Data Staff';
 
