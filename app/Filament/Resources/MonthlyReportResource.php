@@ -18,8 +18,8 @@ class MonthlyReportResource extends Resource
     protected static bool $shouldRegisterNavigation = true;
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
     protected static ?string $navigationGroup = 'Laporan';
-    protected static ?string $modelLabel = 'Rekapan Bulanan';
-    protected static ?string $pluralModelLabel = 'Rekapan Bulanan';
+    protected static ?string $modelLabel = 'Rekapan Sewa Bulanan';
+    protected static ?string $pluralModelLabel = 'Rekapan Sewa Bulanan';
     protected static ?string $slug = 'laporan-bulanan';
 
     public static function table(Table $table): Table
