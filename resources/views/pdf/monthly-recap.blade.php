@@ -189,6 +189,7 @@
                             $booking = $payment->invoice->booking;
                             $totalDenda = $booking->penalty->sum('amount');
                             $totalTagihan = $booking->estimasi_biaya + $payment->invoice->pickup_dropOff + $totalDenda;
+                            $sisaPembayaran = $payment->invoice->dp - $totalTagihan;
                         @endphp
                         <tr>
                             <td>
@@ -218,7 +219,7 @@
                                     @endif
                                 </ul>
                             </td>
-                            <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</td>
                             <td class="text-center">
                                 @php
                                     $statusText = '';
