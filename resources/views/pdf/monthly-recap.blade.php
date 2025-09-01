@@ -180,6 +180,7 @@
                         <th style="width: 10%;" class="text-center">DURASI</th>
                         <th style="width: 35%;">RINCIAN BIAYA</th>
                         <th style="width: 10%;" class="text-right">TOTAL</th>
+                        <th style="width: 10%;" class="text-right">Sisa Pembayaran</th>
                         <th style="width: 10%;" class="text-center">STATUS</th>
                     </tr>
                 </thead>
@@ -219,6 +220,7 @@
                                     @endif
                                 </ul>
                             </td>
+                            <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
                             <td class="text-right">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</td>
                             <td class="text-center">
                                 @php
@@ -249,7 +251,7 @@
                                 return $booking->estimasi_biaya + $payment->invoice->pickup_dropOff + $totalDenda;
                             })
                             ->sum();
-                        $totalTagihan = $payments
+                        $sisaPembayaran = $payments
                             ->filter(fn($payment) => $payment->status === 'belum_lunas')
                             ->map(function ($payment) {
                                 $booking = $payment->invoice->booking;
