@@ -22,6 +22,7 @@ class CarPerformanceReport extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
+    protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $title = 'Rekap Mobil Bulanan';
     protected static ?string $navigationLabel = 'Rekap Mobil Bulanan';
 
