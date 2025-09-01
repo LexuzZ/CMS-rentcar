@@ -41,7 +41,7 @@ class DashboardOverview extends BaseWidget
         // 💰 Total Pendapatan Bulan Ini (Sewa + Denda)
         $total = Invoice::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
-            ->where('status', 'paid') // kalau ada status paid
+            ->where('status', 'lunas') // kalau ada status paid
             ->sum('total_amount');
 
 
