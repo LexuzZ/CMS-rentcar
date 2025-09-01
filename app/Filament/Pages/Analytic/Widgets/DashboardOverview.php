@@ -5,6 +5,7 @@ namespace App\Filament\Pages\Analytic\Widgets;
 use App\Models\Booking;
 use App\Models\Car;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\Penalty;
 use App\Models\Pengeluaran;
 use Carbon\Carbon;
@@ -39,10 +40,10 @@ class DashboardOverview extends BaseWidget
         $monthName = Carbon::create()->month($currentMonth)->locale('id')->isoFormat('MMMM');
 
         // 💰 Total Pendapatan Bulan Ini (Sewa + Denda)
-        $total = Invoice::whereMonth('created_at', now()->month)
+        $total = Payment::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->where('status', 'lunas') // kalau ada status paid
-            ->sum('total_amount');
+            ->sum('pembayaran');
 
 
         $totalPenalty = Penalty::whereMonth('created_at', $currentMonth)
