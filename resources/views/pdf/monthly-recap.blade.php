@@ -178,9 +178,9 @@
                     <tr>
                         <th style="width: 35%;">DETAIL TRANSAKSI</th>
                         <th style="width: 10%;" class="text-center">DURASI</th>
-                        <th style="width: 35%;">RINCIAN BIAYA</th>
+                        <th style="width: 30%;">RINCIAN BIAYA</th>
                         <th style="width: 10%;" class="text-right">TOTAL</th>
-                        <th style="width: 10%;" class="text-right">Sisa Pembayaran</th>
+                        <th style="width: 20%;" class="text-right">Sisa Pembayaran</th>
                         <th style="width: 10%;" class="text-center">STATUS</th>
                     </tr>
                 </thead>
@@ -262,13 +262,13 @@
                     @endphp
                     <tr>
                         <td colspan="3" class="text-right"><strong>TOTAL SEMUA</strong></td>
-                        <td colspan="2" class="text-right"><strong>Rp
+                        <td colspan="3" class="text-right"><strong>Rp
                                 {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
                         {{-- <td></td> --}}
                     </tr>
                     <tr>
                         <td colspan="3" class="text-right"><strong>TOTAL TAGIHAN (Belum Lunas)</strong></td>
-                        <td colspan="2" class="text-right"><strong>Rp
+                        <td colspan="3" class="text-right"><strong>Rp
                                 {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>
