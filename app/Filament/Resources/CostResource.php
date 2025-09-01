@@ -27,7 +27,7 @@ class CostResource extends Resource
     protected static ?string $model = Pengeluaran::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $navigationGroup = 'Data ';
+    protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $label = 'Kas Keluar';
     protected static ?string $pluralLabel = 'Kas Keluar';
 

@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 class Analytic extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationGroup = 'Accounting';
     protected static ?string $navigationLabel = 'Laporan Keuangan';
     protected static ?string $modelLabel = 'Laporan Keuangan';
     protected static ?string $pluralModelLabel = 'Laporan Keuangan';
