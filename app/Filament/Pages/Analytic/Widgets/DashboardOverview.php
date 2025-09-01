@@ -2,157 +2,90 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Booking;
-use App\Models\Car;
-use App\Models\Invoice;
 use App\Models\Payment;
-use App\Models\Penalty;
 use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $today = Carbon::today();
-        $returnsToday = Booking::whereDate('tanggal_kembali', $today)->count();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth   = Carbon::now()->endOfMonth();
 
-        // Pemesanan mulai hari ini
-        $bookingsToday = Booking::whereDate('tanggal_keluar', $today)->count();
-
-        // Mobil dengan status "Ready"
-        $carsAvailable = Car::where('status', 'Ready')->count();
-        $mostBookedCar = Car::withCount('bookings')
-            ->orderByDesc('bookings_count')
-            ->first();
-
-        // Mobil dengan status "Disewa"
-        $carsRented = Car::where('status', 'Disewa')->count();
-        // $invoiceCount = Invoice::where('status', 'Belum Lunas')->count();
-
-        $now = now();
-        $currentMonth = $now->month;
-        $currentYear = $now->year;
-        $lastMonth = $now->copy()->subMonth();
-        $monthName = Carbon::create()->month($currentMonth)->locale('id')->isoFormat('MMMM');
-
-        // 💰 Total Pendapatan Bulan Ini (Sewa + Denda)
-        $total = Payment::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->where('status', 'lunas') // kalau ada status paid
+        // ================= BULAN INI =================
+        // Pendapatan bulan ini (hanya invoice LUNAS)
+        $totalRevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
             ->sum('pembayaran');
 
-
-        $totalPenalty = Penalty::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->sum('amount');
-
-        $totalRevenue = $total + $totalPenalty;
-        $totalPengeluaranBulanIni = Pengeluaran::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
+        // Pengeluaran bulan ini
+        $totalExpenseMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
             ->sum('pembayaran');
 
-        $pendapatanBersih = $totalRevenue - $totalPengeluaranBulanIni;
-        // 🧾 Pendapatan Keseluruhan (tanpa filter bulan)
-        $totalInvoiceKeseluruhan = Invoice::sum('total');
-        $totalPenaltyKeseluruhan = Penalty::sum('amount');
-        $totalRevenueKeseluruhan = $totalInvoiceKeseluruhan + $totalPenaltyKeseluruhan;
+        // Piutang bulan ini (belum lunas)
+        $piutangMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'belum_lunas')
+            ->sum('pembayaran');
 
-        // 💸 Pengeluaran Keseluruhan
-        $totalPengeluaranKeseluruhan = Pengeluaran::sum('pembayaran');
+        // Laba bulan ini
+        $profitMonth = $totalRevenueMonth - $totalExpenseMonth;
 
-        // 📊 Pendapatan Bersih Keseluruhan
-        $pendapatanBersihKeseluruhan = $totalRevenueKeseluruhan - $totalPengeluaranKeseluruhan;
+        // ================= KESELURUHAN =================
+        // Total Pendapatan (all time)
+        $totalRevenueAll = Payment::where('status', 'lunas')->sum('pembayaran');
 
-        // 🔢 Total Denda Saja
-        $totalPenaltyOnly = $totalPenalty;
+        // Total Pengeluaran (all time)
+        $totalExpenseAll = Pengeluaran::sum('pembayaran');
 
-        // 🚗 Jumlah Mobil Disewa Bulan Ini
-        $carsRented = Booking::whereMonth('tanggal_keluar', $currentMonth)
-            ->whereYear('tanggal_keluar', $currentYear)
-            ->count();
+        // Total Piutang (all time)
+        $piutangAll = Payment::where('status', 'belum_lunas')->sum('pembayaran');
 
-        // 📈 Perbandingan Pendapatan dengan Bulan Lalu
-        $lastMonthInvoice = Invoice::whereMonth('tanggal_invoice', $lastMonth->month)
-            ->whereYear('tanggal_invoice', $lastMonth->year)
-            ->sum('total');
-
-        $lastMonthPenalty = Penalty::whereMonth('created_at', $lastMonth->month)
-            ->whereYear('created_at', $lastMonth->year)
-            ->sum('amount');
-
-        $lastMonthRevenue = $lastMonthInvoice + $lastMonthPenalty;
-
-        $difference = $totalRevenue - $lastMonthRevenue;
-        $percentageChange = $lastMonthRevenue == 0 ? 100 : round(($difference / $lastMonthRevenue) * 100);
-
+        // Total Laba (all time)
+        $profitAll = $totalRevenueAll - $totalExpenseAll;
 
         return [
-            Stat::make('Pemesanan Hari Ini', $bookingsToday)
-                ->description('Pemesanan yang dimulai hari ini')
-                ->icon('heroicon-o-calendar')
-                ->color('primary'),
-            Stat::make('Mobil Tersedia', $carsAvailable)
-                ->description('Status Ready')
-                ->icon('heroicon-o-check-circle')
+            // ===== BULAN INI =====
+            Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
+                ->description('Total pemasukan dari pembayaran bulan ini')
                 ->color('success'),
-            Stat::make('Mobil Disewa', $carsRented)
-                ->description("Jumlah Booking Bulan Ini")
-                ->icon('heroicon-o-truck')
-                ->color('primary'),
-            Stat::make('Mobil Kembali Hari Ini', $returnsToday)
-                ->description('Jumlah mobil yang kembali hari ini')
-                ->icon('heroicon-o-bell-alert')
-                ->color($returnsToday > 0 ? 'warning' : 'gray'),
-            Stat::make('Mobil Disewa', $carsRented)
-                ->description('Sedang digunakan')
-                ->color('warning'),
-            // Stat::make('Mobil Terpopuler', $mostBookedCar?->nama_mobil ?? '-')
-            //     ->description('Paling banyak disewa (' . ($mostBookedCar?->bookings_count ?? 0) . 'x)')
-            //     ->icon('heroicon-o-star')
-            //     ->color('info'),
-            Stat::make('Pengeluaran Bulan Ini', number_format($totalPengeluaranBulanIni, 0, ',', '.'))
-                // ->description('Total Pengeluaran')
-                ->description($monthName . ' ' . $currentYear)
-                ->icon('heroicon-o-currency-dollar')
-                ->color('danger'),
-            Stat::make('Pendapatan Bulan Ini', 'Rp ' . number_format($totalRevenue, 0, ',', '.'))
-                ->description($monthName . ' ' . $currentYear)
-                ->icon('heroicon-o-currency-dollar')
-                ->color('success'),
-            Stat::make('Total Denda', 'Rp ' . number_format($totalPenaltyOnly, 0, ',', '.'))
-                ->description("Denda di bulan $monthName")
-                ->icon('heroicon-o-exclamation-triangle')
-                ->color('danger'),
-            // Stat::make('Pendapatan Bersih Bulan Ini', 'Rp ' . number_format($pendapatanBersih, 0, ',', '.'))
-            //     ->description("Setelah dikurangi pengeluaran $monthName")
-            //     ->icon('heroicon-o-banknotes')
-            //     ->color($pendapatanBersih >= 0 ? 'success' : 'danger'),
-            Stat::make('Gross Revenue', 'Rp ' . number_format($totalRevenueKeseluruhan, 0, ',', '.'))
-                ->description('Total pendapatan sewa + denda')
-                ->icon('heroicon-o-currency-dollar')
-                ->color('success'),
-            Stat::make('Gross Expenses', 'Rp ' . number_format($totalPengeluaranKeseluruhan, 0, ',', '.'))
-                ->description('Total pengeluaran selama ini')
-                ->icon('heroicon-o-banknotes')
-                ->color('danger'),
-            Stat::make('Overall Net Income', 'Rp ' . number_format($pendapatanBersihKeseluruhan, 0, ',', '.'))
-                ->description('Pendapatan - pengeluaran')
-                ->icon('heroicon-o-chart-bar')
-                ->color($pendapatanBersihKeseluruhan >= 0 ? 'success' : 'danger'),
-            Stat::make('Selisih Pendapatan', ($difference >= 0 ? '+Rp ' : '-Rp ') . number_format(abs($difference), 0, ',', '.'))
-                ->description("Perubahan vs Bulan Lalu ($percentageChange%)")
-                ->icon($difference >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
-                ->color($difference >= 0 ? 'success' : 'danger'),
 
+            Stat::make('Kas Keluar Bulan Ini', 'Rp ' . number_format($totalExpenseMonth, 0, ',', '.'))
+                ->description('Total biaya operasional bulan ini')
+                ->color('danger'),
+
+            Stat::make('Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
+                ->description('Pembayaran belum lunas bulan ini')
+                ->color('warning'),
+
+            Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
+                ->description('Pendapatan - Pengeluaran bulan ini')
+                ->color($profitMonth >= 0 ? 'success' : 'danger'),
+
+            // ===== KESELURUHAN =====
+            Stat::make('Total Pendapatan', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
+                ->description('Total pemasukan keseluruhan')
+                ->color('success'),
+
+            Stat::make('Total Pengeluaran', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
+                ->description('Total biaya operasional keseluruhan')
+                ->color('danger'),
+
+            Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
+                ->description('Total pembayaran belum lunas keseluruhan')
+                ->color('warning'),
+
+            Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
+                ->description('Pendapatan - Pengeluaran keseluruhan')
+                ->color($profitAll >= 0 ? 'success' : 'danger'),
         ];
     }
+
     public static function canViewAny(): bool
     {
-        // Hanya pengguna dengan peran 'admin' yang bisa melihat resource ini
-        return Auth::user()->isAdmin();
+        // Hanya admin bisa akses
+        return auth()->user()->isAdmin();
     }
 }
