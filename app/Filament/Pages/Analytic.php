@@ -6,11 +6,12 @@ use App\Filament\Pages\Analytic\Widgets\ArusKasTable;
 use App\Filament\Pages\Analytic\Widgets\Piutang;
 use App\Filament\Pages\Analytic\Widgets\Revenue;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class Analytic extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Accounting';
+    protected static ?string $navigationGroup = 'Laporan & Accounting';
     protected static ?string $navigationLabel = 'Laporan Keuangan';
     protected static ?string $modelLabel = 'Laporan Keuangan';
     protected static ?string $pluralModelLabel = 'Laporan Keuangan';
@@ -31,6 +32,6 @@ class Analytic extends Page
     public static function canAccess(): bool
     {
         // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

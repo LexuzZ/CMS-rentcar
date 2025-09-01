@@ -27,7 +27,7 @@ class CostResource extends Resource
     protected static ?string $model = Pengeluaran::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $navigationGroup = 'Accounting';
+    protected static ?string $navigationGroup = 'Laporan & Accounting';
     protected static ?string $label = 'Kas Keluar';
     protected static ?string $pluralLabel = 'Kas Keluar';
 
@@ -35,7 +35,7 @@ class CostResource extends Resource
     {
         return $form->schema([
             Grid::make(2)->schema([
-                    Select::make('nama_pengeluaran')
+                Select::make('nama_pengeluaran')
                     ->label('Jenis Pengeluaran')
                     ->options([
                         'gaji' => 'Gaji Karyawan',
@@ -126,25 +126,25 @@ class CostResource extends Resource
     public static function canCreate(): bool
     {
         // Hanya superadmin dan admin yang bisa membuat data baru
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canEdit(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa mengedit
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
         // Hanya superadmin dan admin yang bisa menghapus
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
         // Hanya superadmin dan admin yang bisa hapus massal
-        return auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
     public static function canAccess(): bool
     {
