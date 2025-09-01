@@ -24,7 +24,12 @@ class Piutang extends BaseWidget
             ->columns([
                 // Tables\Columns\TextColumn::make('id')->label('ID'),
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')->label('Tanggal')->alignCenter(),
-                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->wrap()->width(100)->alignCenter(),
+                Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
+                ->label('Penyewa')
+                ->wrap()
+                ->width(100)
+                ->alignCenter()
+                ->searchable(),
                 Tables\Columns\TextColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color('danger')->alignCenter(),
             ])
