@@ -195,7 +195,8 @@
                                 <strong>INV #{{ $payment->invoice->id }} / BOOK #{{ $booking->id }}</strong><br>
                                 {{ $booking->customer->nama }}<br>
                                 {{ $booking->car->carModel->name }} ({{ $booking->car->nopol }})<br>
-                                <small>{{ $booking->tanggal_keluar }} {{ $booking->waktu_keluar }} WITA s/d {{ $booking->tanggal_kembali }} {{ $booking->waktu_kembali }} WITA </small>
+                                <small>{{ $booking->tanggal_keluar }} {{ $booking->waktu_keluar }} WITA s/d
+                                    {{ $booking->tanggal_kembali }} {{ $booking->waktu_kembali }} WITA </small>
                             </td>
                             <td class="text-center">{{ $booking->total_hari }} hari</td>
                             <td>
@@ -243,11 +244,25 @@
                                 return $booking->estimasi_biaya + $payment->invoice->pickup_dropOff + $totalDenda;
                             })
                             ->sum();
+                        $totalTagihan = $payments
+                            ->filter(fn($payment) => $payment->status === 'belum_lunas')
+                            ->map(function ($payment) {
+                                $booking = $payment->invoice->booking;
+                                $totalDenda = $booking->penalty->sum('amount');
+                                return $booking->estimasi_biaya + $payment->invoice->pickup_dropOff + $totalDenda;
+                            })
+                            ->sum();
                     @endphp
                     <tr>
                         <td colspan="3" class="text-right"><strong>TOTAL SEMUA</strong></td>
-                        <td colspan="2" class="text-right"><strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+                        <td colspan="2" class="text-right"><strong>Rp
+                                {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
                         {{-- <td></td> --}}
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>TOTAL TAGIHAN (Belum Lunas)</strong></td>
+                        <td colspan="2" class="text-right"><strong>Rp
+                                {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>
             </table>
