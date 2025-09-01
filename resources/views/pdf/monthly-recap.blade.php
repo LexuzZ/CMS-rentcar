@@ -205,8 +205,11 @@
                                         <li>Antar/Jemput: Rp
                                             {{ number_format($payment->invoice->pickup_dropOff, 0, ',', '.') }}</li>
                                     @endif
-                                    @if ($totalDenda > 0)
-                                        <li>Denda: Rp {{ number_format($totalDenda, 0, ',', '.') }}</li>
+                                    @if ($booking->penalty->count() > 0)
+                                        @foreach ($booking->penalty as $penalty)
+                                            <li>{{ ucfirst($penalty->klaim) }}: Rp
+                                                {{ number_format($penalty->amount, 0, ',', '.') }}</li>
+                                        @endforeach
                                     @endif
                                 </ul>
                             </td>

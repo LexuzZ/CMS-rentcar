@@ -258,7 +258,7 @@
                     @endif
                     @foreach ($invoice->booking->penalty as $penalty)
                         <tr>
-                            <td>Denda: {{ ucfirst($penalty->klaim) }}</td>
+                            <td>Klaim Garasi: {{ ucfirst($penalty->klaim) }}</td>
                             <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
