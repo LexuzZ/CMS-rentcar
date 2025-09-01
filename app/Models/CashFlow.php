@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Cashflow extends Model
+class CashFlow extends Model
 {
     // Model ini tidak terkait tabel langsung
     protected $table = null;

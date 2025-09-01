@@ -12,7 +12,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Cashflow; // Ensure this is the correct namespace for the Cashflow model
+use App\Models\CashFlow; // Ensure this is the correct namespace for the Cashflow model
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class ArusKasTable extends BaseWidget
