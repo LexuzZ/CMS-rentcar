@@ -25,7 +25,7 @@ class CarResource extends Resource
     protected static ?string $model = Car::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
-    protected static ?string $navigationGroup = 'Data ';
+    protected static ?string $navigationGroup = 'Manajemen Mobil';
     protected static ?string $label = 'Mobil';
     protected static ?string $pluralLabel = 'Data Mobil';
 
