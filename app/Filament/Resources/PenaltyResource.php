@@ -96,7 +96,7 @@ class PenaltyResource extends Resource
                         'overtime' => 'Overtime',
                         'baret' => 'Baret/Kerusakan',
                         'overland' => 'Overland',
-                        'washer' => 'Washer',
+                        'washer' => 'Washer/Cuci Mobil',
                         'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
