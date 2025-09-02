@@ -13,7 +13,7 @@ class ListBookings extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()('Tambah Pesanan') // ubah teks tombol
+            Actions\CreateAction::make()->label('Tambah Pesanan') // ubah teks tombol
                 ->icon('heroicon-o-plus'),
 
         ];
