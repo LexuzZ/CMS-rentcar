@@ -13,7 +13,8 @@ class ListPenalties extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Klaim Garasi') // ubah teks tombol
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

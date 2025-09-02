@@ -9,6 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePenalty extends CreateRecord
 {
     protected static string $resource = PenaltyResource::class;
+    protected static ?string $title = 'Tambah Klaim Garasi';
     public function mount(): void
     {
         // Cek apakah ada 'booking_id' di URL

@@ -85,9 +85,9 @@ class PenaltyResource extends Resource
                     ->alignCenter()
                     ->colors([
                         'success' => 'bbm',
-                        'primary' => 'baret',
-                        'danger' => 'overtime',
-                        'danger' => 'overland',
+                        'danger' => 'baret',
+                        'info' => 'overtime',
+                        'info' => 'overland',
                         'primary' => 'washer',
                         'success' => 'no_penalty',
                     ])
