@@ -13,7 +13,9 @@ class ListBookings extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()('Tambah Pemesanan') // ubah teks tombol
+                ->icon('heroicon-o-plus'),
+            ,
         ];
     }
 }

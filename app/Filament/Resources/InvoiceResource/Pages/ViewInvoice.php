@@ -14,7 +14,7 @@ class ViewInvoice extends ViewRecord
     {
         return [
             // Tombol Edit akan otomatis muncul di sini jika pengguna memiliki izin
-            Actions\EditAction::make(),
+            Actions\EditAction::make()->label('Ubah Faktur'),
             Actions\Action::make('kembali_ke_booking')
                 ->label('Detail Pesanan')
                 ->icon('heroicon-o-arrow-left')

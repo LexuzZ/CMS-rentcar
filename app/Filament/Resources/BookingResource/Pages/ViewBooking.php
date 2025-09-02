@@ -14,10 +14,10 @@ class ViewBooking extends ViewRecord
     {
         return [
             // Tombol Edit akan otomatis muncul di sini jika pengguna memiliki izin
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
+            Actions\EditAction::make()->label('Ubah Pesanan'),
+            Actions\DeleteAction::make()->label('Hapus Pesanan'),
             Actions\Action::make('edit_invoice')
-                ->label('Edit Faktur')
+                ->label('Ubah Faktur')
                 ->icon('heroicon-o-pencil-square')
                 ->url(function () {
                     $invoice = $this->record->invoice;
