@@ -65,8 +65,8 @@ class ArusKasTable extends BaseWidget
                                         'tanggal_pembayaran as tanggal',
                                         DB::raw("
                                 CASE
-                                    WHEN status = 'lunas' THEN 'Pembayaran Lunas'
-                                    ELSE 'Pembayaran Belum Lunas'
+                                    WHEN status = 'lunas' THEN 'Pendapatan Sewa'
+                                    ELSE 'Piutang Sewa'
                                 END as keterangan
                             "),
                                         DB::raw("
