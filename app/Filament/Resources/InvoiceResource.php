@@ -249,8 +249,8 @@ class InvoiceResource extends Resource
         ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('Lihat'),
+                Tables\Actions\EditAction::make()->label('Ubah'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
