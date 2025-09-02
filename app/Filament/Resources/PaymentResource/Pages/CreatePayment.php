@@ -11,6 +11,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePayment extends CreateRecord
 {
     protected static string $resource = PaymentResource::class;
+    protected static ?string $title = 'Tambah Pembayaran';
     public function mount(): void
     {
         // Cek apakah ada 'booking_id' di URL
