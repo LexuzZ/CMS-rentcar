@@ -63,8 +63,18 @@ class ArusKasTable extends BaseWidget
                                     ->select(
                                         'id',
                                         'tanggal_pembayaran as tanggal',
-                                        DB::raw("'Pembayaran Sewa' as keterangan"),
-                                        DB::raw("'Kas Masuk' as jenis"),
+                                        DB::raw("
+                                CASE
+                                    WHEN status = 'lunas' THEN 'Pembayaran Lunas'
+                                    ELSE 'Piutang Sewa'
+                                END as keterangan
+                            "),
+                                        DB::raw("
+                                CASE
+                                    WHEN status = 'lunas' THEN 'Kas Masuk'
+                                    ELSE 'Kas Piutang'
+                                END as jenis
+                            "),
                                         'pembayaran'
                                     )
                             );
@@ -74,7 +84,7 @@ class ArusKasTable extends BaseWidget
             ->columns([
                 TextColumn::make('tanggal')->label('Tanggal')->date('d M Y')->alignCenter(),
                 TextColumn::make('keterangan')->label('Keterangan')->alignCenter()
-                 ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'gaji' => 'Gaji Karyawan',
                         'pajak' => 'Pajak/STNK',
                         'perawatan' => 'Perawatan',
@@ -85,6 +95,7 @@ class ArusKasTable extends BaseWidget
                     ->colors([
                         'success' => 'Kas Masuk',
                         'danger' => 'Kas Keluar',
+                        'warning' => 'Kas Piutang',
                     ]),
                 TextColumn::make('pembayaran')
                     ->label('Nominal')
@@ -92,34 +103,34 @@ class ArusKasTable extends BaseWidget
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
             ->filters([
-               Filter::make('Periode')
-                ->form([
-                    Select::make('bulan')
-                        ->label('Bulan')
-                        ->options([
-                            '01' => 'Januari',
-                            '02' => 'Februari',
-                            '03' => 'Maret',
-                            '04' => 'April',
-                            '05' => 'Mei',
-                            '06' => 'Juni',
-                            '07' => 'Juli',
-                            '08' => 'Agustus',
-                            '09' => 'September',
-                            '10' => 'Oktober',
-                            '11' => 'November',
-                            '12' => 'Desember',
-                        ]),
-                    TextInput::make('tahun')
-                        ->label('Tahun')
-                        ->numeric()
-                        ->default(date('Y')),
-                ])
-                ->query(function ($query, array $data) {
-                    return $query
-                        ->when($data['bulan'], fn ($q, $bulan) => $q->whereMonth('tanggal', $bulan))
-                        ->when($data['tahun'], fn ($q, $tahun) => $q->whereYear('tanggal', $tahun));
-                }),
-        ]);
+                Filter::make('Periode')
+                    ->form([
+                        Select::make('bulan')
+                            ->label('Bulan')
+                            ->options([
+                                '01' => 'Januari',
+                                '02' => 'Februari',
+                                '03' => 'Maret',
+                                '04' => 'April',
+                                '05' => 'Mei',
+                                '06' => 'Juni',
+                                '07' => 'Juli',
+                                '08' => 'Agustus',
+                                '09' => 'September',
+                                '10' => 'Oktober',
+                                '11' => 'November',
+                                '12' => 'Desember',
+                            ]),
+                        TextInput::make('tahun')
+                            ->label('Tahun')
+                            ->numeric()
+                            ->default(date('Y')),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['bulan'], fn($q, $bulan) => $q->whereMonth('tanggal', $bulan))
+                            ->when($data['tahun'], fn($q, $tahun) => $q->whereYear('tanggal', $tahun));
+                    }),
+            ]);
     }
 }
