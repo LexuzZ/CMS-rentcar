@@ -100,7 +100,7 @@ class PenaltyResource extends Resource
                         'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
-                Tables\Columns\TextColumn::make('amount')->money('IDR')->label('Nominal')->alignCenter(),
+                Tables\Columns\TextColumn::make('amount')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->label('Nominal')->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')->date('d M Y')->alignCenter(),
             ])
             ->defaultSort('created_at', 'desc')
