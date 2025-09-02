@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarWidth('18rem')
             ->font('0.2rem')
             // ->brandName('Semeton Pesiar')
-            ->brandLogo(asset('spt.png'))
+            ->brandLogo(asset('public/spt.png'))
             ->font('Inter')
             ->databaseNotifications()
             ->spa()
