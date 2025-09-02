@@ -249,7 +249,7 @@
                         <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN </strong></td>
                         <td colspan="2" class="text-center">
                             <strong>Rp
-                                {{ number_format($grandTotalTagihan - $piutang->sum('invoice.dp'), 0, ',', '.') }}</strong>
+                                {{ number_format($piutang->sum('invoice.dp'), 0, ',', '.') }}</strong>
                         </td>
                     </tr>
                 </tbody>
