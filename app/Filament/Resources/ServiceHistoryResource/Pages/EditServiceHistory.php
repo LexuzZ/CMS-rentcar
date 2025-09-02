@@ -9,11 +9,12 @@ use Filament\Resources\Pages\EditRecord;
 class EditServiceHistory extends EditRecord
 {
     protected static string $resource = ServiceHistoryResource::class;
+    protected static ?string $title = 'Edit Riwayat Servis';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Riwayat Servis'),
         ];
     }
 }

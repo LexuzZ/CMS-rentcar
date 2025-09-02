@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateServiceHistory extends CreateRecord
 {
     protected static string $resource = ServiceHistoryResource::class;
+    protected static ?string $title = 'Tambah Riwayat Servis';
 }

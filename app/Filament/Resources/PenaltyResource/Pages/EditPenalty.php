@@ -9,11 +9,12 @@ use Filament\Resources\Pages\EditRecord;
 class EditPenalty extends EditRecord
 {
     protected static string $resource = PenaltyResource::class;
+    protected static ?string $title = 'Edit Klaim Garasi';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Klaim Garasi'),
         ];
     }
 }

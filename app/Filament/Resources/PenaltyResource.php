@@ -80,7 +80,6 @@ class PenaltyResource extends Resource
                 Tables\Columns\TextColumn::make('booking.id')->label('ID')->alignCenter(),
                 TextColumn::make('klaim')
                     ->label('Klaim Garasi')
-                    ->toggleable()
                     ->badge()
                     ->alignCenter()
                     ->colors([

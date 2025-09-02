@@ -13,7 +13,7 @@ class EditTempo extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Hapus Jadwal Jatuh Tempo'),
         ];
     }
 }
