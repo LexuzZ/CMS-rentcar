@@ -103,33 +103,54 @@ class ArusKasTable extends BaseWidget
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
             ->filters([
-                Filter::make('Periode')
-                    ->form([
-                        Select::make('bulan')
-                            ->label('Bulan')
-                            ->options([
-                                '01' => 'Januari',
-                                '02' => 'Februari',
-                                '03' => 'Maret',
-                                '04' => 'April',
-                                '05' => 'Mei',
-                                '06' => 'Juni',
-                                '07' => 'Juli',
-                                '08' => 'Agustus',
-                                '09' => 'September',
-                                '10' => 'Oktober',
-                                '11' => 'November',
-                                '12' => 'Desember',
-                            ]),
-                        TextInput::make('tahun')
-                            ->label('Tahun')
-                            ->numeric()
-                            ->default(date('Y')),
+                Tables\Filters\SelectFilter::make('bulan')
+                    ->label('Bulan')
+                    ->options([
+                        1 => 'Januari',
+                        2 => 'Februari',
+                        3 => 'Maret',
+                        4 => 'April',
+                        5 => 'Mei',
+                        6 => 'Juni',
+                        7 => 'Juli',
+                        8 => 'Agustus',
+                        9 => 'September',
+                        10 => 'Oktober',
+                        11 => 'November',
+                        12 => 'Desember',
                     ])
-                    ->query(function ($query, array $data) {
-                        return $query
-                            ->when($data['bulan'], fn($q, $bulan) => $q->whereMonth('tanggal', $bulan))
-                            ->when($data['tahun'], fn($q, $tahun) => $q->whereYear('tanggal', $tahun));
+                    ->query(function (Builder $query, $value) {
+                        if ($value) {
+                            $query->whereMonth('tanggal', $value);
+                        }
+                    }),
+
+                Tables\Filters\SelectFilter::make('tahun')
+                    ->label('Tahun')
+                    ->options(function () {
+                        return Cashflow::selectRaw('YEAR(tanggal) as tahun')
+                            ->distinct()
+                            ->orderBy('tahun', 'desc')
+                            ->pluck('tahun', 'tahun')
+                            ->toArray();
+                    })
+                    ->query(function (Builder $query, $value) {
+                        if ($value) {
+                            $query->whereYear('tanggal', $value);
+                        }
+                    }),
+
+                Tables\Filters\SelectFilter::make('jenis')
+                    ->label('Jenis Kas')
+                    ->options([
+                        'Masuk' => 'Kas Masuk',
+                        'Keluar' => 'Kas Keluar',
+                        'Piutang' => 'Piutang',
+                    ])
+                    ->query(function (Builder $query, $value) {
+                        if ($value) {
+                            $query->where('jenis', $value);
+                        }
                     }),
             ]);
     }
