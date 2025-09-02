@@ -2,13 +2,15 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Invoice;
 use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\Action;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\Filter;
 
 class Piutang extends BaseWidget
 {
@@ -18,23 +20,25 @@ class Piutang extends BaseWidget
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
-            ->query(function () {
-                return Payment::query()->where('status', 'belum_lunas');
-            })
+            ->query(fn() => Payment::query()->where('status', 'belum_lunas'))
             ->columns([
-                // Tables\Columns\TextColumn::make('id')->label('ID'),
-                Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')
-                ->label('Tanggal')
-                ->alignCenter()
-                ->sortable(),
+                Tables\Columns\TextColumn::make('tanggal_pembayaran')
+                    ->date('d M Y')
+                    ->label('Tanggal')
+                    ->alignCenter()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
-                ->label('Penyewa')
-                ->wrap()
-                ->width(100)
-                ->alignCenter()
-                ->searchable(),
-                Tables\Columns\TextColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color('danger')->alignCenter(),
+                    ->label('Penyewa')
+                    ->wrap()
+                    ->width(100)
+                    ->alignCenter()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('pembayaran')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->color('danger')
+                    ->alignCenter(),
             ])
             ->filters([
                 SelectFilter::make('bulan')
@@ -74,6 +78,28 @@ class Piutang extends BaseWidget
                             $query->whereYear('tanggal_pembayaran', $data['value']);
                         }
                         return $query;
+                    }),
+                SelectFilter::make('customer')
+                    ->label('Filter Pelanggan')
+                    ->relationship('invoice.booking.customer', 'nama')
+                    ->searchable()
+                    ->preload(),
+            ])
+            ->headerActions([
+                Action::make('exportPdf')
+                    ->label('Export PDF')
+                    ->action(function ($livewire) {
+                        // Ambil query hasil filter aktif
+                        $piutang = $livewire->getFilteredTableQuery()->get();
+
+                        $pdf = Pdf::loadView('exports.piutang', [
+                            'piutang' => $piutang,
+                        ]);
+
+                        return response()->streamDownload(
+                            fn() => print ($pdf->output()),
+                            'piutang.pdf'
+                        );
                     }),
             ]);
     }
