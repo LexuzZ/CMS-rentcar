@@ -141,7 +141,10 @@
             @php
                 $imagePath = public_path('spt.png');
                 $src = file_exists($imagePath)
-                    ? 'data:' . mime_content_type($imagePath) . ';base64,' . base64_encode(file_get_contents($imagePath))
+                    ? 'data:' .
+                        mime_content_type($imagePath) .
+                        ';base64,' .
+                        base64_encode(file_get_contents($imagePath))
                     : '';
             @endphp
             @if ($src)
@@ -167,23 +170,61 @@
             <table class="details-table">
                 <thead>
                     <tr>
-                        <th style="width: 40%;">DETAIL</th>
-                        <th style="width: 20%;" class="text-center">TANGGAL</th>
+                        <th style="width: 40%;">DETAIL TRANSAKSI</th>
+                        <th style="width: 10%;" class="text-center">DURASI</th>
+                        <th style="width: 30%;">RINCIAN BIAYA</th>
                         <th style="width: 20%;" class="text-center">PENYEWA</th>
                         <th style="width: 20%;" class="text-right">JUMLAH</th>
+                        <th style="width: 20%;" class="text-right">Sisa Pembayaran</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($piutang as $item)
+                        @php
+                            // $booking = $payment->invoice->booking;
+                            $totalDenda = $item->invoice->booking->penalty->sum('amount');
+                            $totalTagihan =
+                                $item->invoice->booking->estimasi_biaya + $item->invoice->pickup_dropOff + $totalDenda;
+                            $sisaPembayaran = $item->invoice->dp - $totalTagihan;
+                        @endphp
                         <tr>
                             <td>
-                                <strong>INV #{{ $item->invoice->id }}</strong><br>
+                                <strong>INV #{{ $item->invoice->id }} / BOOK
+                                    #{{ $item->invoice->booking->id }}</strong><br>
                                 {{ $item->invoice->booking->car->carModel->name }}
                                 ({{ $item->invoice->booking->car->nopol }})
+                                <br>
+                                <small>Harga Harian: Rp
+                                    {{ number_format($item->invoice->booking->harga_harian, 0, ',', '.') }}</small><br>
+                                <small>{{ $item->invoice->booking->tanggal_keluar }} s/d
+                                    {{ $item->invoice->booking->tanggal_kembali }} </small>
+                                <br>
+                                <small>{{ $item->invoice->booking->waktu_keluar }} WITA s/d
+                                    {{ $item->invoice->booking->waktu_kembali }} WITA
+                                </small>
                             </td>
-                            <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal_pembayaran)->format('d-m-Y') }}</td>
+                            <td class="text-center">{{ $item->invoice->booking->total_hari }} hari</td>
+
+
+                            <td>
+                                <ul>
+                                    <li>Sewa: Rp
+                                        {{ number_format($item->invoice->booking->estimasi_biaya, 0, ',', '.') }}</li>
+                                    @if ($item->invoice->pickup_dropOff > 0)
+                                        <li>Antar/Jemput: Rp
+                                            {{ number_format($item->invoice->pickup_dropOff, 0, ',', '.') }}</li>
+                                    @endif
+                                    @if ($item->invoice->booking->penalty->count() > 0)
+                                        @foreach ($item->invoice->booking->penalty as $penalty)
+                                            <li>{{ ucfirst($penalty->klaim) }}: Rp
+                                                {{ number_format($penalty->amount, 0, ',', '.') }}</li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                            </td>
                             <td class="text-center">{{ $item->invoice->booking->customer->nama }}</td>
                             <td class="text-right">Rp {{ number_format($item->pembayaran, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -192,14 +233,36 @@
                     @endforelse
                     @php
                         $grandTotal = $piutang->sum('pembayaran');
+                        $grandTotalTagihan = $piutang->sum(function ($item) {
+                            $totalDenda = $item->invoice->booking->penalty->sum('amount');
+                            return $item->invoice->booking->estimasi_biaya +
+                                $item->invoice->pickup_dropOff +
+                                $totalDenda;
+                        });
                     @endphp
                     <tr>
-                        <td colspan="3" class="text-right"><strong>TOTAL PIUTANG</strong></td>
-                        <td class="text-right"><strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+                        <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
+                        <td colspan="2" class="text-right"><strong>Rp
+                                {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN </strong></td>
+                        <td colspan="2" class="text-center"><strong>Rp
+                                {{ number_format($grandTotalTagihan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <div class="payment-details">
+            <h3>Metode Pembayaran</h3>
+            <p>Silakan lakukan pembayaran ke salah satu rekening berikut:</p>
+            <ul>
+                <li><strong>Mandiri:</strong> 1610006892835 (a.n. ACHMAD MUZAMMIL)</li>
+                <li><strong>BCA:</strong> 2320418758 (a.n. SRI NOVYANA)</li>
+            </ul>
+            <p>Mohon konfirmasi setelah melakukan pembayaran. Terima kasih.</p>
+        </div>
+        <div class="clear"></div>
 
         <div class="signature-section">
             @php
