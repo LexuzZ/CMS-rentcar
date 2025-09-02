@@ -250,7 +250,7 @@
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN SISA PEMBAYARAN</strong></td>
-                        <td colspan="2" class="text-right"><strong>Rp
+                        <td colspan="2" class="text-left"><strong>Rp
                                 {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>
