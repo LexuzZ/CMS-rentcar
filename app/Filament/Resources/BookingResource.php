@@ -203,7 +203,7 @@ class BookingResource extends Resource
                                     'invoice_id' => $record->invoice->id
                                 ])),
                             Infolists\Components\Actions\Action::make('viewPayment')
-                                ->label('Lihat Pembayaran')
+                                ->label('Edit Pembayaran')
                                 ->icon('heroicon-o-eye')
                                 ->color('gray')
                                 // Hanya muncul jika pembayaran SUDAH ada
