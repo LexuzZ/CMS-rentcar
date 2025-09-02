@@ -233,12 +233,15 @@
                     @endforelse
                     @php
                         $grandTotal = $piutang->sum('pembayaran');
-                        $grandTotalTagihan = $piutang->sum(function ($item) {
-                            $totalDenda = $item->invoice->booking->penalty->sum('amount');
-                            return $item->invoice->booking->estimasi_biaya +
-                                $item->invoice->pickup_dropOff +
-                                $totalDenda;
-                        });
+                        $totalTagihan = $piutang
+                            ->filter(fn($item) => $item->status === 'belum_lunas')
+                            ->map(function ($item) {
+                                $booking = $item->invoice->booking;
+                                $totalDenda = $booking->penalty->sum('amount');
+                                $totalTagihan = $booking->estimasi_biaya + $item->invoice->pickup_dropOff + $totalDenda;
+                                return $totalTagihan - $item->invoice->dp; // sisa pembayaran
+                            })
+                            ->sum();
                     @endphp
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
@@ -246,11 +249,9 @@
                                 {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN </strong></td>
-                        <td colspan="2" class="text-center">
-                            <strong>Rp
-                                {{ number_format($piutang->sum('invoice.dp'), 0, ',', '.') }}</strong>
-                        </td>
+                        <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN SISA PEMBAYARAN</strong></td>
+                        <td colspan="2" class="text-right"><strong>Rp
+                                {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>
             </table>
