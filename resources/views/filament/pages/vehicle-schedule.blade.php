@@ -32,7 +32,7 @@
                                     style="position: sticky; left: 0;" x-text="car.nopol"></td>
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
-                                <template x-for="day in scheduleData.daysInMonth" style="position: sticky; top: 0;>
+                                <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
                                             'booking': 'background-color: #bee3f8;',
