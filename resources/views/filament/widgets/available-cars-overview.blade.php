@@ -2,7 +2,7 @@
     <x-filament::section>
         {{-- Slot untuk Judul Widget --}}
         <x-slot name="heading">
-            Mobil Tersedia Saat Ini
+          ✅ Mobil Tersedia Saat Ini
         </x-slot>
 
         {{-- Grid untuk menampung kartu-kartu merek mobil --}}
