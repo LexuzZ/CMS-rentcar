@@ -204,11 +204,11 @@ class CarResource extends Resource
                         $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->locale('id')->isoFormat('D MMMM Y');
                         $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->locale('id')->isoFormat('D MMMM Y');
 
-                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode  *{$startDate}* sampai *{$endDate}*:\n\n";
+                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode ✅  *{$startDate}* sampai *{$endDate}* ✅ :\n\n";
                         foreach ($cars as $index => $car) {
-                            $textToCopy .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
+                            $textToCopy .= ($index + 1) . ". ✅ *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
-                        $textToCopy .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.\n\nWA: 081907367197\nWebsite: www.semetonpesiar.com";
+                        $textToCopy .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.\n\n  📞 WA: 081907367197\n 🌐 Website: www.semetonpesiar.com";
 
                         return view('filament.actions.copy-car-list', ['textToCopy' => $textToCopy]);
                     })

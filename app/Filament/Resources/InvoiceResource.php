@@ -145,26 +145,26 @@ class InvoiceResource extends Resource
                                     $totalHari = $record->booking->total_hari;
 
                                     // Membuat template pesan yang lebih detail
-                                    $message = "Halo *{$record->booking->customer->nama}*,\n\n";
+                                    $message = "Halo 👋😊 *{$record->booking->customer->nama}*,\n\n";
                                     $message .= "Berikut kami kirimkan detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
-                                    $message .= "*No. Faktur:* #{$record->id}\n";
-                                    $message .= "*Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n";
+                                    $message .= "🧾 *No. Faktur:* #{$record->id}\n";
+                                    $message .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n";
                                     $message .= "-----------------------------------\n";
-                                    $message .= "*Rincian Sewa:*\n";
-                                    $message .= "• *Mobil:* {$carDetails}\n";
-                                    $message .= "• *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
-                                    $message .= "• *Biaya Sewa Harian:* Rp " . number_format($record->booking->harga_harian, 0, ',', '.') . "\n";
-                                    $message .= "• *Total Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
+                                    $message .= "📜 *Rincian Sewa:*\n";
+                                    $message .= "🚗 • *Mobil:* {$carDetails}\n";
+                                    $message .= "⏳ • *Durasi:* {$tglKeluar} - {$tglKembali} ({$totalHari} hari)\n";
+                                    $message .= "🗓️ • *Biaya Sewa Harian:* Rp " . number_format($record->booking->harga_harian, 0, ',', '.') . "\n";
+                                    $message .= "💰 • *Total Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
                                     if ($record->pickup_dropOff > 0) {
-                                        $message .= "• *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
+                                        $message .= "• ➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
                                     }
                                     if ($totalDenda > 0) {
-                                        $message .= "• *Total Denda:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
+                                        $message .= "• ⚖️ *Total Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
                                     }
                                     $message .= "-----------------------------------\n";
-                                    $message .= "*Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
-                                    $message .= "*Uang Muka (DP):* - Rp " . number_format($record->dp, 0, ',', '.') . "\n";
-                                    $message .= "*Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
+                                    $message .= "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                                    $message .= "🔐 *Uang Muka (DP):* - Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                                    $message .= "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
                                     $message .= "Mohon lakukan sisa pembayaran ke salah satu rekening berikut:\n";
                                     $message .= "*- Mandiri:* 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
                                     $message .= "*- BCA:* 2320418758 (a.n. SRI NOVYANA)\n\n";
