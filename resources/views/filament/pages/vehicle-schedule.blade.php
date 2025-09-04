@@ -7,32 +7,30 @@
 
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
-            <div class="overflow-auto max-h-[600px]"> {{-- tambahkan max-h agar bisa scroll vertikal --}}
+            <div class="overflow-x-auto">
                 <table class="w-full text-sm border-collapse">
-                    <thead>
-                        <tr>
-                            <th
-                                class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky top-[64px] left-0 z-30">
-                                Mobil
-                            </th>
-                            <th
-                                class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky top-[64px] left-[120px] z-30">
-                                Nopol
-                            </th>
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
+                        <tr class="bg-gray-100 dark:bg-gray-800">
+                            {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Mobil</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Nopol</th>
+
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]   sticky top-[64px] z-20"
-                                    x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
-
                     <tbody>
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 sticky left-0 z-10"
-                                    x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 sticky left-[120px] z-10"
-                                    x-text="car.nopol"></td>
+                                {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.nopol"></td>
+                                {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
