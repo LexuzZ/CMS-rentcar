@@ -18,7 +18,7 @@
                                 style="position: sticky; left: 0;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day" style="position: sticky; top: 0;"></th>
                             </template>
                         </tr>
                     </thead>
@@ -33,7 +33,7 @@
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
-                                    <td class="border p-0 text-center text-xs" style="position: sticky;"
+                                    <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
                                             'booking': 'background-color: #bee3f8;',
                                             'disewa': 'background-color: #c6f6d5;',
