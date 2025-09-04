@@ -33,7 +33,7 @@
                                 {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
 
                                 <template x-for="day in scheduleData.daysInMonth">
-                                    <td class="border p-0 text-center text-xs"
+                                    <td class="border p-0 text-center text-xs" style="position: sticky; top: 0;"
                                         :style="car.schedule[day] ? {
                                             'booking': 'background-color: #bee3f8;',
                                             'disewa': 'background-color: #c6f6d5;',
