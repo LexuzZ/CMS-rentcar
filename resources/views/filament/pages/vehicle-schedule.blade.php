@@ -12,17 +12,17 @@
                     <thead>
                         <tr>
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800"
-                                style="position: sticky; top: 64px; left: 0; z-index: 30; background-color: inherit;">
+                                style="position: sticky; top: 32px; left: 0; z-index: 30; background-color: inherit;">
                                 Mobil
                             </th>
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800"
-                                style="position: sticky; top: 64px; left: 120px; z-index: 30; background-color: inherit;">
+                                style="position: sticky; top: 32px; left: 120px; z-index: 30; background-color: inherit;">
                                 Nopol
                             </th>
 
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px] bg-gray-100 dark:bg-gray-800"
-                                    style="position: sticky; top: 64px; z-index: 20; background-color: inherit;"
+                                    style="position: sticky; top: 32px; z-index: 30; background-color: inherit;"
                                     x-text="day">
                                 </th>
                             </template>
