@@ -140,6 +140,7 @@ class BookingResource extends Resource
                     })
                     ->preload()
                     ->live()
+                    ->searchable()
                     ->required()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $car = Car::find($state);
