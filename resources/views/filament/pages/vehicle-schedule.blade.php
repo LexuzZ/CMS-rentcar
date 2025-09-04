@@ -20,7 +20,7 @@
                                 Nopol
                             </th>
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px] bg-gray-100 dark:bg-gray-800 sticky top-[64px] z-20"
+                                <th class="border p-2 font-semibold text-center min-w-[50px]   sticky top-[64px] z-20"
                                     x-text="day"></th>
                             </template>
                         </tr>
