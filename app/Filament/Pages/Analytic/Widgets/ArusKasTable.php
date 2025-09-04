@@ -79,7 +79,7 @@ class ArusKasTable extends BaseWidget
                                     )
                             );
                     }, 'cashflow')
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('tanggal', 'desc')
             )
             ->columns([
                 TextColumn::make('tanggal')->label('Tanggal')->date('d M Y')->alignCenter(),
