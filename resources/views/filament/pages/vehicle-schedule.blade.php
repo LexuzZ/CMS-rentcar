@@ -11,20 +11,24 @@
                 <table class="w-full text-sm border-collapse">
                     <thead>
                         <tr>
-                            <th
-                                class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky top-[64px] left-0 z-30">
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800"
+                                style="position: sticky; top: 64px; left: 0; z-index: 30; background-color: inherit;">
                                 Mobil
                             </th>
-                            <th
-                                class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky top-[64px] left-[120px] z-30">
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800"
+                                style="position: sticky; top: 64px; left: 120px; z-index: 30; background-color: inherit;">
                                 Nopol
                             </th>
+
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]   sticky top-[64px] z-20"
-                                    x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px] bg-gray-100 dark:bg-gray-800"
+                                    style="position: sticky; top: 64px; z-index: 20; background-color: inherit;"
+                                    x-text="day">
+                                </th>
                             </template>
                         </tr>
                     </thead>
+
 
                     <tbody>
                         <template x-for="car in scheduleData.cars" :key="car.id">
