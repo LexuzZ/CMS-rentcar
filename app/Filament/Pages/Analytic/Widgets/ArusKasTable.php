@@ -87,7 +87,7 @@ class ArusKasTable extends BaseWidget
                     ->formatStateUsing(fn($state) => match ($state) {
                         'gaji' => 'Gaji Karyawan',
                         'pajak' => 'Pajak/STNK',
-                        'perawatan' => 'Perawatan',
+                        'perawatan' => 'Perawatan Mobil',
                         'operasional' => 'Operasional Kantor',
                         default => ucfirst($state),
                     }),
