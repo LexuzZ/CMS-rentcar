@@ -124,10 +124,12 @@ class BookingResource extends Resource
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
                                 ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
-                                $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
-                                    $q->where('tanggal_keluar', '<', $endDate)
-                                        ->where('tanggal_kembali', '>', $startDate);
-                                });
+                                $bookingQuery
+                                    ->whereIn('status', ['booking', 'disewa']) // ✅ hanya hitung yang masih berlaku
+                                    ->where(function (Builder $q) use ($startDate, $endDate) {
+                                        $q->where('tanggal_keluar', '<', $endDate)
+                                            ->where('tanggal_kembali', '>', $startDate);
+                                    });
                             });
                         }
                     )
