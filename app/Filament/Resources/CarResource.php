@@ -11,7 +11,7 @@ use App\Models\CarModel;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker};
+use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker, DateTimePicker};
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
 use Filament\Tables\Filters\Filter;
@@ -159,27 +159,33 @@ class CarResource extends Resource
             ->filters([
                 Filter::make('availability')
                     ->label('Cek Ketersediaan Mobil')
-                    ->form([
-                        DatePicker::make('start_date')->label('Dari Tanggal'),
-                        DatePicker::make('end_date')->label('Sampai Tanggal'),
+                    ->form(schema: [
+                        DateTimePicker::make('start_datetime')
+                            ->label('Tanggal & Waktu Keluar')
+                            ->native(false) // Recommended for better UI
+                            ->withoutSeconds(),
+                        DateTimePicker::make('end_datetime')
+                            ->label('Tanggal & Waktu Kembali')
+                            ->native(false)
+                            ->withoutSeconds(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        $startDate = $data['start_date'];
-                        $endDate = $data['end_date'];
+                        $startDateTime = $data['start_datetime'];
+                        $endDateTime = $data['end_datetime'];
 
-                        if (!$startDate || !$endDate) {
+                        if (!$startDateTime || !$endDateTime) {
                             return $query;
                         }
 
                         return $query
                             ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                            ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
-                                $bookingQuery->where(function (Builder $q) use ($startDate, $endDate) {
-                                    $q->whereBetween('tanggal_keluar', [$startDate, $endDate])
-                                        ->orWhereBetween('tanggal_kembali', [$startDate, $endDate])
-                                        ->orWhere(function (Builder $subQ) use ($startDate, $endDate) {
-                                            $subQ->where('tanggal_keluar', '<=', $startDate)
-                                                ->where('tanggal_kembali', '>=', $endDate);
+                            ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDateTime, $endDateTime) {
+                                $bookingQuery->where(function (Builder $q) use ($startDateTime, $endDateTime) {
+                                    $q->whereBetween('tanggal_keluar', [$startDateTime, $endDateTime])
+                                        ->orWhereBetween('tanggal_kembali', [$startDateTime, $endDateTime])
+                                        ->orWhere(function (Builder $subQ) use ($startDateTime, $endDateTime) {
+                                            $subQ->where('tanggal_keluar', '<=', $startDateTime)
+                                                ->where('tanggal_kembali', '>=', $endDateTime);
                                         });
                                 });
                             });
@@ -192,27 +198,26 @@ class CarResource extends Resource
                     ->color('gray')
                     ->visible(function (Pages\ListCars $livewire): bool {
                         $filters = $livewire->tableFilters;
-                        return !empty($filters['availability']['start_date']) && !empty($filters['availability']['end_date']);
+                        // Cek jika kedua field datetime sudah terisi
+                        return !empty($filters['availability']['start_datetime']) && !empty($filters['availability']['end_datetime']);
                     })
-                    // Membuka modal dengan konten dari file Blade
                     ->modalContent(function (Pages\ListCars $livewire): View {
                         $cars = $livewire->getFilteredTableQuery()
                             ->where('garasi', 'SPT')
                             ->get();
 
                         $filters = $livewire->tableFilters;
-                        $startDate = \Carbon\Carbon::parse($filters['availability']['start_date'])->locale('id')->isoFormat('D MMMM Y');
-                        $endDate = \Carbon\Carbon::parse($filters['availability']['end_date'])->locale('id')->isoFormat('D MMMM Y');
+                        $startDateTime = \Carbon\Carbon::parse($filters['availability']['start_datetime'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
+                        $endDateTime = \Carbon\Carbon::parse($filters['availability']['end_datetime'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
 
-                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDate}* sampai *{$endDate}* :\n\n";
+                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDateTime} WITA* sampai *{$endDateTime} WITA* :\n\n";
                         foreach ($cars as $index => $car) {
                             $textToCopy .= ($index + 1) . ".🚗 *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
-                        $textToCopy .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.\n\n📞  WA: 081907367197\n🌐  Website: www.semetonpesiar.com";
+                        $textToCopy .= "\nInfo lebih lanjut bisa hubungi kami. Terima kasih.\n\n📞  WA: 081907367197\n🌐  Website: www.semetonpesiar.com";
 
                         return view('filament.actions.copy-car-list', ['textToCopy' => $textToCopy]);
                     })
-                    // Menyembunyikan tombol default modal
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false),
             ])
