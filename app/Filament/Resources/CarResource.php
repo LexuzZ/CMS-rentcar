@@ -8,10 +8,11 @@ use App\Filament\Resources\CarResource\RelationManagers\ServiceHistoriesRelation
 use App\Filament\Resources\CarResource\RelationManagers\TempoRelationManager;
 use App\Models\Car;
 use App\Models\CarModel;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker, DateTimePicker};
+use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker, DateTimePicker, TimePicker};
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
 use Filament\Tables\Filters\Filter;
@@ -159,34 +160,45 @@ class CarResource extends Resource
             ->filters([
                 Filter::make('availability')
                     ->label('Cek Ketersediaan Mobil')
-                    ->form(schema: [
-                        DateTimePicker::make('start_datetime')
-                            ->label('Tanggal & Waktu Keluar')
-                            ->native(false) // Recommended for better UI
-                            ->withoutSeconds(),
-                        DateTimePicker::make('end_datetime')
-                            ->label('Tanggal & Waktu Kembali')
-                            ->native(false)
-                            ->withoutSeconds(),
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('start_date')
+                                ->label('Dari Tanggal')
+                                ->required(),
+                            TimePicker::make('start_time')
+                                ->label('Waktu Keluar')
+                                ->required()
+                                ->withoutSeconds(), // Opsional
+                        ]),
+                        Grid::make(2)->schema([
+                            DatePicker::make('end_date')
+                                ->label('Sampai Tanggal')
+                                ->required(),
+                            TimePicker::make('end_time')
+                                ->label('Waktu Kembali')
+                                ->required()
+                                ->withoutSeconds(), // Opsional
+                        ]),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        $startDateTime = $data['start_datetime'];
-                        $endDateTime = $data['end_datetime'];
-
-                        if (!$startDateTime || !$endDateTime) {
+                        // Pastikan semua data ada sebelum diproses
+                        if (empty($data['start_date']) || empty($data['end_date']) || empty($data['start_time']) || empty($data['end_time'])) {
                             return $query;
                         }
+
+                        // Gabungkan tanggal dan waktu menjadi satu objek Carbon
+                        $startDateTime = Carbon::parse($data['start_date'] . ' ' . $data['start_time']);
+                        $endDateTime = Carbon::parse($data['end_date'] . ' ' . $data['end_time']);
 
                         return $query
                             ->whereNotIn('status', ['perawatan', 'nonaktif'])
                             ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDateTime, $endDateTime) {
                                 $bookingQuery->where(function (Builder $q) use ($startDateTime, $endDateTime) {
-                                    $q->whereBetween('tanggal_keluar', [$startDateTime, $endDateTime])
-                                        ->orWhereBetween('tanggal_kembali', [$startDateTime, $endDateTime])
-                                        ->orWhere(function (Builder $subQ) use ($startDateTime, $endDateTime) {
-                                            $subQ->where('tanggal_keluar', '<=', $startDateTime)
-                                                ->where('tanggal_kembali', '>=', $endDateTime);
-                                        });
+                                    // Cek tumpang tindih waktu
+                                    $q->where(function (Builder $subQ) use ($startDateTime, $endDateTime) {
+                                        $subQ->where('tanggal_keluar', '<', $endDateTime)
+                                            ->where('tanggal_kembali', '>', $startDateTime);
+                                    });
                                 });
                             });
                     }),
@@ -198,8 +210,7 @@ class CarResource extends Resource
                     ->color('gray')
                     ->visible(function (Pages\ListCars $livewire): bool {
                         $filters = $livewire->tableFilters;
-                        // Cek jika kedua field datetime sudah terisi
-                        return !empty($filters['availability']['start_datetime']) && !empty($filters['availability']['end_datetime']);
+                        return !empty($filters['availability']['start_date']) && !empty($filters['availability']['end_date']);
                     })
                     ->modalContent(function (Pages\ListCars $livewire): View {
                         $cars = $livewire->getFilteredTableQuery()
@@ -207,10 +218,10 @@ class CarResource extends Resource
                             ->get();
 
                         $filters = $livewire->tableFilters;
-                        $startDateTime = \Carbon\Carbon::parse($filters['availability']['start_datetime'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
-                        $endDateTime = \Carbon\Carbon::parse($filters['availability']['end_datetime'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
+                        $startDateTime = \Carbon\Carbon::parse($filters['availability']['start_date'] . ' ' . $filters['availability']['start_time'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
+                        $endDateTime = \Carbon\Carbon::parse($filters['availability']['end_date'] . ' ' . $filters['availability']['end_time'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
 
-                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDateTime} WITA* sampai *{$endDateTime} WITA* :\n\n";
+                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDateTime}* sampai *{$endDateTime}* :\n\n";
                         foreach ($cars as $index => $car) {
                             $textToCopy .= ($index + 1) . ".🚗 *{$car->carModel->brand->name} {$car->carModel->name}* - {$car->nopol}\n";
                         }
