@@ -1,4 +1,4 @@
-<x-filament-panels::page>
+<x-filament-panels::page style="position: sticky; top: 0;>
     <div x-data="{ scheduleData: @entangle('scheduleData') }">
         {{-- Filter Section --}}
         <x-filament::section>
