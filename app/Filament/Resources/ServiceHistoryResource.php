@@ -82,17 +82,13 @@ class ServiceHistoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('carModel.name')
+                Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
                     ->description(fn (ServiceHistory $record): string => $record->car->nopol)
-
-                     ->searchable(query: function (Builder $query, string $search): Builder {
-                    return $query
-                        ->where('nopol', 'like', "%{$search}%") // Cari di kolom nopol di tabel cars
-                        ->orWhereHas('carModel', function ($q) use ($search) {
-                            $q->where('name', 'like', "%{$search}%"); // Cari di kolom name di tabel relasi carModel
-                        });
-                }),,
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                                     ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
                     ->date('d M Y')
