@@ -34,62 +34,6 @@ class TempoResource extends Resource
         return $form
             ->schema([
                 // Dependent Dropdown untuk memilih mobil
-                Forms\Components\Select::make('brand_id')
-                    ->label('Merek')
-                    ->options(Brand::query()->pluck('name', 'id'))
-                    ->live()
-                    ->afterStateUpdated(function (Forms\Set $set) {
-                        $set('car_model_id', null);
-                        $set('car_id', null);
-                    })
-                    ->dehydrated(false), // Field ini virtual, tidak disimpan
-
-                Forms\Components\Select::make('car_model_id')
-                    ->label('Nama Mobil')
-                    ->options(
-                        fn(Forms\Get $get): array => CarModel::query()
-                            ->where('brand_id', $get('brand_id'))
-                            ->pluck('name', 'id')->all()
-                    )
-                    ->live()
-                    ->afterStateUpdated(fn(Forms\Set $set) => $set('car_id', null))
-                    ->dehydrated(false), // Field ini juga virtual
-
-                Forms\Components\Select::make('car_id')
-                    ->label('Unit Mobil (No Polisi)')
-                    ->options(
-                        fn(Forms\Get $get): array => Car::query()
-                            ->where('car_model_id', $get('car_model_id'))
-                            ->pluck('nopol', 'id')->all()
-                    )
-                    ->live()
-                    ->searchable()
-                    ->required(),
-
-                Forms\Components\Select::make('perawatan')
-                    ->label('Jenis Perawatan')
-                    ->options([
-                        'pajak' => 'Pajak',
-                        'service' => 'Service',
-                    ])
-                    ->required(),
-
-                Forms\Components\DatePicker::make('jatuh_tempo')
-                    ->label('Tanggal Jatuh Tempo')
-                    ->required()
-                    ->native(false)
-                    ->displayFormat('d/m/Y')
-                    ->closeOnDateSelection(),
-                Textarea::make('description')
-                    ->label('Deskripsi')
-                    ->rows(3),
-            ]);
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
                 Forms\Components\Select::make('car_id')
                     ->label('Mobil')
                     ->relationship(
@@ -118,6 +62,38 @@ class TempoResource extends Resource
                     ->preload()
                     ->required(),
 
+
+                Forms\Components\Select::make('perawatan')
+                    ->label('Jenis Perawatan')
+                    ->options([
+                        'pajak' => 'Pajak',
+                        'service' => 'Service',
+                    ])
+                    ->required(),
+
+                Forms\Components\DatePicker::make('jatuh_tempo')
+                    ->label('Tanggal Jatuh Tempo')
+                    ->required()
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->closeOnDateSelection(),
+                Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->rows(3),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('car.carModel.name')
+                    ->label('Mobil')
+                    ->description(fn(Tempo $record): string => $record->car->nopol)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
 
                 TextColumn::make('perawatan')
                     ->label('Pajak + Service')
