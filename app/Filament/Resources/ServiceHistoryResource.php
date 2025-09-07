@@ -47,13 +47,24 @@ class ServiceHistoryResource extends Resource
                             ->with('carModel')
                     )
                     ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
-                    ->searchable(function (Builder $query, string $search): Builder {
-                        return $query
-                            ->where('nopol', 'like', "%{$search}%")
-                            ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                    ->searchable()
+                    ->getSearchResultsUsing(function (string $search) {
+                        return Car::query()
+                            ->where('garasi', 'SPT')
+                            ->where(function ($query) use ($search) {
+                                $query->where('nopol', 'like', "%{$search}%")
+                                    ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                            })
+                            ->with('carModel')
+                            ->limit(50)
+                            ->get()
+                            ->mapWithKeys(fn($car) => [
+                                $car->id => "{$car->carModel->name} ({$car->nopol})"
+                            ]);
                     })
                     ->preload()
                     ->required(),
+
 
 
                 Forms\Components\DatePicker::make('service_date')
