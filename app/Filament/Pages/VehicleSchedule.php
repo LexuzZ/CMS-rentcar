@@ -33,6 +33,7 @@ class VehicleSchedule extends Page implements HasForms
             'month' => now()->month,
             'year' => now()->year,
             'nopol_search' => '', // Inisialisasi field pencarian
+            'car_name_search' => '',
         ]);
         $this->loadScheduleData();
     }
@@ -61,6 +62,10 @@ class VehicleSchedule extends Page implements HasForms
                         ->label('Cari No. Polisi')
                         ->placeholder('Ketik nopol...')
                         ->live(debounce: 500), // Debounce agar tidak terlalu sering query
+                    TextInput::make('car_name_search')
+                        ->label('Cari Nama Mobil')
+                        ->placeholder('Ketik nama mobil...')
+                        ->live(debounce: 500),
                 ]),
             ])
             ->statePath('filterData');
@@ -77,23 +82,30 @@ class VehicleSchedule extends Page implements HasForms
         $month = $state['month'];
         $year = $state['year'];
         $nopolSearch = $state['nopol_search'] ?? null; // Ambil nilai dari filter nopol
+        $carNameSearch = $state['car_name_search'] ?? null;
 
         $startDate = Carbon::create($year, $month, 1)->locale('id')->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
         $daysInMonth = $startDate->daysInMonth;
 
         $carsQuery = Car::query()
-            ->with(['carModel.brand', 'bookings' => function ($query) use ($startDate, $endDate) {
-                $query->with(['customer', 'invoice'])->where(function ($q) use ($startDate, $endDate) {
-                    $q->where('tanggal_keluar', '<=', $endDate)
-                      ->where('tanggal_kembali', '>=', $startDate);
-                });
-            }])
+            ->with([
+                'carModel.brand',
+                'bookings' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['customer', 'invoice'])->where(function ($q) use ($startDate, $endDate) {
+                        $q->where('tanggal_keluar', '<=', $endDate)
+                            ->where('tanggal_kembali', '>=', $startDate);
+                    });
+                }
+            ])
             ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
             ->where('cars.garasi', 'SPT')
             // 3. Menambahkan kondisi pencarian nopol ke query
             ->when($nopolSearch, function ($query) use ($nopolSearch) {
                 $query->where('cars.nopol', 'like', "%{$nopolSearch}%");
+            })
+            ->when($carNameSearch, function ($query) use ($carNameSearch) {
+                $query->where('car_models.name', 'like', "%{$carNameSearch}%");
             })
             ->orderBy('car_models.name', 'asc')
             ->select('cars.*');
