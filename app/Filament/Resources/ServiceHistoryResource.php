@@ -38,15 +38,15 @@ class ServiceHistoryResource extends Resource
             ->schema([
                 // PERBAIKAN 2: Memfilter dropdown mobil
                 Forms\Components\Select::make('car_id')
+                    ->label('Mobil')
                     ->relationship(
                         name: 'car',
                         titleAttribute: 'nopol',
-                        // Menambahkan closure untuk memodifikasi query relasi
-                        modifyQueryUsing: fn(Builder $query) => $query->where('garasi', 'SPT')->with('carModel')
+                        modifyQueryUsing: fn(Builder $query) => $query
+                            ->where('garasi', 'SPT')
+                            ->with('carModel')
                     )
-                    // Mengubah format label yang ditampilkan
                     ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
-                    // Mengizinkan pencarian berdasarkan model dan nopol
                     ->searchable(function (Builder $query, string $search): Builder {
                         return $query
                             ->where('nopol', 'like', "%{$search}%")
@@ -54,6 +54,8 @@ class ServiceHistoryResource extends Resource
                     })
                     ->preload()
                     ->required(),
+
+
                 Forms\Components\DatePicker::make('service_date')
                     ->label('Tanggal Service')
                     ->required(),
