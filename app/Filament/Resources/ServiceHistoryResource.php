@@ -90,7 +90,11 @@ class ServiceHistoryResource extends Resource
                         modifyQueryUsing: fn(Builder $query) => $query->where('garasi', 'SPT')
                     )
                     ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
-                    ->searchable()
+                    ->searchable(function (Builder $query, string $search): Builder {
+                        return $query
+                            ->where('nopol', 'like', "%{$search}%")
+                            ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                    })
                     ->preload()
                     ->required(),
                 Tables\Columns\TextColumn::make('service_date')
