@@ -82,7 +82,7 @@ class ServiceHistoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('car.carModel.name')
+                Tables\Columns\TextColumn::make('carModel.name')
                     ->label('Mobil')
                     ->description(fn (ServiceHistory $record): string => $record->car->nopol)
 
