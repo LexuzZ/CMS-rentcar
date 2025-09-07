@@ -46,19 +46,21 @@ class TempoResource extends Resource
 
                 Forms\Components\Select::make('car_model_id')
                     ->label('Nama Mobil')
-                    ->options(fn (Forms\Get $get): array => CarModel::query()
-                        ->where('brand_id', $get('brand_id'))
-                        ->pluck('name', 'id')->all()
+                    ->options(
+                        fn(Forms\Get $get): array => CarModel::query()
+                            ->where('brand_id', $get('brand_id'))
+                            ->pluck('name', 'id')->all()
                     )
                     ->live()
-                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null))
+                    ->afterStateUpdated(fn(Forms\Set $set) => $set('car_id', null))
                     ->dehydrated(false), // Field ini juga virtual
 
                 Forms\Components\Select::make('car_id')
                     ->label('Unit Mobil (No Polisi)')
-                    ->options(fn (Forms\Get $get): array => Car::query()
-                        ->where('car_model_id', $get('car_model_id'))
-                        ->pluck('nopol', 'id')->all()
+                    ->options(
+                        fn(Forms\Get $get): array => Car::query()
+                            ->where('car_model_id', $get('car_model_id'))
+                            ->pluck('nopol', 'id')->all()
                     )
                     ->live()
                     ->searchable()
@@ -78,7 +80,7 @@ class TempoResource extends Resource
                     ->native(false)
                     ->displayFormat('d/m/Y')
                     ->closeOnDateSelection(),
-                    Textarea::make('description')
+                Textarea::make('description')
                     ->label('Deskripsi')
                     ->rows(3),
             ]);
@@ -88,38 +90,34 @@ class TempoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('car.nopol')
+                Forms\Components\Select::make('car_id')
                     ->label('Mobil')
-                    ->formatStateUsing(function (Model $record): HtmlString {
-                        $car = $record->car;
-                        // Pengecekan untuk menghindari error jika relasi tidak lengkap
-                        if (!$car || !$car->carModel || !$car->carModel->brand) {
-                            return new HtmlString('Data Mobil Tidak Lengkap');
-                        }
-
-                        $brandName = $car->carModel->brand->name;
-                        $modelName = $car->carModel->name;
-                        $nopol = $car->nopol;
-
-                        $badge = "<span class='bg-primary-500 text-white text-xs font-semibold ms-2 px-2.5 py-0.5 rounded-md'>{$nopol}</span>";
-                        $carName = "{$brandName} {$modelName}";
-
-                        // Tampilkan nama mobil dan badge nopol di bawahnya
-                        return new HtmlString("<div><p class='font-medium'>{$carName}</p>{$badge}</div>");
+                    ->relationship(
+                        name: 'car',
+                        titleAttribute: 'nopol',
+                        modifyQueryUsing: fn(Builder $query) => $query
+                            ->where('garasi', 'SPT')
+                            ->with('carModel')
+                    )
+                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
+                    ->searchable()
+                    ->getSearchResultsUsing(function (string $search) {
+                        return Car::query()
+                            ->where('garasi', 'SPT')
+                            ->where(function ($query) use ($search) {
+                                $query->where('nopol', 'like', "%{$search}%")
+                                    ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                            })
+                            ->with('carModel')
+                            ->limit(50)
+                            ->get()
+                            ->mapWithKeys(fn($car) => [
+                                $car->id => "{$car->carModel->name} ({$car->nopol})"
+                            ]);
                     })
-                    ->html()
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        // Pencarian kustom yang mencari di relasi
-                        return $query->whereHas('car', function ($carQuery) use ($search) {
-                            $carQuery->where('nopol', 'like', "%{$search}%")
-                                ->orWhereHas('carModel', function ($modelQuery) use ($search) {
-                                    $modelQuery->where('name', 'like', "%{$search}%")
-                                        ->orWhereHas('brand', function ($brandQuery) use ($search) {
-                                            $brandQuery->where('name', 'like', "%{$search}%");
-                                        });
-                                });
-                        });
-                    }),
+                    ->preload()
+                    ->required(),
+
 
                 TextColumn::make('perawatan')
                     ->label('Pajak + Service')
