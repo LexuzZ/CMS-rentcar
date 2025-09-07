@@ -9,16 +9,16 @@
         <x-filament::section class="mt-6">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm border-collapse">
-                    <thead class="top-64 z-10" style="position: sticky; top: 0;">
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
                             {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0;">Mobil</th>
+                                style="position: sticky; left: 0; top: 0;">Mobil</th>
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0;">Nopol</th>
+                                style="position: sticky; left: 0; top: 0;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day" ></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day" style="position: sticky; top: 0;"></th>
                             </template>
                         </tr>
                     </thead>
