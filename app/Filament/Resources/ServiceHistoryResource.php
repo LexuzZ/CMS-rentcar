@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 class ServiceHistoryResource extends Resource
 {
@@ -82,12 +83,37 @@ class ServiceHistoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('car.carModel.name')
+                Tables\Columns\TextColumn::make('car.nopol')
                     ->label('Mobil')
-                    ->description(fn (ServiceHistory $record): string => $record->car->nopol)
+                    ->formatStateUsing(function (Model $record): HtmlString {
+                        $car = $record->car;
+                        // Pengecekan untuk menghindari error jika relasi tidak lengkap
+                        if (!$car || !$car->carModel || !$car->carModel->brand) {
+                            return new HtmlString('Data Mobil Tidak Lengkap');
+                        }
+
+                        $brandName = $car->carModel->brand->name;
+                        $modelName = $car->carModel->name;
+                        $nopol = $car->nopol;
+
+                        $badge = "<span class='bg-primary-500 text-white text-xs font-semibold ms-2 px-2.5 py-0.5 rounded-md'>{$nopol}</span>";
+                        $carName = "{$brandName} {$modelName}";
+
+                        // Tampilkan nama mobil dan badge nopol di bawahnya
+                        return new HtmlString("<div><p class='font-medium'>{$carName}</p>{$badge}</div>");
+                    })
+                    ->html()
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
-                                     ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                        // Pencarian kustom yang mencari di relasi
+                        return $query->whereHas('car', function ($carQuery) use ($search) {
+                            $carQuery->where('nopol', 'like', "%{$search}%")
+                                ->orWhereHas('carModel', function ($modelQuery) use ($search) {
+                                    $modelQuery->where('name', 'like', "%{$search}%")
+                                        ->orWhereHas('brand', function ($brandQuery) use ($search) {
+                                            $brandQuery->where('name', 'like', "%{$search}%");
+                                        });
+                                });
+                        });
                     }),
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
