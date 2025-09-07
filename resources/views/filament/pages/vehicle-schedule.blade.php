@@ -7,14 +7,13 @@
 
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
-            {{-- Container dengan tinggi maksimum dan scroll vertikal --}}
+            {{-- PERUBAHAN UTAMA DI BARIS INI --}}
             <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
                 <table class="w-full text-sm border-collapse">
-
-                    {{-- PERUBAHAN UTAMA HANYA DI BARIS INI --}}
-                    <thead class="z-10" style="position: sticky; top: 4rem;">
+                    {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
-                            {{-- Kolom "Mobil" dan "Nopol" sudah benar. Z-index 20 penting agar di atas thead --}}
+                            {{-- Kolom "Mobil" dan "Nopol" sudah benar dengan sticky left --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
                                 style="position: sticky; left: 0;">Mobil</th>
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
