@@ -219,7 +219,9 @@ class CarResource extends Resource
                     ->modalContent(function (Pages\ListCars $livewire): View {
                         $cars = $livewire->getFilteredTableQuery()
                             ->where('garasi', 'SPT')
-                            ->get();
+                            ->with('carModel')
+                            ->get()
+                            ->sortBy(fn($car) => $car->carModel->name, SORT_NATURAL | SORT_FLAG_CASE);
 
                         $filters = $livewire->tableFilters;
                         $startDateTime = \Carbon\Carbon::parse($filters['availability']['start_date'] . ' ' . $filters['availability']['start_time'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
