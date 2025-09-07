@@ -47,7 +47,11 @@ class ServiceHistoryResource extends Resource
                     // Mengubah format label yang ditampilkan
                     ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
                     // Mengizinkan pencarian berdasarkan model dan nopol
-                    ->searchable(['nopol', 'carModel.name'])
+                    ->searchable(function (Builder $query, string $search): Builder {
+                        return $query
+                            ->where('nopol', 'like', "%{$search}%")
+                            ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                    })
                     ->preload()
                     ->required(),
                 Forms\Components\DatePicker::make('service_date')
@@ -82,16 +86,13 @@ class ServiceHistoryResource extends Resource
     {
         return $table
             ->columns([
-                Forms\Components\Select::make('car_id')
+                Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
-                    ->relationship(
-                        name: 'car',
-                        titleAttribute: 'nopol',
-                        modifyQueryUsing: fn(Builder $query) => $query->where('garasi', 'SPT')
-                    )
-                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
-                    ->preload()
-                    ->required(),
+                    ->description(fn(ServiceHistory $record): string => $record->car->nopol)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
                     ->date('d M Y')
