@@ -7,30 +7,31 @@
 
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
-            <div class="overflow-x-auto">
+            {{-- PERUBAHAN UTAMA DI BARIS INI --}}
+            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
                 <table class="w-full text-sm border-collapse">
+                    {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
                     <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
-                            {{-- PERBAIKAN: Menggunakan inline style untuk "freeze" --}}
+                            {{-- Kolom "Mobil" dan "Nopol" sudah benar dengan sticky left --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0; top: 0;">Mobil</th>
+                                style="position: sticky; left: 0;">Mobil</th>
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0; top: 0;">Nopol</th>
+                                style="position: sticky; left: 0;">Nopol</th>
 
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day" style="position: sticky; top: 0;"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- Sisa kode Anda tidak perlu diubah --}}
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                {{-- PERUBAHAN DI SINI: Kolom ini akan "membeku" di kiri --}}
                                 <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
                                     style="position: sticky; left: 0;" x-text="car.model"></td>
                                 <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
-                                    style="position: sticky; left: 0;" x-text="car.nopol"></td>
-                                {{-- PERUBAHAN DI SINI: Kolom ini sekarang akan ikut bergulir --}}
+                                     style="position: sticky; left: 0;" x-text="car.nopol"></td>
 
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
