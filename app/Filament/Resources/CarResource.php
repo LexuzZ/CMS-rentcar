@@ -221,8 +221,8 @@ class CarResource extends Resource
                             ->where('garasi', 'SPT')
                             ->with('carModel')
                             ->get()
-                            ->sortBy(fn($car) => $car->carModel->name, SORT_NATURAL | SORT_FLAG_CASE);
-
+                            ->sortBy(fn($car) => $car->carModel->name, SORT_NATURAL | SORT_FLAG_CASE)
+                            ->values();
                         $filters = $livewire->tableFilters;
                         $startDateTime = \Carbon\Carbon::parse($filters['availability']['start_date'] . ' ' . $filters['availability']['start_time'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
                         $endDateTime = \Carbon\Carbon::parse($filters['availability']['end_date'] . ' ' . $filters['availability']['end_time'])->locale('id')->isoFormat('D MMMM Y, HH:mm');
