@@ -155,13 +155,22 @@ class PaymentResource extends Resource
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                     ]),
-                    SelectFilter::make('metode_pembayaran')
+                SelectFilter::make('metode_pembayaran')
                     ->label('Metode')
                     ->options([
                         'tunai' => 'Tunai',
                         'transfer' => 'Transfer',
                         'qris' => 'QRIS',
                     ]),
+
+                Filter::make('tanggal_pembayaran_harian')
+                    ->form([
+                    ])->query(function (Builder $query, array $data): Builder {
+                        return $query->whereDate('tanggal_pembayaran', today());
+                    })->indicateUsing(function (array $data): ?string {
+                        return 'Hari ini';
+                    })->columnSpan(2)->columns(2)->default(true),
+
 
                 Filter::make('tanggal_pembayaran')
                     ->form([
