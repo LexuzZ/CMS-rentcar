@@ -150,13 +150,13 @@ class PaymentResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status Pembayaran')
+                    ->label('Status')
                     ->options([
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                     ]),
                     SelectFilter::make('metode_pembayaran')
-                    ->label('Metode Pembayaran')
+                    ->label('Metode')
                     ->options([
                         'tunai' => 'Tunai',
                         'transfer' => 'Transfer',
