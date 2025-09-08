@@ -20,26 +20,4 @@ class CreatePenalty extends CreateRecord
             ]);
         }
     }
-    protected function getHeaderActions(): array
-    {
-        return [
-            // Tombol Edit akan otomatis muncul di sini jika pengguna memiliki izin
-            Actions\Action::make('kembali_ke_booking')
-                ->label('Detail Pesanan')
-                ->icon('heroicon-o-arrow-left')
-                ->url(function () {
-                    $booking = $this->record->booking;
-                    if ($booking) {
-                        // redirect ke halaman view booking di Filament
-                        return \App\Filament\Resources\BookingResource::getUrl('view', [
-                            'record' => $booking->id,
-                        ]);
-                    }
-
-                    // fallback kalau tidak ada booking
-                    return \App\Filament\Resources\BookingResource::getUrl();
-                })
-                ->color('gray'),
-        ];
-    }
 }
