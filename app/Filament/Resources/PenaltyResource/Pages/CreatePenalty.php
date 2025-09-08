@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PenaltyResource\Pages;
 
+use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\PenaltyResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -19,5 +20,14 @@ class CreatePenalty extends CreateRecord
                 'booking_id' => request('booking_id'),
             ]);
         }
+    }
+     protected function getRedirectUrl(): string
+    {
+        // Ambil data pembayaran yang baru saja dibuat
+        $klaim = $this->getRecord();
+
+        // Arahkan kembali ke halaman 'view' dari booking yang berelasi
+        // melalui relasi invoice
+        return BookingResource::getUrl('view', ['record' => $klaim->booking_id]);
     }
 }
