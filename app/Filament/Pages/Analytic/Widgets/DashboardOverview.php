@@ -128,11 +128,11 @@ class DashboardOverview extends BaseWidget
                 ->color($profitMonth >= 0 ? 'success' : 'danger'),
 
             // ===== KESELURUHAN =====
-            Stat::make('Total Pendapatan', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
+            Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
                 ->description('Total pemasukan keseluruhan')
                 ->color('success'),
 
-            Stat::make('Total Pengeluaran', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
+            Stat::make('Total Kas Keluar', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
                 ->description('Total biaya operasional keseluruhan')
                 ->color('danger'),
 
