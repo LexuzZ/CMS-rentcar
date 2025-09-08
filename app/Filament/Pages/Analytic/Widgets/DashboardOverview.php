@@ -88,12 +88,15 @@ class DashboardOverview extends BaseWidget
             // ===== BULAN INI =====
             Stat::make('Profit Garasi Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
             Stat::make('Profit Garasi Keseluruhan', 'Rp ' . number_format($totalNetGarasi, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing Keseluruhan')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
             Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Sewa bulan ini')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
             // Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
             //     ->description('Total pemasukan dari pembayaran bulan ini')
@@ -101,6 +104,7 @@ class DashboardOverview extends BaseWidget
 
             Stat::make('Kas Keluar Bulan Ini', 'Rp ' . number_format($totalExpenseMonth, 0, ',', '.'))
                 ->description('Total biaya operasional bulan ini')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
             Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
                 ->description('Total Klaim BBM bulan ini')
@@ -120,7 +124,7 @@ class DashboardOverview extends BaseWidget
 
             Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
                 ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
+
                 ->color('danger'),
 
             Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
@@ -130,10 +134,12 @@ class DashboardOverview extends BaseWidget
             // ===== KESELURUHAN =====
             Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
                 ->description('Total pemasukan keseluruhan')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
             Stat::make('Total Kas Keluar', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
                 ->description('Total biaya operasional keseluruhan')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 
             Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
