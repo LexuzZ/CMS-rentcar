@@ -81,6 +81,9 @@ class DashboardOverview extends BaseWidget
             Stat::make('Profit Garasi Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
                 ->color('success'),
+            Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
+                ->description('Total pemasukan dari Profit Marketing bulan ini')
+                ->color('success'),
             // Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
             //     ->description('Total pemasukan dari pembayaran bulan ini')
             //     ->color('success'),
