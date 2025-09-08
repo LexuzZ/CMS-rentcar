@@ -118,7 +118,7 @@ class PaymentResource extends Resource
                         return $biayaSewa + $biayaAntarJemput + $totalDenda;
                     })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ->sortable(),
+                    ,
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
