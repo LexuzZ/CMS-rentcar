@@ -155,6 +155,13 @@ class PaymentResource extends Resource
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                     ]),
+                    SelectFilter::make('metode_pembayaran')
+                    ->label('Metode Pembayaran')
+                    ->options([
+                        'tunai' => 'Tunai',
+                        'transfer' => 'Transfer',
+                        'qris' => 'QRIS',
+                    ]),
 
                 Filter::make('tanggal_pembayaran')
                     ->form([
