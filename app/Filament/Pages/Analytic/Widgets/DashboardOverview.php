@@ -2,11 +2,14 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
+use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\Penalty;
 use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardOverview extends BaseWidget
 {
@@ -19,16 +22,42 @@ class DashboardOverview extends BaseWidget
         // Pendapatan bulan ini (hanya invoice LUNAS)
         $totalRevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')
-            ->sum('pembayaran');
+            ->get()
+            ->sum(function ($payment) {
+            $totalDays = $payment->invoice->booking->total_hari;
+            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+            $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
+            return $hargaHarianTotal - $hargaPokokTotal;
+            });
+
+        $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('pickup_dropOff');
+        $klaimBbm = Penalty::where('klaim', 'bbm')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $klaimOvertime = Penalty::where('klaim', 'overtime')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $klaimBaret = Penalty::where('klaim', 'baret')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $klaimOverland = Penalty::where('klaim', 'overland')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
 
         // Pengeluaran bulan ini
         $totalExpenseMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
             ->sum('pembayaran');
 
+
         // Piutang bulan ini (belum lunas)
-        $piutangMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'belum_lunas')
+        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
             ->sum('pembayaran');
+        $piutangMonth = Payment::where('payments.status', 'belum_lunas')
+            ->whereBetween('payments.tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
 
         // Laba bulan ini
         $profitMonth = $totalRevenueMonth - $totalExpenseMonth;
@@ -41,24 +70,44 @@ class DashboardOverview extends BaseWidget
         $totalExpenseAll = Pengeluaran::sum('pembayaran');
 
         // Total Piutang (all time)
-        $piutangAll = Payment::where('status', 'belum_lunas')->sum('pembayaran');
+        $piutangAll = Payment::where('status', 'belum_lunas')->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
 
         // Total Laba (all time)
         $profitAll = $totalRevenueAll - $totalExpenseAll;
 
         return [
             // ===== BULAN INI =====
-            Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
-                ->description('Total pemasukan dari pembayaran bulan ini')
+            Stat::make('Profit Garasi Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
+                ->description('Total pemasukan dari Profit Marketing bulan ini')
                 ->color('success'),
+            // Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
+            //     ->description('Total pemasukan dari pembayaran bulan ini')
+            //     ->color('success'),
 
             Stat::make('Kas Keluar Bulan Ini', 'Rp ' . number_format($totalExpenseMonth, 0, ',', '.'))
                 ->description('Total biaya operasional bulan ini')
                 ->color('danger'),
+            Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
+                ->description('Total biaya operasional bulan ini')
+                ->color('danger'),
+            Stat::make('Klaim Baret Bulan Ini', 'Rp ' . number_format($klaimBaret, 0, ',', '.'))
+                ->description('Total biaya operasional bulan ini')
+                ->color('danger'),
+            Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
+                ->description('Total biaya operasional bulan ini')
+                ->color('danger'),
+            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
+                ->description('Total biaya operasional bulan ini')
+                ->color('danger'),
+            Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
+                ->description('Total Biaya Pengantaran bulan ini')
+                ->color('danger'),
 
-            Stat::make('Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
-                ->description('Pembayaran belum lunas bulan ini')
-                ->color('warning'),
+            Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
+                ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->color('danger'),
 
             Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
@@ -86,6 +135,6 @@ class DashboardOverview extends BaseWidget
     public static function canViewAny(): bool
     {
         // Hanya admin bisa akses
-        return auth()->user()->isAdmin();
+        return Auth::user()->isAdmin();
     }
 }
