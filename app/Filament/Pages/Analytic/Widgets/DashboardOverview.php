@@ -16,7 +16,7 @@ class DashboardOverview extends BaseWidget
     protected function getStats(): array
     {
         $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth   = Carbon::now()->endOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
 
         // ================= BULAN INI =================
         // Pendapatan bulan ini (hanya invoice LUNAS)
@@ -24,10 +24,18 @@ class DashboardOverview extends BaseWidget
             ->where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
-            $totalDays = $payment->invoice->booking->total_hari;
-            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-            $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
-            return $hargaHarianTotal - $hargaPokokTotal;
+                $totalDays = $payment->invoice->booking->total_hari;
+                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+                $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
+                return $hargaHarianTotal - $hargaPokokTotal;
+            });
+        $totalNetGarasi = Payment::where('status', 'lunas')
+            ->get()
+            ->sum(function ($payment) {
+                $totalDays = $payment->invoice->booking->total_hari;
+                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+                $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
+                return $hargaHarianTotal - $hargaPokokTotal;
             });
 
         $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])
@@ -80,6 +88,9 @@ class DashboardOverview extends BaseWidget
             // ===== BULAN INI =====
             Stat::make('Profit Garasi Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
+                ->color('success'),
+            Stat::make('Profit Garasi Keseluruhan', 'Rp ' . number_format($totalNetGarasi, 0, ',', '.'))
+                ->description('Total pemasukan dari Profit Marketing Keseluruhan')
                 ->color('success'),
             Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
