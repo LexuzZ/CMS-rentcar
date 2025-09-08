@@ -163,13 +163,7 @@ class PaymentResource extends Resource
                         'qris' => 'QRIS',
                     ]),
 
-                Filter::make('tanggal_pembayaran_harian')
-                    ->form([
-                    ])->query(function (Builder $query, array $data): Builder {
-                        return $query->whereDate('tanggal_pembayaran', today());
-                    })->indicateUsing(function (array $data): ?string {
-                        return 'Hari ini';
-                    })->columnSpan(2)->columns(2)->default(true),
+
 
 
                 Filter::make('tanggal_pembayaran')
