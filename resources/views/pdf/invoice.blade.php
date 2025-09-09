@@ -229,15 +229,19 @@
                 <tbody>
                     <tr>
                         <td>
-                            Sewa Mobil: {{ $invoice->booking->car->carModel->brand->name }}
+                            <strong>Sewa Mobil:</strong> {{ $invoice->booking->car->carModel->brand->name }}
                             {{ $invoice->booking->car->carModel->name }} ({{ $invoice->booking->car->nopol }})
                             <br>
                             <small>
-                                Dari: {{ \Carbon\Carbon::parse($invoice->booking->tanggal_keluar)->format('d M Y') }}{{ $invoice->booking->waktu_keluar ? ' - ' . \Carbon\Carbon::parse($invoice->booking->waktu_keluar)->format('H:i') : '' }}
-
-                                Sampai:
+                                <strong>Dari:</strong>
+                                {{ \Carbon\Carbon::parse($invoice->booking->tanggal_keluar)->format('d M Y') }}{{ $invoice->booking->waktu_keluar ? ' - ' . \Carbon\Carbon::parse($invoice->booking->waktu_keluar)->format('H:i') : '' }}
+                                WITA
+                                <br>
+                                <strong> Sampai:</strong>
                                 {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}{{ $invoice->booking->waktu_kembali ? ' - ' . \Carbon\Carbon::parse($invoice->booking->waktu_kembali)->format('H:i') : '' }}
-                                ({{ $invoice->booking->total_hari }} hari)
+                                WITA
+                                <br>
+                                <strong>Total Hari:</strong> {{ $invoice->booking->total_hari }} hari
                             </small>
                             <br>
                             <small>
