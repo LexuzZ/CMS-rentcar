@@ -74,7 +74,11 @@ class DashboardOverview extends BaseWidget
 
         // ================= KESELURUHAN =================
         // Total Pendapatan (all time)
-        $totalRevenueAll = Payment::where('status', 'lunas')->sum('pembayaran');
+        $totalRevenueAll = Payment::where('status', 'lunas')->get()->sum(function ($payment) {
+            $totalDays = $payment->invoice->booking->total_hari;
+            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+            return $hargaPokokTotal;
+        });
 
         // Total Pengeluaran (all time)
         $totalExpenseAll = Pengeluaran::sum('pembayaran');
