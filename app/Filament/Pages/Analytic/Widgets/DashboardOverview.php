@@ -94,7 +94,7 @@ class DashboardOverview extends BaseWidget
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
-            Stat::make('Profit Garasi Keseluruhan', 'Rp ' . number_format($totalNetGarasi, 0, ',', '.'))
+            Stat::make('Profit Penjualan Keseluruhan', 'Rp ' . number_format($totalNetGarasi, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing Keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
@@ -102,12 +102,12 @@ class DashboardOverview extends BaseWidget
             Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
                 ->description('Total Klaim BBM bulan ini')
                 ->color('success'),
-            Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
+            Stat::make('Pendapatan Penjualan Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Sewa bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
             // ===== KESELURUHAN =====
-            Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
+            Stat::make('Pendapatan Penjualan ', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
                 ->description('Total pemasukan keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
