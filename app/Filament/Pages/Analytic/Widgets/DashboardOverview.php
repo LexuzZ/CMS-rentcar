@@ -30,6 +30,7 @@ class DashboardOverview extends BaseWidget
                 $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
+
         $totalNetGarasi = Payment::where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
@@ -77,6 +78,20 @@ class DashboardOverview extends BaseWidget
 
         // Total Pengeluaran (all time)
         $totalExpenseAll = Pengeluaran::sum('pembayaran');
+        $totalPokokProfit = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
+            ->get()
+            ->sum(function ($payment) {
+            $totalDays = $payment->invoice->booking->total_hari;
+            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+
+            return $hargaPokokTotal;
+            });
+
+        $totalKlaimGarasi = Penalty::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+
+        $jumlahTotal = $totalKlaimGarasi + $totalPokokProfit - $totalExpenseMonth;
 
         // Total Piutang (all time)
         $piutangAll = Payment::where('status', 'belum_lunas')->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
@@ -136,7 +151,7 @@ class DashboardOverview extends BaseWidget
                 ->color('success'),
             Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
-                ->color($profitMonth >= 0 ? 'success' : 'danger'),
+                ->color($jumlahTotal >= 0 ? 'success' : 'danger'),
             Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran keseluruhan')
                 ->color($profitAll >= 0 ? 'success' : 'danger'),
