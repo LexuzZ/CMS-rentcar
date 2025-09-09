@@ -88,7 +88,9 @@ class CostResource extends Resource
                         'setoran' => 'Setoran Investor',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('description')->label('Deskripsi')->alignCenter(),
+                TextColumn::make('description')->label('Deskripsi')->alignCenter()->limit(1000)
+                    ->wrap()
+                    ->width(550),
                 TextColumn::make('tanggal_pengeluaran')->label('Tanggal')->date('d M Y')->alignCenter(),
                 TextColumn::make('pembayaran')->label('Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->alignCenter(),
 
