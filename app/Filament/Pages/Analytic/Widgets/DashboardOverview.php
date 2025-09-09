@@ -89,10 +89,10 @@ class DashboardOverview extends BaseWidget
             ->where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
-            $totalDays = $payment->invoice->booking->total_hari;
-            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
+                $totalDays = $payment->invoice->booking->total_hari;
+                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
 
-            return $hargaPokokTotal;
+                return $hargaPokokTotal;
             });
 
         $totalKlaimGarasi = Penalty::whereBetween('created_at', [$startOfMonth, $endOfMonth])
@@ -121,8 +121,22 @@ class DashboardOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
+
+
             Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
                 ->description('Total Klaim BBM bulan ini')
+                ->color('success'),
+            Stat::make('Klaim Baret Bulan Ini', 'Rp ' . number_format($klaimBaret, 0, ',', '.'))
+                ->description('Total Klaim Baret bulan ini')
+                ->color('success'),
+            Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
+                ->description('Total Klaim Overtime bulan ini')
+                ->color('success'),
+            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
+                ->description('Total Klaim Overland bulan ini')
+                ->color('success'),
+            Stat::make('Klaim Cuci Mobil Bulan Ini', 'Rp ' . number_format($washerOverland, 0, ',', '.'))
+                ->description('Total Klaim Cuci Mobil bulan ini')
                 ->color('success'),
             Stat::make('Pendapatan Penjualan Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Sewa bulan ini')
@@ -133,18 +147,14 @@ class DashboardOverview extends BaseWidget
                 ->description('Total pemasukan keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
-            Stat::make('Klaim Baret Bulan Ini', 'Rp ' . number_format($klaimBaret, 0, ',', '.'))
-                ->description('Total Klaim Baret bulan ini')
-                ->color('success'),
+
             Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
                 ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
                 ->color('warning'),
             Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
                 ->description('Total pembayaran belum lunas keseluruhan')
                 ->color('warning'),
-            Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
-                ->description('Total Klaim Overtime bulan ini')
-                ->color('success'),
+
             Stat::make('Kas Keluar Bulan Ini', 'Rp ' . number_format($totalExpenseMonth, 0, ',', '.'))
                 ->description('Total biaya operasional bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
@@ -153,12 +163,6 @@ class DashboardOverview extends BaseWidget
                 ->description('Total biaya operasional keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
-            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
-                ->description('Total Klaim Overland bulan ini')
-                ->color('success'),
-            Stat::make('Klaim Cuci Mobil Bulan Ini', 'Rp ' . number_format($washerOverland, 0, ',', '.'))
-                ->description('Total Klaim Cuci Mobil bulan ini')
-                ->color('success'),
             Stat::make('Laba Bersih Garasi Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
                 ->color($jumlahTotal >= 0 ? 'success' : 'danger'),
