@@ -83,7 +83,7 @@ class DashboardOverview extends BaseWidget
             ->sum('invoices.sisa_pembayaran');
 
         // Total Laba (all time)
-        $profitAll = $totalNetGarasi - $totalExpenseAll;
+        $profitAll = $totalRevenueAll - $totalExpenseAll;
 
         return [
             // ===== BULAN INI =====
