@@ -107,17 +107,11 @@ class BookingResource extends Resource
 
                             $startDate = $get('tanggal_keluar');
                             $endDate = $get('tanggal_kembali');
-                            $startTime = $get('waktu_keluar');
-                            $endTime = $get('waktu_kembali');
                             $garasiType = $get('garasi_type');
 
                             if (!$startDate || !$endDate || !$garasiType) {
                                 return $query->whereRaw('1 = 0');
                             }
-
-                            // Gabungkan tanggal dan waktu jika waktu tersedia
-                            $startDateTime = $startTime ? Carbon::parse("{$startDate} {$startTime}") : Carbon::parse($startDate);
-                            $endDateTime = $endTime ? Carbon::parse("{$endDate} {$endTime}") : Carbon::parse($endDate);
 
                             // Filter berdasarkan garasi
                             if ($garasiType === 'spt') {
@@ -129,14 +123,14 @@ class BookingResource extends Resource
                             // Filter ketersediaan mobil
                             return $query
                                 ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDateTime, $endDateTime) {
-                                    $bookingQuery
-                                        ->whereIn('status', ['booking', 'disewa']) // ✅ hanya hitung yang masih berlaku
-                                        ->where(function (Builder $q) use ($startDateTime, $endDateTime) {
-                                            $q->where('tanggal_keluar', '<', $endDateTime)
-                                                ->where('tanggal_kembali', '>', $startDateTime);
-                                        });
-                                });
+                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
+                                $bookingQuery
+                                    ->whereIn('status', ['booking', 'disewa']) // ✅ hanya hitung yang masih berlaku
+                                    ->where(function (Builder $q) use ($startDate, $endDate) {
+                                        $q->where('tanggal_keluar', '<', $endDate)
+                                            ->where('tanggal_kembali', '>', $startDate);
+                                    });
+                            });
                         }
                     )
                     ->getOptionLabelFromRecordUsing(function (Car $record) {
@@ -147,8 +141,8 @@ class BookingResource extends Resource
                         return $label;
                     })
                     ->preload()
-                    ->searchable('nopol')
                     ->live()
+                    ->searchable()
                     ->required()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $car = Car::find($state);
@@ -156,6 +150,7 @@ class BookingResource extends Resource
                         static::calculatePrice($set, $get);
                     })
                     ->disabled($isNotAdmin),
+
 
 
                 Forms\Components\Select::make('customer_id')
