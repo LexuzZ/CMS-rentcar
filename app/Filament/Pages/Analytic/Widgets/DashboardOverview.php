@@ -82,7 +82,7 @@ class DashboardOverview extends BaseWidget
             ->sum('invoices.sisa_pembayaran');
 
         // Total Laba (all time)
-        $profitAll = $totalRevenueAll - $totalExpenseAll;
+        $profitAll = $totalNetGarasi - $totalExpenseAll;
 
         return [
             // ===== BULAN INI =====
@@ -94,10 +94,16 @@ class DashboardOverview extends BaseWidget
                 ->description('Total pemasukan dari Profit Marketing Keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
+            Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
+                ->description('Total Klaim BBM bulan ini')
+                ->color('success'),
             Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Sewa bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
+            Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
+                ->description('Total Biaya Pengantaran bulan ini')
+                ->color('danger'),
             // Stat::make('Kas Masuk Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
             //     ->description('Total pemasukan dari pembayaran bulan ini')
             //     ->color('success'),
@@ -106,26 +112,29 @@ class DashboardOverview extends BaseWidget
                 ->description('Total biaya operasional bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
-            Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
-                ->description('Total Klaim BBM bulan ini')
-                ->color('success'),
+            Stat::make('Total Kas Keluar', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
+                ->description('Total biaya operasional keseluruhan')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->color('danger'),
+
             Stat::make('Klaim Baret Bulan Ini', 'Rp ' . number_format($klaimBaret, 0, ',', '.'))
                 ->description('Total Klaim Baret bulan ini')
                 ->color('success'),
+            Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
+                ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
+                ->color('danger'),
+            Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
+                ->description('Total pembayaran belum lunas keseluruhan')
+                ->color('warning'),
             Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
                 ->description('Total Klaim Overtime bulan ini')
                 ->color('success'),
             Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
                 ->description('Total Klaim Overland bulan ini')
                 ->color('success'),
-            Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
-                ->description('Total Biaya Pengantaran bulan ini')
-                ->color('danger'),
 
-            Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
-                ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
 
-                ->color('danger'),
+
 
             Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
@@ -137,14 +146,9 @@ class DashboardOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            Stat::make('Total Kas Keluar', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
-                ->description('Total biaya operasional keseluruhan')
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->color('danger'),
 
-            Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
-                ->description('Total pembayaran belum lunas keseluruhan')
-                ->color('warning'),
+
+
 
             Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran keseluruhan')
