@@ -149,7 +149,7 @@ class DashboardOverview extends BaseWidget
             Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
                 ->description('Total Klaim Overland bulan ini')
                 ->color('success'),
-            Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
+            Stat::make('Laba Bersih Garasi Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
                 ->color($jumlahTotal >= 0 ? 'success' : 'danger'),
             Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
