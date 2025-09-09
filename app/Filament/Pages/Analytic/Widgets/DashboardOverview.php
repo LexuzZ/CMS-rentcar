@@ -86,6 +86,9 @@ class DashboardOverview extends BaseWidget
 
         return [
             // ===== BULAN INI =====
+            Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
+                ->description('Total Biaya Pengantaran bulan ini')
+                ->color('danger'),
             Stat::make('Profit Garasi Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
                 ->description('Total pemasukan dari Profit Marketing bulan ini')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
@@ -94,9 +97,7 @@ class DashboardOverview extends BaseWidget
                 ->description('Total pemasukan dari Profit Marketing Keseluruhan')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
-            Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
-                ->description('Total Biaya Pengantaran bulan ini')
-                ->color('danger'),
+
             Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
                 ->description('Total Klaim BBM bulan ini')
                 ->color('success'),
