@@ -42,6 +42,8 @@ class CostResource extends Resource
                         'pajak' => 'Pajak/STNK',
                         'perawatan' => 'Perawatan Mobil',
                         'operasional' => 'Operasional Kantor',
+                        'cicilan' => 'Cicilan Mobil',
+                        'setoran' => 'Setoran Investor',
                     ])
                     ->required(),
                 DatePicker::make('tanggal_pengeluaran')
@@ -74,12 +76,16 @@ class CostResource extends Resource
                         'warning' => 'pajak',
                         'danger' => 'perawatan',
                         'primary' => 'operasional',
+                        'info' => 'cicilan',
+                        'gray' => 'setoran',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'gaji' => 'Gaji Karyawan',
                         'pajak' => 'Pajak/STNK',
                         'perawatan' => 'Perawatan Mobil',
                         'operasional' => 'Operasional Kantor',
+                        'cicilan' => 'Cicilan Mobil',
+                        'setoran' => 'Setoran Investor',
                         default => ucfirst($state),
                     }),
                 TextColumn::make('description')->label('Deskripsi Pengeluaran'),
