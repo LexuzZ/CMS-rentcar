@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardOverview extends BaseWidget
 {
+    protected static ?string $heading = 'Statistik & Ringkasan Keuangan';
     protected function getStats(): array
     {
         $startOfMonth = Carbon::now()->startOfMonth();
