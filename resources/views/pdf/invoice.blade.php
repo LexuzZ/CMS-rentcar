@@ -245,7 +245,7 @@
                             </small>
                             <br>
                             <small>
-                                Harga per Hari: Rp
+                                <strong>Harga per Hari:</strong> Rp
                                 {{ number_format($invoice->booking->estimasi_biaya / $invoice->booking->total_hari, 0, ',', '.') }}
 
                             </small>
