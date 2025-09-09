@@ -158,7 +158,7 @@ class CarResource extends Resource
                         'nonaktif' => 'Nonaktif',
                         default => ucfirst($state),
                     }),
-                TextColumn::make('harga_harian')->label('Harian')->money('IDR')->alignCenter(),
+                TextColumn::make('harga_harian')->label('Harian')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->alignCenter(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

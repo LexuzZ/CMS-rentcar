@@ -90,7 +90,7 @@ class CostResource extends Resource
                     }),
                 TextColumn::make('description')->label('Deskripsi Pengeluaran'),
                 TextColumn::make('tanggal_pengeluaran')->label('Tanggal Pengeluaran')->date('d M Y'),
-                TextColumn::make('pembayaran')->label('Pembayaran')->money('IDR'),
+                TextColumn::make('pembayaran')->label('Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
             ->filters([
