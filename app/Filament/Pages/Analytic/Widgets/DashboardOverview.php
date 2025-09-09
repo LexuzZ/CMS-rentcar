@@ -97,10 +97,7 @@ class DashboardOverview extends BaseWidget
             Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
                 ->description('Total Klaim BBM bulan ini')
                 ->color('success'),
-            Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
-                ->description('Total pemasukan dari Sewa bulan ini')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+
             Stat::make('Biaya Pengantaran Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
                 ->description('Total Biaya Pengantaran bulan ini')
                 ->color('danger'),
@@ -129,16 +126,19 @@ class DashboardOverview extends BaseWidget
             Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
                 ->description('Total Klaim Overtime bulan ini')
                 ->color('success'),
-            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
-                ->description('Total Klaim Overland bulan ini')
-                ->color('success'),
-
-
-
-
             Stat::make('Laba Bersih Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
                 ->color($profitMonth >= 0 ? 'success' : 'danger'),
+            Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
+                ->description('Pendapatan - Pengeluaran keseluruhan')
+                ->color($profitAll >= 0 ? 'success' : 'danger'),
+            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
+                ->description('Total Klaim Overland bulan ini')
+                ->color('success'),
+            Stat::make('Pendapatan Sewa Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
+                ->description('Total pemasukan dari Sewa bulan ini')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('success'),
 
             // ===== KESELURUHAN =====
             Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
@@ -150,9 +150,7 @@ class DashboardOverview extends BaseWidget
 
 
 
-            Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
-                ->description('Pendapatan - Pengeluaran keseluruhan')
-                ->color($profitAll >= 0 ? 'success' : 'danger'),
+
         ];
     }
 
