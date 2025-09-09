@@ -54,6 +54,9 @@ class DashboardOverview extends BaseWidget
         $klaimOverland = Penalty::where('klaim', 'overland')
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->sum('amount');
+        $washerOverland = Penalty::where('klaim', 'washer')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
 
         // Pengeluaran bulan ini
         $totalExpenseMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
@@ -152,6 +155,9 @@ class DashboardOverview extends BaseWidget
                 ->color('danger'),
             Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
                 ->description('Total Klaim Overland bulan ini')
+                ->color('success'),
+            Stat::make('Klaim Cuci Mobil Bulan Ini', 'Rp ' . number_format($washerOverland, 0, ',', '.'))
+                ->description('Total Klaim Cuci Mobil bulan ini')
                 ->color('success'),
             Stat::make('Laba Bersih Garasi Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
                 ->description('Pendapatan - Pengeluaran bulan ini')
