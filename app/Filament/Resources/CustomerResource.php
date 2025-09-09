@@ -104,10 +104,12 @@ class CustomerResource extends Resource
             ->columns([
                 TextColumn::make('nama')->label('Nama')->searchable()->wrap()
                     ->width(150),
-                TextColumn::make('ktp')->label('No KTP / SIM'),
-                TextColumn::make('lisence')->label('No KTP / SIM'),
+                TextColumn::make('ktp')->label('No KTP')->wrap()
+                    ->width(150),
+                TextColumn::make('lisence')->label('No SIM')->wrap()
+                    ->width(150),
                 TextColumn::make('no_telp')->label('HP'),
-                TextColumn::make('alamat')->label('Alamat')->limit(20)->wrap()
+                TextColumn::make('alamat')->label('Alamat')->limit(1000)->wrap()
                     ->width(150),
             ])
             ->defaultSort('created_at', 'desc')
