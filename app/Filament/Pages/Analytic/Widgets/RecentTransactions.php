@@ -26,7 +26,7 @@ class RecentTransactions extends BaseWidget
         return [
             Tables\Columns\TextColumn::make('tanggal_pembayaran')
                 ->label('Tanggal')
-                ->date('d M Y H:i'), // Tambahkan format waktu
+                ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->money('IDR')
