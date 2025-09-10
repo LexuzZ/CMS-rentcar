@@ -111,7 +111,7 @@ class DashboardOverview extends BaseWidget
                 ->descriptionIcon($profitChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($profitChange >= 0 ? 'success' : 'danger'),
 
-            Stat::make('Total Pemasukan', 'Rp ' . number_format($incomeThisMonth, 0, ',', '.'))
+            Stat::make('Profit Garasi', 'Rp ' . number_format($incomeThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
