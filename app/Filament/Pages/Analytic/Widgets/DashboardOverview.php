@@ -14,14 +14,37 @@ use Illuminate\Support\Facades\Auth;
 class DashboardOverview extends BaseWidget
 {
 
+    // protected ?string $description = 'An overview of some analytics.';
+
+    protected static ?int $sort = 1;
+
+
+    /**
+     * Helper function untuk menghitung perubahan persentase.
+     *
+     * @param float $current
+     * @param float $previous
+     * @return float
+     */
+    private function calculatePercentageChange(float $current, float $previous): float
+    {
+        if ($previous == 0) {
+            return $current > 0 ? 100 : 0;
+        }
+        return (($current - $previous) / $previous) * 100;
+    }
+
     protected function getStats(): array
     {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        // --- RENTANG WAKTU ---
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        $startOfLastMonth = now()->subMonth()->startOfMonth();
+        $endOfLastMonth = now()->subMonth()->endOfMonth();
 
-        // ================= BULAN INI =================
-        // Pendapatan bulan ini (hanya invoice LUNAS)
-        $totalRevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        // --- PEMASUKAN (INCOME) ---
+        // Pemasukan Bulan Ini (hanya dari pembayaran yang sudah 'lunas')
+        $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
@@ -31,7 +54,9 @@ class DashboardOverview extends BaseWidget
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
 
-        $totalNetGarasi = Payment::where('status', 'lunas')
+        // Pemasukan Bulan Lalu
+        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
                 $totalDays = $payment->invoice->booking->total_hari;
@@ -40,141 +65,67 @@ class DashboardOverview extends BaseWidget
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
 
-        $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('pickup_dropOff');
-        $klaimBbm = Penalty::where('klaim', 'bbm')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        $klaimOvertime = Penalty::where('klaim', 'overtime')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        $klaimBaret = Penalty::where('klaim', 'baret')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        $klaimOverland = Penalty::where('klaim', 'overland')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        $washerOverland = Penalty::where('klaim', 'washer')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
+        $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
 
-        // Pengeluaran bulan ini
-        $totalExpenseMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
+        // --- PENGELUARAN (EXPENSE) ---
+        // Pengeluaran Bulan Ini
+        $expenseThisMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
             ->sum('pembayaran');
 
-
-        // Piutang bulan ini (belum lunas)
-        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')
+        // Pengeluaran Bulan Lalu
+        $expenseLastMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])
             ->sum('pembayaran');
-        $piutangMonth = Payment::where('payments.status', 'belum_lunas')
-            ->whereBetween('payments.tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+
+        $expenseChange = $this->calculatePercentageChange($expenseThisMonth, $expenseLastMonth);
+
+        // --- PIUTANG (RECEIVABLES) ---
+        // Piutang Bulan Ini (total sisa pembayaran dari invoice yang 'belum_lunas')
+        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('invoices.sisa_pembayaran');
 
-        // Laba bulan ini
-        $profitMonth = $totalRevenueMonth - $totalExpenseMonth;
-
-        // ================= KESELURUHAN =================
-        // Total Pendapatan (all time)
-        $totalRevenueAll = Payment::where('status', 'lunas')->get()->sum(function ($payment) {
-            $totalDays = $payment->invoice->booking->total_hari;
-            $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-            return $hargaPokokTotal;
-        });
-
-        // Total Pengeluaran (all time)
-        $totalExpenseAll = Pengeluaran::sum('pembayaran');
-        $totalPokokProfit = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')
-            ->get()
-            ->sum(function ($payment) {
-                $totalDays = $payment->invoice->booking->total_hari;
-                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-
-                return $hargaPokokTotal;
-            });
-
-        $totalKlaimGarasi = Penalty::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-
-        $jumlahTotal = $totalKlaimGarasi + $totalPokokProfit - $totalExpenseMonth;
-
-        // Total Piutang (all time)
-        $piutangAll = Payment::where('status', 'belum_lunas')->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+        // Piutang Bulan Lalu
+        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('invoices.sisa_pembayaran');
 
-        // Total Laba (all time)
-        $profitAll = $totalRevenueAll - $totalExpenseAll;
+        $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
+
+        // --- LABA BERSIH (PROFIT) ---
+        // Laba Bersih Bulan Ini
+        $profitThisMonth = $incomeThisMonth - $expenseThisMonth;
+
+        // Laba Bersih Bulan Lalu
+        $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
+
+        $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
+
+
+        // --- TAMPILAN WIDGET ---
         return [
-            // ===== BULAN INI =====
-            Stat::make('Total Ongkir Bulan Ini', 'Rp ' . number_format($ongkir, 0, ',', '.'))
-                ->description('Total Ongkir bulan ini')
-                ->color('success'),
-            Stat::make('Profit Penjualan Bulan Ini', 'Rp ' . number_format($totalRevenueMonth, 0, ',', '.'))
-                ->description('Total pemasukan dari Profit Marketing bulan ini')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
-            Stat::make('Profit Penjualan Keseluruhan', 'Rp ' . number_format($totalNetGarasi, 0, ',', '.'))
-                ->description('Total pemasukan dari Profit Marketing Keseluruhan')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+            Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
+                ->description(number_format(abs($profitChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon($profitChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($profitChange >= 0 ? 'success' : 'danger'),
 
+            Stat::make('Total Pemasukan', 'Rp ' . number_format($incomeThisMonth, 0, ',', '.'))
+                ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($incomeChange >= 0 ? 'success' : 'danger'),
 
+            Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
+                ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
+                // Logika terbalik: pengeluaran turun itu bagus (success), naik itu jelek (danger)
+                ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($expenseChange <= 0 ? 'success' : 'danger'),
 
-            Stat::make('Klaim BBM Bulan Ini', 'Rp ' . number_format($klaimBbm, 0, ',', '.'))
-                ->description('Total Klaim BBM bulan ini')
-                ->color('success'),
-            Stat::make('Klaim Baret Bulan Ini', 'Rp ' . number_format($klaimBaret, 0, ',', '.'))
-                ->description('Total Klaim Baret bulan ini')
-                ->color('success'),
-            Stat::make('Klaim Overtime Bulan Ini', 'Rp ' . number_format($klaimOvertime, 0, ',', '.'))
-                ->description('Total Klaim Overtime bulan ini')
-                ->color('success'),
-            Stat::make('Klaim Overland Bulan Ini', 'Rp ' . number_format($klaimOverland, 0, ',', '.'))
-                ->description('Total Klaim Overland bulan ini')
-                ->color('success'),
-            Stat::make('Klaim Cuci Mobil Bulan Ini', 'Rp ' . number_format($washerOverland, 0, ',', '.'))
-                ->description('Total Klaim Cuci Mobil bulan ini')
-                ->color('success'),
-            Stat::make('Pendapatan Penjualan Bulan Ini', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
-                ->description('Total pemasukan dari Sewa bulan ini')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
-            // ===== KESELURUHAN =====
-            Stat::make('Pendapatan Penjualan ', 'Rp ' . number_format($totalRevenueAll, 0, ',', '.'))
-                ->description('Total pemasukan keseluruhan')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
-
-            Stat::make('Total Piutang Bulan Ini', 'Rp ' . number_format($piutangMonth, 0, ',', '.'))
-                ->description('Sisa pembayaran dari invoice belum lunas bulan ini')
+            Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
+                ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon($receivablesChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color('warning'),
-            Stat::make('Total Piutang', 'Rp ' . number_format($piutangAll, 0, ',', '.'))
-                ->description('Total pembayaran belum lunas keseluruhan')
-                ->color('warning'),
-
-            Stat::make('Kas Keluar Bulan Ini', 'Rp ' . number_format($totalExpenseMonth, 0, ',', '.'))
-                ->description('Total biaya operasional bulan ini')
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->color('danger'),
-            Stat::make('Total Kas Keluar', 'Rp ' . number_format($totalExpenseAll, 0, ',', '.'))
-                ->description('Total biaya operasional keseluruhan')
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->color('danger'),
-            Stat::make('Laba Bersih Garasi Bulan Ini', 'Rp ' . number_format($profitMonth, 0, ',', '.'))
-                ->description('Pendapatan - Pengeluaran bulan ini')
-                ->color($jumlahTotal >= 0 ? 'success' : 'danger'),
-            Stat::make('Total Laba Bersih', 'Rp ' . number_format($profitAll, 0, ',', '.'))
-                ->description('Pendapatan - Pengeluaran keseluruhan')
-                ->color($profitAll >= 0 ? 'success' : 'danger'),
-
-
-
-
-
-
         ];
     }
 
