@@ -218,53 +218,53 @@ class BookingResource extends Resource
                                 ->icon('heroicon-o-exclamation-triangle')
                                 ->color('danger')
                                 ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
-                            Infolists\Components\Actions\Action::make('whatsapp')
-                                ->label('Via WhatsApp')
-                                ->icon('heroicon-o-chat-bubble-left-right')
-                                ->color('success')
-                                ->url(function (Booking $record) {
-                                    // 1. Ambil nomor telepon
-                                    $phone = $record->customer->no_telp;
+                            // Infolists\Components\Actions\Action::make('whatsapp')
+                            //     ->label('Via WhatsApp')
+                            //     ->icon('heroicon-o-chat-bubble-left-right')
+                            //     ->color('success')
+                            //     ->url(function (Booking $record) {
+                            //         // 1. Ambil nomor telepon
+                            //         $phone = $record->customer->no_telp;
 
-                                    // 2. Bersihkan nomor (hapus spasi, -, dll)
-                                    $cleanedPhone = preg_replace('/[^0-9]/', '', $phone);
+                            //         // 2. Bersihkan nomor (hapus spasi, -, dll)
+                            //         $cleanedPhone = preg_replace('/[^0-9]/', '', $phone);
 
-                                    // 3. Ganti '0' di depan dengan '62' jika ada
-                                    if (substr($cleanedPhone, 0, 1) === '0') {
-                                        $cleanedPhone = '62' . substr($cleanedPhone, 1);
-                                    }
+                            //         // 3. Ganti '0' di depan dengan '62' jika ada
+                            //         if (substr($cleanedPhone, 0, 1) === '0') {
+                            //             $cleanedPhone = '62' . substr($cleanedPhone, 1);
+                            //         }
 
-                                    $carDetails = "{$record->car->carModel->brand->name} {$record->car->carModel->name} ({$record->car->nopol})";
-                                    $tglKeluar = Carbon::parse($record->tanggal_keluar)->isoFormat('dddd, D MMMM YYYY');
-                                    $waktuKeluar = $record->waktu_keluar ? ' pukul ' . Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA' : '';
-                                    $tglKembali = Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM YYYY');
-                                    $waktuKembali = $record->waktu_kembali ? ' pukul ' . Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA' : '';
-                                    $paket = match ($record->paket) {
-                                        'lepas_kunci' => 'Lepas Kunci',
-                                        'dengan_driver' => 'Dengan Driver',
-                                        'tour' => 'Paket Tour',
-                                        default => '-'
-                                    };
-                                    $totalBiaya = 'Rp ' . number_format($record->estimasi_biaya, 0, ',', '.');
-                                    $totalHari = ($record->total_hari) . ' Hari ';
+                            //         $carDetails = "{$record->car->carModel->brand->name} {$record->car->carModel->name} ({$record->car->nopol})";
+                            //         $tglKeluar = Carbon::parse($record->tanggal_keluar)->isoFormat('dddd, D MMMM YYYY');
+                            //         $waktuKeluar = $record->waktu_keluar ? ' pukul ' . Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA' : '';
+                            //         $tglKembali = Carbon::parse($record->tanggal_kembali)->isoFormat('dddd, D MMMM YYYY');
+                            //         $waktuKembali = $record->waktu_kembali ? ' pukul ' . Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA' : '';
+                            //         $paket = match ($record->paket) {
+                            //             'lepas_kunci' => 'Lepas Kunci',
+                            //             'dengan_driver' => 'Dengan Driver',
+                            //             'tour' => 'Paket Tour',
+                            //             default => '-'
+                            //         };
+                            //         $totalBiaya = 'Rp ' . number_format($record->estimasi_biaya, 0, ',', '.');
+                            //         $totalHari = ($record->total_hari) . ' Hari ';
 
-                                    $message = "Halo *{$record->customer->nama}*,\n\n";
-                                    $message .= "Ini adalah konfirmasi untuk detail pemesanan sewa mobil Anda di *Semeton Pesiar*:\n\n";
-                                    $message .= "🚗 *Mobil:* {$carDetails}\n";
-                                    $message .= "📦 *Paket:* {$paket}\n";
-                                    $message .= "➡️ *Waktu Keluar:* {$tglKeluar}{$waktuKeluar}\n";
-                                    $message .= "⬅️ *Waktu Kembali:* {$tglKembali}{$waktuKembali}\n";
-                                    $message .= "📍 *Lokasi Antar:* " . ($record->lokasi_pengantaran ?: '-') . "\n";
-                                    $message .= "📍 *Lokasi Kembali:* " . ($record->lokasi_pengembalian ?: '-') . "\n";
-                                    $message .= "💰 *Total Biaya Sewa:* {$totalBiaya}\n";
-                                    $message .= "💰 *Total Hari Sewa:* {$totalHari}\n\n";
-                                    $message .= "Mohon konfirmasinya. Terima kasih 🙏";
+                            //         $message = "Halo *{$record->customer->nama}*,\n\n";
+                            //         $message .= "Ini adalah konfirmasi untuk detail pemesanan sewa mobil Anda di *Semeton Pesiar*:\n\n";
+                            //         $message .= "🚗 *Mobil:* {$carDetails}\n";
+                            //         $message .= "📦 *Paket:* {$paket}\n";
+                            //         $message .= "➡️ *Waktu Keluar:* {$tglKeluar}{$waktuKeluar}\n";
+                            //         $message .= "⬅️ *Waktu Kembali:* {$tglKembali}{$waktuKembali}\n";
+                            //         $message .= "📍 *Lokasi Antar:* " . ($record->lokasi_pengantaran ?: '-') . "\n";
+                            //         $message .= "📍 *Lokasi Kembali:* " . ($record->lokasi_pengembalian ?: '-') . "\n";
+                            //         $message .= "💰 *Total Biaya Sewa:* {$totalBiaya}\n";
+                            //         $message .= "💰 *Total Hari Sewa:* {$totalHari}\n\n";
+                            //         $message .= "Mohon konfirmasinya. Terima kasih 🙏";
 
 
-                                    // 5. Buat URL WhatsApp
-                                    return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
-                                })
-                                ->openUrlInNewTab()
+                            //         // 5. Buat URL WhatsApp
+                            //         return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
+                            //     })
+                            //     ->openUrlInNewTab()
 
 
                         ]),
