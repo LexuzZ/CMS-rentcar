@@ -2,44 +2,65 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Invoice;
 use App\Models\Payment;
-use App\Models\Penalty;
 use App\Models\Pengeluaran;
-use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Carbon;
 use Filament\Forms\Components\Select;
-use Filament\Actions\Action;
-use Filament\Tables\Actions\Action as ActionsAction;
+use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Support\Carbon;
 
 class MonthlyRevenueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Pendapatan & Pengeluaran Bulanan';
+    use InteractsWithPageFilters;
 
+    protected static ?string $heading = 'Pendapatan & Pengeluaran Bulanan';
+    protected static ?int $sort = 2;
     protected int|string|array $columnSpan = 'full';
+
+    public ?string $filter = null;
+
+    /**
+     * Menerapkan filter dasar untuk memilih tahun.
+     */
+    protected function getFilters(): ?array
+    {
+        $currentYear = now()->year;
+        $lastYear = now()->subYear()->year;
+
+        // Atur filter default ke tahun ini jika belum ada yang dipilih
+        if (is_null($this->filter)) {
+            $this->filter = $currentYear;
+        }
+
+        return [
+            $currentYear => 'Tahun Ini',
+            $lastYear => 'Tahun Lalu',
+        ];
+    }
 
     protected function getData(): array
     {
-        $year = Carbon::now()->year;
+        // Gunakan nilai dari properti filter publik
+        $year = (int) $this->filter;
 
-        // Siapkan array 12 bulan
+        // Siapkan array 12 bulan untuk label chart
         $months = collect(range(1, 12))->map(function ($m) {
             return Carbon::create()->month($m)->locale('id')->translatedFormat('F');
         })->toArray();
 
-        // Hitung total pendapatan per bulan
+        // Hitung total pendapatan per bulan untuk tahun yang difilter
         $pendapatan = collect(range(1, 12))->map(function ($month) use ($year) {
             return Payment::whereYear('tanggal_pembayaran', $year)
                 ->where('status', 'lunas')
                 ->whereMonth('tanggal_pembayaran', $month)
-                ->sum('pembayaran'); // sesuaikan field total/jumlah
+                ->sum('pembayaran');
         })->toArray();
 
-        // Hitung total pengeluaran per bulan
+        // Hitung total pengeluaran per bulan untuk tahun yang difilter
         $pengeluaran = collect(range(1, 12))->map(function ($month) use ($year) {
             return Pengeluaran::whereYear('tanggal_pengeluaran', $year)
                 ->whereMonth('tanggal_pengeluaran', $month)
-                ->sum('pembayaran'); // sesuaikan field jumlah
+                ->sum('pembayaran');
         })->toArray();
 
         return [
@@ -47,14 +68,14 @@ class MonthlyRevenueChart extends ChartWidget
                 [
                     'label' => 'Pendapatan',
                     'data' => $pendapatan,
-                    'backgroundColor' => 'rgba(34,197,94,0.7)', // hijau
-                    'borderColor' => 'rgba(34,197,94,1)',
+                    'backgroundColor' => '#8B5CF6', // Warna ungu
+                    'borderColor' => '#8B5CF6',
                 ],
                 [
                     'label' => 'Pengeluaran',
                     'data' => $pengeluaran,
-                    'backgroundColor' => 'rgba(239,68,68,0.7)', // merah
-                    'borderColor' => 'rgba(239,68,68,1)',
+                    'backgroundColor' => '#C4B5FD', // Warna ungu muda
+                    'borderColor' => '#C4B5FD',
                 ],
             ],
             'labels' => $months,
@@ -63,11 +84,7 @@ class MonthlyRevenueChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar'; // bisa diganti 'line'
-    }
-    public static function canViewAny(): bool
-    {
-        // Hanya pengguna dengan peran 'admin' yang bisa melihat resource ini
-        return auth()->user()->isAdmin();
+        return 'bar'; // atau 'line'
     }
 }
+
