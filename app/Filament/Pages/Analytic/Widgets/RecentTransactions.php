@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\Analytic\Widgets;
 
 use App\Models\Payment;
 use Filament\Tables;
