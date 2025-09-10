@@ -29,7 +29,7 @@ class RecentTransactions extends BaseWidget
                 ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
-                ->money('IDR')
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Nama Penyewa')
