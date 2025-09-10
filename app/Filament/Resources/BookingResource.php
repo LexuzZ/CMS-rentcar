@@ -269,7 +269,46 @@ class BookingResource extends Resource
 
                         ]),
                     ]),
-                Infolists\Components\Section::make('Rincian Biaya')
+
+                Infolists\Components\Section::make('Informasi Booking')
+                    ->schema([
+                        Infolists\Components\Grid::make(3)->schema([
+                            Infolists\Components\TextEntry::make('status')
+                                ->badge()
+                                ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
+                                ->formatStateUsing(fn($state) => match ($state) {
+                                    'aktif' => 'Aktif',
+                                    'booking' => 'Booking',
+                                    'selesai' => 'Selesai',
+                                    'batal' => 'Batal',
+                                    default => ucfirst($state)
+                                }),
+                            Infolists\Components\TextEntry::make('paket')
+                                ->badge()
+                                ->formatStateUsing(fn($state) => match ($state) {
+                                    'lepas_kunci' => 'Lepas Kunci',
+                                    'dengan_driver' => 'Dengan Driver',
+                                    'tour' => 'Paket Tour',
+                                    default => '-'
+                                }),
+                            Infolists\Components\TextEntry::make('driver.nama')->label('Staff Bertugas'),
+                        ]),
+                    ]),
+
+                Infolists\Components\Section::make('Detail Jadwal & Biaya')
+                    ->schema([
+                        Infolists\Components\Grid::make(3)->schema([
+                            Infolists\Components\TextEntry::make('tanggal_keluar')->dateTime('d M Y'),
+                            Infolists\Components\TextEntry::make('tanggal_kembali')->dateTime('d M Y'),
+                            Infolists\Components\TextEntry::make('total_hari')->suffix(' Hari'),
+                            Infolists\Components\TextEntry::make('waktu_keluar')->dateTime('H:i')->suffix(' WITA'),
+
+                            Infolists\Components\TextEntry::make('waktu_kembali')->dateTime('H:i')->suffix(' WITA'),
+
+                            Infolists\Components\TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                        ]),
+                    ]),
+                    Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
                         Infolists\Components\Grid::make(2)->schema([
                             Infolists\Components\TextEntry::make('estimasi_biaya')
@@ -314,44 +353,6 @@ class BookingResource extends Resource
                                 ->size('lg')
                                 ->weight('bold')
                                 ->color('success'),
-                        ]),
-                    ]),
-                Infolists\Components\Section::make('Informasi Booking')
-                    ->schema([
-                        Infolists\Components\Grid::make(3)->schema([
-                            Infolists\Components\TextEntry::make('status')
-                                ->badge()
-                                ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
-                                ->formatStateUsing(fn($state) => match ($state) {
-                                    'aktif' => 'Aktif',
-                                    'booking' => 'Booking',
-                                    'selesai' => 'Selesai',
-                                    'batal' => 'Batal',
-                                    default => ucfirst($state)
-                                }),
-                            Infolists\Components\TextEntry::make('paket')
-                                ->badge()
-                                ->formatStateUsing(fn($state) => match ($state) {
-                                    'lepas_kunci' => 'Lepas Kunci',
-                                    'dengan_driver' => 'Dengan Driver',
-                                    'tour' => 'Paket Tour',
-                                    default => '-'
-                                }),
-                            Infolists\Components\TextEntry::make('driver.nama')->label('Staff Bertugas'),
-                        ]),
-                    ]),
-
-                Infolists\Components\Section::make('Detail Jadwal & Biaya')
-                    ->schema([
-                        Infolists\Components\Grid::make(3)->schema([
-                            Infolists\Components\TextEntry::make('tanggal_keluar')->dateTime('d M Y'),
-                            Infolists\Components\TextEntry::make('tanggal_kembali')->dateTime('d M Y'),
-                            Infolists\Components\TextEntry::make('total_hari')->suffix(' Hari'),
-                            Infolists\Components\TextEntry::make('waktu_keluar')->dateTime('H:i')->suffix(' WITA'),
-
-                            Infolists\Components\TextEntry::make('waktu_kembali')->dateTime('H:i')->suffix(' WITA'),
-
-                            Infolists\Components\TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                         ]),
                     ]),
 
