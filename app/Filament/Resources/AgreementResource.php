@@ -110,6 +110,7 @@ class AgreementResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                ->color('warning')
                     ->label('Isi & Edit TTD'),
                 Action::make('downloadPdf')
                     ->label('PDF')
