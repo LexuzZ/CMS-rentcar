@@ -13,8 +13,10 @@ class ListInvoices extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Faktur') // ubah teks tombol
-                ->icon('heroicon-o-plus'),
+            Actions\CreateAction::make()->label('Faktur') // ubah teks tombol
+                // ->label('Tambah Mobil')
+                ->icon('heroicon-o-plus')
+                ->color('success')
         ];
     }
 }
