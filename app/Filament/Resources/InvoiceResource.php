@@ -250,10 +250,11 @@ class InvoiceResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->label('Detail')
-                    ->icon('heroicon-o-eye')   // 👁 ikon mata
-                    ->color('info')            // biru → konsisten dengan "lihat"
-                    ->button(),
+                    ->label('') // kosongkan label
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->tooltip('Detail') // kasih tooltip biar jelas fungsinya
+                    ->hiddenLabel(),
                 Tables\Actions\EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil')
