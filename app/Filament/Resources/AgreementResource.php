@@ -74,9 +74,11 @@ class AgreementResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer.nama')
-                    ->label('Nama Customer')
+                    ->label('Penyewa')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(250),
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
                     ->sortable(),
