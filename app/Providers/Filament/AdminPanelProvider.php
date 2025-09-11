@@ -49,12 +49,12 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Orange,
-                'success' => Color::Lime,
-                'danger' => Color::Rose,
-                'info' => Color::Teal,
+                'primary' => Color::Blue,
+                'success' => Color::Emerald,
+                'danger' => Color::Red,
+                'info' => Color::Sky,
                 'warning' => Color::Amber,
-                'gray' => Color::Stone,
+                'gray' => Color::Slate,
             ])
 
             ->sidebarCollapsibleOnDesktop()
