@@ -128,7 +128,9 @@ class AgreementResource extends Resource
                     })
                     ->visible(fn(Booking $record) => filled($record->ttd)),
             ])
-            ->bulkActions([]);
+            ->bulkActions([])
+            ->defaultPaginationPageOption(10) // ✅ default 25 data per halaman
+            ->paginated();
     }
 
     public static function getRelations(): array
