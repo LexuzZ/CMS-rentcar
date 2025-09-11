@@ -19,7 +19,8 @@ class AgreementResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
-    protected static ?string $navigationIcon = 'heroicon-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+
     protected static ?string $navigationLabel = 'Checklist Garasi';
     protected static ?string $label = 'Checklist';
     protected static ?string $pluralLabel = 'Checklist Garasi';
