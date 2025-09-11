@@ -49,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Purple, // Warna utama sekarang ungu
+                'primary' => Color::Fuchsia, // Warna utama sekarang ungu
                 'success' => Color::Lime,   // Warna sukses sekarang hijau limau
                 'danger' => Color::Rose,   // Warna bahaya sekarang merah mawar
                 'info' => Color::Blue,    // Warna info menjadi biru langit
