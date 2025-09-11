@@ -214,7 +214,7 @@ class BookingResource extends Resource
                                 ->visible(fn(Booking $record) => $record->invoice && $record->invoice->payment)
                                 ->url(fn(Booking $record) => PaymentResource::getUrl('edit', ['record' => $record->invoice->payment->id])),
                             Infolists\Components\Actions\Action::make('addPenalty')
-                                ->label('Tambah Klaim / Denda')
+                                ->label('Tambah Klaim')
                                 ->icon('heroicon-o-exclamation-triangle')
                                 ->color('danger')
                                 ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),

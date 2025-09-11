@@ -14,11 +14,18 @@ class ViewBooking extends ViewRecord
     {
         return [
             // Tombol Edit akan otomatis muncul di sini jika pengguna memiliki izin
-            Actions\EditAction::make()->label('Ubah Pesanan'),
-            Actions\DeleteAction::make()->label('Hapus Pesanan'),
+            Actions\EditAction::make()->label('Ubah')
+                ->icon('heroicon-o-pencil')
+                ->color('warning')
+                ->button(),
+            Actions\DeleteAction::make()->label('Hapus')
+                ->icon('heroicon-o-trash')
+                ->color('danger'),
             Actions\Action::make('edit_invoice')
-                ->label('Ubah Faktur')
-                ->icon('heroicon-o-pencil-square')
+                ->label('Faktur')
+                ->icon('heroicon-o-eye')   // 👁 ikon mata
+                ->color('info')            // biru → konsisten dengan "lihat"
+                ->button()
                 ->url(function () {
                     $invoice = $this->record->invoice;
                     if ($invoice) {
@@ -31,7 +38,7 @@ class ViewBooking extends ViewRecord
                     return \App\Filament\Resources\InvoiceResource::getUrl();
                 })
                 ->color('warning')
-                ->visible(fn () => $this->record->invoice !== null),
+                ->visible(fn() => $this->record->invoice !== null),
 
         ];
     }
