@@ -404,8 +404,8 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('customer.nama')->label('Penyewa')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(250),
 
-                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tgl Keluar')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tgl Kembali')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
