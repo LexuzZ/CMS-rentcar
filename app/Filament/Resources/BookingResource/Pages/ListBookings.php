@@ -14,7 +14,9 @@ class ListBookings extends ListRecords
     {
         return [
             Actions\CreateAction::make()->label('Tambah Pesanan') // ubah teks tombol
-                ->icon('heroicon-o-plus'),
+                // ->label('Tambah Mobil')
+                ->icon('heroicon-o-plus')
+                ->color('success')
 
         ];
     }
