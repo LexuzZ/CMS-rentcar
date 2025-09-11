@@ -49,14 +49,14 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Fuchsia, // Warna utama sekarang ungu
-                'success' => Color::Lime,   // Warna sukses sekarang hijau limau
-                'danger' => Color::Rose,   // Warna bahaya sekarang merah mawar
-                'info' => Color::Blue,    // Warna info menjadi biru langit
-                'warning' => Color::Orange, // Warna peringatan menjadi oranye
-                'gray' => Color::Slate,  // Warna abu-abu menjadi lebih kebiruan
-
+                'primary' => Color::fromHex('#2563EB'),  // Blue-600
+                'success' => Color::fromHex('#10B981'),  // Emerald-500
+                'danger' => Color::fromHex('#DC2626'),   // Red-600
+                'info' => Color::fromHex('#3B82F6'),     // Blue-500
+                'warning' => Color::fromHex('#D97706'),  // Amber-600
+                'gray' => Color::fromHex('#374151'),     // Gray-700
             ])
+
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
             ->sidebarWidth('18rem')
