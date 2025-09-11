@@ -19,7 +19,7 @@ class AgreementResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-clipboard-document-check';
     protected static ?string $navigationLabel = 'Checklist Garasi';
     protected static ?string $label = 'Checklist';
     protected static ?string $pluralLabel = 'Checklist Garasi';
@@ -111,7 +111,10 @@ class AgreementResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('TTD'),
+                    ->label('E-Sign')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->button(),
                 Action::make('downloadPdf')
                     ->label('PDF')
                     ->color('gray')
