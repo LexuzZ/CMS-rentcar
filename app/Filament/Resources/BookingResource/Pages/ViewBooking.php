@@ -37,7 +37,6 @@ class ViewBooking extends ViewRecord
                     // fallback kalau belum ada invoice
                     return \App\Filament\Resources\InvoiceResource::getUrl();
                 })
-                ->color('warning')
                 ->visible(fn() => $this->record->invoice !== null),
 
         ];
