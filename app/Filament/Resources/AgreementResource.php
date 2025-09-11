@@ -113,6 +113,7 @@ class AgreementResource extends Resource
                     ->label('Isi & Edit TTD'),
                 Action::make('downloadPdf')
                     ->label('PDF')
+                    ->color('gray')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function (Booking $record) {
                         $pdf = Pdf::loadView('pdf.agreement', [
