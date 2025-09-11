@@ -260,7 +260,8 @@ class InvoiceResource extends Resource
                     ->label('')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
-                    ->tooltip('Ubah'),
+                    ->tooltip('Ubah')
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
