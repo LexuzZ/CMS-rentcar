@@ -255,7 +255,7 @@ class InvoiceResource extends Resource
                     ->color('info')            // biru → konsisten dengan "lihat"
                     ->button(),
                 Tables\Actions\EditAction::make()
-                    ->label('Ubah')
+                    // ->label('Ubah')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
                     ->button(),
