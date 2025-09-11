@@ -19,6 +19,7 @@ class AgreementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Checklist Garasi';
+    protected static ?string $pluralLabel = 'Checklist Garasi';
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
