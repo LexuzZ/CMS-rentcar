@@ -99,7 +99,7 @@ class AgreementResource extends Resource
                     ->form([
                         DatePicker::make('date')
                             ->label('Tanggal Keluar')
-                            // ->default(now()) // ✅ default hari ini
+                            ->default(now()) // ✅ default hari ini
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
