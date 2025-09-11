@@ -79,9 +79,9 @@ class AgreementResource extends Resource
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('invoice.payment.metode_pembayaran')
-                    ->label('Metode Pembayaran')
-                    ->formatStateUsing(fn($state) => ucfirst($state ?? '-')),
+                Tables\Columns\TextColumn::make('tanggal_keluar')
+                    ->label('Tanggal Keluar')
+                    ->sortable(),
 
                 Tables\Columns\IconColumn::make('ttd')
                     ->label('TTD')
@@ -93,9 +93,9 @@ class AgreementResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Isi / Edit TTD'),
+                    ->label('Isi & Edit TTD'),
                 Action::make('downloadPdf')
-                    ->label('Download PDF')
+                    ->label('PDF')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function (Booking $record) {
                         $pdf = Pdf::loadView('pdf.agreement', [
