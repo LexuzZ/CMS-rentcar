@@ -118,8 +118,9 @@ class AgreementResource extends Resource
                     ->button(),
                 Action::make('downloadPdf')
                     ->label('PDF')
-                    ->color('gray')
                     ->icon('heroicon-o-arrow-down-tray')
+                    ->color('info')   // ✅ biru, kontras dengan kuning
+                    ->button()
                     ->action(function (Booking $record) {
                         $pdf = Pdf::loadView('pdf.agreement', [
                             'booking' => $record,
