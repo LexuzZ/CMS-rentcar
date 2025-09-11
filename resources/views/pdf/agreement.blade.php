@@ -90,7 +90,7 @@
 
         .signature img {
             max-height: 100px;
-            border: 1px solid #000;
+            /* border: 1px solid #000; */
         }
     </style>
 </head>
