@@ -72,12 +72,12 @@ class RevenueCategoryChart extends ChartWidget
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
             'Profit Marketing', 'Ongkir', 'Klaim BBM', 'Klaim Baret',
-            'Klaim Overtime', 'Klaim Overland', 'Klaim Cuci Mobil', 'Pendapatan Sewa','Piutang Sewa',
+            'Klaim Overtime', 'Klaim Overland', 'Klaim Cuci Mobil', 'Pendapatan Sewa',
         ];
 
         $data = [
             $totalRevenueMonth, $ongkir, $klaimBbm, $klaimBaret,
-            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth, $PiutangMonth
+            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth,
         ];
 
         // Saring data dan label yang nilainya 0 agar chart lebih bersih
