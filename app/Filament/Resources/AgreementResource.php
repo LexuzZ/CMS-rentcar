@@ -21,6 +21,7 @@ class AgreementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Checklist Garasi';
+    protected static ?string $label = 'Checklist';
     protected static ?string $pluralLabel = 'Checklist Garasi';
 
 
