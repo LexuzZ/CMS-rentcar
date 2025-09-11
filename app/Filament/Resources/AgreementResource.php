@@ -94,22 +94,22 @@ class AgreementResource extends Resource
                     ->trueColor('success')
                     ->falseColor('danger'),
             ])
-            ->filters([
-                Filter::make('tanggal_keluar')
-                    ->form([
-                        DatePicker::make('date')
-                            ->label('Tanggal Keluar')
-                            ->default(now()) // ✅ default hari ini
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['date'],
-                                fn($q, $date) =>
-                                $q->whereDate('tanggal_keluar', $date)
-                            );
-                    }),
-            ])
+            // ->filters([
+            //     Filter::make('tanggal_keluar')
+            //         ->form([
+            //             DatePicker::make('date')
+            //                 ->label('Tanggal Keluar')
+            //                 ->default(now()) // ✅ default hari ini
+            //         ])
+            //         ->query(function (Builder $query, array $data): Builder {
+            //             return $query
+            //                 ->when(
+            //                     $data['date'],
+            //                     fn($q, $date) =>
+            //                     $q->whereDate('tanggal_keluar', $date)
+            //                 );
+            //         }),
+            // ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('Isi & Edit TTD'),
