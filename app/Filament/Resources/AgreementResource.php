@@ -81,7 +81,9 @@ class AgreementResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_keluar')
                     ->label('Tanggal Keluar')
-                    ->sortable(),
+                    ->sortable()
+                    ->date('d M Y')
+                    ->alignCenter(),
 
                 Tables\Columns\IconColumn::make('ttd')
                     ->label('TTD')
