@@ -18,8 +18,8 @@ class RecentTransactions extends BaseWidget
         // PERBAIKAN: Query diubah untuk hanya mengambil data hari ini
         return Payment::query()
             ->whereDate('tanggal_pembayaran', today()) // Filter berdasarkan tanggal hari ini
-            ->latest('created_at') // Urutkan berdasarkan waktu pembuatan terbaru
-            ->limit(5);
+            ->latest('created_at'); // Urutkan berdasarkan waktu pembuatan terbaru
+
     }
 
     protected function getTableColumns(): array
