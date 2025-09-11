@@ -49,20 +49,12 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => [ // <-- Definisikan palet kustom di sini
-                    50 => '239, 249, 255',
-                    100 => '224, 242, 254',
-                    200 => '186, 230, 253',
-                    300 => '125, 211, 252',
-                    400 => '56, 189, 248',
-                    500 => '14, 116, 144', // Warna biru laut sebagai dasar
-                    600 => '8, 145, 178',
-                    700 => '14, 116, 144',
-                    800 => '21, 94, 117',
-                    900 => '22, 78, 99',
-                    950 => '8, 51, 68',
-                ],
-                'gray' => Color::Slate,
+                'primary' => Color::Indigo, // tetap gunakan warna preset untuk mapping warna Filament
+                'success' => Color::Emerald,
+                'danger' => Color::Rose,
+                'info' => Color::Blue,
+                'warning' => Color::Orange,
+                'gray'    => Color::Zinc,
             ])
 
             ->sidebarCollapsibleOnDesktop()
