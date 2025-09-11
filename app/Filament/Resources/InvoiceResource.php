@@ -254,7 +254,8 @@ class InvoiceResource extends Resource
                     ->icon('heroicon-o-eye')
                     ->color('info')
                     ->tooltip('Detail') // kasih tooltip biar jelas fungsinya
-                    ->hiddenLabel(),
+                    ->hiddenLabel()
+                    ->button(),
                 Tables\Actions\EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil')
