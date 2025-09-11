@@ -458,7 +458,11 @@ class BookingResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->label('Detail')
+                ->icon('heroicon-o-eye')   // 👁 ikon mata
+                ->color('info')            // biru → konsisten dengan "lihat"
+                ->button(),
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
             ])
