@@ -17,9 +17,8 @@ class AgreementResource extends Resource
     protected static ?string $model = Booking::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Perjanjian';
-    protected static ?string $pluralLabel = 'Perjanjian';
-    protected static ?string $modelLabel = 'Perjanjian';
+    protected static ?string $navigationLabel = 'Checklist Garasi';
+
 
 
     public static function form(Form $form): Form
