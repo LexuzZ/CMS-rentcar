@@ -77,7 +77,7 @@ class RevenueCategoryChart extends ChartWidget
 
         $data = [
             $totalRevenueMonth, $ongkir, $klaimBbm, $klaimBaret,
-            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth,, $PiutangMonth
+            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth, $PiutangMonth
         ];
 
         // Saring data dan label yang nilainya 0 agar chart lebih bersih
