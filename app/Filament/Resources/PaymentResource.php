@@ -118,7 +118,7 @@ class PaymentResource extends Resource
                         return $biayaSewa + $biayaAntarJemput + $totalDenda;
                     })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ,
+                ,
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -201,8 +201,16 @@ class PaymentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\EditAction::make()->label('Ubah'),
-                Tables\Actions\DeleteAction::make()->label('Hapus'),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->tooltip('Ubah'),
+                Tables\Actions\DeleteAction::make()
+                ->label('')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->tooltip('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

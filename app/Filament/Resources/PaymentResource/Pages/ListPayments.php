@@ -13,8 +13,10 @@ class ListPayments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Pembayaran') // ubah teks tombol
-                ->icon('heroicon-o-plus'),
+            Actions\CreateAction::make()->label('Pembayaran') // ubah teks tombol
+                // ->label('Tambah Mobil')
+                ->icon('heroicon-o-plus')
+                ->color('success')
         ];
     }
 }
