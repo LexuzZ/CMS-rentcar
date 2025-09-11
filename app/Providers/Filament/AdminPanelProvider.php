@@ -49,12 +49,12 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Indigo, // tetap gunakan warna preset untuk mapping warna Filament
-                'success' => Color::Emerald,
-                'danger' => Color::Rose,
-                'info' => Color::Blue,
-                'warning' => Color::Orange,
-                'gray'    => Color::Zinc,
+                'primary' => Color::Indigo,   // untuk tombol utama, link
+                'success' => Color::Emerald,  // status mobil ready / transaksi sukses
+                'danger' => Color::Rose,     // mobil rusak / gagal transaksi
+                'warning' => Color::Amber,    // overdue, jatuh tempo
+                'info' => Color::Sky,      // informasi umum
+                'gray' => Color::Zinc,     // background / teks netral
             ])
 
             ->sidebarCollapsibleOnDesktop()
@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ->font('0.2rem')
             ->brandName('Semeton Pesiar')
             // ->brandLogo(asset('public/spt.png'))
-            ->font('Inter')
+            ->font('Poppins')
             ->databaseNotifications()
             // ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
