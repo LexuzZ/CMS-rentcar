@@ -227,7 +227,7 @@ class InvoiceResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table->columns([
-            TextColumn::make('id')->label('ID Faktur')->searchable()->sortable(),
+            TextColumn::make('id')->label('ID Faktur')->searchable(),
             TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),
             TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
@@ -239,18 +239,26 @@ class InvoiceResource extends Resource
                     $dp = $record->dp ?? 0;
                     return $totalTagihan - $dp;
                 }),
-            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable()->state(function (Invoice $record): float {
+            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->state(function (Invoice $record): float {
                 $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
                 $biayaAntarJemput = $record->pickup_dropOff ?? 0;
                 $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
                 return $biayaSewa + $biayaAntarJemput + $totalDenda;
             }),
-            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y')->sortable(),
+            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
         ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\ViewAction::make()->label('Lihat'),
-                Tables\Actions\EditAction::make()->label('Ubah'),
+                Tables\Actions\ViewAction::make()
+                    ->label('Detail')
+                    ->icon('heroicon-o-eye')   // 👁 ikon mata
+                    ->color('info')            // biru → konsisten dengan "lihat"
+                    ->button(),
+                Tables\Actions\EditAction::make()
+                    ->label('Ubah')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
