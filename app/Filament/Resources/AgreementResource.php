@@ -6,10 +6,12 @@ use App\Filament\Resources\AgreementResource\Pages;
 use App\Models\Booking;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -20,11 +22,7 @@ class AgreementResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Checklist Garasi';
     protected static ?string $pluralLabel = 'Checklist Garasi';
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->whereDate('tanggal_keluar', now()->toDateString());
-    }
+
 
 
 
@@ -95,6 +93,22 @@ class AgreementResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+            ])
+            ->filters([
+                Filter::make('tanggal_keluar')
+                    ->form([
+                        DatePicker::make('date')
+                            ->label('Tanggal Keluar')
+                            ->default(now()) // ✅ default hari ini
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['date'],
+                                fn($q, $date) =>
+                                $q->whereDate('tanggal_keluar', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
