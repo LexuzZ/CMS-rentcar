@@ -113,11 +113,13 @@ class ServiceHistoryResource extends Resource
                 Tables\Columns\TextColumn::make('jenis_service')
                     ->label('Jenis Service')
                     ->badge()->alignCenter()
-                    ->colors(['success' => 'service', 'info' => 'ganti_aki', 'primary' => 'ganti_ban'])
+                    ->colors(['danger' => 'service', 'info' => 'ganti_aki', 'primary' => 'ganti_ban', 'warning' => 'oli_mesin', 'success' => 'oli_transmisi'])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'service' => 'Service & Tune Up',
                         'ganti_aki' => 'Pergantian Aki',
                         'ganti_ban' => 'Pergantian Ban',
+                        'oli_mesin' => 'Oli Mesin',
+                        'oli_transmisi' => 'Oli Transmisi',
                         default => ucfirst($state)
                     })->wrap()
                     ->width(150),
