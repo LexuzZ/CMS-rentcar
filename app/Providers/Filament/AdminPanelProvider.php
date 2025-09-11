@@ -49,12 +49,12 @@ class AdminPanelProvider extends PanelProvider
             //   ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
-                'primary' => Color::Indigo, // tetap gunakan warna preset untuk mapping warna Filament
-                'success' => Color::Emerald,
+                'primary' => Color::Orange,
+                'success' => Color::Lime,
                 'danger' => Color::Rose,
-                'info' => Color::Blue,
-                'warning' => Color::Orange,
-                'gray'    => Color::Zinc,
+                'info' => Color::Teal,
+                'warning' => Color::Amber,
+                'gray' => Color::Stone,
             ])
 
             ->sidebarCollapsibleOnDesktop()
