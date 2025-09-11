@@ -22,6 +22,7 @@ class Booking extends Model
         'status',
         'lokasi_pengantaran',
         'lokasi_pengembalian',
+        'ttd',
     ];
 
     public function car()
