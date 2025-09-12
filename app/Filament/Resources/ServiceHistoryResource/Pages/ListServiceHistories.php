@@ -13,8 +13,9 @@ class ListServiceHistories extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Riwayat Servis') // ubah teks tombol
-                ->icon('heroicon-o-plus'),
+            Actions\CreateAction::make()->label('Riwayat Service') // ubah teks tombol
+                ->icon('heroicon-o-plus')
+                ->color('success'),
         ];
     }
 }
