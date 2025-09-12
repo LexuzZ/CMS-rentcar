@@ -205,6 +205,7 @@ class PaymentResource extends Resource
                     ->tooltip('Tandai Lunas')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
+                    ->button()
                     ->requiresConfirmation() // ada popup konfirmasi
                     ->action(function (Payment $record) {
                         $record->update(['status' => 'lunas']);
