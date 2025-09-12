@@ -245,13 +245,13 @@ class CarResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('')
-                    ->tooltip('Ubah')
+                    ->tooltip('Edit Mobil')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
                     ->button(),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
-                    ->tooltip('Hapus')
+                    ->tooltip('Hapus Mobil')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->button(),
