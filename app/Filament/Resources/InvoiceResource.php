@@ -246,7 +246,7 @@ class InvoiceResource extends Resource
             //     $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
             //     return $biayaSewa + $biayaAntarJemput + $totalDenda;
             // }),
-            TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
+            // TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
         ])
             ->defaultSort('created_at', 'desc')
             ->actions([
@@ -255,12 +255,14 @@ class InvoiceResource extends Resource
                     ->icon('heroicon-o-eye')
                     ->color('info')
                     ->tooltip('Detail') // kasih tooltip biar jelas fungsinya
-                    ->hiddenLabel(),
+                    ->hiddenLabel()
+                    ->button(),
                 Tables\Actions\EditAction::make()
                     ->label('')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
-                    ->tooltip('Ubah'),
+                    ->tooltip('Ubah')
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
