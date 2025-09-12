@@ -200,15 +200,19 @@ class PaymentResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Ubah')
+                    ->label('')
+                    ->tooltip('Ubah Pembayaran')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
+                    ->hiddenLabel()
                     ->button(),
                 Tables\Actions\DeleteAction::make()
-                ->label('Hapus')
-                ->icon('heroicon-o-trash')
-                ->color('danger')
-                ->button(),
+                    ->label('')
+                    ->tooltip('Hapus Pembayaran')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->hiddenLabel()
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

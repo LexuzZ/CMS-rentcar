@@ -251,16 +251,18 @@ class InvoiceResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->label('Detail') // kosongkan label
+                    ->label('')
+                    ->tooltip('Detail Faktur')
                     ->icon('heroicon-o-eye')
                     ->color('info')
-
+                    ->hiddenLabel()
                     ->button(),
                 Tables\Actions\EditAction::make()
-                    ->label('Ubah')
+                    ->label('')
+                    ->tooltip('Ubah Faktur')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
-
+                    ->hiddenLabel()
                     ->button(),
             ])
             ->bulkActions([
