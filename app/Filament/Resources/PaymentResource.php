@@ -200,13 +200,16 @@ class PaymentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->label('')
-                    ->tooltip('Ubah Pembayaran')
-                    ->icon('heroicon-o-pencil')
-                    ->color('warning')
-                    ->hiddenLabel()
-                    ->button(),
+                Tables\Actions\Action::make('markAsPaid')
+                    ->label('') // biar icon aja
+                    ->tooltip('Tandai Lunas')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation() // ada popup konfirmasi
+                    ->action(function (Payment $record) {
+                        $record->update(['status' => 'lunas']);
+                    })
+                    ->visible(fn(Payment $record) => $record->status === 'belum_lunas'),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
                     ->tooltip('Hapus Pembayaran')
