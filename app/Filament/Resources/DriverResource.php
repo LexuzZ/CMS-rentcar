@@ -65,7 +65,11 @@ class DriverResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
-                TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
+                TextColumn::make('nama')->label('Nama')
+                ->searchable()
+                ->wrap()
+                ->width(150)
+                ->sortable(),
                 TextColumn::make('no_telp')->label('No HP'),
                 BadgeColumn::make('status')->label('Status')->colors([
                     'success' => 'tersedia',
