@@ -86,10 +86,10 @@ class PenaltyResource extends Resource
                     ->colors([
                         'success' => 'bbm',
                         'danger' => 'baret',
-                        'info' => 'overtime',
+                        'warning' => 'overtime',
                         'info' => 'overland',
                         'primary' => 'washer',
-                        'success' => 'no_penalty',
+                        'gray' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'bbm' => 'BBM',
