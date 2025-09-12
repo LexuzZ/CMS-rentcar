@@ -260,7 +260,6 @@ class CarResource extends Resource
                     ->tooltip('Detail Mobil')
                     ->icon('heroicon-o-eye')
                     ->color('info')
-
                     ->button(),
             ])
             ->bulkActions([
