@@ -243,9 +243,22 @@ class CarResource extends Resource
                     ->modalCancelAction(false),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Ubah')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Hapus')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->button(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Detail') // kosongkan label
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
