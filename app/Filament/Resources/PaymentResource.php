@@ -101,10 +101,8 @@ class PaymentResource extends Resource
                 // Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()->alignCenter()->weight(FontWeight::Bold)->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(150),
-                TextColumn::make('invoice.booking.tanggal_keluar')
-                    ->label('Tanggal Keluar')
-                    ->date('d M Y')->alignCenter(),
-                TextColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali')
+                TextColumn::make('tanggal_pembayaran')
+                    ->label('Tgl Pembayaran')
                     ->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
@@ -202,15 +200,15 @@ class PaymentResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('')
+                    ->label('Ubah')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
-                    ->tooltip('Ubah'),
+                    ->button(),
                 Tables\Actions\DeleteAction::make()
-                ->label('')
+                ->label('Hapus')
                 ->icon('heroicon-o-trash')
                 ->color('danger')
-                ->tooltip('Hapus'),
+                ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
