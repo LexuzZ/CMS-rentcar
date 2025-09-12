@@ -231,9 +231,11 @@ class PaymentResource extends Resource
                     ->action(function (Payment $record) {
                         $record->update(['status' => 'lunas']);
                     })
-                    ->visible(fn(Payment $record): bool =>
+                    ->visible(
+                        fn(Payment $record): bool =>
                         $record->status === 'belum_lunas'
-                        && Auth::user()?->hasRole('superadmin')),
+                        && Auth::user()?->role === 'superadmin'
+                    ),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
                     ->tooltip('Hapus Pembayaran')
