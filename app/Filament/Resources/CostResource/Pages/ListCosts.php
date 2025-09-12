@@ -13,7 +13,9 @@ class ListCosts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Kas Keluar'),
+            Actions\CreateAction::make()->label('Kas Pengeluaran')
+             ->icon('heroicon-o-plus')
+                ->color('success'),
         ];
     }
 }
