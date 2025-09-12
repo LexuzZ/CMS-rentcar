@@ -142,7 +142,13 @@ class ServiceHistoryResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->label('Ubah'),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Riwayat Service')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
