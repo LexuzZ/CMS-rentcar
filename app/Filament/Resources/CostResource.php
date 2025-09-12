@@ -28,8 +28,8 @@ class CostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
-    protected static ?string $label = 'Kas Keluar';
-    protected static ?string $pluralLabel = 'Kas Keluar';
+    protected static ?string $label = 'Kas Pengeluaran';
+    protected static ?string $pluralLabel = 'Kas Pengeluaran';
 
     public static function form(Form $form): Form
     {
@@ -100,8 +100,20 @@ class CostResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Pengeluaran')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Hapus Pengeluaran')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->hiddenLabel()
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
