@@ -308,7 +308,7 @@ class BookingResource extends Resource
                             Infolists\Components\TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                         ]),
                     ]),
-                    Infolists\Components\Section::make('Rincian Biaya')
+                Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
                         Infolists\Components\Grid::make(2)->schema([
                             Infolists\Components\TextEntry::make('estimasi_biaya')
@@ -459,10 +459,12 @@ class BookingResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->label('Detail')
-                ->icon('heroicon-o-eye')   // 👁 ikon mata
-                ->color('info')            // biru → konsisten dengan "lihat"
-                ->button(),
+                    ->label('')
+                    ->tooltip('Detail Pesanan')
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->hiddenLabel()
+                    ->button(),
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
             ])
