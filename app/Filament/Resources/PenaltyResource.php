@@ -105,6 +105,20 @@ class PenaltyResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 //
+            ])->actions([
+                Tables\Actions\EditAction::make()
+                    ->label('Ubah')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                ->label('Hapus')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->button(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
