@@ -179,7 +179,39 @@ class PaymentResource extends Resource
                             ? 'Tanggal Pembayaran: ' . \Carbon\Carbon::parse($data['date'])->isoFormat('D MMMM Y')
                             : null;
                     }),
-
+                Filter::make('tanggal_pembayaran')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('month')
+                                    ->label('Bulan')
+                                    ->options(array_reduce(range(1, 12), function ($carry, $month) {
+                                        $carry[$month] = Carbon::create(null, $month)->isoFormat('MMMM');
+                                        return $carry;
+                                    }, []))
+                                    ->default(now()->month), // ✅ default bulan ini
+                                Forms\Components\Select::make('year')
+                                    ->label('Tahun')
+                                    ->options(function () {
+                                        $years = range(now()->year, now()->year - 5);
+                                        return array_combine($years, $years);
+                                    })
+                                    ->default(now()->year), // ✅ default tahun ini
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['month'], fn(Builder $query, $month): Builder => $query->whereMonth('tanggal_pembayaran', $month))
+                            ->when($data['year'], fn(Builder $query, $year): Builder => $query->whereYear('tanggal_pembayaran', $year));
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['month'] && !$data['year']) {
+                            return null;
+                        }
+                        $monthName = $data['month'] ? Carbon::create()->month((int) $data['month'])->isoFormat('MMMM') : '';
+                        return 'Periode: ' . $monthName . ' ' . $data['year'];
+                    })
+                    ->columnSpan(2)->columns(2),
 
             ])
             ->defaultSort('created_at', 'desc')
