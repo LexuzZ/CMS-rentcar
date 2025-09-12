@@ -187,7 +187,7 @@ class PaymentResource extends Resource
                                 Forms\Components\Select::make('month')
                                     ->label('Bulan')
                                     ->options(array_reduce(range(1, 12), function ($carry, $month) {
-                                        $carry[$month] = Carbon::create(null, $month)->isoFormat('MMMM');
+                                        $carry[$month] = Carbon::create(null, $month)->locale('id')->isoFormat('MMMM');
                                         return $carry;
                                     }, []))
                                     ->default(now()->month), // ✅ default bulan ini
