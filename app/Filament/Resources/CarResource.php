@@ -248,12 +248,14 @@ class CarResource extends Resource
                     ->tooltip('Edit Mobil')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
+                    ->hiddenLabel()
                     ->button(),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
                     ->tooltip('Hapus Mobil')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
+                    ->hiddenLabel()
                     ->button(),
                 Tables\Actions\ViewAction::make()
                     ->label('') // kosongkan label
