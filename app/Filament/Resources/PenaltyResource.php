@@ -108,15 +108,19 @@ class PenaltyResource extends Resource
                 //
             ])->actions([
                     Tables\Actions\EditAction::make()
-                        ->label('Ubah')
-                        ->icon('heroicon-o-pencil')
-                        ->color('warning')
-                        ->button(),
-                    Tables\Actions\DeleteAction::make()
-                        ->label('Hapus')
-                        ->icon('heroicon-o-trash')
-                        ->color('danger')
-                        ->button(),
+                    ->label('')
+                    ->tooltip('Edit Klaim Garasi')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Hapus Klaim Garasi')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->hiddenLabel()
+                    ->button(),
                 ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
