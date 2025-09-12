@@ -244,17 +244,20 @@ class CarResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Ubah')
+                    ->label('')
+                    ->tooltip('Ubah')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
                     ->button(),
                 Tables\Actions\DeleteAction::make()
-                    ->label('Hapus')
+                    ->label('')
+                    ->tooltip('Hapus')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->button(),
                 Tables\Actions\ViewAction::make()
-                    ->label('Detail') // kosongkan label
+                    ->label('') // kosongkan label
+                    ->tooltip('Detail Mobil')
                     ->icon('heroicon-o-eye')
                     ->color('info')
 
