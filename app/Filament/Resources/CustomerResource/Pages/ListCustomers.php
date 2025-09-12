@@ -13,7 +13,9 @@ class ListCustomers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Data Penyewa'),
+            Actions\CreateAction::make()->label('Data Penyewa')
+                ->icon('heroicon-o-plus')
+                ->color('success'),
         ];
     }
 }

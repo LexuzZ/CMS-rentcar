@@ -115,9 +115,27 @@ class CustomerResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Data Penyewa')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Hapus Data Penyewa')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->hiddenLabel()
+                    ->button(),
+                Tables\Actions\ViewAction::make()
+                    ->label('') // kosongkan label
+                    ->tooltip('Detail Penyewa')
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->hiddenLabel()
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
