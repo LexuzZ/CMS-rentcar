@@ -206,6 +206,7 @@ class PaymentResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->button()
+                    ->hiddenLabel()
                     ->requiresConfirmation() // ada popup konfirmasi
                     ->action(function (Payment $record) {
                         $record->update(['status' => 'lunas']);
