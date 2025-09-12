@@ -105,6 +105,7 @@ class PaymentResource extends Resource
                     ->width(150),
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tgl Pembayaran')
+                    ->searchable()
                     ->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('total_bayar')
                     ->label('Jumlah Bayar')
