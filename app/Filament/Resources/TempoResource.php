@@ -86,6 +86,7 @@ class TempoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')

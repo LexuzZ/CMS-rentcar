@@ -66,6 +66,7 @@ class CostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('nama_pengeluaran')
                     ->label('Jenis Pengeluaran')

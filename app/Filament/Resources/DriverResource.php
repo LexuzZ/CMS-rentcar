@@ -63,6 +63,7 @@ class DriverResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
                 TextColumn::make('no_telp')->label('No HP'),

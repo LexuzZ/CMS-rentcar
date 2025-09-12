@@ -97,6 +97,7 @@ class PaymentResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 // Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()->alignCenter()->wrap() // <-- Tambahkan wrap agar teks turun

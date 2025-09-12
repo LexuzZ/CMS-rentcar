@@ -226,7 +226,7 @@ class InvoiceResource extends Resource
 
     public static function table(Tables\Table $table): Tables\Table
     {
-        return $table->columns([
+        return $table->recordUrl(null)->columns([
             // TextColumn::make('id')->label('ID Faktur')->searchable(),
             TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),

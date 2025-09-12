@@ -43,7 +43,7 @@ class CustomerResource extends Resource
                     ->label('No HP / WhatsApp')
                     ->tel()
                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-                    ->dehydrateStateUsing(fn (string $state): string => preg_replace('/[^0-9]/', '', $state))
+                    ->dehydrateStateUsing(fn(string $state): string => preg_replace('/[^0-9]/', '', $state))
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('ktp')
@@ -101,6 +101,7 @@ class CustomerResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('nama')->label('Nama')->searchable()->wrap()
                     ->width(150),

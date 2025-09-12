@@ -72,7 +72,7 @@ class ServiceHistoryResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('jenis_service')
                     ->label('Jenis Service')
-                    ->options(['service' => 'Service & Tune Up','oli_mesin' => 'Oli Mesin','oli_transmisi' => 'Oli Transmisi', 'ganti_aki' => 'Pergantian Aki', 'ganti_ban' => 'Pergantian Ban'])
+                    ->options(['service' => 'Service & Tune Up', 'oli_mesin' => 'Oli Mesin', 'oli_transmisi' => 'Oli Transmisi', 'ganti_aki' => 'Pergantian Aki', 'ganti_ban' => 'Pergantian Ban'])
                     ->default('service') // Mengubah default agar valid
                     ->required(),
                 Forms\Components\TextInput::make('current_km')
@@ -98,6 +98,7 @@ class ServiceHistoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')

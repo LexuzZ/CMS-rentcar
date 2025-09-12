@@ -76,6 +76,7 @@ class PenaltyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('booking.id')->label('ID')->alignCenter(),
                 TextColumn::make('klaim')
@@ -106,17 +107,17 @@ class PenaltyResource extends Resource
             ->filters([
                 //
             ])->actions([
-                Tables\Actions\EditAction::make()
-                    ->label('Ubah')
-                    ->icon('heroicon-o-pencil')
-                    ->color('warning')
-                    ->button(),
-                Tables\Actions\DeleteAction::make()
-                ->label('Hapus')
-                ->icon('heroicon-o-trash')
-                ->color('danger')
-                ->button(),
-            ])
+                    Tables\Actions\EditAction::make()
+                        ->label('Ubah')
+                        ->icon('heroicon-o-pencil')
+                        ->color('warning')
+                        ->button(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Hapus')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->button(),
+                ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

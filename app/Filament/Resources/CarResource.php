@@ -138,6 +138,7 @@ class CarResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 // ImageColumn::make('photo')
                 //     ->label('Foto Mobil')
