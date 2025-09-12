@@ -100,7 +100,7 @@ class PenaltyResource extends Resource
                         default => ucfirst($state),
                     }),
                 Tables\Columns\TextColumn::make('amount')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->label('Nominal')->alignCenter(),
-                Tables\Columns\TextColumn::make('created_at')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('created_at')->date('d M Y')->alignCenter()->label('Dibuat Tgl'),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
