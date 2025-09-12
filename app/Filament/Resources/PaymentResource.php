@@ -207,7 +207,10 @@ class PaymentResource extends Resource
                     ->color('success')
                     ->button()
                     ->hiddenLabel()
-                    ->requiresConfirmation() // ada popup konfirmasi
+                    ->modalHeading('Konfirmasi Pembayaran')
+                    ->modalSubheading('Apakah kamu yakin ingin menandai pembayaran ini sebagai **Lunas**?')
+                    ->modalIcon('heroicon-o-currency-dollar') // bisa ganti sesuai icon
+                    ->requiresConfirmation()
                     ->action(function (Payment $record) {
                         $record->update(['status' => 'lunas']);
                     })
