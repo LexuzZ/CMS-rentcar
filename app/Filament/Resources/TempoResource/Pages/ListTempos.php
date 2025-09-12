@@ -13,8 +13,9 @@ class ListTempos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Jadwal Jatuh Tempo')
-                ->icon('heroicon-o-plus'),
+            Actions\CreateAction::make()->label('Jadwal Jatuh Tempo')
+                ->icon('heroicon-o-plus')
+                ->color('success'),
         ];
     }
 }

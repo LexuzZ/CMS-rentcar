@@ -125,8 +125,20 @@ class TempoResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Jatuh Tempo')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Hapus Jatuh Tempo')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->hiddenLabel()
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
