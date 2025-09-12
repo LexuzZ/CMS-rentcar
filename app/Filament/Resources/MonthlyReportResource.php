@@ -50,18 +50,18 @@ class MonthlyReportResource extends Resource
                     ->numeric()
                 ,
                 Tables\Columns\TextColumn::make('net_revenue')
-                    ->label('Pendapatan (Lunas)')
+                    ->label('Lunas')
                     ->color('success')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
                 // Kolom baru untuk menampilkan tagihan yang belum lunas
                 Tables\Columns\TextColumn::make('pending_revenue')
-                    ->label('Tagihan (Belum Lunas)')
+                    ->label('Belum Lunas')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color('danger') // Memberi warna merah untuk menandakan tagihan
                 ,
                 Tables\Columns\TextColumn::make('total_revenue')
-                    ->label('Total Pendapatan')
+                    ->label('Total ')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
             ])
@@ -85,8 +85,12 @@ class MonthlyReportResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('viewDetails')
-                    ->label('Lihat Detail')
+                    ->label('') // kosongkan label
+                    ->tooltip('Lihat Detail')
                     ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->hiddenLabel()
+                    ->button()
                     ->url(fn(Model $record): string => static::getUrl('details', ['record' => $record->year . '-' . $record->month])),
 
             ])
