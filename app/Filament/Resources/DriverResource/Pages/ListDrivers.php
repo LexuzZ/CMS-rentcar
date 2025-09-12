@@ -13,7 +13,9 @@ class ListDrivers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('Tambah Data Staff'),
+            Actions\CreateAction::make()->label('Data Staff')
+                ->icon('heroicon-o-plus')
+                ->color('success'),
         ];
     }
 }
