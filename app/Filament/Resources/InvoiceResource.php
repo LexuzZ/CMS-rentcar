@@ -230,7 +230,8 @@ class InvoiceResource extends Resource
             TextColumn::make('id')->label('ID Faktur')->searchable(),
             TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),
-            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+            textColumn::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->color('success'),
+            TextColumn::make('sisa_pembayaran')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->state(function (Invoice $record): float {
                     $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
                     $biayaAntarJemput = $record->pickup_dropOff ?? 0;
@@ -238,13 +239,13 @@ class InvoiceResource extends Resource
                     $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
                     $dp = $record->dp ?? 0;
                     return $totalTagihan - $dp;
-                }),
-            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->state(function (Invoice $record): float {
-                $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                return $biayaSewa + $biayaAntarJemput + $totalDenda;
-            }),
+                })->color('danger'),
+            // TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->state(function (Invoice $record): float {
+            //     $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
+            //     $biayaAntarJemput = $record->pickup_dropOff ?? 0;
+            //     $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+            //     return $biayaSewa + $biayaAntarJemput + $totalDenda;
+            // }),
             TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
         ])
             ->defaultSort('created_at', 'desc')
