@@ -68,7 +68,7 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
                         ->label('Sisa Pembayaran')
                         ->content(fn(?Booking $record): string => $record?->invoice->sisa_pembayaran ?? '-'),
-                ])->columns(2),
+                ])->columns(3),
             Forms\Components\Section::make('Persetujuan')
                 ->schema([
                     Forms\Components\Section::make('Isi Perjanjian')
