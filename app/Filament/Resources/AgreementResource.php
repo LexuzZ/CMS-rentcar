@@ -64,15 +64,16 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('total_hari')
                         ->label('Total Hari')
                         ->content(fn(?Booking $record): string => $record?->total_hari ?? '-'),
-                    Forms\Components\Placeholder::make('estimasi_biaya')
-                        ->label('Estimasi Biaya')
-                        ->content(fn(?Booking $record): string => $record?->estimasi_biaya ?? '-'),
+
                     Forms\Components\Placeholder::make('invoice.dp')
                         ->label('Uang Muka (DP)')
                         ->content(fn(?Booking $record): string => $record?->invoice?->dp ?? '-'),
                     Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
                         ->label('Sisa Pembayaran')
                         ->content(fn(?Booking $record): string => $record?->invoice->sisa_pembayaran ?? '-'),
+                    Forms\Components\Placeholder::make('invoice.total')
+                        ->label('Total Tagihan')
+                        ->content(fn(?Booking $record): string => $record?->invoice?->total ?? '-'),
                 ])->columns(3),
             Forms\Components\Section::make('Persetujuan')
                 ->schema([
