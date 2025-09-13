@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AgreementResource\Pages;
 use App\Models\Booking;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -41,41 +42,69 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('customer.nama')
                         ->label('Nama Customer')
                         ->content(fn(?Booking $record): string => $record?->customer?->nama ?? '-'),
+
                     Forms\Components\Placeholder::make('car.carModel.name')
                         ->label('Nama Mobil')
                         ->content(fn(?Booking $record): string => $record?->car?->carModel->name ?? '-'),
 
                     Forms\Components\Placeholder::make('tanggal_keluar')
                         ->label('Tanggal Keluar')
-                        ->content(fn(?Booking $record): string => $record?->tanggal_keluar ?? '-'),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->tanggal_keluar ? Carbon::parse($record->tanggal_keluar)->format('d M Y') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('tanggal_kembali')
                         ->label('Tanggal Kembali')
-                        ->content(fn(?Booking $record): string => $record?->tanggal_kembali ?? '-'),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->tanggal_kembali ? Carbon::parse($record->tanggal_kembali)->format('d M Y') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('car.nopol')
                         ->label('No. Polisi')
                         ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
+
                     Forms\Components\Placeholder::make('waktu_keluar')
                         ->label('Waktu Keluar')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->waktu_keluar ? Carbon::parse($record->waktu_keluar)->format('H:i') : '-'
+                        ),
 
-                        ->content(fn(?Booking $record): string => $record?->waktu_keluar ?? '-'),
                     Forms\Components\Placeholder::make('waktu_kembali')
                         ->label('Waktu Kembali')
-                        ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->waktu_kembali ? Carbon::parse($record->waktu_kembali)->format('H:i') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('total_hari')
                         ->label('Total Hari')
-                        ->content(fn(?Booking $record): string => $record?->total_hari ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->total_hari ? "{$record->total_hari} Hari" : '-'),
 
                     Forms\Components\Placeholder::make('invoice.dp')
                         ->label('Uang Muka (DP)')
-                        ->content(fn(?Booking $record): string => $record?->invoice?->dp ?? '-'),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->invoice?->dp ? 'Rp ' . number_format($record->invoice->dp, 0, ',', '.') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
                         ->label('Sisa Pembayaran')
-                        ->content(fn(?Booking $record): string => $record?->invoice->sisa_pembayaran ?? '-'),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->invoice?->sisa_pembayaran ? 'Rp ' . number_format($record->invoice->sisa_pembayaran, 0, ',', '.') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('invoice.total')
                         ->label('Total Tagihan')
-                        ->content(fn(?Booking $record): string => $record?->invoice?->total ?? '-')
-                        ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                ])->columns(3),
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->invoice?->total ? 'Rp ' . number_format($record->invoice->total, 0, ',', '.') : '-'
+                        ),
+                ])
+                ->columns(3),
             Forms\Components\Section::make('Persetujuan')
                 ->schema([
                     Forms\Components\Section::make('Isi Perjanjian')
