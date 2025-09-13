@@ -62,7 +62,7 @@ class AgreementResource extends Resource
                         ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
                     Forms\Components\Placeholder::make('total_hari')
                         ->label('Total Hari')
-                        ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->total_hari ?? '-'),
                     Forms\Components\Placeholder::make('estimasi_biaya')
                         ->label('Estimasi Biaya')
                         ->content(fn(?Booking $record): string => $record?->estimasi_biaya ?? '-'),
