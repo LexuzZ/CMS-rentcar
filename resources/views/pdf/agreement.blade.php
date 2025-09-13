@@ -243,12 +243,11 @@
             </tr>
             <tr>
                 @php
-                    $method = strtolower($booking->invoice?->payment?->metode_pembayaran ?? '');
+                    $method = ucfirst(strtolower($booking->invoice?->payment?->metode_pembayaran ?? '-'));
                 @endphp
                 <td><strong>Metode Pembayaran</strong></td>
-                <td>{!! $method === 'tunai' ? '☑' : '☐' !!} Tunai &nbsp;&nbsp;
-                    {!! $method === 'transfer' ? '☑' : '☐' !!} Transfer &nbsp;&nbsp;
-                    {!! $method === 'qris' ? '☑' : '☐' !!} QRIS </td>
+                <td>{{ $method }}</td>
+
             </tr>
             <tr>
                 <td><strong>Harga Harian</strong></td>
