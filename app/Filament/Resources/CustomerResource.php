@@ -136,6 +136,36 @@ class CustomerResource extends Resource
                     ->color('info')
                     ->hiddenLabel()
                     ->button(),
+                Tables\Actions\Action::make('downloadKtp')
+                    ->label('')
+                    ->tooltip('Unduh KTP')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->hiddenLabel()
+                    ->url(
+                        fn($record) =>
+                        $record->identity_file
+                        ? asset('storage/' . $record->identity_file)
+                        : null
+                    )
+                    ->openUrlInNewTab()
+                    ->visible(fn($record) => !empty($record->identity_file)),
+
+                // ✅ Tombol Unduh SIM
+                Tables\Actions\Action::make('downloadSim')
+                    ->label('')
+                    ->tooltip('Unduh SIM')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('primary')
+                    ->hiddenLabel()
+                    ->url(
+                        fn($record) =>
+                        $record->lisence_file
+                        ? asset('storage/' . $record->lisence_file)
+                        : null
+                    )
+                    ->openUrlInNewTab()
+                    ->visible(fn($record) => !empty($record->lisence_file)),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
