@@ -44,20 +44,24 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('car.carModel.name')
                         ->label('Nama Mobil')
                         ->content(fn(?Booking $record): string => $record?->car?->carModel->name ?? '-'),
-                    Forms\Components\Placeholder::make('car.nopol')
-                        ->label('No. Polisi')
-                        ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
+
                     Forms\Components\Placeholder::make('tanggal_keluar')
                         ->label('Tanggal Keluar')
                         ->content(fn(?Booking $record): string => $record?->tanggal_keluar ?? '-'),
                     Forms\Components\Placeholder::make('tanggal_kembali')
                         ->label('Tanggal Kembali')
                         ->content(fn(?Booking $record): string => $record?->tanggal_kembali ?? '-'),
+                    Forms\Components\Placeholder::make('car.nopol')
+                        ->label('No. Polisi')
+                        ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
                     Forms\Components\Placeholder::make('waktu_keluar')
                         ->label('Waktu Keluar')
                         ->content(fn(?Booking $record): string => $record?->waktu_keluar ?? '-'),
                     Forms\Components\Placeholder::make('waktu_kembali')
                         ->label('Waktu Kembali')
+                        ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
+                    Forms\Components\Placeholder::make('total_hari')
+                        ->label('Total Hari')
                         ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
                     Forms\Components\Placeholder::make('estimasi_biaya')
                         ->label('Estimasi Biaya')
