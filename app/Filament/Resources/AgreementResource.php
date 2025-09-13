@@ -73,7 +73,8 @@ class AgreementResource extends Resource
                         ->content(fn(?Booking $record): string => $record?->invoice->sisa_pembayaran ?? '-'),
                     Forms\Components\Placeholder::make('invoice.total')
                         ->label('Total Tagihan')
-                        ->content(fn(?Booking $record): string => $record?->invoice?->total ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->invoice?->total ?? '-')
+                        ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 ])->columns(3),
             Forms\Components\Section::make('Persetujuan')
                 ->schema([
