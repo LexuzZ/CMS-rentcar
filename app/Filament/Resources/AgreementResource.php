@@ -50,7 +50,6 @@ class AgreementResource extends Resource
                         ->content(fn(?Booking $record): string => $record?->tanggal_keluar ?? '-'),
                     Forms\Components\Placeholder::make('tanggal_kembali')
                         ->label('Tanggal Kembali')
-                        ->date('d M Y')
                         ->content(fn(?Booking $record): string => $record?->tanggal_kembali ?? '-'),
                     Forms\Components\Placeholder::make('car.nopol')
                         ->label('No. Polisi')
