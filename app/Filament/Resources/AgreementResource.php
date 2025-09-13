@@ -48,25 +48,25 @@ class AgreementResource extends Resource
                         ->label('No. Polisi')
                         ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
                     Forms\Components\Placeholder::make('tanggal_keluar')
-                        ->label('Nama Mobil')
+                        ->label('Tanggal Keluar')
                         ->content(fn(?Booking $record): string => $record?->tanggal_keluar ?? '-'),
                     Forms\Components\Placeholder::make('tanggal_kembali')
-                        ->label('Nama Mobil')
+                        ->label('Tanggal Kembali')
                         ->content(fn(?Booking $record): string => $record?->tanggal_kembali ?? '-'),
                     Forms\Components\Placeholder::make('waktu_keluar')
-                        ->label('Nama Mobil')
+                        ->label('Waktu Keluar')
                         ->content(fn(?Booking $record): string => $record?->waktu_keluar ?? '-'),
                     Forms\Components\Placeholder::make('waktu_kembali')
-                        ->label('Nama Mobil')
+                        ->label('Waktu Kembali')
                         ->content(fn(?Booking $record): string => $record?->waktu_kembali ?? '-'),
                     Forms\Components\Placeholder::make('estimasi_biaya')
-                        ->label('Nama Mobil')
+                        ->label('Estimasi Biaya')
                         ->content(fn(?Booking $record): string => $record?->estimasi_biaya ?? '-'),
                     Forms\Components\Placeholder::make('invoice.dp')
-                        ->label('Nama Mobil')
+                        ->label('Uang Muka (DP)')
                         ->content(fn(?Booking $record): string => $record?->invoice?->dp ?? '-'),
                     Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
-                        ->label('Nama Mobil')
+                        ->label('Sisa Pembayaran')
                         ->content(fn(?Booking $record): string => $record?->invoice->sisa_pembayaran ?? '-'),
                 ])->columns(2),
             Forms\Components\Section::make('Persetujuan')
