@@ -105,22 +105,32 @@ class PenaltyResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('klaim')
+                    ->label('Jenis Klaim')
+                    ->options([
+                        'baret' => 'Baret/Kerusakan',
+                        'bbm' => 'BBM',
+                        'overtime' => 'Overtime',
+                        'overland' => 'Overland',
+                        'washer' => 'Washer/Cuci Mobil',
+                        'no_penalty' => 'Tidak Ada Denda',
+                    ])
+                    ->searchable(),
             ])->actions([
                     Tables\Actions\EditAction::make()
-                    ->label('')
-                    ->tooltip('Edit Klaim Garasi')
-                    ->icon('heroicon-o-pencil')
-                    ->color('warning')
-                    ->hiddenLabel()
-                    ->button(),
-                Tables\Actions\DeleteAction::make()
-                    ->label('')
-                    ->tooltip('Hapus Klaim Garasi')
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->hiddenLabel()
-                    ->button(),
+                        ->label('')
+                        ->tooltip('Edit Klaim Garasi')
+                        ->icon('heroicon-o-pencil')
+                        ->color('warning')
+                        ->hiddenLabel()
+                        ->button(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('')
+                        ->tooltip('Hapus Klaim Garasi')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->hiddenLabel()
+                        ->button(),
                 ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
