@@ -421,6 +421,7 @@ class BookingResource extends Resource
                     ]),
                 SelectFilter::make('garasi')
                     ->label('Garasi')
+                    ->searchable()
                     ->options(
                         Car::query()
                             ->select('garasi')
