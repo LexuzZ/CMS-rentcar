@@ -13,28 +13,28 @@ class BookingStats extends BaseWidget
     {
         $now = Carbon::now();
         return [
-            Stat::make('Total Booking Bulan Ini', Booking::whereMonth('tanggal_keluar', $now->month)
-                ->whereYear('tanggal_keluar', $now->year)
+            Stat::make('Total Booking Bulan Ini', Booking::whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
                 ->count())
                 ->description('Semua booking bulan ini')
                 ->color('primary'),
-            Stat::make('Sedang Booking', Booking::where('status', 'booking')
-                ->whereMonth('tanggal_keluar', $now->month)
-                ->whereYear('tanggal_keluar', $now->year)
+            Stat::make('Booking', Booking::where('status', 'booking')
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
                 ->count())
                 ->description('Belum diproses')
                 ->color('info'),
 
             Stat::make('Disewa', Booking::where('status', 'disewa')
-                ->whereMonth('tanggal_keluar', $now->month)
-                ->whereYear('tanggal_keluar', $now->year)
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
                 ->count())
                 ->description('Unit sedang jalan')
                 ->color('warning'),
 
             Stat::make('Selesai', Booking::where('status', 'selesai')
-                ->whereMonth('tanggal_keluar', $now->month)
-                ->whereYear('tanggal_keluar', $now->year)
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
                 ->count())
                 ->description('Transaksi selesai')
                 ->color('success'),
