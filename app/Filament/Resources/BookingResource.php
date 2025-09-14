@@ -445,7 +445,6 @@ class BookingResource extends Resource
                         Forms\Components\DatePicker::make('tanggal_keluar')
                             ->label('Tanggal Keluar'),
                     ])
-                    ->columns(2)
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_keluar'],
@@ -466,7 +465,6 @@ class BookingResource extends Resource
                         Forms\Components\DatePicker::make('tanggal_kembali')
                             ->label('Tanggal Kembali'),
                     ])
-                    ->columns(2)
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_kembali'],
@@ -480,7 +478,7 @@ class BookingResource extends Resource
                         $date = Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
                         return "Tanggal Kembali: {$date}";
                     }),
-            ])->filtersFormColumns(2)
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label('')
