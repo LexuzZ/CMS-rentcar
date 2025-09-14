@@ -284,14 +284,6 @@
         </table>
 
         {{-- METODE PEMBAYARAN --}}
-
-
-
-
-
-
-
-
         {{-- TANDA TANGAN --}}
         <div class="signature">
             <div>
@@ -310,7 +302,7 @@
                 @endif
 
                 <p class="signature-name">ACHMAD MUZAMMIL</p>
-                <p>CEO Company</p>
+                <p>Direktur</p>
             </div>
 
             <div>

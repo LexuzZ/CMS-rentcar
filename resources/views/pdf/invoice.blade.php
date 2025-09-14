@@ -334,7 +334,7 @@
             </div>
 
             <p class="signature-name">ACHMAD MUZAMMIL</p>
-            <p>CEO Company</p>
+            <p>Direktur</p>
         </div>
         <div class="clear"></div>
 
