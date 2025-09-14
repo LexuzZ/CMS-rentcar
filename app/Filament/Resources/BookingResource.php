@@ -419,6 +419,18 @@ class BookingResource extends Resource
                         'selesai' => 'Selesai',
                         'batal' => 'Batal',
                     ]),
+                SelectFilter::make('garasi')
+                    ->label('Garasi')
+                    ->options(
+                        \App\Models\Car::query()
+                            ->select('garasi')
+                            ->distinct()
+                            ->pluck('garasi', 'garasi')
+                            ->toArray()
+                    )
+                    ->query(function (Builder $query, $value) {
+                        return $query->whereHas('car', fn($q) => $q->where('garasi', $value));
+                    }),
                 Filter::make('tanggal_keluar')
                     ->form([
                         Forms\Components\DatePicker::make('tanggal_keluar')
