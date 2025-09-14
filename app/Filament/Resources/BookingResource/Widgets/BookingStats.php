@@ -16,7 +16,7 @@ class BookingStats extends BaseWidget
             Stat::make('Total Booking Bulan Ini', Booking::whereMonth('tanggal_keluar', $now->month)
                 ->whereYear('tanggal_keluar', $now->year)
                 ->count())
-                ->description('Semua booking bulan ini')
+                ->description('Bulan ini')
                 ->color('primary'),
             Stat::make('Booking', Booking::where('status', 'booking')
                 ->whereMonth('tanggal_keluar', $now->month)
