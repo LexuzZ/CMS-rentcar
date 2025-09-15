@@ -125,7 +125,12 @@ class AgreementResource extends Resource
                         ->directory('temp_bbm') // simpan sementara di storage/public/temp_bbm
                         ->visibility('public')
                         ->dehydrated(false) // ❌ tidak simpan ke DB
-                        ->helperText('Upload foto indikator BBM. Hanya untuk dokumen perjanjian.'),
+                        ->extraAttributes([
+                            'accept' => 'image/*',
+                            'capture' => 'environment', // buka langsung kamera belakang di HP
+                        ])
+                        ->helperText('Ambil foto indikator BBM langsung dari kamera.'),
+
 
                 ]),
             Forms\Components\Section::make('Tanda Tangan')
