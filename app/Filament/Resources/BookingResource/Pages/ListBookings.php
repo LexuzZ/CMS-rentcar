@@ -21,10 +21,10 @@ class ListBookings extends ListRecords
 
         ];
     }
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            BookingStats::class,
-        ];
-    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         BookingStats::class,
+    //     ];
+    // }
 }
