@@ -116,6 +116,38 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
+                            Infolists\Components\Actions\Action::make('copyClipboard')
+                                ->label('Copy Faktur')
+                                ->icon('heroicon-o-clipboard-document')
+                                ->color('secondary')
+                                ->action(function (Invoice $record): void {
+                                    // Rakit pesan faktur
+                                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                                    $totalTagihan = $record->booking?->estimasi_biaya + $record->pickup_dropOff + $totalDenda;
+                                    $sisaPembayaran = $totalTagihan - $record->dp;
+
+                                    $message = "Halo 👋😊 *{$record->booking->customer->nama}*,\n\n";
+                                    $message .= "🧾 *No. Faktur:* #{$record->id}\n";
+                                    $message .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n\n";
+                                    $message .= "🚗 Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})\n";
+                                    $message .= "⏳ Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)\n\n";
+                                    $message .= "💰 Total Tagihan: Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                                    $message .= "🔐 DP: Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                                    $message .= "🔔 Sisa: Rp " . number_format($sisaPembayaran, 0, ',', '.') . "\n\n";
+                                    $message .= "Rek Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
+                                    $message .= "Rek BCA: 2320418758 (a.n. SRI NOVYANA)\n\n";
+                                    $message .= "Terima kasih 🙏";
+
+                                    // kirim ke browser pakai dispatch browser event
+                                    \Filament\Support\Facades\FilamentView::dispatchBrowserEvent('copy-to-clipboard', [
+                                        'text' => $message,
+                                    ]);
+
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Teks faktur berhasil disalin 📋')
+                                        ->success()
+                                        ->send();
+                                }),
 
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
