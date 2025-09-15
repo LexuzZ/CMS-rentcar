@@ -282,6 +282,13 @@
                 <td>Rp {{ number_format($booking->invoice->sisa_pembayaran ?? 0, 0, ',', '.') }}</td>
             </tr>
         </table>
+        @if (!empty($foto_bbm))
+            <div style="margin-top:20px;">
+                <h4>Foto Indikator BBM</h4>
+                <img src="{{ public_path('storage/' . $foto_bbm) }}" alt="Foto BBM" style="max-width: 200px;">
+            </div>
+        @endif
+
 
         {{-- METODE PEMBAYARAN --}}
         {{-- TANDA TANGAN --}}

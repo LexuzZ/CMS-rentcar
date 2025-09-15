@@ -122,6 +122,14 @@ class AgreementResource extends Resource
                     // PERBAIKAN: Jadikan komponen View sebagai field input utama untuk 'ttd'.
                     // statePath() memberitahu Filament bahwa komponen ini bertanggung jawab
                     // untuk data 'ttd', sehingga field Hidden tidak lagi diperlukan.
+                    Forms\Components\FileUpload::make('foto_bbm')
+                        ->label('Foto BBM')
+                        ->image()
+                        ->directory('temp_bbm') // simpan sementara di storage/public/temp_bbm
+                        ->visibility('public')
+                        ->dehydrated(false) // ❌ tidak simpan ke DB
+                        ->helperText('Upload foto indikator BBM. Hanya untuk dokumen perjanjian.'),
+
                     Forms\Components\View::make('filament.forms.signature-pad')
                         ->statePath('ttd'), // Kunci utama perbaikan ada di sini.
                 ]),
@@ -188,6 +196,7 @@ class AgreementResource extends Resource
                     ->action(function (Booking $record) {
                         $pdf = Pdf::loadView('pdf.agreement', [
                             'booking' => $record,
+                            'foto_bbm'  => $data['foto_bbm'] ?? null,
                         ]);
 
                         return response()->streamDownload(
