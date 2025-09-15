@@ -11,7 +11,7 @@ class DaftarTungguTable extends BaseWidget
 {
     protected static ?string $heading = 'Daftar Tunggu';
     protected int|string|array $columnSpan = 'full'; // biar lebar penuh di dashboard
-    protected static ?int $sort = 6;
+    protected static ?int $sort = 8;
 
     public function table(Tables\Table $table): Tables\Table
     {
