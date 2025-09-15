@@ -117,32 +117,28 @@ class AgreementResource extends Resource
                         ->helperText('Wajib dicentang sebelum tanda tangan.'),
                 ]),
 
-            Forms\Components\Section::make('Tanda Tangan')
+            Forms\Components\Section::make('Tanda Tangan & Foto BBM')
                 ->schema([
-                    Forms\Components\FileUpload::make('foto_bbm')
-                        ->label('Foto BBM')
-                        ->image()
-                        ->directory('temp_bbm') // simpan sementara di storage/public/temp_bbm
-                        ->visibility('public')
-                        ->dehydrated(false) // ❌ tidak simpan ke DB
-                        ->extraAttributes([
-                            'accept' => 'image/*',
-                            'capture' => 'environment', // buka langsung kamera belakang di HP
-                        ])
-                        ->helperText('Ambil foto indikator BBM langsung dari kamera.'),
+                    Forms\Components\Grid::make(2) // biar sejajar
+                        ->schema([
+                            Forms\Components\View::make('filament.forms.signature-pad')
+                                ->statePath('ttd')
+                                ->label('Tanda Tangan'),
 
-
+                            Forms\Components\FileUpload::make('foto_bbm')
+                                ->label('Foto BBM')
+                                ->image()
+                                ->directory('temp_bbm')
+                                ->visibility('public')
+                                ->dehydrated(false) // ❌ tidak simpan di DB
+                                ->extraAttributes([
+                                    'accept' => 'image/*',
+                                    'capture' => 'environment', // buka kamera belakang
+                                ])
+                                ->helperText('Ambil foto indikator BBM langsung dari kamera.'),
+                        ]),
                 ]),
-            Forms\Components\Section::make('Tanda Tangan')
-                ->schema([
-                    // PERBAIKAN: Jadikan komponen View sebagai field input utama untuk 'ttd'.
-                    // statePath() memberitahu Filament bahwa komponen ini bertanggung jawab
-                    // untuk data 'ttd', sehingga field Hidden tidak lagi diperlukan.
 
-
-                    Forms\Components\View::make('filament.forms.signature-pad')
-                        ->statePath('ttd'), // Kunci utama perbaikan ada di sini.
-                ]),
         ]);
     }
 
