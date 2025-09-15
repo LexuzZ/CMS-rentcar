@@ -116,6 +116,36 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
+                            Infolists\Components\Actions\Action::make('copyClipboard')
+                                ->label('Copy Faktur')
+                                ->icon('heroicon-o-clipboard-document')
+                                ->color('secondary')
+                                ->extraAttributes(fn(Invoice $record) => [
+                                    'x-data' => '{}',
+                                    'x-on:click' => "
+            navigator.clipboard.writeText(`" . addslashes("
+Halo 👋😊 *{$record->booking->customer->nama}*,
+
+🧾 *No. Faktur:* #{$record->id}
+📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "
+
+🚗 Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})
+Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)
+
+Total Tagihan: Rp " . number_format(($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)), 0, ',', '.') . "
+DP: Rp " . number_format($record->dp, 0, ',', '.') . "
+Sisa: Rp " . number_format((($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)) - $record->dp), 0, ',', '.') . "
+
+Rek Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)
+Rek BCA: 2320418758 (a.n. SRI NOVYANA)
+
+Terima kasih 🙏
+") . "`).then(() => {
+    window.dispatchEvent(new CustomEvent('notify', {detail: {type: 'success', message: 'Teks faktur berhasil disalin 📋'}}));
+});
+        "
+                                ]),
+
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
                                 ->icon('heroicon-o-arrow-down-tray')
@@ -173,6 +203,7 @@ class InvoiceResource extends Resource
                                     return 'https://wa.me/' . $cleanedPhone . '?text=' . urlencode($message);
                                 })
                                 ->openUrlInNewTab(),
+
                         ]),
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
