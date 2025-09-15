@@ -10,14 +10,15 @@ use Illuminate\Database\Eloquent\Builder;
 class DaftarTungguTable extends BaseWidget
 {
     protected static ?string $heading = 'Daftar Tunggu';
-    protected int | string | array $columnSpan = 'full'; // biar lebar penuh di dashboard
+    protected int|string|array $columnSpan = 'full'; // biar lebar penuh di dashboard
 
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->query(
                 Booking::query()
-                    ->whereHas('car', fn ($q) => $q->where('garasi', 'Daftar Tunggu'))
+                    ->whereHas('car', fn($q) => $q->where('garasi', 'Daftar Tunggu'))
+                    ->where('status', 'booking') // ✅ hanya tampilkan yang status booking
                     ->latest()
             )
             ->columns([
