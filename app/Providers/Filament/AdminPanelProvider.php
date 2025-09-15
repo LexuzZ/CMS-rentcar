@@ -77,12 +77,12 @@ class AdminPanelProvider extends PanelProvider
                 WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
                 OverdueTasksWidget::class,
-                DaftarTungguTable::class,
                 MobilKembali::class,
                 TempoDueToday::class,
                 MobilKeluar::class,
                 StaffRankingWidget::class,
                 MonthlyStaffRankingWidget::class,
+                DaftarTungguTable::class,
             ])
             ->middleware([
                 EncryptCookies::class,
