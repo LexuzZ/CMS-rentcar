@@ -22,7 +22,7 @@
     <div class="mt-4 flex justify-end" x-data="{
         buttonText: 'Copy ke Clipboard',
         async copyToClipboard() {
-            const text = document.getElementById('text-to-copy-area').value;
+            const text = document.getElementById('invoice-text').value;
 
             try {
                 await navigator.clipboard.writeText(text);
