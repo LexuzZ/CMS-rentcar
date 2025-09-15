@@ -116,35 +116,41 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
-                            Infolists\Components\Actions\Action::make('copyClipboard')
-                                ->label('Copy Faktur')
-                                ->icon('heroicon-o-clipboard-document')
-                                ->color('secondary')
-                                ->extraAttributes(fn(Invoice $record) => [
-                                    'x-data' => '{}',
-                                    'x-on:click' => "
+                                Infolists\Components\Actions\Action::make('copyClipboard')
+    ->label('Copy Faktur')
+    ->icon('heroicon-o-clipboard-document')
+    ->color('secondary')
+    ->extraAttributes([
+        'x-data' => '{}',
+        'x-on:click' => "
             navigator.clipboard.writeText(`" . addslashes("
 Halo 👋😊 *{$record->booking->customer->nama}*,
+
+Berikut kami kirimkan detail faktur sewa mobil Anda dari *Semeton Pesiar*:
 
 🧾 *No. Faktur:* #{$record->id}
 📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "
 
-🚗 Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})
-Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)
+📜 *Rincian Sewa:*
+🚗 • Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})
+⏳ • Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)
+🗓️ • Biaya Harian: Rp " . number_format($record->booking->harga_harian, 0, ',', '.') . "
+💰 • Total Biaya: Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "
+" . ($record->pickup_dropOff > 0 ? "➡️⬅️ • Biaya Antar/Jemput: Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n" : "") . "
+" . ($record->booking?->penalty->sum('amount') > 0 ? "⚖️ • Klaim Garasi: Rp " . number_format($record->booking?->penalty->sum('amount'), 0, ',', '.') . "\n" : "") . "
 
-Total Tagihan: Rp " . number_format(($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)), 0, ',', '.') . "
-DP: Rp " . number_format($record->dp, 0, ',', '.') . "
-Sisa: Rp " . number_format((($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)) - $record->dp), 0, ',', '.') . "
+✉️ *Total Tagihan:* Rp " . number_format(($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)), 0, ',', '.') . "
+🔐 *DP:* Rp " . number_format($record->dp, 0, ',', '.') . "
+🔔 *Sisa:* Rp " . number_format((($record->booking?->estimasi_biaya + $record->pickup_dropOff + ($record->booking?->penalty->sum('amount') ?? 0)) - $record->dp), 0, ',', '.') . "
 
-Rek Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)
-Rek BCA: 2320418758 (a.n. SRI NOVYANA)
+Rekening Pembayaran:
+- Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)
+- BCA: 2320418758 (a.n. SRI NOVYANA)
 
 Terima kasih 🙏
-") . "`).then(() => {
-    window.dispatchEvent(new CustomEvent('notify', {detail: {type: 'success', message: 'Teks faktur berhasil disalin 📋'}}));
-});
+") . "`).then(() => { alert('Teks faktur berhasil disalin 📋'); });
         "
-                                ]),
+    ]),
 
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
