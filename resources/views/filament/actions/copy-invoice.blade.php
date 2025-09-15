@@ -1,5 +1,5 @@
 <div>
-    <textarea id="invoice-text" class="w-full text-sm border rounded p-2" rows="12" readonly>{{ $textToCopy }}</textarea>
+    <textarea id="invoice-text" class="w-full text-sm border rounded p-2 text-black" rows="12" readonly>{{ $textToCopy }}</textarea>
 
     <div class="mt-4 flex justify-end">
         <x-filament::button
