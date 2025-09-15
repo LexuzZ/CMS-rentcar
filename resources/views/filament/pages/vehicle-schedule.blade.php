@@ -45,7 +45,7 @@
                                             <a :href="`/admin/bookings/${car.schedule[day].booking_id}`" target="_blank"
                                                 class="w-full h-full flex items-center justify-center p-1 hover:underline"
                                                 :style="car.schedule[day] ? {
-                                                    'booking': 'color: #2c5282;',
+                                                    'booking': 'color: #9b2c2c;',
                                                     'disewa': 'color: #22543d;',
                                                     'selesai': 'color: #4a5568;',
                                                     'batal': 'color: #9b2c2c;'
