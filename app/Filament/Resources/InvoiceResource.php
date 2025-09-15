@@ -138,13 +138,16 @@ class InvoiceResource extends Resource
                                     $message .= "Terima kasih 🙏";
 
                                     return [
-                                        'x-on:click' => "navigator.clipboard.writeText(" . json_encode($message) . ").then(() => {
-                window.$wireui.notify({
-                    title: 'Berhasil',
-                    description: 'Teks faktur disalin 📋',
-                    icon: 'success'
+                                        'x-on:click' => "
+                navigator.clipboard.writeText(" . json_encode($message) . ").then(() => {
+                    window.dispatchEvent(new CustomEvent('filament-notify', {
+                        detail: {
+                            status: 'success',
+                            message: 'Faktur berhasil disalin ke clipboard 📋'
+                        }
+                    }))
                 })
-            })",
+            ",
                                     ];
                                 }),
 
