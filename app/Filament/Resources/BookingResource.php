@@ -477,7 +477,7 @@ class BookingResource extends Resource
                         }
                         $date = Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
                         return "Tanggal Kembali: {$date}";
-                    }),
+                    })->columnSpan(2)->columns(2),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
