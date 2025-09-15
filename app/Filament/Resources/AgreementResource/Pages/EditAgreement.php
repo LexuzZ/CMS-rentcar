@@ -28,18 +28,18 @@ class EditAgreement extends EditRecord
                 ->color('info')
                 ->button()
                 ->action(function () {
-                    // Ambil data dari formulir, termasuk base64 foto BBM
                     $data = $this->form->getState();
-                    $fotoBbmData = $data['foto_bbm'] ?? null;
 
-                    // Buat PDF dengan data booking dan foto BBM
                     $pdf = Pdf::loadView('pdf.agreement', [
                         'booking' => $this->getRecord(),
-                        'foto_bbm' => $fotoBbmData,
+                        'foto_bbm' => $data['foto_bbm'] ?? null,
+                        'foto_dongkrak' => $data['foto_dongkrak'] ?? null,
+                        'foto_pelunasan' => $data['foto_pelunasan'] ?? null,
+                        'foto_serah_terima' => $data['foto_serah_terima'] ?? null,
                     ]);
 
                     return response()->streamDownload(
-                        fn () => print($pdf->output()),
+                        fn() => print ($pdf->output()),
                         "Perjanjian-Booking-{$this->getRecord()->customer->nama}.pdf"
                     );
                 }),
@@ -55,4 +55,5 @@ class EditAgreement extends EditRecord
                 ->url(static::getResource()::getUrl('index')),
         ];
     }
+
 }

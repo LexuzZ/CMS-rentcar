@@ -283,49 +283,84 @@
             </tr>
         </table>
 
-        {{-- FOTO BBM --}}
-        @if (!empty($foto_bbm))
-            <div style="margin-top: 20px;">
-                <h4 style="margin-bottom: 5px;">Foto Indikator BBM</h4>
-                <img src="{{ $foto_bbm }}" alt="Foto BBM" style="max-width: 300px;">
-            </div>
+        {{-- FOTO-FOTO --}}
+
+        {{-- FOTO-FOTO --}}
+        {{-- FOTO-FOTO --}}
+        @if (!empty($foto_bbm) || !empty($foto_dongkrak) || !empty($foto_pelunasan) || !empty($foto_serah_terima))
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">Dokumentasi Foto</h3>
+
+            <table style="width:100%; border-collapse: collapse;">
+                <tr>
+                    @if (!empty($foto_bbm))
+                        <td style="width:25%; text-align:center; padding:5px;">
+                            <h4 style="margin-bottom:5px;">Foto BBM</h4>
+                            <img src="{{ $foto_bbm }}" alt="Foto BBM" style="max-width: 100%; height: auto;">
+                        </td>
+                    @endif
+
+                    @if (!empty($foto_dongkrak))
+                        <td style="width:25%; text-align:center; padding:5px;">
+                            <h4 style="margin-bottom:5px;">Foto Dongkrak</h4>
+                            <img src="{{ $foto_dongkrak }}" alt="Foto Dongkrak" style="max-width: 100%; height: auto;">
+                        </td>
+                    @endif
+
+                    @if (!empty($foto_pelunasan))
+                        <td style="width:25%; text-align:center; padding:5px;">
+                            <h4 style="margin-bottom:5px;">Foto Pelunasan</h4>
+                            <img src="{{ $foto_pelunasan }}" alt="Foto Pelunasan"
+                                style="max-width: 100%; height: auto;">
+                        </td>
+                    @endif
+
+                    @if (!empty($foto_serah_terima))
+                        <td style="width:25%; text-align:center; padding:5px;">
+                            <h4 style="margin-bottom:5px;">Foto Serah Terima</h4>
+                            <img src="{{ $foto_serah_terima }}" alt="Foto Serah Terima"
+                                style="max-width: 100%; height: auto;">
+                        </td>
+                    @endif
+                </tr>
+            </table>
         @endif
 
+        <div style="margin-top:20px; page-break-inside: avoid;">
 
-        {{-- METODE PEMBAYARAN --}}
-        {{-- TANDA TANGAN --}}
-        <div class="signature">
-            <div>
-                <p>Hormat Kami,</p>
+            {{-- METODE PEMBAYARAN --}}
+            {{-- TANDA TANGAN --}}
+            <div class="signature">
+                <div>
+                    <p>Hormat Kami,</p>
 
-                @php
-                    $stampPath = public_path('stempel.png');
-                    $stampData = file_exists($stampPath)
-                        ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
-                        : '';
-                @endphp
+                    @php
+                        $stampPath = public_path('stempel.png');
+                        $stampData = file_exists($stampPath)
+                            ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
+                            : '';
+                    @endphp
 
-                @if ($stampData)
-                    <img src="{{ $stampData }}" alt="Stempel"
-                        style="height: 80px; width: auto; opacity: 0.75; display: inline-block; vertical-align: middle; margin-bottom: 10px;">
-                @endif
+                    @if ($stampData)
+                        <img src="{{ $stampData }}" alt="Stempel"
+                            style="height: 80px; width: auto; opacity: 0.75; display: inline-block; vertical-align: middle; margin-bottom: 10px;">
+                    @endif
 
-                <p class="signature-name">ACHMAD MUZAMMIL</p>
-                <p>Direktur</p>
+                    <p class="signature-name">ACHMAD MUZAMMIL</p>
+                    <p>Direktur</p>
+                </div>
+
+                <div>
+                    <p>Penyewa</p>
+                    @if ($booking->ttd)
+                        <img src="{{ $booking->ttd }}" alt="TTD Penyewa" style="height:100px;">
+                    @else
+                        <p><em>TTD belum tersedia</em></p>
+                    @endif
+                    <p>({{ $booking->customer?->nama }})</p>
+                </div>
             </div>
 
-            <div>
-                <p>Penyewa</p>
-                @if ($booking->ttd)
-                    <img src="{{ $booking->ttd }}" alt="TTD Penyewa" style="height:100px;">
-                @else
-                    <p><em>TTD belum tersedia</em></p>
-                @endif
-                <p>({{ $booking->customer?->nama }})</p>
-            </div>
         </div>
-
-    </div>
 </body>
 
 </html>
