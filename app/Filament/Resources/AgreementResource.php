@@ -117,28 +117,16 @@ class AgreementResource extends Resource
                         ->helperText('Wajib dicentang sebelum tanda tangan.'),
                 ]),
 
-            Forms\Components\Section::make('Tanda Tangan & Foto BBM')
+            Forms\Components\Section::make('Tanda Tangan')
                 ->schema([
-                    Forms\Components\Grid::make(2) // biar sejajar
-                        ->schema([
-                            Forms\Components\View::make('filament.forms.signature-pad')
-                                ->statePath('ttd')
-                                ->label('Tanda Tangan'),
+                    // PERBAIKAN: Jadikan komponen View sebagai field input utama untuk 'ttd'.
+                    // statePath() memberitahu Filament bahwa komponen ini bertanggung jawab
+                    // untuk data 'ttd', sehingga field Hidden tidak lagi diperlukan.
 
-                            Forms\Components\FileUpload::make('foto_bbm')
-                                ->label('Foto BBM')
-                                ->image()
-                                ->directory('temp_bbm')
-                                ->visibility('public')
-                                ->dehydrated(false) // ❌ tidak simpan di DB
-                                ->extraAttributes([
-                                    'accept' => 'image/*',
-                                    'capture' => 'environment', // buka kamera belakang
-                                ])
-                                ->helperText('Ambil foto indikator BBM langsung dari kamera.'),
-                        ]),
+
+                    Forms\Components\View::make('filament.forms.signature-pad')
+                        ->statePath('ttd'), // Kunci utama perbaikan ada di sini.
                 ]),
-
         ]);
     }
 
@@ -202,7 +190,7 @@ class AgreementResource extends Resource
                     ->action(function (Booking $record) {
                         $pdf = Pdf::loadView('pdf.agreement', [
                             'booking' => $record,
-                            'foto_bbm' => $data['foto_bbm'] ?? null,
+                            'foto_bbm'  => $data['foto_bbm'] ?? null,
                         ]);
 
                         return response()->streamDownload(
