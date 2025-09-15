@@ -28,20 +28,47 @@ class EditAgreement extends EditRecord
                 ->color('info')
                 ->button()
                 ->action(function () {
-                    // Ambil data dari formulir, termasuk base64 foto BBM
                     $data = $this->form->getState();
-                    $fotoBbmData = $data['foto_bbm'] ?? null;
+                    $record = $this->getRecord();
 
-                    // Buat PDF dengan data booking dan foto BBM
-                    $pdf = Pdf::loadView('pdf.agreement', [
-                        'booking' => $this->getRecord(),
-                        'foto_bbm' => $fotoBbmData,
-                    ]);
+                    $fotoBbmPath = null;
+                    $ttdPath = null;
 
-                    return response()->streamDownload(
-                        fn () => print($pdf->output()),
-                        "Perjanjian-Booking-{$this->getRecord()->customer->nama}.pdf"
-                    );
+                    try {
+                        // Simpan foto BBM Base64 ke file sementara di server
+                        if (!empty($data['foto_bbm'])) {
+                            $fotoBbmData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data['foto_bbm']));
+                            $fotoBbmPath = tempnam(sys_get_temp_dir(), 'bbm_') . '.jpeg';
+                            file_put_contents($fotoBbmPath, $fotoBbmData);
+                        }
+
+                        // Simpan tanda tangan Base64 ke file sementara di server
+                        if ($record->ttd) {
+                            $ttdData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $record->ttd));
+                            $ttdPath = tempnam(sys_get_temp_dir(), 'ttd_') . '.png';
+                            file_put_contents($ttdPath, $ttdData);
+                        }
+
+                        // Buat PDF dengan jalur file sementara
+                        $pdf = Pdf::loadView('pdf.agreement', [
+                            'booking' => $record,
+                            'foto_bbm' => $fotoBbmPath,
+                            'ttd_path' => $ttdPath,
+                        ]);
+
+                        return response()->streamDownload(
+                            fn () => print($pdf->output()),
+                            "Perjanjian-Booking-{$record->customer->nama}.pdf"
+                        );
+                    } finally {
+                        // Pastikan file sementara dihapus setelah selesai
+                        if ($fotoBbmPath && file_exists($fotoBbmPath)) {
+                            unlink($fotoBbmPath);
+                        }
+                        if ($ttdPath && file_exists($ttdPath)) {
+                            unlink($ttdPath);
+                        }
+                    }
                 }),
             Actions\Action::make('simpan')
                 ->label('Simpan')
