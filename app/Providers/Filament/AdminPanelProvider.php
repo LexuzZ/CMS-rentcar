@@ -6,6 +6,7 @@ use App\Filament\Resources\CarResource\Widgets\AvailableCarsOverview;
 use App\Filament\Resources\CarResource\Widgets\MobilReadyStats;
 use App\Filament\Widgets\AnnouncementWidget;
 use App\Filament\Widgets\AvailableCarsOverview as WidgetsAvailableCarsOverview;
+use App\Filament\Widgets\DaftarTungguTable;
 use App\Filament\Widgets\DashboardMonthlySummary;
 use App\Filament\Widgets\InvoiceTable;
 use App\Filament\Widgets\MobilKeluar;
@@ -76,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
                 OverdueTasksWidget::class,
+                DaftarTungguTable::class,
                 MobilKembali::class,
                 TempoDueToday::class,
                 MobilKeluar::class,
