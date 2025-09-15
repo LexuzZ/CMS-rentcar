@@ -117,7 +117,7 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
-                            Action::make('copyInvoice')
+                            Infolists\Components\Actions\Action::make('copyInvoice')
                                 ->label('Copy Faktur')
                                 ->icon('heroicon-o-clipboard-document')
                                 ->color('gray')
