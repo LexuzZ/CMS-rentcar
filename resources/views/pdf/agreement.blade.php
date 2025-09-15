@@ -145,7 +145,7 @@
                     kecelakaan
                     pihak penyewa di wajibkan membayar biaya perbaikan bengkel dan biaya sewa kendaraan selama di
                     bengkel sebesar 75% dari
-                    harga sewa yang di sepakati</li>
+                    harga sewa yang di sepakati</li>
                 <li>Pembayaran sewa kendaraan penuh wajib maksimal pada saat penyerahan kendaraan.</li>
                 <li>Kelebihan jam sewa (overtime) pemakaian akan dikenakan denda 20%/jam dari harga sewa kendaraan dan
                     maksimal
@@ -282,12 +282,10 @@
                 <td>Rp {{ number_format($booking->invoice->sisa_pembayaran ?? 0, 0, ',', '.') }}</td>
             </tr>
         </table>
-
-        {{-- FOTO BBM --}}
         @if (!empty($foto_bbm))
-            <div style="margin-top: 20px;">
-                <h4 style="margin-bottom: 5px;">Foto Indikator BBM</h4>
-                <img src="{{ $foto_bbm }}" alt="Foto BBM" style="max-width: 300px;">
+            <div style="margin-top:20px;">
+                <h4>Foto Indikator BBM</h4>
+                <img src="{{ public_path('storage/' . $foto_bbm) }}" alt="Foto BBM" style="max-width: 200px;">
             </div>
         @endif
 

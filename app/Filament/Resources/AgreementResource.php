@@ -4,15 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AgreementResource\Pages;
 use App\Models\Booking;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
-use Filament\Tables\Filters\Filter;
 
 class AgreementResource extends Resource
 {
@@ -24,87 +26,85 @@ class AgreementResource extends Resource
     protected static ?string $label = 'Checklist';
     protected static ?string $pluralLabel = 'Checklist Garasi';
 
+
+
+
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Section::make('Detail Booking')
                 ->schema([
+
                     Forms\Components\Placeholder::make('id')
                         ->label('Booking ID')
-                        ->content(fn (?Booking $record): string => $record?->id ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->id ?? '-'),
 
                     Forms\Components\Placeholder::make('customer.nama')
                         ->label('Nama Customer')
-                        ->content(fn (?Booking $record): string => $record?->customer?->nama ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->customer?->nama ?? '-'),
 
                     Forms\Components\Placeholder::make('car.carModel.name')
                         ->label('Nama Mobil')
-                        ->content(fn (?Booking $record): string => $record?->car?->carModel->name ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->car?->carModel->name ?? '-'),
 
                     Forms\Components\Placeholder::make('tanggal_keluar')
                         ->label('Tanggal Keluar')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->tanggal_keluar ? Carbon::parse($record->tanggal_keluar)->format('d M Y') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('tanggal_kembali')
                         ->label('Tanggal Kembali')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->tanggal_kembali ? Carbon::parse($record->tanggal_kembali)->format('d M Y') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('car.nopol')
                         ->label('No. Polisi')
-                        ->content(fn (?Booking $record): string => $record?->car?->nopol ?? '-'),
+                        ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
 
                     Forms\Components\Placeholder::make('waktu_keluar')
                         ->label('Waktu Keluar')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->waktu_keluar ? Carbon::parse($record->waktu_keluar)->format('H:i') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('waktu_kembali')
                         ->label('Waktu Kembali')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->waktu_kembali ? Carbon::parse($record->waktu_kembali)->format('H:i') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('total_hari')
                         ->label('Total Hari')
-                        ->content(fn (?Booking $record): string => $record?->total_hari ? "{$record->total_hari} Hari" : '-'),
+                        ->content(fn(?Booking $record): string => $record?->total_hari ? "{$record->total_hari} Hari" : '-'),
 
                     Forms\Components\Placeholder::make('invoice.dp')
                         ->label('Uang Muka (DP)')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->invoice?->dp ? 'Rp ' . number_format($record->invoice->dp, 0, ',', '.') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
                         ->label('Sisa Pembayaran')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->invoice?->sisa_pembayaran ? 'Rp ' . number_format($record->invoice->sisa_pembayaran, 0, ',', '.') : '-'
                         ),
 
                     Forms\Components\Placeholder::make('invoice.total')
                         ->label('Total Tagihan')
                         ->content(
-                            fn (?Booking $record): string =>
+                            fn(?Booking $record): string =>
                             $record?->invoice?->total ? 'Rp ' . number_format($record->invoice->total, 0, ',', '.') : '-'
                         ),
                 ])
                 ->columns(3),
-            Forms\Components\Section::make('Foto Indikator BBM')
-                ->schema([
-                    // Menggunakan View kustom untuk input kamera
-                    Forms\Components\View::make('filament.forms.camera-capture')
-                        ->statePath('foto_bbm'), // State ini akan berisi data base64 dari foto
-                ]),
             Forms\Components\Section::make('Persetujuan')
                 ->schema([
                     Forms\Components\Section::make('Isi Perjanjian')
@@ -116,10 +116,16 @@ class AgreementResource extends Resource
                         ->required()
                         ->helperText('Wajib dicentang sebelum tanda tangan.'),
                 ]),
+
             Forms\Components\Section::make('Tanda Tangan')
                 ->schema([
+                    // PERBAIKAN: Jadikan komponen View sebagai field input utama untuk 'ttd'.
+                    // statePath() memberitahu Filament bahwa komponen ini bertanggung jawab
+                    // untuk data 'ttd', sehingga field Hidden tidak lagi diperlukan.
+
+
                     Forms\Components\View::make('filament.forms.signature-pad')
-                        ->statePath('ttd'),
+                        ->statePath('ttd'), // Kunci utama perbaikan ada di sini.
                 ]),
         ]);
     }
@@ -137,7 +143,7 @@ class AgreementResource extends Resource
                     ->label('Penyewa')
                     ->sortable()
                     ->searchable()
-                    ->wrap()
+                    ->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(250),
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
@@ -161,11 +167,12 @@ class AgreementResource extends Resource
                     ->form([
                         DatePicker::make('date')
                             ->label('Tanggal Keluar')
+                        // ❌ jangan ada ->default(now())
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['date'],
-                            fn ($q, $date) => $q->whereDate('tanggal_keluar', $date)
+                            fn($q, $date) => $q->whereDate('tanggal_keluar', $date)
                         );
                     }),
             ])
@@ -175,9 +182,26 @@ class AgreementResource extends Resource
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
                     ->button(),
+                Action::make('downloadPdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('info')   // ✅ biru, kontras dengan kuning
+                    ->button()
+                    ->action(function (Booking $record) {
+                        $pdf = Pdf::loadView('pdf.agreement', [
+                            'booking' => $record,
+                            'foto_bbm'  => $data['foto_bbm'] ?? null,
+                        ]);
+
+                        return response()->streamDownload(
+                            fn() => print ($pdf->output()),
+                            "Perjanjian-Booking-{$record->customer->nama}.pdf"
+                        );
+                    })
+                    ->visible(fn(Booking $record) => filled($record->ttd)),
             ])
             ->bulkActions([])
-            ->defaultPaginationPageOption(10)
+            ->defaultPaginationPageOption(10) // ✅ default 25 data per halaman
             ->paginated();
     }
 
