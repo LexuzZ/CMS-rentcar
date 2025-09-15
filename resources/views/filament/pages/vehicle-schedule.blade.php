@@ -36,7 +36,7 @@
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
-                                            'booking': 'background-color: #bee3f8;',
+                                            'booking': 'background-color: #fed7d7;',
                                             'disewa': 'background-color: #c6f6d5;',
                                             'selesai': 'background-color: #e2e8f0;',
                                             'batal': 'background-color: #fed7d7;'
