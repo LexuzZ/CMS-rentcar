@@ -7,7 +7,7 @@
 
         <title>Laravel</title>
 
-        
+
     </head>
     <body>
         <h1 class="font-bold text-2xl">Hello</h1>
@@ -20,5 +20,8 @@
 
         // Gunakan notifikasi custom, misal Filament Toast, SweetAlert, atau Alpine
         alert(message); // Ganti dengan UI yang lebih bagus
+    });
+     window.addEventListener('copy-to-clipboard', event => {
+        navigator.clipboard.writeText(event.detail.text);
     });
 </script>
