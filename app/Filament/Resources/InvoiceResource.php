@@ -120,33 +120,32 @@ class InvoiceResource extends Resource
                                 ->label('Copy Faktur')
                                 ->icon('heroicon-o-clipboard-document')
                                 ->color('secondary')
-                                ->action(function (Invoice $record): void {
-                                    // Rakit pesan faktur
+                                ->extraAttributes(function (Invoice $record) {
                                     $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
                                     $totalTagihan = $record->booking?->estimasi_biaya + $record->pickup_dropOff + $totalDenda;
                                     $sisaPembayaran = $totalTagihan - $record->dp;
 
-                                    $message = "Halo 👋😊 *{$record->booking->customer->nama}*,\n\n";
-                                    $message .= "🧾 *No. Faktur:* #{$record->id}\n";
-                                    $message .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n\n";
-                                    $message .= "🚗 Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})\n";
-                                    $message .= "⏳ Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)\n\n";
-                                    $message .= "💰 Total Tagihan: Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
-                                    $message .= "🔐 DP: Rp " . number_format($record->dp, 0, ',', '.') . "\n";
-                                    $message .= "🔔 Sisa: Rp " . number_format($sisaPembayaran, 0, ',', '.') . "\n\n";
+                                    $message = "Halo 👋😊 {$record->booking->customer->nama}\n\n";
+                                    $message .= "No. Faktur: #{$record->id}\n";
+                                    $message .= "Tanggal: " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n\n";
+                                    $message .= "Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})\n";
+                                    $message .= "Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)\n\n";
+                                    $message .= "Total Tagihan: Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                                    $message .= "DP: Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                                    $message .= "Sisa: Rp " . number_format($sisaPembayaran, 0, ',', '.') . "\n\n";
                                     $message .= "Rek Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
                                     $message .= "Rek BCA: 2320418758 (a.n. SRI NOVYANA)\n\n";
                                     $message .= "Terima kasih 🙏";
 
-                                    // kirim ke browser pakai dispatch browser event
-                                    \Filament\Support\Facades\FilamentView::dispatchBrowserEvent('copy-to-clipboard', [
-                                        'text' => $message,
-                                    ]);
-
-                                    \Filament\Notifications\Notification::make()
-                                        ->title('Teks faktur berhasil disalin 📋')
-                                        ->success()
-                                        ->send();
+                                    return [
+                                        'x-on:click' => "navigator.clipboard.writeText(" . json_encode($message) . ").then(() => {
+                window.$wireui.notify({
+                    title: 'Berhasil',
+                    description: 'Teks faktur disalin 📋',
+                    icon: 'success'
+                })
+            })",
+                                    ];
                                 }),
 
                             Infolists\Components\Actions\Action::make('download')

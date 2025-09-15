@@ -21,7 +21,7 @@
         // Gunakan notifikasi custom, misal Filament Toast, SweetAlert, atau Alpine
         alert(message); // Ganti dengan UI yang lebih bagus
     });
-     window.addEventListener('copy-to-clipboard', event => {
-        navigator.clipboard.writeText(event.detail.text);
-    });
+    //  window.addEventListener('copy-to-clipboard', event => {
+    //     navigator.clipboard.writeText(event.detail.text);
+    // });
 </script>
