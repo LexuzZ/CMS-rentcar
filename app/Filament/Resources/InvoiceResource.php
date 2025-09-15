@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -116,40 +117,53 @@ class InvoiceResource extends Resource
                                 ->color('gray')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
-                            Infolists\Components\Actions\Action::make('copyClipboard')
+                            Action::make('copyInvoice')
                                 ->label('Copy Faktur')
                                 ->icon('heroicon-o-clipboard-document')
-                                ->color('secondary')
-                                ->extraAttributes(function (Invoice $record) {
+                                ->color('gray')
+                                ->modalHeading('Salin Detail Faktur')
+                                ->modalContent(function (Invoice $record): View {
+                                    // Hitung total & denda
                                     $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                    $totalTagihan = $record->booking?->estimasi_biaya + $record->pickup_dropOff + $totalDenda;
-                                    $sisaPembayaran = $totalTagihan - $record->dp;
+                                    $totalTagihan = ($record->booking?->estimasi_biaya ?? 0) + ($record->pickup_dropOff ?? 0) + $totalDenda;
+                                    $sisaPembayaran = $totalTagihan - ($record->dp ?? 0);
 
-                                    $message = "Halo 👋😊 {$record->booking->customer->nama}\n\n";
-                                    $message .= "No. Faktur: #{$record->id}\n";
-                                    $message .= "Tanggal: " . \Carbon\Carbon::parse($record->tanggal_invoice)->format('d F Y') . "\n\n";
-                                    $message .= "Mobil: {$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})\n";
-                                    $message .= "Durasi: " . \Carbon\Carbon::parse($record->booking->tanggal_keluar)->format('d M Y') . " - " . \Carbon\Carbon::parse($record->booking->tanggal_kembali)->format('d M Y') . " ({$record->booking->total_hari} hari)\n\n";
-                                    $message .= "Total Tagihan: Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
-                                    $message .= "DP: Rp " . number_format($record->dp, 0, ',', '.') . "\n";
-                                    $message .= "Sisa: Rp " . number_format($sisaPembayaran, 0, ',', '.') . "\n\n";
-                                    $message .= "Rek Mandiri: 1610006892835 (a.n. ACHMAD MUZAMMIL)\n";
-                                    $message .= "Rek BCA: 2320418758 (a.n. SRI NOVYANA)\n\n";
-                                    $message .= "Terima kasih 🙏";
+                                    // Detail mobil & tanggal
+                                    $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
+                                    $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->isoFormat('D MMMM Y');
+                                    $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->isoFormat('D MMMM Y');
 
-                                    return [
-                                        'x-on:click' => "
-                navigator.clipboard.writeText(" . json_encode($message) . ").then(() => {
-                    window.dispatchEvent(new CustomEvent('filament-notify', {
-                        detail: {
-                            status: 'success',
-                            message: 'Faktur berhasil disalin ke clipboard 📋'
-                        }
-                    }))
-                })
-            ",
-                                    ];
-                                }),
+                                    // Text yang akan dicopy
+                                    $textToCopy = "Halo *{$record->booking->customer->nama}* 👋😊\n\n";
+                                    $textToCopy .= "Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
+                                    $textToCopy .= "🧾 *No. Faktur:* #{$record->id}\n";
+                                    $textToCopy .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y') . "\n";
+                                    $textToCopy .= "-----------------------------------\n";
+                                    $textToCopy .= "🚗 *Mobil:* {$carDetails}\n";
+                                    $textToCopy .= "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$record->booking->total_hari} hari)\n";
+                                    $textToCopy .= "💰 *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
+                                    if ($record->pickup_dropOff > 0) {
+                                        $textToCopy .= "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
+                                    }
+                                    if ($totalDenda > 0) {
+                                        $textToCopy .= "⚖️ *Denda/Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
+                                    }
+                                    $textToCopy .= "-----------------------------------\n";
+                                    $textToCopy .= "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                                    $textToCopy .= "🔐 *Uang Muka (DP):* Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                                    $textToCopy .= "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
+                                    $textToCopy .= "Mohon lakukan pembayaran ke salah satu rekening berikut:\n";
+                                    $textToCopy .= "🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL\n";
+                                    $textToCopy .= "🏦 BCA: 2320418758 a.n. SRI NOVYANA\n\n";
+                                    $textToCopy .= "🙏 Terima kasih.";
+
+                                    return view('filament.actions.copy-invoice', [
+                                        'textToCopy' => $textToCopy,
+                                    ]);
+                                })
+                                ->modalSubmitAction(false)
+                                ->modalCancelAction(false),
+
 
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
