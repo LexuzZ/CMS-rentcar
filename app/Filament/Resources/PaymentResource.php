@@ -304,7 +304,7 @@ class PaymentResource extends Resource
                                     ->date('d M Y'),
                             ])
                             ->columns(3),
-                    ]),
+                    ])->modalCancelActionLabel('Tutup'), // ✅ tombol cancel di bawah,
                 Tables\Actions\Action::make('markAsPaid')
                     ->label('') // biar icon aja
                     ->tooltip('Tandai Lunas')
