@@ -9,97 +9,26 @@
         <x-filament::section class="mt-6">
             {{-- PERUBAHAN UTAMA DI BARIS INI --}}
             <!-- wrapper scroll -->
-            <div class="overflow-auto max-h-[calc(100vh-22rem)] relative">
-                <style>
-                    /* sesuaikan lebar kolom kiri di sini */
-                    :root {
-                        --col1-width: 220px;
-                        /* lebar kolom "Mobil" */
-                        --col2-width: 130px;
-                        /* lebar kolom "Nopol" */
-                    }
-
-                    /* header tanggal: sticky vertikal (top) */
-                    .thead-sticky {
-                        position: sticky;
-                        top: 0;
-                        z-index: 50;
-                        /* di atas kolom kiri */
-                        background: #f7fafc;
-                        /* atau sesuaikan */
-                    }
-
-                    /* kolom kiri: sticky horizontal (left) — jangan beri top */
-                    .sticky-left-1 {
-                        position: sticky;
-                        left: 0;
-                        z-index: 40;
-                        /* di bawah header tanggal */
-                        background: #ffffff;
-                        /* agar tidak transparan */
-                    }
-
-                    .sticky-left-2 {
-                        position: sticky;
-                        left: calc(var(--col1-width));
-                        z-index: 40;
-                        background: #ffffff;
-                    }
-
-                    /* lebar minimum agar left offsets pas */
-                    .col1 {
-                        min-width: var(--col1-width);
-                        max-width: var(--col1-width);
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .col2 {
-                        min-width: var(--col2-width);
-                        max-width: var(--col2-width);
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    /* agar tanggal tidak terlalu sempit */
-                    .day-col {
-                        min-width: 50px;
-                        max-width: 70px;
-                    }
-                </style>
-
+            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] relative">
                 <table class="w-full text-sm border-collapse table-auto">
                     <thead>
                         <tr>
-                            {{-- Mobil (sticky horizontal only) --}}
                             <th class="border p-2 font-semibold text-left sticky-left-1 col1">
                                 Mobil
                             </th>
-
-                            {{-- Nopol (sticky horizontal only) --}}
                             <th class="border p-2 font-semibold text-left sticky-left-2 col2">
                                 Nopol
                             </th>
-
-                            {{-- Tanggal (sticky vertical only) --}}
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center thead-sticky day-col" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
-
                     <tbody>
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                {{-- cell Mobil: sticky horizontal, no top --}}
                                 <td class="border p-2 whitespace-nowrap sticky-left-1 col1" x-text="car.model"></td>
-
-                                {{-- cell Nopol: sticky horizontal, left offset = width kolom 1 --}}
                                 <td class="border p-2 whitespace-nowrap sticky-left-2 col2" x-text="car.nopol"></td>
-
-                                {{-- cell tanggal --}}
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs day-col"
                                         :style="car.schedule[day] ? {
@@ -127,6 +56,7 @@
                     </tbody>
                 </table>
             </div>
+
 
 
         </x-filament::section>
