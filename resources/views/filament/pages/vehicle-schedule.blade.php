@@ -12,31 +12,32 @@
                 <table class="w-full text-sm border-collapse">
                     {{--
                         MODIFIKASI:
-                        - Thead dibuat sticky dengan `top: 0` dan z-index yang lebih tinggi (z-20)
-                          agar selalu berada di atas body tabel saat scroll vertikal.
+                        - Properti `sticky` dipindahkan dari tag `<thead>` ke setiap tag `<th>` di dalamnya.
+                        - Hal ini memastikan setiap sel header menempel ke atas secara individual untuk perilaku yang lebih konsisten.
                     --}}
-                    <thead class="sticky top-0 z-20">
+                    <thead>
                         <tr class="bg-gray-100 dark:bg-gray-800">
                             {{--
                                 MODIFIKASI:
-                                - Kolom "Mobil" dibuat sticky dengan `left: 0`.
-                                - Diberi `min-width` agar lebarnya konsisten.
-                                - z-index tertinggi (z-30) agar berada di pojok kiri atas.
+                                - `top: 0;` ditambahkan ke style untuk membuatnya sticky ke atas dan kiri.
                             --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
-                                style="position: sticky; left: 0; min-width: 160px;">Mobil</th>
+                                style="position: sticky; top: 0; left: 0; min-width: 160px;">Mobil</th>
 
                             {{--
                                 MODIFIKASI KUNCI:
-                                - Kolom "Nopol" dibuat sticky.
-                                - `left: 160px;` adalah kuncinya. Nilai ini harus sama dengan `min-width` kolom pertama ("Mobil").
-                                - z-index tertinggi (z-30) agar header tetap di atas.
+                                - `top: 0;` ditambahkan ke style untuk membuatnya sticky ke atas dan kiri.
                             --}}
                             <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
-                                style="position: sticky; left: 160px; min-width: 120px;">Nopol</th>
+                                style="position: sticky; top: 0; left: 160px; min-width: 120px;">Nopol</th>
 
+                            {{--
+                                MODIFIKASI:
+                                - class `sticky top-0 z-20` dan background color ditambahkan untuk membuat header tanggal
+                                  menempel di atas dan tidak transparan.
+                            --}}
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px] sticky top-0 z-20 bg-gray-100 dark:bg-gray-800" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
@@ -91,3 +92,4 @@
         </x-filament::section>
     </div>
 </x-filament-panels::page>
+
