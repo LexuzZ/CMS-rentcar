@@ -11,10 +11,15 @@
                 KUNCI UTAMA #1: KONTENER SCROLL
                 - `overflow-y-auto`: Memunculkan scrollbar vertikal jika konten di dalamnya lebih tinggi dari `max-h`.
                 - `overflow-x-auto`: Memunculkan scrollbar horizontal jika konten lebih lebar.
-                - `max-h-[calc(100vh-22rem)]`: Menetapkan tinggi maksimum untuk kontainer ini.
-                  thead akan menempel pada batas atas dari kontainer ini.
             --}}
-            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] border dark:border-gray-700 rounded-lg">
+            {{--
+                CATATAN UNTUK DEBUGGING:
+                Saya mengubah `max-h` menjadi `max-h-[300px]` agar scrollbar pasti muncul bahkan dengan data sedikit.
+                Ini untuk membuktikan bahwa penampung scroll sudah bekerja.
+                Setelah Anda melihat scrollbar-nya muncul, Anda bisa mengembalikannya ke nilai semula:
+                `max-h-[calc(100vh-22rem)]`
+            --}}
+            <div class="overflow-x-auto overflow-y-auto max-h-[300px] border dark:border-gray-700 rounded-lg">
                 <table class="w-full text-sm border-collapse">
                     {{--
                         KUNCI UTAMA #2: HEADER STICKY
@@ -89,3 +94,4 @@
         </x-filament::section>
     </div>
 </x-filament-panels::page>
+
