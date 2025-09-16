@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerFileController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PdfController;
 use App\Models\Booking;
@@ -34,6 +35,8 @@ Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoic
 //         ];
 //     });
 // });
+Route::get('/customers/{customer}/download-ktp', [CustomerFileController::class, 'downloadKtp'])->name('customers.download.ktp');
+Route::get('/customers/{customer}/download-sim', [CustomerFileController::class, 'downloadSim'])->name('customers.download.sim');
 
 Route::group(['middleware' => ['web', Authenticate::class]], function () {
 

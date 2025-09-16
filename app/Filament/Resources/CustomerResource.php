@@ -137,35 +137,23 @@ class CustomerResource extends Resource
                     ->hiddenLabel()
                     ->button(),
                 Tables\Actions\Action::make('downloadKtp')
-                    ->label('')
-                    ->tooltip('Unduh KTP')
-                    ->icon('heroicon-o-document-arrow-down')
+                    ->label('KTP')
+                    ->tooltip('Download KTP')
+                    ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->hiddenLabel()
-                    ->url(
-                        fn($record) =>
-                        $record->identity_file
-                        ? asset('storage/' . $record->identity_file)
-                        : null
-                    )
-                    ->openUrlInNewTab()
-                    ->visible(fn($record) => !empty($record->identity_file)),
+                    ->url(fn($record) => route('customers.download.ktp', $record), true)
+                    ->openUrlInNewTab(false)
+                    ->hidden(fn($record) => !$record->identity_file),
 
-                // ✅ Tombol Unduh SIM
                 Tables\Actions\Action::make('downloadSim')
-                    ->label('')
-                    ->tooltip('Unduh SIM')
-                    ->icon('heroicon-o-document-arrow-down')
+                    ->label('SIM')
+                    ->tooltip('Download SIM')
+                    ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
-                    ->hiddenLabel()
-                    ->url(
-                        fn($record) =>
-                        $record->lisence_file
-                        ? asset('storage/' . $record->lisence_file)
-                        : null
-                    )
-                    ->openUrlInNewTab()
-                    ->visible(fn($record) => !empty($record->lisence_file)),
+                    ->url(fn($record) => route('customers.download.sim', $record), true)
+                    ->openUrlInNewTab(false)
+                    ->hidden(fn($record) => !$record->lisence_file),
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
