@@ -71,35 +71,35 @@
                 </style>
 
                 <table class="w-full text-sm border-collapse table-auto">
-                    <thead>
+                    <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
-                            {{-- Mobil (sticky horizontal only) --}}
-                            <th class="border p-2 font-semibold text-left sticky-left-1 col1">
+                            {{-- Mobil (sticky horizontal + sticky top) --}}
+                            <th class="border p-2 font-semibold text-left sticky-left-1 col1"
+                                style="top:0; position:sticky; z-index:60; background:#f7fafc;">
                                 Mobil
                             </th>
 
-                            {{-- Nopol (sticky horizontal only) --}}
-                            <th class="border p-2 font-semibold text-left sticky-left-2 col2">
+                            {{-- Nopol (sticky horizontal + sticky top) --}}
+                            <th class="border p-2 font-semibold text-left sticky-left-2 col2"
+                                style="top:0; position:sticky; z-index:60; background:#f7fafc;">
                                 Nopol
                             </th>
 
-                            {{-- Tanggal (sticky vertical only) --}}
+                            {{-- Tanggal (sticky vertical top saja) --}}
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center thead-sticky day-col" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center day-col"
+                                    style="top:0; position:sticky; z-index:50; background:#f7fafc;" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
-
                     <tbody>
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                {{-- cell Mobil: sticky horizontal, no top --}}
-                                <td class="border p-2 whitespace-nowrap sticky-left-1 col1" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap sticky-left-1 col1"
+                                    style="background:#fff; z-index:40;" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap sticky-left-2 col2"
+                                    style="background:#fff; z-index:40;" x-text="car.nopol"></td>
 
-                                {{-- cell Nopol: sticky horizontal, left offset = width kolom 1 --}}
-                                <td class="border p-2 whitespace-nowrap sticky-left-2 col2" x-text="car.nopol"></td>
-
-                                {{-- cell tanggal --}}
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs day-col"
                                         :style="car.schedule[day] ? {
@@ -126,6 +126,7 @@
                         </template>
                     </tbody>
                 </table>
+
             </div>
 
 
