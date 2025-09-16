@@ -217,6 +217,93 @@ class PaymentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
+                Tables\Actions\Action::make('detailPembayaran')
+                    ->label('')
+                    ->tooltip('Detail Pembayaran')
+                    ->icon('heroicon-o-document-text')
+                    ->color('info')
+                    ->hiddenLabel()
+                    ->infolist([
+                        \Filament\Infolists\Components\Section::make('Detail Faktur')
+                            ->schema([
+                                \Filament\Infolists\Components\TextEntry::make('invoice.id')
+                                    ->label('No. Faktur')
+                                    ->formatStateUsing(fn($state) => 'INV #' . $state),
+
+                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.customer.nama')
+                                    ->label('Penyewa'),
+
+                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.nopol')
+                                    ->label('No. Polisi'),
+
+                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.carModel.name')
+                                    ->label('Mobil'),
+                            ])
+                            ->columns(2),
+
+                        \Filament\Infolists\Components\Section::make('Rincian Biaya')
+                            ->schema([
+                                \Filament\Infolists\Components\TextEntry::make('biaya_sewa')
+                                    ->label('Biaya Sewa')
+                                    ->state(function ($record) {
+                                        return $record->invoice->booking?->estimasi_biaya ?? 0;
+                                    })
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+                                \Filament\Infolists\Components\TextEntry::make('biaya_antar')
+                                    ->label('Biaya Antar/Jemput')
+                                    ->state(fn($record) => $record->invoice->pickup_dropOff ?? 0)
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+                                \Filament\Infolists\Components\TextEntry::make('total_denda')
+                                    ->label('Total Denda')
+                                    ->state(fn($record) => $record->invoice->booking?->penalty->sum('amount') ?? 0)
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+                                \Filament\Infolists\Components\TextEntry::make('total')
+                                    ->label('Total Tagihan')
+                                    ->state(function ($record) {
+                                        $biayaSewa = $record->invoice->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntar = $record->invoice->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->invoice->booking?->penalty->sum('amount') ?? 0;
+                                        return $biayaSewa + $biayaAntar + $totalDenda;
+                                    })
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
+                            ])
+                            ->columns(2),
+
+                        \Filament\Infolists\Components\Section::make('Pembayaran')
+                            ->schema([
+                                \Filament\Infolists\Components\TextEntry::make('status')
+                                    ->badge()
+                                    ->colors([
+                                        'success' => 'lunas',
+                                        'danger' => 'belum_lunas',
+                                    ])
+                                    ->formatStateUsing(fn($state) => $state === 'lunas' ? 'Lunas' : 'Belum Lunas'),
+
+                                \Filament\Infolists\Components\TextEntry::make('metode_pembayaran')
+                                    ->label('Metode')
+                                    ->badge()
+                                    ->colors([
+                                        'success' => 'tunai',
+                                        'info' => 'transfer',
+                                        'gray' => 'qris',
+                                    ])
+                                    ->formatStateUsing(fn($state) => match ($state) {
+                                        'tunai' => 'Tunai',
+                                        'transfer' => 'Transfer',
+                                        'qris' => 'QRIS',
+                                        default => ucfirst($state),
+                                    }),
+
+                                \Filament\Infolists\Components\TextEntry::make('tanggal_pembayaran')
+                                    ->label('Tanggal Pembayaran')
+                                    ->date('d M Y'),
+                            ])
+                            ->columns(3),
+                    ]),
                 Tables\Actions\Action::make('markAsPaid')
                     ->label('') // biar icon aja
                     ->tooltip('Tandai Lunas')
