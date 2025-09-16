@@ -107,8 +107,7 @@ class CustomerResource extends Resource
                     ->width(150),
                 TextColumn::make('ktp')->label('No KTP')->wrap()
                     ->width(150),
-                TextColumn::make('lisence')->label('No SIM')->wrap()
-                    ->width(150),
+
                 TextColumn::make('no_telp')->label('HP'),
                 TextColumn::make('alamat')->label('Alamat')->limit(1000)->wrap()
                     ->width(150),
