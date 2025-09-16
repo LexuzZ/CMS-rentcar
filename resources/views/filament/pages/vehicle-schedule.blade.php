@@ -8,55 +8,33 @@
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
             {{-- PERUBAHAN UTAMA DI BARIS INI --}}
-            <!-- wrapper scroll -->
-            <div>
-                <style>
-                    .table {
-                        border-collapse: collapse;
-                        font-size: 12px;
-                        width: 480px;
-                    }
-                    .table th{
-                        text-align: left;
-                        position: sticky;
-                    }
+            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
+                <table class="w-full text-sm border-collapse">
+                    {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
+                        <tr class="bg-gray-100 dark:bg-gray-800">
+                            {{-- Kolom "Mobil" dan "Nopol" sudah benar dengan sticky left --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Mobil</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Nopol</th>
 
-                    /* sesuaikan lebar kolom kiri di sini */
-
-                </style>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            {{-- Mobil (sticky horizontal only) --}}
-                            <th class="">
-                                Mobil
-                            </th>
-
-                            {{-- Nopol (sticky horizontal only) --}}
-                            <th class="">
-                                Nopol
-                            </th>
-
-                            {{-- Tanggal (sticky vertical only) --}}
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
-
                     <tbody>
+                        {{-- Sisa kode Anda tidak perlu diubah --}}
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                {{-- cell Mobil: sticky horizontal, no top --}}
-                                <td class="" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.model"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                     style="position: sticky; left: 0;" x-text="car.nopol"></td>
 
-                                {{-- cell Nopol: sticky horizontal, left offset = width kolom 1 --}}
-                                <td class="" x-text="car.nopol"></td>
-
-                                {{-- cell tanggal --}}
                                 <template x-for="day in scheduleData.daysInMonth">
-                                    <td class=""
+                                    <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
                                             'booking': 'background-color: #fed7d7;',
                                             'disewa': 'background-color: #c6f6d5;',
@@ -82,7 +60,6 @@
                     </tbody>
                 </table>
             </div>
-
         </x-filament::section>
     </div>
 </x-filament-panels::page>
