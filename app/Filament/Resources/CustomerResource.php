@@ -142,6 +142,7 @@ class CustomerResource extends Resource
                     ->tooltip('Download KTP')
                     ->icon('heroicon-o-identification')
                     ->color('success')
+                    ->button()
                     ->url(fn($record) => route('customers.download.ktp', $record), true)
                     ->openUrlInNewTab(false)
                     ->hidden(fn($record) => !$record->identity_file),
@@ -149,6 +150,7 @@ class CustomerResource extends Resource
                 Tables\Actions\Action::make('downloadSim')
                     ->label('')
                     ->hiddenLabel()
+                    ->button()
                     ->tooltip('Download SIM')
                     ->icon('heroicon-o-wallet')
                     ->color('primary')
