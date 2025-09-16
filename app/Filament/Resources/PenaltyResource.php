@@ -78,7 +78,22 @@ class PenaltyResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
-                Tables\Columns\TextColumn::make('booking.id')->label('ID')->alignCenter(),
+                TextColumn::make('booking.customer.nama')
+                    ->label('Penyewa')
+                    ->searchable()
+                    ->wrap()
+                    ->width(150),
+                TextColumn::make('booking.car.carModel.name')
+                    ->label('Mobil')
+                    ->sortable()
+                    ->wrap(),
+
+                TextColumn::make('booking.car.nopol')
+                    ->label('No. Polisi')
+                    ->sortable()
+                    ->alignCenter(),
+
+
                 TextColumn::make('klaim')
                     ->label('Klaim Garasi')
                     ->badge()
