@@ -220,9 +220,10 @@ class PaymentResource extends Resource
                 Tables\Actions\Action::make('detailPembayaran')
                     ->label('')
                     ->tooltip('Detail Pembayaran')
-                    ->icon('heroicon-o-document-text')
+                    ->icon('heroicon-o-eye')
                     ->color('info')
                     ->hiddenLabel()
+                    ->button()
                     ->infolist([
                         \Filament\Infolists\Components\Section::make('Detail Faktur')
                             ->schema([
