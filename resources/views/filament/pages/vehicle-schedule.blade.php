@@ -8,31 +8,47 @@
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
             {{-- PERUBAHAN UTAMA DI BARIS INI --}}
-            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
+            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)] relative">
                 <table class="w-full text-sm border-collapse">
-                    {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
-                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
-                        <tr class="bg-gray-100 dark:bg-gray-800">
-                            {{-- Kolom "Mobil" dan "Nopol" sudah benar dengan sticky left --}}
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0;">Mobil</th>
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
-                                style="position: sticky; left: 0;">Nopol</th>
+                    {{-- HEADER --}}
+                    <thead>
+                        <tr>
+                            {{-- Kolom Mobil --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
+                                style="position: sticky; top: 0; left: 0; min-width:150px;">
+                                Mobil
+                            </th>
 
+                            {{-- Kolom Nopol --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
+                                style="position: sticky; top: 0; left: 150px; min-width:120px;">
+                                Nopol
+                            </th>
+
+                            {{-- Kolom tanggal (sticky top saja) --}}
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px] bg-gray-100 dark:bg-gray-800 z-20"
+                                    style="position: sticky; top: 0;" x-text="day">
+                                </th>
                             </template>
                         </tr>
                     </thead>
+
+                    {{-- BODY --}}
                     <tbody>
-                        {{-- Sisa kode Anda tidak perlu diubah --}}
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
-                                    style="position: sticky; left: 0;" x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
-                                     style="position: sticky; left: 0;" x-text="car.nopol"></td>
+                                {{-- Cell Mobil --}}
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-20"
+                                    style="position: sticky; left: 0; min-width:150px;" x-text="car.model">
+                                </td>
 
+                                {{-- Cell Nopol --}}
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-20"
+                                    style="position: sticky; left: 150px; min-width:120px;" x-text="car.nopol">
+                                </td>
+
+                                {{-- Cell tanggal --}}
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
@@ -60,6 +76,7 @@
                     </tbody>
                 </table>
             </div>
+
         </x-filament::section>
     </div>
 </x-filament-panels::page>
