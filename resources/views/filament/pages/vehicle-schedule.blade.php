@@ -7,63 +7,60 @@
 
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
-            {{--
-                KUNCI UTAMA #1: KONTENER SCROLL
-                - `overflow-y-auto`: Memunculkan scrollbar vertikal jika konten di dalamnya lebih tinggi dari `max-h`.
-                - `overflow-x-auto`: Memunculkan scrollbar horizontal jika konten lebih lebar.
-            --}}
-            {{--
-                CATATAN UNTUK DEBUGGING:
-                Saya mengubah `max-h` menjadi `max-h-[300px]` agar scrollbar pasti muncul bahkan dengan data sedikit.
-                Ini untuk membuktikan bahwa penampung scroll sudah bekerja.
-                Setelah Anda melihat scrollbar-nya muncul, Anda bisa mengembalikannya ke nilai semula:
-                `max-h-[calc(100vh-22rem)]`
-            --}}
-            <div class="overflow-x-auto overflow-y-auto max-h-[300px] border dark:border-gray-700 rounded-lg">
+            {{-- Container untuk scrolling vertikal dan horizontal --}}
+            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
                 <table class="w-full text-sm border-collapse">
                     {{--
-                        KUNCI UTAMA #2: HEADER STICKY
-                        - `sticky top-0`: Membuat seluruh bagian thead menempel di bagian paling atas (top: 0)
-                          dari kontainer scrollable terdekat.
-                        - `z-10`: Memastikan thead berada di atas tbody saat di-scroll.
+                        MODIFIKASI:
+                        - Thead dibuat sticky dengan `top: 0` dan z-index yang lebih tinggi (z-20)
+                          agar selalu berada di atas body tabel saat scroll vertikal.
                     --}}
-                    <thead class="sticky top-0 z-10">
-                        {{-- Warna latar belakang ini penting agar konten di bawah tidak tembus --}}
+                    <thead class="sticky top-0 z-20">
                         <tr class="bg-gray-100 dark:bg-gray-800">
                             {{--
-                                KUNCI UTAMA #3: KOLOM STICKY ( Pojok Kiri Atas )
-                                - `sticky left-0`: Membuat kolom ini menempel di sisi kiri.
-                                - Karena parent `thead` sudah `sticky top-0`, kolom ini akan otomatis
-                                  menempel di atas dan di kiri.
-                                - `z-20`: z-index harus lebih tinggi dari thead (z-10) dan body td (z-10)
-                                  agar selalu berada di paling depan.
+                                MODIFIKASI:
+                                - Kolom "Mobil" dibuat sticky dengan `left: 0`.
+                                - Diberi `min-width` agar lebarnya konsisten.
+                                - z-index tertinggi (z-30) agar berada di pojok kiri atas.
                             --}}
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky left-0 z-20"
-                                style="min-width: 150px;">Mobil</th>
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 sticky left-0 z-20"
-                                style="min-width: 120px;">Nopol</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
+                                style="position: sticky; left: 0; min-width: 160px;">Mobil</th>
 
-                            {{-- Kolom tanggal biasa (hanya sticky di atas) --}}
+                            {{--
+                                MODIFIKASI KUNCI:
+                                - Kolom "Nopol" dibuat sticky.
+                                - `left: 160px;` adalah kuncinya. Nilai ini harus sama dengan `min-width` kolom pertama ("Mobil").
+                                - z-index tertinggi (z-30) agar header tetap di atas.
+                            --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
+                                style="position: sticky; left: 160px; min-width: 120px;">Nopol</th>
+
                             <template x-for="day in scheduleData.daysInMonth">
                                 <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Sisa kode Anda tidak perlu diubah --}}
                         <template x-for="car in scheduleData.cars" :key="car.id">
-                            <tr class="border-t dark:border-gray-700">
+                            <tr class="border-t">
                                 {{--
-                                    KUNCI UTAMA #4: SEL BODY STICKY
-                                    - `sticky left-0`: Membuat sel ini menempel di sisi kiri saat scroll horizontal.
-                                    - `bg-white dark:bg-gray-900`: Latar belakang solid wajib ada.
-                                    - `z-10`: Cukup z-10 agar berada di atas sel body lainnya.
+                                    MODIFIKASI:
+                                    - Sel data "Mobil" dibuat sticky dengan `left: 0`.
+                                    - Diberi background agar konten di belakangnya tidak tembus.
+                                    - z-index (z-10) lebih rendah dari header tapi lebih tinggi dari sel biasa.
                                 --}}
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 sticky left-0 z-10"
-                                    x-text="car.model"></td>
-                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 sticky left-0 z-10"
-                                    x-text="car.nopol"></td>
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                    style="position: sticky; left: 0;" x-text="car.model"></td>
 
+                                {{--
+                                    MODIFIKASI KUNCI:
+                                    - Sel data "Nopol" dibuat sticky.
+                                    - `left: 160px;` sama seperti di header, menggesernya ke sebelah kolom pertama.
+                                --}}
+                                <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
+                                     style="position: sticky; left: 160px;" x-text="car.nopol"></td>
+
+                                {{-- Sisa kode tidak perlu diubah --}}
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
@@ -94,4 +91,3 @@
         </x-filament::section>
     </div>
 </x-filament-panels::page>
-
