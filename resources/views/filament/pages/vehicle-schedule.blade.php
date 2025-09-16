@@ -7,61 +7,32 @@
 
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
-            {{-- Container untuk scrolling vertikal dan horizontal --}}
+            {{-- PERUBAHAN UTAMA DI BARIS INI --}}
             <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
                 <table class="w-full text-sm border-collapse">
-                    {{--
-                        MODIFIKASI:
-                        - Properti `sticky` dipindahkan dari tag `<thead>` ke setiap tag `<th>` di dalamnya.
-                        - Hal ini memastikan setiap sel header menempel ke atas secara individual untuk perilaku yang lebih konsisten.
-                    --}}
-                    <thead>
+                    {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
+                    <thead class="top-0 z-10" style="position: sticky; top: 0;">
                         <tr class="bg-gray-100 dark:bg-gray-800">
-                            {{--
-                                MODIFIKASI:
-                                - `top: 0;` ditambahkan ke style untuk membuatnya sticky ke atas dan kiri.
-                            --}}
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
-                                style="position: sticky; top: 0; left: 0; min-width: 160px;">Mobil</th>
+                            {{-- Kolom "Mobil" dan "Nopol" sudah benar dengan sticky left --}}
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Mobil</th>
+                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-20"
+                                style="position: sticky; left: 0;">Nopol</th>
 
-                            {{--
-                                MODIFIKASI KUNCI:
-                                - `top: 0;` ditambahkan ke style untuk membuatnya sticky ke atas dan kiri.
-                            --}}
-                            <th class="border p-2 font-semibold text-left bg-gray-100 dark:bg-gray-800 z-30"
-                                style="position: sticky; top: 0; left: 160px; min-width: 120px;">Nopol</th>
-
-                            {{--
-                                MODIFIKASI:
-                                - class `sticky top-0 z-20` dan background color ditambahkan untuk membuat header tanggal
-                                  menempel di atas dan tidak transparan.
-                            --}}
                             <template x-for="day in scheduleData.daysInMonth">
-                                <th class="border p-2 font-semibold text-center min-w-[50px] sticky top-0 z-20 bg-gray-100 dark:bg-gray-800" x-text="day"></th>
+                                <th class="border p-2 font-semibold text-center min-w-[50px]" x-text="day"></th>
                             </template>
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- Sisa kode Anda tidak perlu diubah --}}
                         <template x-for="car in scheduleData.cars" :key="car.id">
                             <tr class="border-t">
-                                {{--
-                                    MODIFIKASI:
-                                    - Sel data "Mobil" dibuat sticky dengan `left: 0`.
-                                    - Diberi background agar konten di belakangnya tidak tembus.
-                                    - z-index (z-10) lebih rendah dari header tapi lebih tinggi dari sel biasa.
-                                --}}
                                 <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
                                     style="position: sticky; left: 0;" x-text="car.model"></td>
-
-                                {{--
-                                    MODIFIKASI KUNCI:
-                                    - Sel data "Nopol" dibuat sticky.
-                                    - `left: 160px;` sama seperti di header, menggesernya ke sebelah kolom pertama.
-                                --}}
                                 <td class="border p-2 whitespace-nowrap bg-white dark:bg-gray-900 z-10"
-                                     style="position: sticky; left: 160px;" x-text="car.nopol"></td>
+                                     style="position: sticky; left: 0;" x-text="car.nopol"></td>
 
-                                {{-- Sisa kode tidak perlu diubah --}}
                                 <template x-for="day in scheduleData.daysInMonth">
                                     <td class="border p-0 text-center text-xs"
                                         :style="car.schedule[day] ? {
@@ -69,7 +40,7 @@
                                             'disewa': 'background-color: #c6f6d5;',
                                             'selesai': 'background-color: #e2e8f0;',
                                             'batal': 'background-color: #fed7d7;'
-                                        }[car.schedule[day].status] || '' : ''">
+                                        } [car.schedule[day].status] || '' : ''">
                                         <template x-if="car.schedule[day]">
                                             <a :href="`/admin/bookings/${car.schedule[day].booking_id}`" target="_blank"
                                                 class="w-full h-full flex items-center justify-center p-1 hover:underline"
@@ -78,7 +49,7 @@
                                                     'disewa': 'color: #22543d;',
                                                     'selesai': 'color: #4a5568;',
                                                     'batal': 'color: #9b2c2c;'
-                                                }[car.schedule[day].status] || '' : ''">
+                                                } [car.schedule[day].status] || '' : ''">
                                                 <span x-text="car.schedule[day].display_text"></span>
                                             </a>
                                         </template>
@@ -92,4 +63,3 @@
         </x-filament::section>
     </div>
 </x-filament-panels::page>
-
