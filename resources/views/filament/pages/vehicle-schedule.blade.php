@@ -8,7 +8,7 @@
         {{-- Schedule Table Section --}}
         <x-filament::section class="mt-6">
             {{-- PERUBAHAN UTAMA DI BARIS INI --}}
-            <div class="overflow-x-auto overflow-y-auto max-h-[calc(100vh-22rem)]">
+            <div class="overflow-x-auto  max-h-[calc(100vh-22rem)]">
                 <table class="w-full text-sm border-collapse">
                     {{-- Bagian thead ini sudah benar, tidak perlu diubah --}}
                     <thead class="top-0 z-10" style="position: sticky; top: 0;">
