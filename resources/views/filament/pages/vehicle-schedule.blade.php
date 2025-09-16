@@ -50,7 +50,7 @@
                                                     'selesai': 'color: #4a5568;',
                                                     'batal': 'color: #9b2c2c;'
                                                 } [car.schedule[day].status] || '' : ''">
-                                                <span x-html="car.schedule[day].display_text"></span>
+                                                <span x-text="car.schedule[day].display_text"></span>
                                             </a>
                                         </template>
                                     </td>
