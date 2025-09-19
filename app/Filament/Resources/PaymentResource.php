@@ -117,7 +117,7 @@ class PaymentResource extends Resource
                         $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
 
                         $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                        return  $totalTagihan - ($invoice->dp ?? 0);
+                        return $totalTagihan - ($invoice->dp ?? 0);
                     })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
@@ -261,7 +261,10 @@ class PaymentResource extends Resource
                                     ->label('Total Denda')
                                     ->state(fn($record) => $record->invoice->booking?->penalty->sum('amount') ?? 0)
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
+                                \Filament\Infolists\Components\TextEntry::make('sisa_pembayaran')
+                                    ->label('Sisa Pembayaran')
+                                    ->state(fn($record) => $record->invoice->sisa_pembayaran ?? 0)
+                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 \Filament\Infolists\Components\TextEntry::make('total')
                                     ->label('Total Tagihan')
                                     ->state(function ($record) {
