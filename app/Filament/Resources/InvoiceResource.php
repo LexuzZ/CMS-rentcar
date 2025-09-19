@@ -52,7 +52,8 @@ class InvoiceResource extends Resource
                         $booking = \App\Models\Booking::find($state);
                         $estimasi = $booking?->estimasi_biaya ?? 0;
                         $pickup = $get('pickup_dropOff') ?? 0;
-                        $total = $estimasi + $pickup;
+                        $totalDenda = $booking?->penalty->sum('amount') ?? 0;
+                        $total = $estimasi + $pickup + $totalDenda;
                         $set('total', $total);
                         $set('dp', 0);
                         $set('sisa_pembayaran', $total);
