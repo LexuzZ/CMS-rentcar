@@ -116,7 +116,8 @@ class PaymentResource extends Resource
                         $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
                         $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
 
-                        return $biayaSewa + $biayaAntarJemput + $totalDenda;
+                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                        return  $totalTagihan - ($invoice->dp ?? 0);
                     })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
