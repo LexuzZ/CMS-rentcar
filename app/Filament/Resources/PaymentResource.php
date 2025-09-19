@@ -261,7 +261,7 @@ class PaymentResource extends Resource
                                     ->label('Total Denda')
                                     ->state(fn($record) => $record->invoice->booking?->penalty->sum('amount') ?? 0)
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                \Filament\Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                                \Filament\Infolists\Components\TextEntry::make('invoice.dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 \Filament\Infolists\Components\TextEntry::make('sisa_pembayaran')
                                     ->label('Sisa Pembayaran')
                                     ->state(function ($record) {
