@@ -108,7 +108,7 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('total_bayar')
-                    ->label('Jumlah Bayar')
+                    ->label('Sisa Pembayaran')
                     ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
