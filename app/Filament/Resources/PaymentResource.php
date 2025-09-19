@@ -263,7 +263,14 @@ class PaymentResource extends Resource
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 \Filament\Infolists\Components\TextEntry::make('sisa_pembayaran')
                                     ->label('Sisa Pembayaran')
-                                    ->state(fn($record) => $record->invoice->sisa_pembayaran ?? 0)
+                                    ->state(function ($record) {
+                                        $biayaSewa = $record->invoice->booking?->estimasi_biaya ?? 0;
+                                        $biayaAntar = $record->invoice->pickup_dropOff ?? 0;
+                                        $totalDenda = $record->invoice->booking?->penalty->sum('amount') ?? 0;
+                                        $totalTagihan = $biayaSewa + $biayaAntar + $totalDenda;
+                                        return $totalTagihan - ($invoice->dp ?? 0);
+
+                                    })
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 \Filament\Infolists\Components\TextEntry::make('total')
                                     ->label('Total Tagihan')
