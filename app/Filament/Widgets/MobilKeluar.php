@@ -16,7 +16,7 @@ class MobilKeluar extends Widget
 
     // Properti dari widget lama Anda
     protected static ?string $heading = 'Mobil Keluar Hari Ini & Besok';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
     protected int|string|array $columnSpan = 'full';
 
     public function pickupBooking(int $bookingId): void
