@@ -53,6 +53,11 @@
             <span
                 class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
         </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500 dark:text-gray-400 text-xs">No. Telepon</span>
+            <span
+                class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->customer->no_telp ?? 'N/A' }}</span>
+        </div>
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
