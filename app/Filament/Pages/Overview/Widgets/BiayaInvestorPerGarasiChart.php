@@ -14,6 +14,7 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
 {
     protected static ?string $heading = 'Total Biaya Investor per Garasi (Bulan Ini)';
     protected static ?int $sort = 5;
+    protected int|string|array $columnSpan = 'full';
 
     protected function getData(): array
     {
