@@ -6,6 +6,7 @@ use App\Filament\Pages\Overview\Widgets\DashboardStatsOverview;
 use App\Filament\Pages\Overview\Widgets\MobilPalingSepiChart;
 use App\Filament\Pages\Overview\Widgets\MobilTerlarisChart;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardBulanan extends Page
 {
@@ -22,5 +23,10 @@ class DashboardBulanan extends Page
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
         ];
+    }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
