@@ -31,7 +31,7 @@ class MobilPalingSepiChart extends ChartWidget
             // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
             ->orderBy('total', 'asc') // Urutkan dari yang terkecil
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         return [

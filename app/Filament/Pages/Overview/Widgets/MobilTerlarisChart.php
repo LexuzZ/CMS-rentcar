@@ -33,7 +33,7 @@ class MobilTerlarisChart extends ChartWidget
             // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
             ->orderByDesc('total')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         return [
