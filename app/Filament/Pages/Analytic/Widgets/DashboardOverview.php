@@ -122,10 +122,7 @@ class DashboardOverview extends BaseWidget
                 ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expenseChange <= 0 ? 'success' : 'danger'),
 
-            Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
-                ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($receivablesChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color('warning'),
+
         ];
     }
 
