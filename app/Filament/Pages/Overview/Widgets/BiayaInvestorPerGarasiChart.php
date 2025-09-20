@@ -27,7 +27,7 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
-            // ->where('cars.garasi', '!=', 'SPT')
+            ->where('cars.garasi', '!=', 'SPT')
             ->select(
                 'cars.garasi as nama_garasi',
                 DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
