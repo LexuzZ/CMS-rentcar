@@ -33,7 +33,7 @@ class MobilTerlarisChart extends ChartWidget
             // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
             ->orderByDesc('total')
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         return [
@@ -45,7 +45,7 @@ class MobilTerlarisChart extends ChartWidget
                 ],
             ],
             // UBAH: Buat label yang lebih deskriptif (Model + Nopol)
-            'labels' => $data->map(fn($item) => "({$item->nopol})")->toArray(),
+            'labels' => $data->map(fn($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
         ];
     }
 
