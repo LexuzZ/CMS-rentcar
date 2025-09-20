@@ -17,23 +17,21 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
 
     protected function getData(): array
     {
-        // Query untuk menghitung total biaya investor per garasi
         $data = Payment::query()
             ->where('status', 'lunas')
             ->whereBetween('tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
-            ->join('cars', 'bookings.car_id', '=', 'cars.id') // Join ke tabel mobil
+            ->join('cars', 'bookings.car_id', '=', 'cars.id')
             ->select(
-                'cars.garasi as nama_garasi', // <-- Ambil nama garasi dari tabel 'cars'
-                // Hitung total biaya pokok (investor)
+                'cars.garasi as nama_garasi',
+                // PERBAIKAN DI SINI: Menggunakan 'harga_pokok'
                 DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
             )
-            ->groupBy('cars.garasi') // <-- Kelompokkan berdasarkan kolom 'garasi'
+            ->groupBy('cars.garasi')
             ->orderByDesc('total_biaya_investor')
             ->get();
 
-        // Jika tidak ada data, kembalikan array kosong
         if ($data->isEmpty()) {
             return [
                 'datasets' => [],
