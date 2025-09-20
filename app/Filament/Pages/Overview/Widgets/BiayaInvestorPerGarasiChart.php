@@ -18,14 +18,14 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
     protected function getData(): array
     {
         $data = Payment::query()
-            ->where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
+            // PERBAIKAN DI SINI: Sebutkan nama tabelnya secara eksplisit
+            ->where('payments.status', 'lunas')
+            ->whereBetween('payments.tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
             ->select(
                 'cars.garasi as nama_garasi',
-                // PERBAIKAN DI SINI: Menggunakan 'harga_pokok'
                 DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
             )
             ->groupBy('cars.garasi')
