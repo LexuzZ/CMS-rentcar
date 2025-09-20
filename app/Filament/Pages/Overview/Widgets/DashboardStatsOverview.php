@@ -121,11 +121,11 @@ class DashboardStatsOverview extends BaseWidget
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($receivablesChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color($receivablesChange <= 0 ? 'success' : 'danger'),
+                ->color('warning'),
             Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($revenueThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($revenueChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($revenueChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color($revenueChange <= 0 ? 'success' : 'danger'),
+                ->color('warning'),
         ];
     }
 
