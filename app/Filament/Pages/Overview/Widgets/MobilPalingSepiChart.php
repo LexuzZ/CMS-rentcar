@@ -20,6 +20,7 @@ class MobilPalingSepiChart extends ChartWidget
         $data = Booking::query()
             ->whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
+            ->where('cars.garasi', 'SPT')
             ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
             // UBAH: Pilih nopol dan nama model untuk label
             ->select(
