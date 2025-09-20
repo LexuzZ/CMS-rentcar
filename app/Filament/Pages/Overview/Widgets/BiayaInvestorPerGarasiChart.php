@@ -27,7 +27,7 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
             ->select(
                 'cars.garasi as nama_garasi', // <-- Ambil nama garasi dari tabel 'cars'
                 // Hitung total biaya pokok (investor)
-                DB::raw('SUM(cars.harga_investor * bookings.total_hari) as total_biaya_investor')
+                DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
             )
             ->groupBy('cars.garasi') // <-- Kelompokkan berdasarkan kolom 'garasi'
             ->orderByDesc('total_biaya_investor')
