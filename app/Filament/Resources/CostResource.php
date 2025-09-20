@@ -71,6 +71,7 @@ class CostResource extends Resource
                 TextColumn::make('nama_pengeluaran')
                     ->label('Jenis Pengeluaran')
                     ->badge()
+                    ->searchable()
                     ->alignCenter()
                     ->colors([
                         'success' => 'gaji',
