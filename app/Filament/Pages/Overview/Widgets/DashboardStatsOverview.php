@@ -37,6 +37,9 @@ class DashboardStatsOverview extends BaseWidget
                 $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
+        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
+            ->sum('pembayaran');
 
         // Pemasukan Bulan Lalu
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
@@ -99,6 +102,9 @@ class DashboardStatsOverview extends BaseWidget
                 ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
+            Stat::make('Pendapatan Sewa', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
+                // ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
+                ,
 
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
