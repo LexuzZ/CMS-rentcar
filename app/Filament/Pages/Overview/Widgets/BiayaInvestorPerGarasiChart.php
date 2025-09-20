@@ -27,7 +27,7 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
             ->select(
                 'cars.garasi as nama_garasi',
-                DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
+                DB::raw('SUM(cars.harga_vendor * bookings.total_hari) as total_biaya_investor')
             )
             ->groupBy('cars.garasi')
             ->orderByDesc('total_biaya_investor')
