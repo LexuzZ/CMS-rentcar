@@ -26,7 +26,7 @@ class MobilPalingSepiChart extends ChartWidget
             ->select(
                 'car_models.name as model_name',
                 'cars.nopol',
-                DB::raw('count(bookings.id) as total')
+                DB::raw('count(bookings.total_hari) as total')
             )
             // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
