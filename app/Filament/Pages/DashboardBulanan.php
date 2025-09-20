@@ -11,6 +11,8 @@ class DashboardBulanan extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
     protected static string $view = 'filament.pages.dashboard-bulanan';
+    protected static ?string $navigationLabel = 'Ringkasan Operasional';
+    protected ?string $heading = 'Ringkasan Operasional Bulan Ini';
 
     // Daftarkan semua widget Anda di sini
     protected function getHeaderWidgets(): array
