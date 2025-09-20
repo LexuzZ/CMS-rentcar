@@ -47,8 +47,8 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
                 [
                     'label' => 'Total Biaya Investor',
                     'data' => $data->pluck('total_biaya_investor')->toArray(),
-                    'backgroundColor' => '#4CAF50',
-                    'borderColor' => '#4CAF50',
+                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
+                    // 'borderColor' => '#4CAF50',
                 ],
             ],
             'labels' => $data->pluck('nama_garasi')->toArray(),
