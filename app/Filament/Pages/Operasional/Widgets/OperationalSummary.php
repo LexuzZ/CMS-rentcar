@@ -17,23 +17,54 @@ class OperationalSummary extends Widget
         return auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
 
-    public function getTopCars()
+    public function getData(): array
     {
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth = now()->endOfMonth();
+        $start = now()->startOfMonth();
+        $end   = now()->endOfMonth();
 
-        $counts = Booking::select('car_id', DB::raw('COUNT(*) as total'))
-            ->whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
+        // Total sewa bulan ini
+        $totalSewa = Booking::whereBetween('tanggal_keluar', [$start, $end])->count();
+
+        // Pendapatan kotor (estimasi biaya + pickup_dropOff)
+        $pendapatan = Booking::whereBetween('tanggal_keluar', [$start, $end])
+            ->with('invoice')
+            ->get()
+            ->sum(fn($b) => $b->estimasi_biaya + ($b->invoice?->pickup_dropOff ?? 0));
+
+        // Total denda
+        $totalDenda = Booking::whereBetween('tanggal_keluar', [$start, $end])
+            ->with('penalty')
+            ->get()
+            ->sum(fn($b) => $b->penalty->sum('amount'));
+
+        // Keuntungan (contoh sederhana)
+        $keuntungan = $pendapatan + $totalDenda;
+
+        // Top 5 mobil terlaris
+        $topCars = Booking::select('car_id', DB::raw('COUNT(*) as total'))
+            ->whereBetween('tanggal_keluar', [$start, $end])
             ->groupBy('car_id')
             ->with('car.carModel')
+            ->orderByDesc('total')
+            ->take(5)
             ->get();
 
-        $top5 = $counts->sortByDesc('total')->take(5);
-        $low5 = $counts->sortBy('total')->take(5);
+        // Top 5 jarang disewa
+        $lowCars = Booking::select('car_id', DB::raw('COUNT(*) as total'))
+            ->whereBetween('tanggal_keluar', [$start, $end])
+            ->groupBy('car_id')
+            ->with('car.carModel')
+            ->orderBy('total')
+            ->take(5)
+            ->get();
 
         return [
-            'top5' => $top5,
-            'low5' => $low5,
+            'totalSewa'   => $totalSewa,
+            'pendapatan'  => $pendapatan,
+            'denda'       => $totalDenda,
+            'keuntungan'  => $keuntungan,
+            'topCars'     => $topCars,
+            'lowCars'     => $lowCars,
         ];
     }
 
