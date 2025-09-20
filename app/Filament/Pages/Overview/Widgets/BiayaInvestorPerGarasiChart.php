@@ -18,6 +18,8 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
     protected static ?int $sort = 5;
     protected int | string | array $columnSpan = 'full';
 
+    protected static ?string $recordKey = 'nama_garasi';
+
     public function table(Table $table): Table
     {
         return $table
@@ -34,8 +36,7 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
                     )
                     ->groupBy('cars.garasi')
             )
-            // PERBAIKAN DI SINI: Tentukan kolom 'nama_garasi' sebagai kunci unik
-            ->recordKey('nama_garasi')
+            // Baris ->recordKey() yang salah sudah dihapus dari sini
             ->columns([
                 TextColumn::make('nama_garasi')
                     ->label('Garasi')
