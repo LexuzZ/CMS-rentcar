@@ -38,6 +38,7 @@ class MobilPalingSepiChart extends ChartWidget
                 [
                     'label' => 'Jumlah Penyewaan',
                     'data' => $data->pluck('total')->toArray(),
+                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
             ],
             // UBAH: Buat label yang lebih deskriptif (Model + Nopol)
