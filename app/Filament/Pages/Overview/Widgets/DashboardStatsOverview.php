@@ -40,16 +40,14 @@ class DashboardStatsOverview extends BaseWidget
         $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')
             ->sum('pembayaran');
-        $revenueThisMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+        $revenueThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
+            ->sum('pembayaran');
 
         // Piutang Bulan Lalu
-        $revenueLastMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+        $revenueLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
+            ->sum('pembayaran');
 
         $revenueChange = $this->calculatePercentageChange($revenueThisMonth, $revenueLastMonth);
 
@@ -79,16 +77,14 @@ class DashboardStatsOverview extends BaseWidget
 
         // --- PIUTANG (RECEIVABLES) ---
         // Piutang Bulan Ini (total sisa pembayaran dari invoice yang 'belum_lunas')
-        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+        $receivablesThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'belum_lunas')
+            ->sum('pembayaran');
 
         // Piutang Bulan Lalu
-        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+        $receivablesLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'belum_lunas')
+            ->sum('pembayaran');
 
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
