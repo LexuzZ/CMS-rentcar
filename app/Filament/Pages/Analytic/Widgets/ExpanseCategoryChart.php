@@ -79,6 +79,6 @@ class ExpanseCategoryChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'pie'; // Tipe chart adalah pie
+        return 'doughnut'; // Tipe chart adalah pie
     }
 }
