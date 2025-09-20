@@ -40,6 +40,18 @@ class DashboardStatsOverview extends BaseWidget
         $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')
             ->sum('pembayaran');
+        $revenueThisMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
+
+        // Piutang Bulan Lalu
+        $revenueLastMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
+
+        $revenueChange = $this->calculatePercentageChange($revenueThisMonth, $revenueLastMonth);
 
         // Pemasukan Bulan Lalu
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
@@ -102,9 +114,7 @@ class DashboardStatsOverview extends BaseWidget
                 ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
-            Stat::make('Pendapatan Sewa', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
-                // ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
-                ,
+
 
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
@@ -115,6 +125,10 @@ class DashboardStatsOverview extends BaseWidget
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($receivablesChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('warning'),
+            Stat::make('Total Pendapatan Sewa', 'Rp ' . number_format($revenueThisMonth, 0, ',', '.'))
+                ->description(number_format(abs($revenueChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon($revenueChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color('warning'),
         ];
     }
