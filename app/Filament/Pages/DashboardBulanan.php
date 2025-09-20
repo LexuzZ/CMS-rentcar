@@ -20,7 +20,7 @@ class DashboardBulanan extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            DashboardStatsOverview::class,
+            // DashboardStatsOverview::class,
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
             BiayaInvestorPerGarasiChart::class
