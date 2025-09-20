@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Pages\Overview\Widgets\BiayaInvestorPerGarasiChart;
 use App\Filament\Pages\Overview\Widgets\DashboardStatsOverview;
 use App\Filament\Pages\Overview\Widgets\MobilPalingSepiChart;
 use App\Filament\Pages\Overview\Widgets\MobilTerlarisChart;
@@ -22,6 +23,7 @@ class DashboardBulanan extends Page
             DashboardStatsOverview::class,
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
+            BiayaInvestorPerGarasiChart::class
         ];
     }
     public static function canAccess(): bool
