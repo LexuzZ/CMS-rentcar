@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MobilPalingSepiChart extends ChartWidget
 {
-     protected static ?string $heading = 'Top 5 Mobil Paling Sepi Peminat';
+    protected static ?string $heading = 'Top 5 Mobil Paling Sepi Peminat';
     protected static ?int $sort = 3;
 
     protected function getData(): array
@@ -32,10 +32,21 @@ class MobilPalingSepiChart extends ChartWidget
                 [
                     'label' => 'Jumlah Penyewaan',
                     'data' => $data->pluck('total')->toArray(),
+                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
             ],
             'labels' => $data->pluck('model_name')->toArray(),
         ];
+
+        // return [
+        //     'datasets' => [
+        //         [
+        //             'label' => 'Jumlah Penyewaan',
+        //             'data' => $data->pluck('total')->toArray(),
+        //         ],
+        //     ],
+        //     'labels' => $data->pluck('model_name')->toArray(),
+        // ];
     }
 
     protected function getType(): string
