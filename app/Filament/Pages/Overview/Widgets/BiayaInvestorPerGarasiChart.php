@@ -21,7 +21,6 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            // 1. Definisikan query untuk mengambil data
             ->query(
                 Payment::query()
                     ->where('payments.status', 'lunas')
@@ -35,7 +34,8 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
                     )
                     ->groupBy('cars.garasi')
             )
-            // 2. Definisikan kolom-kolom yang akan ditampilkan
+            // PERBAIKAN DI SINI: Tentukan kolom 'nama_garasi' sebagai kunci unik
+            ->recordKey('nama_garasi')
             ->columns([
                 TextColumn::make('nama_garasi')
                     ->label('Garasi')
@@ -44,12 +44,11 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
 
                 TextColumn::make('total_biaya_investor')
                     ->label('Total Biaya Investor')
-                    ->numeric() // Ratakan ke kanan
-                    ->money('IDR') // Format sebagai mata uang Rupiah
+                    ->numeric()
+                    ->money('IDR')
                     ->sortable(),
             ])
-            // Urutkan berdasarkan total biaya investor secara default
             ->defaultSort('total_biaya_investor', 'desc')
-            ->paginated(false); // Opsional: matikan paginasi jika data sedikit
+            ->paginated(false);
     }
 }
