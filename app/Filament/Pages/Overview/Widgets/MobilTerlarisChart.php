@@ -45,7 +45,7 @@ class MobilTerlarisChart extends ChartWidget
                 ],
             ],
             // UBAH: Buat label yang lebih deskriptif (Model + Nopol)
-            'labels' => $data->map(fn($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
+            // 'labels' => $data->map(fn($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
         ];
     }
 
