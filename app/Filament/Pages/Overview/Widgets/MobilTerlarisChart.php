@@ -28,7 +28,7 @@ class MobilTerlarisChart extends ChartWidget
             ->select(
                 'car_models.name as model_name',
                 'cars.nopol',
-                DB::raw('count(bookings.total_hari) as total')
+                DB::raw('SUM(bookings.total_hari) as total')
             )
             // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
