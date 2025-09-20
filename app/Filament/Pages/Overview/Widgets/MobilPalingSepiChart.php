@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MobilPalingSepiChart extends ChartWidget
 {
-    protected static ?string $heading = 'Top 5 Mobil Paling Sepi Peminat';
+    protected static ?string $heading = 'Top 5 Mobil Paling Sepi Peminat (per Unit)'; // Judul diubah
     protected static ?int $sort = 3;
 
     protected function getData(): array
@@ -21,8 +21,14 @@ class MobilPalingSepiChart extends ChartWidget
             ->whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
             ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
-            ->select('car_models.name as model_name', DB::raw('count(*) as total'))
-            ->groupBy('car_models.name')
+            // UBAH: Pilih nopol dan nama model untuk label
+            ->select(
+                'car_models.name as model_name',
+                'cars.nopol',
+                DB::raw('count(bookings.id) as total')
+            )
+            // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
+            ->groupBy('car_models.name', 'cars.nopol')
             ->orderBy('total', 'asc') // Urutkan dari yang terkecil
             ->limit(5)
             ->get();
@@ -32,25 +38,15 @@ class MobilPalingSepiChart extends ChartWidget
                 [
                     'label' => 'Jumlah Penyewaan',
                     'data' => $data->pluck('total')->toArray(),
-                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
             ],
-            'labels' => $data->pluck('model_name')->toArray(),
+            // UBAH: Buat label yang lebih deskriptif (Model + Nopol)
+            'labels' => $data->map(fn ($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
         ];
-
-        // return [
-        //     'datasets' => [
-        //         [
-        //             'label' => 'Jumlah Penyewaan',
-        //             'data' => $data->pluck('total')->toArray(),
-        //         ],
-        //     ],
-        //     'labels' => $data->pluck('model_name')->toArray(),
-        // ];
     }
 
     protected function getType(): string
     {
-        return 'horizontalBar'; // Tipe grafik batang horizontal
+        return 'bar';
     }
 }
