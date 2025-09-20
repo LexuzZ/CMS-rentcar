@@ -39,7 +39,7 @@ class MobilTerlarisChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Hari Keluar',
+                    'label' => 'Total Hari Disewa',
                     'data' => $data->pluck('total')->toArray(),
                     'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
