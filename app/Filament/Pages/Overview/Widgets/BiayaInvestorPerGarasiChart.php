@@ -12,44 +12,50 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class BiayaInvestorPerGarasiChart extends BaseWidget
+class BiayaInvestorPerGarasiChart extends ChartWidget
 {
     protected static ?string $heading = 'Total Biaya Investor per Garasi (Bulan Ini)';
     protected static ?int $sort = 5;
-    protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $recordKey = 'nama_garasi';
-
-    public function table(Table $table): Table
+    protected function getData(): array
     {
-        return $table
-            ->query(
-                Payment::query()
-                    ->where('payments.status', 'lunas')
-                    ->whereBetween('payments.tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
-                    ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-                    ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
-                    ->join('cars', 'bookings.car_id', '=', 'cars.id')
-                    ->select(
-                        'cars.garasi as nama_garasi',
-                        DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
-                    )
-                    ->groupBy('cars.garasi')
+        $data = Payment::query()
+            // PERBAIKAN DI SINI: Sebutkan nama tabelnya secara eksplisit
+            ->where('payments.status', 'lunas')
+            ->whereBetween('payments.tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
+            ->join('cars', 'bookings.car_id', '=', 'cars.id')
+            ->select(
+                'cars.garasi as nama_garasi',
+                DB::raw('SUM(cars.harga_pokok * bookings.total_hari) as total_biaya_investor')
             )
-            // Baris ->recordKey() yang salah sudah dihapus dari sini
-            ->columns([
-                TextColumn::make('nama_garasi')
-                    ->label('Garasi')
-                    ->searchable()
-                    ->sortable(),
+            ->groupBy('cars.garasi')
+            ->orderByDesc('total_biaya_investor')
+            ->get();
 
-                TextColumn::make('total_biaya_investor')
-                    ->label('Total Biaya Investor')
-                    ->numeric()
-                    ->money('IDR')
-                    ->sortable(),
-            ])
-            ->defaultSort('total_biaya_investor', 'desc')
-            ->paginated(false);
+        if ($data->isEmpty()) {
+            return [
+                'datasets' => [],
+                'labels' => [],
+            ];
+        }
+
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Total Biaya Investor',
+                    'data' => $data->pluck('total_biaya_investor')->toArray(),
+                    'backgroundColor' => '#4CAF50',
+                    'borderColor' => '#4CAF50',
+                ],
+            ],
+            'labels' => $data->pluck('nama_garasi')->toArray(),
+        ];
+    }
+
+    protected function getType(): string
+    {
+        return 'bar';
     }
 }
