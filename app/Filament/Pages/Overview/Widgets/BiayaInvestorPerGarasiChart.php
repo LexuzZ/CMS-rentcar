@@ -7,7 +7,7 @@ use App\Models\Pengeluaran;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\ChartWidget;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +16,7 @@ class BiayaInvestorPerGarasiChart extends BaseWidget
 {
     protected static ?string $heading = 'Total Biaya Investor per Garasi (Bulan Ini)';
     protected static ?int $sort = 5;
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
