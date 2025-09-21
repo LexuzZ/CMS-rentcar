@@ -114,15 +114,25 @@ class DashboardOverview extends BaseWidget
         $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
 
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
-        $jumlahMobil = \App\Models\Car::where('status', 'ready')->count();
+        $jumlahMobil = \App\Models\Car::where('status', 'ready')
+            ->where('garasi', 'SPT')
+            ->count();
+
         $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
         $totalHariTersedia = $jumlahMobil * $jumlahHariDalamBulan;
-        $totalHariDisewa = \App\Models\Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])->sum('total_hari');
+
+        // PERUBAHAN DI SINI: Tambahkan ->whereHas() untuk memfilter booking berdasarkan garasi mobilnya.
+        $totalHariDisewa = \App\Models\Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
+            ->whereHas('car', function ($query) {
+                $query->where('garasi', 'SPT');
+            })
+            ->sum('total_hari');
+
         $utilizationRate = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Aktivitas Armada', number_format($utilizationRate, 1) . '%')
+            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 1) . '%')
                 ->icon('heroicon-o-key')
                 ->description("{$totalHariDisewa} dari {$totalHariTersedia} hari terpakai")
                 ->color('success'),
