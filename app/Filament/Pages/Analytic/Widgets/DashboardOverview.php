@@ -106,12 +106,14 @@ class DashboardOverview extends BaseWidget
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
+           Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
+                ->icon('heroicon-o-banknotes') // IKON DITAMBAHKAN
                 ->description(number_format(abs($profitChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($profitChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($profitChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Profit Garasi', 'Rp ' . number_format($incomeThisMonth, 0, ',', '.'))
+                ->icon('heroicon-o-chart-bar-square') // IKON DITAMBAHKAN
                 ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
@@ -119,12 +121,14 @@ class DashboardOverview extends BaseWidget
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
                 // Logika terbalik: pengeluaran turun itu bagus (success), naik itu jelek (danger)
+                 ->icon('heroicon-o-arrow-trending-up')
                 ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expenseChange <= 0 ? 'success' : 'danger'),
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
+                ->icon('heroicon-o-clock') // IKON DITAMBAHKAN
                 ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($receivablesChange > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color('warning'),
+                ->descriptionIcon($receivablesChange <= 0 ? 'heroicon-m-arrow-trending-down' : 'heroicon-m-arrow-trending-up')
+                ->color($receivablesChange <= 0 ? 'success' : 'danger'), // Logika terbalik: piutang turun itu bagus
 
 
         ];
