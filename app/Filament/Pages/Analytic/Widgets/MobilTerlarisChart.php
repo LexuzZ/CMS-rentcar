@@ -9,15 +9,30 @@ use Illuminate\Support\Facades\DB;
 
 class MobilTerlarisChart extends ChartWidget
 {
+    protected ?string $description = 'An overview of some analytics.';
 
 
     protected static ?string $heading = 'Top 5 Mobil Paling Laris Disewa (per Unit)'; // Judul diubah
     protected static ?int $sort = 2;
+    public ?string $filter = 'this_month'; // Properti untuk menyimpan filter aktif
+
+    /**
+     * Menggunakan metode filter dasar.
+     */
+    protected function getFilters(): ?array
+    {
+        return [
+            'this_month' => 'Bulan Ini',
+            'last_month' => 'Bulan Lalu',
+            'this_year' => 'Tahun Ini',
+        ];
+    }
 
     protected function getData(): array
     {
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
+        $data = $this->filter;
 
         $data = Booking::query()
             ->whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
