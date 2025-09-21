@@ -119,9 +119,9 @@ class DashboardOverview extends BaseWidget
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
-                ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
                 // Logika terbalik: pengeluaran turun itu bagus (success), naik itu jelek (danger)
-                 ->icon('heroicon-o-arrow-trending-up')
+                 ->icon('heroicon-o-arrow-trending-down')
                 ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expenseChange <= 0 ? 'success' : 'danger'),
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
