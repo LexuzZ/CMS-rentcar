@@ -145,7 +145,7 @@ foreach ($bookingsBulanIni as $booking) {
     $actualEnd = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
 
     // Hitung selisih hari dan tambahkan ke total (tambah 1 karena inklusif)
-    $totalHariDisewa += $actualStart->diffInDays($actualEnd) + 1;
+    $totalHariDisewa += $actualStart->diffInDays($actualEnd) ;
 }
 
 
