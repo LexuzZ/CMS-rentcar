@@ -12,25 +12,48 @@ class MobilPalingSepiChart extends ChartWidget
     protected static ?string $heading = 'Top 5 Mobil Paling Sepi Peminat (per Unit)'; // Judul diubah
     protected static ?int $sort = 3;
 
+    public ?string $filter = 'this_month';
+
+    // 2. Tambahkan metode untuk mendefinisikan opsi filter
+    protected function getFilters(): ?array
+    {
+        return [
+            'this_month' => 'Bulan Ini',
+            'last_month' => 'Bulan Lalu',
+            'this_year' => 'Tahun Ini',
+        ];
+    }
+
     protected function getData(): array
     {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        // 3. Tentukan rentang tanggal secara dinamis berdasarkan filter yang aktif
+        $activeFilter = $this->filter;
 
+        $startDate = match ($activeFilter) {
+            'this_month' => now()->startOfMonth(),
+            'last_month' => now()->subMonth()->startOfMonth(),
+            'this_year' => now()->startOfYear(),
+        };
+
+        $endDate = match ($activeFilter) {
+            'this_month' => now()->endOfMonth(),
+            'last_month' => now()->subMonth()->endOfMonth(),
+            'this_year' => now()->endOfYear(),
+        };
+
+        // 4. Query menggunakan rentang tanggal dinamis tersebut
         $data = Booking::query()
-            ->whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
+            ->whereBetween('tanggal_keluar', [$startDate, $endDate])
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
             ->where('cars.garasi', 'SPT')
             ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
-            // UBAH: Pilih nopol dan nama model untuk label
             ->select(
                 'car_models.name as model_name',
                 'cars.nopol',
                 DB::raw('SUM(bookings.total_hari) as total')
             )
-            // UBAH: Kelompokkan berdasarkan nopol (dan nama model)
             ->groupBy('car_models.name', 'cars.nopol')
-            ->orderBy('total', 'asc') // Urutkan dari yang terkecil
+            ->orderBy('total', 'asc') // <-- Tetap 'asc' untuk mencari yang paling sepi
             ->limit(5)
             ->get();
 
@@ -39,10 +62,9 @@ class MobilPalingSepiChart extends ChartWidget
                 [
                     'label' => 'Total Hari Disewa',
                     'data' => $data->pluck('total')->toArray(),
-                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
+                    'backgroundColor' => ['#E74C3C', '#F1C40F', '#9B59B6', '#2ECC71', '#3498DB'],
                 ],
             ],
-            // UBAH: Buat label yang lebih deskriptif (Model + Nopol)
             'labels' => $data->map(fn ($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
         ];
     }
