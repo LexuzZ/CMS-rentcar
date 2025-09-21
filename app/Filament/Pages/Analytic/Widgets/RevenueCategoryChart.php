@@ -92,7 +92,7 @@ class RevenueCategoryChart extends ChartWidget
 
         $colorPalette = [
             '#10B981', '#3B82F6', '#84CC16', '#EF4444', '#F59E0B',
-            '#6F00FF', '#A3CCDA', '#3A6F43' , '#F5D2D2',
+            '#6F00FF', '#A3CCDA', '#3A6F43' , '#FFE100',
         ];
 
         $colors = collect($finalLabels)->map(function ($label, $index) use ($colorPalette) {
