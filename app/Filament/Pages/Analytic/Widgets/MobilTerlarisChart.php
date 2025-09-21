@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MobilTerlarisChart extends ChartWidget
 {
-    protected ?string $description = 'An overview of some analytics.';
+    // protected ?string $description = 'An overview of some analytics.';
 
 
     protected static ?string $heading = 'Top 5 Mobil Paling Laris Disewa (per Unit)'; // Judul diubah
