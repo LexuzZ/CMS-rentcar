@@ -16,14 +16,41 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
 {
     protected static ?string $heading = 'Total Biaya Investor per Garasi (Bulan Ini)';
     protected static ?int $sort = 5;
-     protected int|string|array $columnSpan = 'full';
+    //  protected int|string|array $columnSpan = 'full';
+
+    public ?string $filter = 'this_month';
+
+    // 2. Opsi filter di dropdown
+    protected function getFilters(): ?array
+    {
+        return [
+            'this_month' => 'Bulan Ini',
+            'last_month' => 'Bulan Lalu',
+            'this_year' => 'Tahun Ini',
+        ];
+    }
 
     protected function getData(): array
     {
+        // 3. Logika untuk menentukan rentang tanggal dinamis
+        $activeFilter = $this->filter;
+
+        $startDate = match ($activeFilter) {
+            'this_month' => now()->startOfMonth(),
+            'last_month' => now()->subMonth()->startOfMonth(),
+            'this_year' => now()->startOfYear(),
+        };
+
+        $endDate = match ($activeFilter) {
+            'this_month' => now()->endOfMonth(),
+            'last_month' => now()->subMonth()->endOfMonth(),
+            'this_year' => now()->endOfYear(),
+        };
+
         $data = Payment::query()
-            // PERBAIKAN DI SINI: Sebutkan nama tabelnya secara eksplisit
             ->where('payments.status', 'lunas')
-            ->whereBetween('payments.tanggal_pembayaran', [now()->startOfMonth(), now()->endOfMonth()])
+            // 4. Gunakan tanggal dinamis di query
+            ->whereBetween('payments.tanggal_pembayaran', [$startDate, $endDate])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('bookings', 'invoices.booking_id', '=', 'bookings.id')
             ->join('cars', 'bookings.car_id', '=', 'cars.id')
@@ -49,7 +76,6 @@ class BiayaInvestorPerGarasiChart extends ChartWidget
                     'label' => 'Total Biaya Investor',
                     'data' => $data->pluck('total_biaya_investor')->toArray(),
                     'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
-                    // 'borderColor' => '#4CAF50',
                 ],
             ],
             'labels' => $data->pluck('nama_garasi')->toArray(),
