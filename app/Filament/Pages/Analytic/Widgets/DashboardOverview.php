@@ -122,7 +122,7 @@ class DashboardOverview extends BaseWidget
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Persentase Mobil Disewa', number_format($utilizationRate, 1) . '%')
+            Stat::make('Aktivitas Armada', number_format($utilizationRate, 1) . '%')
                 ->icon('heroicon-o-key')
                 ->description("{$totalHariDisewa} dari {$totalHariTersedia} hari terpakai")
                 ->color('success'),
