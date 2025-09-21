@@ -21,9 +21,7 @@ class DashboardBulanan extends Page
     {
         return [
             // DashboardStatsOverview::class,
-            MobilTerlarisChart::class,
-            MobilPalingSepiChart::class,
-            BiayaInvestorPerGarasiChart::class
+
         ];
     }
     public static function canAccess(): bool

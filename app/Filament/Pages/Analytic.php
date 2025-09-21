@@ -3,8 +3,11 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Pages\Analytic\Widgets\ArusKasTable;
+use App\Filament\Pages\Analytic\Widgets\BiayaInvestorPerGarasiChart;
 use App\Filament\Pages\Analytic\Widgets\DashboardOverview;
 use App\Filament\Pages\Analytic\Widgets\ExpanseCategoryChart;
+use App\Filament\Pages\Analytic\Widgets\MobilPalingSepiChart;
+use App\Filament\Pages\Analytic\Widgets\MobilTerlarisChart;
 use App\Filament\Pages\Analytic\Widgets\Piutang;
 use App\Filament\Pages\Analytic\Widgets\RecentTransactions;
 use App\Filament\Pages\Analytic\Widgets\Revenue;
@@ -27,6 +30,9 @@ class Analytic extends Page
             ExpanseCategoryChart::class,
             RevenueCategoryChart::class,
             \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
+            MobilTerlarisChart::class,
+            MobilPalingSepiChart::class,
+            BiayaInvestorPerGarasiChart::class,
             RecentTransactions::class,
             Revenue::class,
 
