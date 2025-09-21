@@ -114,7 +114,7 @@ class DashboardOverview extends BaseWidget
         $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
 
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
-        $jumlahMobil = \App\Models\Car::where('status', 'tersedia')->count();
+        $jumlahMobil = \App\Models\Car::where('status', 'ready')->count();
         $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
         $totalHariTersedia = $jumlahMobil * $jumlahHariDalamBulan;
         $totalHariDisewa = \App\Models\Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])->sum('total_hari');
