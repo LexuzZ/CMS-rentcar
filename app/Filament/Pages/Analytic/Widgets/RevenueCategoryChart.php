@@ -91,8 +91,8 @@ class RevenueCategoryChart extends ChartWidget
         $finalData = $filteredData->pluck(0)->toArray();
 
         $colorPalette = [
-            '#6366F1', '#38BDF8', '#10B981', '#F59E0B', '#F43F5E',
-            '#8B5CF6', '#14B8A6', '#F97316' , '#64748B',
+            '#8B5CF6', '#38BDF8', '#14B8A6', '#F59E0B', '#F97316',
+            '#64748B', '#6366F1', '#10B981' , '#F43F5E',
         ];
 
         $colors = collect($finalLabels)->map(function ($label, $index) use ($colorPalette) {
