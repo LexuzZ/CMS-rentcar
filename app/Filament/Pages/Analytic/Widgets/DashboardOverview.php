@@ -155,9 +155,9 @@ $utilizationRate = round($rawUtilization); // Dibulatkan di sini
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 1) . '%')
+            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 0) . '%')
                 ->icon('heroicon-o-key')
-                ->description("{$totalHariDisewa} dari {$totalHariTersedia} hari terpakai")
+                ->description(round($totalHariDisewa) . " dari {$totalHariTersedia} hari terpakai")
                 ->color('success'),
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
                 ->icon('heroicon-o-clock') // IKON DITAMBAHKAN
