@@ -68,14 +68,14 @@ class MonthlyRevenueChart extends ChartWidget
                 [
                     'label' => 'Pendapatan',
                     'data' => $pendapatan,
-                    'backgroundColor' => '#8B5CF6', // Warna ungu
-                    'borderColor' => '#8B5CF6',
+                    'backgroundColor' => '#10B981', // Warna ungu
+                    'borderColor' => '#10B981',
                 ],
                 [
                     'label' => 'Pengeluaran',
                     'data' => $pengeluaran,
-                    'backgroundColor' => '#C4B5FD', // Warna ungu muda
-                    'borderColor' => '#C4B5FD',
+                    'backgroundColor' => '#F43F5E', // Warna ungu muda
+                    'borderColor' => '#F43F5E',
                 ],
             ],
             'labels' => $months,
