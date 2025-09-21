@@ -95,16 +95,16 @@ class RevenueCategoryChart extends ChartWidget
             '#64748B', '#6366F1', '#10B981' , '#F43F5E',
         ];
 
-        $colors = collect($finalLabels)->map(function ($label, $index) use ($colorPalette) {
-            return $colorPalette[$index % count($colorPalette)];
-        })->toArray();
+        // $colors = collect($finalLabels)->map(function ($label, $index) use ($colorPalette) {
+        //     return $colorPalette[$index % count($colorPalette)];
+        // })->toArray();
 
         return [
             'datasets' => [
                 [
                     'label' => 'Pendapatan',
                     'data' => $finalData,
-                    'backgroundColor' => $colors,
+                    'backgroundColor' => $colorPalette,
                 ],
             ],
             'labels' => $finalLabels,
