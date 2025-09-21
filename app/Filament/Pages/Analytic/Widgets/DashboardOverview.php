@@ -114,21 +114,43 @@ class DashboardOverview extends BaseWidget
         $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
 
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
-        $jumlahMobil = \App\Models\Car::where('status', 'ready')
-            ->where('garasi', 'SPT')
-            ->count();
+        // --- KALKULASI UTILISASI ARMADA (VERSI AKURAT) ---
 
-        $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
-        $totalHariTersedia = $jumlahMobil * $jumlahHariDalamBulan;
+// 1. Hitung SEMUA mobil aktif di garasi SPT (Denominator)
+$jumlahMobilSPT = \App\Models\Car::where('garasi', 'SPT')->count();
 
-        // PERUBAHAN DI SINI: Tambahkan ->whereHas() untuk memfilter booking berdasarkan garasi mobilnya.
-        $totalHariDisewa = \App\Models\Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
-            ->whereHas('car', function ($query) {
-                $query->where('garasi', 'SPT');
-            })
-            ->sum('total_hari');
+// Tentukan periode bulan ini
+$startOfMonth = now()->startOfMonth();
+$endOfMonth = now()->endOfMonth();
+$jumlahHariDalamBulan = $startOfMonth->daysInMonth;
 
-        $utilizationRate = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
+// Total hari kapasitas armada SPT bulan ini
+$totalHariTersedia = $jumlahMobilSPT * $jumlahHariDalamBulan;
+
+
+// 2. Hitung total hari disewa yang HANYA jatuh di bulan ini (Numerator)
+$totalHariDisewa = 0;
+
+// Ambil semua booking yang AKTIF (beririsan) di bulan ini
+$bookingsBulanIni = \App\Models\Booking::whereHas('car', function ($query) {
+        $query->where('garasi', 'SPT');
+    })
+    ->where('tanggal_keluar', '<=', $endOfMonth) // Booking yg dimulai sebelum akhir bulan ini
+    ->where('tanggal_kembali', '>=', $startOfMonth) // dan berakhir setelah awal bulan ini
+    ->get();
+
+foreach ($bookingsBulanIni as $booking) {
+    // Tentukan tanggal mulai dan selesai booking dalam rentang bulan ini
+    $actualStart = max(Carbon::parse($booking->tanggal_keluar), $startOfMonth);
+    $actualEnd = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
+
+    // Hitung selisih hari dan tambahkan ke total (tambah 1 karena inklusif)
+    $totalHariDisewa += $actualStart->diffInDays($actualEnd) + 1;
+}
+
+
+// 3. Kalkulasi final
+$utilizationRate = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
 
         // --- TAMPILAN WIDGET ---
         return [
@@ -142,7 +164,7 @@ class DashboardOverview extends BaseWidget
                 ->descriptionIcon($receivablesChange <= 0 ? 'heroicon-m-arrow-trending-down' : 'heroicon-m-arrow-trending-up')
                 ->color($receivablesChange <= 0 ? 'success' : 'danger'), // Logika terbalik: piutang turun itu bagus
             Stat::make('Pendapatan Kotor', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
-                ->icon('heroicon-o-arrow-trending-down') // IKON DITAMBAHKAN
+                ->icon('heroicon-o-arrow-trending-up') // IKON DITAMBAHKAN
                 ->description(number_format(abs($RevenueChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($RevenueChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($RevenueChange >= 0 ? 'success' : 'danger'),
