@@ -154,7 +154,7 @@ $utilizationRate = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTers
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 1) . '%')
+            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 0) . '%')
                 ->icon('heroicon-o-key')
                 ->description("{$totalHariDisewa} dari {$totalHariTersedia} hari terpakai")
                 ->color('success'),
