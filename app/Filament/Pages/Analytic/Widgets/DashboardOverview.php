@@ -116,42 +116,42 @@ class DashboardOverview extends BaseWidget
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
         // --- KALKULASI UTILISASI ARMADA (VERSI AKURAT) ---
 
-// 1. Hitung SEMUA mobil aktif di garasi SPT (Denominator)
-$jumlahMobilSPT = \App\Models\Car::where('garasi', 'SPT')->count();
+        // 1. Hitung SEMUA mobil aktif di garasi SPT (Denominator)
+        $jumlahMobilSPT = \App\Models\Car::where('garasi', 'SPT')->count();
 
-// Tentukan periode bulan ini
-$startOfMonth = now()->startOfMonth();
-$endOfMonth = now()->endOfMonth();
-$jumlahHariDalamBulan = $startOfMonth->daysInMonth;
+        // Tentukan periode bulan ini
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
 
-// Total hari kapasitas armada SPT bulan ini
-$totalHariTersedia = $jumlahMobilSPT * $jumlahHariDalamBulan;
-
-
-// 2. Hitung total hari disewa yang HANYA jatuh di bulan ini (Numerator)
-$totalHariDisewa = 0;
-
-// Ambil semua booking yang AKTIF (beririsan) di bulan ini
-$bookingsBulanIni = \App\Models\Booking::whereHas('car', function ($query) {
-        $query->where('garasi', 'SPT');
-    })
-    ->where('tanggal_keluar', '<=', $endOfMonth) // Booking yg dimulai sebelum akhir bulan ini
-    ->where('tanggal_kembali', '>=', $startOfMonth) // dan berakhir setelah awal bulan ini
-    ->get();
-
-foreach ($bookingsBulanIni as $booking) {
-    // Tentukan tanggal mulai dan selesai booking dalam rentang bulan ini
-    $actualStart = max(Carbon::parse($booking->tanggal_keluar), $startOfMonth);
-    $actualEnd = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
-
-    // Hitung selisih hari dan tambahkan ke total (tambah 1 karena inklusif)
-    $totalHariDisewa += $actualStart->diffInDays($actualEnd) ;
-}
+        // Total hari kapasitas armada SPT bulan ini
+        $totalHariTersedia = $jumlahMobilSPT * $jumlahHariDalamBulan;
 
 
-// 3. Kalkulasi final
-$rawUtilization = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
-$utilizationRate = round($rawUtilization); // Dibulatkan di sini
+        // 2. Hitung total hari disewa yang HANYA jatuh di bulan ini (Numerator)
+        $totalHariDisewa = 0;
+
+        // Ambil semua booking yang AKTIF (beririsan) di bulan ini
+        $bookingsBulanIni = \App\Models\Booking::whereHas('car', function ($query) {
+            $query->where('garasi', 'SPT');
+        })
+            ->where('tanggal_keluar', '<=', $endOfMonth) // Booking yg dimulai sebelum akhir bulan ini
+            ->where('tanggal_kembali', '>=', $startOfMonth) // dan berakhir setelah awal bulan ini
+            ->get();
+
+        foreach ($bookingsBulanIni as $booking) {
+            // Tentukan tanggal mulai dan selesai booking dalam rentang bulan ini
+            $actualStart = max(Carbon::parse($booking->tanggal_keluar), $startOfMonth);
+            $actualEnd = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
+
+            // Hitung selisih hari dan tambahkan ke total (tambah 1 karena inklusif)
+            $totalHariDisewa += $actualStart->diffInDays($actualEnd);
+        }
+
+
+        // 3. Kalkulasi final
+        $rawUtilization = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
+        $utilizationRate = round($rawUtilization); // Dibulatkan di sini
 
         // --- TAMPILAN WIDGET ---
         return [
