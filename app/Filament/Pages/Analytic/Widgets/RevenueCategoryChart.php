@@ -104,7 +104,7 @@ class RevenueCategoryChart extends ChartWidget
                 [
                     'label' => 'Pendapatan',
                     'data' => $finalData,
-                    'backgroundColor' => $colors,
+                    'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
             ],
             'labels' => $finalLabels,
