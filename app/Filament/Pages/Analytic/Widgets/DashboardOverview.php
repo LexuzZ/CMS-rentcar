@@ -150,11 +150,12 @@ foreach ($bookingsBulanIni as $booking) {
 
 
 // 3. Kalkulasi final
-$utilizationRate = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
+$rawUtilization = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
+$utilizationRate = round($rawUtilization); // Dibulatkan di sini
 
         // --- TAMPILAN WIDGET ---
         return [
-            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 0) . '%')
+            Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 1) . '%')
                 ->icon('heroicon-o-key')
                 ->description("{$totalHariDisewa} dari {$totalHariTersedia} hari terpakai")
                 ->color('success'),
