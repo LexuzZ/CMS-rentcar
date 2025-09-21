@@ -61,13 +61,13 @@ class DashboardOverview extends BaseWidget
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('invoices.sisa_pembayaran');
         $RevenueLastMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('invoices.sisa_pembayaran');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
         // Pemasukan Bulan Lalu
-        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->where('status', 'lunas')
             ->get()
             ->sum(function ($payment) {
