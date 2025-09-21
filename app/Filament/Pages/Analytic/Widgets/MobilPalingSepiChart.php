@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class MobilPalingSepiChart extends ChartWidget
 {
-    protected static ?string $heading = 'Performa Terendah'; // Judul diubah
+    protected static ?string $heading = 'Unit Performa Terendah'; // Judul diubah
     protected static ?int $sort = 3;
 
     public ?string $filter = 'this_month';

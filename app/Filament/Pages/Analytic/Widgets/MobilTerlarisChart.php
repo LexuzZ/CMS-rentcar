@@ -12,7 +12,7 @@ class MobilTerlarisChart extends ChartWidget
     // protected ?string $description = 'An overview of some analytics.';
 
 
-    protected static ?string $heading = 'Paling Populer'; // Judul diubah
+    protected static ?string $heading = 'Unit Paling Populer'; // Judul diubah
     protected static ?int $sort = 2;
     public ?string $filter = 'this_month';
 
