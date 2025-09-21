@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\DB;
 
 class BiayaInvestorPerGarasiChart extends ChartWidget
 {
-    protected static ?string $heading = 'Total Biaya Investor per Garasi (Bulan Ini)';
+    protected static ?string $heading = 'Alokasi Biaya Investor';
     protected static ?int $sort = 5;
-    //  protected int|string|array $columnSpan = 'full';
+     protected int|string|array $columnSpan = 'full';
 
     public ?string $filter = 'this_month';
 

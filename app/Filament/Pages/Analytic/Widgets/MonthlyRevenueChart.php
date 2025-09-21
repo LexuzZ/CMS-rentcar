@@ -15,7 +15,7 @@ class MonthlyRevenueChart extends ChartWidget
 
     protected static ?string $heading = 'Pendapatan & Pengeluaran Bulanan';
     protected static ?int $sort = 2;
-    // protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public ?string $filter = null;
 
