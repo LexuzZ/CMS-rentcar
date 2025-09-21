@@ -17,6 +17,10 @@ class DashboardOverview extends BaseWidget
     // protected ?string $description = 'An overview of some analytics.';
 
     protected static ?int $sort = 1;
+    protected static ?array $columns = [
+        'sm' => 2, // 2 kolom untuk layar kecil (mobile)
+        'lg' => 4, // 4 kolom untuk layar besar (desktop)
+    ];
 
 
     /**
