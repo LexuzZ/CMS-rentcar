@@ -55,6 +55,17 @@ class DashboardOverview extends BaseWidget
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
 
+        //Pendapatan Kotor
+        $RevenueMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
+        $RevenueLastMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
+        $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
+
         // Pemasukan Bulan Lalu
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')
@@ -107,7 +118,7 @@ class DashboardOverview extends BaseWidget
 
         // --- TAMPILAN WIDGET ---
         return [
-           Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
+            Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
                 ->icon('heroicon-o-banknotes') // IKON DITAMBAHKAN
                 ->description(number_format(abs($profitChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($profitChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
@@ -122,7 +133,7 @@ class DashboardOverview extends BaseWidget
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
                 // Logika terbalik: pengeluaran turun itu bagus (success), naik itu jelek (danger)
-                 ->icon('heroicon-o-arrow-trending-down')
+                ->icon('heroicon-o-arrow-trending-down')
                 ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expenseChange <= 0 ? 'success' : 'danger'),
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
@@ -130,6 +141,11 @@ class DashboardOverview extends BaseWidget
                 ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
                 ->descriptionIcon($receivablesChange <= 0 ? 'heroicon-m-arrow-trending-down' : 'heroicon-m-arrow-trending-up')
                 ->color($receivablesChange <= 0 ? 'success' : 'danger'), // Logika terbalik: piutang turun itu bagus
+            Stat::make('Pendapatan Kotor', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
+                ->icon('heroicon-o-arrow-trending-down') // IKON DITAMBAHKAN
+                 ->description(number_format(abs($RevenueChange), 1) . '% vs bulan lalu')
+                ->descriptionIcon($RevenueChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($RevenueChange >= 0 ? 'success' : 'danger'), // Logika terbalik: piutang turun itu bagus
 
 
         ];
