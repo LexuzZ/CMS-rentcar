@@ -62,9 +62,10 @@ class RevenueCategoryChart extends ChartWidget
         $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
         $klaimWasher = Penalty::where('klaim', 'washer')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
 
-        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->where('status', 'lunas')
-            ->sum('pembayaran');
+        $RevenueMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('invoices.sisa_pembayaran');
         $PiutangMonth = Payment::whereBetween('tanggal_pembayaran', [$startDate, $endDate])
             ->where('status', 'belum_lunas')
             ->sum('pembayaran');
