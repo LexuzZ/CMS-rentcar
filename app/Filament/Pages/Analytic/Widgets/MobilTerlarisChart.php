@@ -68,12 +68,12 @@ class MobilTerlarisChart extends ChartWidget
                     'backgroundColor' => ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'],
                 ],
             ],
-            'labels' => $data->map(fn($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
+            'labels' => $data->map(fn($item) => "{$item->nopol}")->toArray(),
         ];
     }
 
     protected function getType(): string
     {
-        return 'doughnut';
+        return 'bar';
     }
 }
