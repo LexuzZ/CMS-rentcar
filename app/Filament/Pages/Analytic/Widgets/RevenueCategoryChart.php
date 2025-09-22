@@ -64,8 +64,8 @@ class RevenueCategoryChart extends ChartWidget
 
         $RevenueMonth = Payment::where('status', 'lunas')
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
         $PiutangMonth = Payment::where('status', 'belum_lunas')
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
