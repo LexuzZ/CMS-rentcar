@@ -38,7 +38,7 @@ class RecentTransactions extends BaseWidget
                 ->label('Nama Penyewa')
                 ->alignCenter()
                 ->wrap()
-                ->width(150)
+                ->width(100)
                 ->searchable(),
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
