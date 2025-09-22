@@ -34,6 +34,8 @@ class RecentTransactions extends BaseWidget
                 ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Nama Penyewa')
+                ->wrap()
+                ->width(150)
                 ->searchable(),
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
