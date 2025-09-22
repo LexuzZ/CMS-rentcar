@@ -11,7 +11,7 @@ class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 5; // Sesuaikan urutan widget di dashboard
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected function getTableQuery(): Builder
     {
@@ -27,19 +27,23 @@ class RecentTransactions extends BaseWidget
         return [
             Tables\Columns\TextColumn::make('updated_at')
                 ->label('Tanggal')
+                ->alignCenter()
                 ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
+                ->alignCenter()
                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Nama Penyewa')
+                ->alignCenter()
                 ->wrap()
                 ->width(150)
                 ->searchable(),
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
                 ->badge()
+                ->alignCenter()
                 ->colors([
                     'success' => 'tunai',
                     'info' => 'transfer',
