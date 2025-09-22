@@ -68,8 +68,8 @@ class RevenueCategoryChart extends ChartWidget
             ->sum('pembayaran');
         $PiutangMonth = Payment::where('status', 'belum_lunas')
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
 
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
