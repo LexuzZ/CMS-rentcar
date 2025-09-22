@@ -65,7 +65,7 @@ class MobilPalingSepiChart extends ChartWidget
                     'backgroundColor' => ['#E74C3C', '#F1C40F', '#9B59B6', '#2ECC71', '#3498DB'],
                 ],
             ],
-            'labels' => $data->map(fn ($item) => "{$item->model_name} ({$item->nopol})")->toArray(),
+            'labels' => $data->map(fn ($item) => "{$item->nopol}")->toArray(),
         ];
     }
 
