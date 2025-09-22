@@ -55,16 +55,6 @@ class DashboardOverview extends BaseWidget
                 return $hargaHarianTotal - $hargaPokokTotal;
             });
 
-        //Pendapatan Kotor
-        $RevenueMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('pembayaran');
-        $RevenueLastMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('pembayaran');
-        $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
         // Pemasukan Bulan Lalu
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
@@ -78,6 +68,16 @@ class DashboardOverview extends BaseWidget
             });
 
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
+        //Pendapatan Kotor
+        $RevenueMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
+        $RevenueLastMonth = Payment::where('status', 'lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
+        $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
         // --- PENGELUARAN (EXPENSE) ---
         // Pengeluaran Bulan Ini
