@@ -94,14 +94,14 @@ class DashboardOverview extends BaseWidget
         // Piutang Bulan Ini (total sisa pembayaran dari invoice yang 'belum_lunas')
         $receivablesThisMonth = Payment::where('status', 'belum_lunas')
             ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
 
         // Piutang Bulan Lalu
         $receivablesLastMonth = Payment::where('status', 'belum_lunas')
             ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
 
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
