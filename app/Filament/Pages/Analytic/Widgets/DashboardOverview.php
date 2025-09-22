@@ -58,12 +58,12 @@ class DashboardOverview extends BaseWidget
         //Pendapatan Kotor
         $RevenueMonth = Payment::where('status', 'lunas')
             ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
         $RevenueLastMonth = Payment::where('status', 'lunas')
             ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('invoices.sisa_pembayaran');
+            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->sum('pembayaran');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
         // Pemasukan Bulan Lalu
