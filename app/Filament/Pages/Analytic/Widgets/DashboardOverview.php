@@ -151,7 +151,7 @@ class DashboardOverview extends BaseWidget
 
         // 3. Kalkulasi final
         $rawUtilization = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
-        $utilizationRate = round($rawUtilization); // Dibulatkan di sini
+        $utilizationRate = $rawUtilization; // Dibulatkan di sini
 
         // --- TAMPILAN WIDGET ---
         return [
