@@ -230,7 +230,7 @@ class OperationalSummary extends Page implements HasForms
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
-    public function getHeaderWidgets(): array
+    public function getFooterWidgets():  array
     {
         return [
             RecentTransactions::class
