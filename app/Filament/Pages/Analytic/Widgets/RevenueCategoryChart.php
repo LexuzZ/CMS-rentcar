@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Pages\Analytic\Widgets;
+
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Penalty;
@@ -39,19 +41,10 @@ class RevenueCategoryChart extends ChartWidget
         };
 
         // === Ambil data sesuai kategori DENGAN FILTER TANGGAL ===
-        $totalRevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->where('status', 'lunas')
+        $totalRevenueMonth = Booking::whereBetween('tanggal_keluar', [$startDate, $endDate])
+            // ->where('status', 'lunas')
             ->get()
-            ->sum(function ($payment) {
-                // Pastikan relasi ada sebelum diakses untuk menghindari error
-                if ($payment->invoice?->booking?->car) {
-                    $totalDays = $payment->invoice->booking->total_hari;
-                    $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-                    $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
-                    return $hargaHarianTotal - $hargaPokokTotal; // profit marketing
-                }
-                return 0;
-            });
+            ->sum('estimasi_biaya');
 
         $ongkir = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('pickup_dropOff');
 
