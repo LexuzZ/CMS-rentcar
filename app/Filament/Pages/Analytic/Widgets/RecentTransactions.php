@@ -26,7 +26,7 @@ class RecentTransactions extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('updated_at')
-                ->label('Tanggal')
+                ->label('Tanggal Pembayaran')
                 ->alignCenter()
                 ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('pembayaran')
