@@ -36,7 +36,7 @@ class OperationalSummary extends Page implements HasForms
     {
         $this->form->fill([
             'month' => now()->month,
-            'year'  => now()->year,
+            'year' => now()->year,
         ]);
 
         $this->loadSummaryData();
@@ -83,7 +83,7 @@ class OperationalSummary extends Page implements HasForms
     {
         $state = $this->form->getState();
         $month = $state['month'] ?? now()->month;
-        $year  = $state['year'] ?? now()->year;
+        $year = $state['year'] ?? now()->year;
 
         $startOfMonth = Carbon::create($year, $month, 1)->startOfMonth();
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
@@ -139,17 +139,17 @@ class OperationalSummary extends Page implements HasForms
         // --- Profit Garasi (Income Bersih dari harga harian - harga pokok)
         $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->sum(fn($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->sum(fn($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
         $pokokThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $pokokLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $pokokChange = $this->calculatePercentageChange($pokokThisMonth, $pokokLastMonth);
 
         // --- Profit Bersih (Income - Expense)
@@ -164,7 +164,11 @@ class OperationalSummary extends Page implements HasForms
             ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
-
+        $rentMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
+            ->sum('estimasi_biaya');
+        $rentLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
+            ->sum('estimasi_biaya');
+        $rentChange = $this->calculatePercentageChange($rentMonth, $rentLastMonth);
 
         $this->rincianTableData = [
             ['label' => 'Ongkir', 'value' => $ongkir, 'change' => $ongkirChange],
@@ -173,6 +177,7 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $overtimeChange],
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
             ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $washerChange],
+            ['label' => 'Pendapatan Sewa', 'value' => $rentMonth, 'change' => $rentChange],
 
         ];
         $this->summaryTableData = [
