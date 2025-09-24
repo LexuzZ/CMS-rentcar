@@ -124,8 +124,10 @@ class OperationalSummary extends Page implements HasForms
 
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')->get()
             ->sum('pembayaran');
         $RevenueLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->where('status', 'lunas')->get()
             ->sum('pembayaran');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
@@ -142,13 +144,13 @@ class OperationalSummary extends Page implements HasForms
             ->where('status', 'lunas')->get()
             ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
-        $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        $pokokThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
-        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->sum(fn ($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        $pokokLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->where('status', 'lunas')->get()
-            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
-        $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
+            ->sum(fn ($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        $pokokChange = $this->calculatePercentageChange($pokokThisMonth, $pokokLastMonth);
 
         // --- Profit Bersih (Income - Expense)
         $profitThisMonth = $incomeThisMonth - $expenseThisMonth;
@@ -175,6 +177,7 @@ class OperationalSummary extends Page implements HasForms
         ];
         $this->summaryTableData = [
             ['label' => 'Pendapatan Kotor', 'value' => $RevenueMonth, 'change' => $RevenueChange],
+            ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
