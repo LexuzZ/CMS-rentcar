@@ -7,6 +7,9 @@ use App\Models\Pengeluaran;
 use App\Models\Booking;
 use App\Models\Car;
 use Carbon\Carbon;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,10 +21,45 @@ class OperationalSummary extends Page
 
     protected static string $view = 'filament.pages.analytic.operational-summary';
 
+    public ?array $filterData = [];
     public array $summaryTableData = [];
     public string $reportTitle = '';
 
     public function mount(): void
+    {
+        $this->form->fill([
+            'month' => now()->month,
+            'year'  => now()->year,
+        ]);
+
+        $this->loadSummaryData();
+    }
+
+    public function form(Form $form): Form
+    {
+        $years = range(now()->year + 1, now()->year - 5);
+
+        return $form->schema([
+            Grid::make(2)->schema([
+                Select::make('month')
+                    ->label('Bulan')
+                    ->options(array_reduce(range(1, 12), function ($carry, $month) {
+                        $carry[$month] = Carbon::create(null, $month)->locale('id')->isoFormat('MMMM');
+                        return $carry;
+                    }, []))
+                    ->required()
+                    ->live(),
+
+                Select::make('year')
+                    ->label('Tahun')
+                    ->options(array_combine($years, $years))
+                    ->required()
+                    ->live(),
+            ]),
+        ])->statePath('filterData');
+    }
+
+    public function updatedFilterData(): void
     {
         $this->loadSummaryData();
     }
