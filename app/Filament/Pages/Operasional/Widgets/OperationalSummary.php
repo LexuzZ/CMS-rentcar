@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Analytic;
+namespace App\Filament\Pages\Operational\Widgets;
 
 use App\Models\Payment;
 use App\Models\Pengeluaran;
