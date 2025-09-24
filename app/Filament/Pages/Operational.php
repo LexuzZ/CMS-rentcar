@@ -23,7 +23,7 @@ class Operational extends Page
     protected static ?string $navigationGroup = 'Laporan & Accounting';
     protected static ?string $navigationLabel = 'Laporan Keuangan';
     protected ?string $heading = 'Ringkasan Keuangan Bulan Ini';
-    protected static string $view = 'filament.pages.operasional';
+    protected static string $view = 'filament.pages.operational';
     protected function getHeaderWidgets(): array
     {
         return [
