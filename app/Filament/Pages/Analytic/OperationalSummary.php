@@ -2,7 +2,10 @@
 
 namespace App\Filament\Pages\Analytic;
 
+use App\Filament\Pages\Analytic\Widgets\ArusKasTable;
+use App\Filament\Pages\Analytic\Widgets\Piutang;
 use App\Filament\Pages\Analytic\Widgets\RecentTransactions;
+use App\Filament\Pages\Analytic\Widgets\Revenue;
 use App\Models\Payment;
 use App\Models\Pengeluaran;
 use App\Models\Booking;
@@ -233,7 +236,10 @@ class OperationalSummary extends Page implements HasForms
     public function getFooterWidgets():  array
     {
         return [
-            RecentTransactions::class
+            Piutang::class,
+            Revenue::class,
+            RecentTransactions::class,
+            ArusKasTable::class
         ];
     }
 }

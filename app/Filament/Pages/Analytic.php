@@ -34,14 +34,14 @@ class Analytic extends Page
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
             BiayaInvestorPerGarasiChart::class,
-            RecentTransactions::class,
-            Revenue::class,
+            // RecentTransactions::class,
+            // Revenue::class,
             // OperationalSummary::class,
 
             // MoneyFlowChart::class,
 
-            Piutang::class,
-            ArusKasTable::class,
+            // Piutang::class,
+            // ArusKasTable::class,
 
         ];
     }
