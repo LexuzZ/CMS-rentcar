@@ -9,12 +9,16 @@ use App\Models\Car;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
-class OperationalSummary extends Page
+class OperationalSummary extends Page implements HasForms
 {
+    use InteractsWithForms;
+
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
     protected static ?string $title = 'Ringkasan Operasional Bulanan';
@@ -74,10 +78,14 @@ class OperationalSummary extends Page
 
     protected function loadSummaryData(): void
     {
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth = now()->endOfMonth();
-        $startOfLastMonth = now()->subMonth()->startOfMonth();
-        $endOfLastMonth = now()->subMonth()->endOfMonth();
+        $state = $this->form->getState();
+        $month = $state['month'] ?? now()->month;
+        $year  = $state['year'] ?? now()->year;
+
+        $startOfMonth = Carbon::create($year, $month, 1)->startOfMonth();
+        $endOfMonth = $startOfMonth->copy()->endOfMonth();
+        $startOfLastMonth = $startOfMonth->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth = $startOfMonth->copy()->subMonth()->endOfMonth();
 
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Payment::where('status', 'lunas')
@@ -115,14 +123,14 @@ class OperationalSummary extends Page
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
 
-        // --- Simpan ke tabel data
+
         $this->summaryTableData = [
             ['label' => 'Pendapatan Kotor', 'value' => $RevenueMonth, 'change' => $RevenueChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
             ['label' => 'Total Piutang', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
-            // ['label' => 'Utilisasi Armada SPT', 'value' => $utilizationRate . '%', 'change' => null],
+
         ];
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
