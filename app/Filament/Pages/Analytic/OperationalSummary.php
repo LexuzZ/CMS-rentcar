@@ -164,10 +164,18 @@ class OperationalSummary extends Page implements HasForms
             ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
-        $rentMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
-            ->sum('estimasi_biaya');
-        $rentLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
-            ->sum('estimasi_biaya');
+        $rentMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')
+            ->with('invoice.booking') // eager load supaya tidak N+1
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
+
+        $rentLastMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->where('status', 'lunas')
+            ->with('invoice.booking')
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
+
         $rentChange = $this->calculatePercentageChange($rentMonth, $rentLastMonth);
 
         $this->rincianTableData = [
