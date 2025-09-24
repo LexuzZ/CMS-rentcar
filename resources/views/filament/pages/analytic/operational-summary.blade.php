@@ -26,7 +26,7 @@
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-right">
+                                <td class="px-4 py-2 text-center">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
@@ -68,7 +68,7 @@
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-right">
+                                <td class="px-4 py-2 text-center">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
