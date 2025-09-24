@@ -12,7 +12,8 @@
             </x-slot>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <table
+                    class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
                             <th class="px-4 py-2 text-left">Rincian</th>
@@ -37,13 +38,15 @@
                                     @if (!is_null($row['change']))
                                         @php
                                             $isPositive = $row['change'] >= 0;
-                                            $changeColor = $isPositive ? 'text-success' : 'text-danger';
-                                            $icon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+                                            $badgeColor = $isPositive ? 'success' : 'danger';
+                                            $icon = $isPositive
+                                                ? 'heroicon-m-arrow-trending-up'
+                                                : 'heroicon-m-arrow-trending-down';
                                         @endphp
-                                        <span class="{{ $changeColor }} flex items-center justify-center gap-1">
+                                        <x-filament::badge :color="$badgeColor" class="flex items-center gap-1">
                                             <x-filament::icon :icon="$icon" class="w-4 h-4" />
                                             {{ number_format($row['change'], 1) }}%
-                                        </span>
+                                        </x-filament::badge>
                                     @else
                                         <span class="text-gray-400">-</span>
                                     @endif
@@ -54,7 +57,8 @@
                 </table>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <table
+                    class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
                             <th class="px-4 py-2 text-left">Kategori</th>
@@ -79,13 +83,15 @@
                                     @if (!is_null($row['change']))
                                         @php
                                             $isPositive = $row['change'] >= 0;
-                                            $changeColor = $isPositive ? 'text-success' : 'text-danger';
-                                            $icon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+                                            $badgeColor = $isPositive ? 'success' : 'danger';
+                                            $icon = $isPositive
+                                                ? 'heroicon-m-arrow-trending-up'
+                                                : 'heroicon-m-arrow-trending-down';
                                         @endphp
-                                        <span class="{{ $changeColor }} flex items-center justify-center gap-1">
+                                        <x-filament::badge :color="$badgeColor" class="flex items-center gap-1">
                                             <x-filament::icon :icon="$icon" class="w-4 h-4" />
                                             {{ number_format($row['change'], 1) }}%
-                                        </span>
+                                        </x-filament::badge>
                                     @else
                                         <span class="text-gray-400">-</span>
                                     @endif
