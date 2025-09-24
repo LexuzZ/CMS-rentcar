@@ -28,7 +28,7 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 @if ($row['change'] !== null)
-                                    <span class="{{ $row['change'] >= 0 ? 'text-emerald-600' : 'text-danger-600' }}">
+                                    <span class="{{ $row['change'] >= 0 ? 'text-success-600' : 'text-danger-600' }}">
                                         {{ number_format($row['change'], 1) }}%
                                     </span>
                                 @else
