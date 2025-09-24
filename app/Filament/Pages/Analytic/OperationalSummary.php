@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Analytic;
 
+use App\Filament\Pages\Analytic\Widgets\RecentTransactions;
 use App\Models\Payment;
 use App\Models\Pengeluaran;
 use App\Models\Booking;
@@ -228,5 +229,11 @@ class OperationalSummary extends Page implements HasForms
     public static function canAccess(): bool
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+    public function getHeaderWidgets(): array
+    {
+        return [
+            RecentTransactions::class
+        ];
     }
 }
