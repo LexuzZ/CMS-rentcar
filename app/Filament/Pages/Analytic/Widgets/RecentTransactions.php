@@ -26,20 +26,21 @@ class RecentTransactions extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('updated_at')
-                ->label('Tanggal Pembayaran')
+                ->label('Tgl Pembayaran')
                 ->alignCenter()
                 ->date('d M Y'), // Tambahkan format waktu
+            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
+                ->label('Penyewa')
+                ->alignCenter()
+                ->wrap()
+                ->width(100)
+                ->searchable(),
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
-            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
-                ->label('Nama Penyewa')
-                ->alignCenter()
-                ->wrap()
-                ->width(100)
-                ->searchable(),
+
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
                 ->badge()
