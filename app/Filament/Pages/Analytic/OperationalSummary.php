@@ -6,6 +6,8 @@ use App\Models\Payment;
 use App\Models\Pengeluaran;
 use App\Models\Booking;
 use App\Models\Car;
+use App\Models\Invoice;
+use App\Models\Penalty;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -27,6 +29,7 @@ class OperationalSummary extends Page implements HasForms
 
     public ?array $filterData = [];
     public array $summaryTableData = [];
+    public array $rincianTableData = [];
     public string $reportTitle = '';
 
     public function mount(): void
@@ -86,6 +89,14 @@ class OperationalSummary extends Page implements HasForms
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
         $startOfLastMonth = $startOfMonth->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $startOfMonth->copy()->subMonth()->endOfMonth();
+        $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('pickup_dropOff');
+
+        // Untuk penalty, asumsikan tanggal dibuatnya penalty relevan dengan periode
+        $klaimBbm = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $klaimOvertime = Penalty::where('klaim', 'overtime')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $klaimBaret = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $klaimWasher = Penalty::where('klaim', 'washer')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
 
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Payment::where('status', 'lunas')
@@ -124,6 +135,14 @@ class OperationalSummary extends Page implements HasForms
 
 
 
+        $this->rincianTableData = [
+            ['label' => 'Pendapatan Kotor', 'value' => $ongkir, 'change' => $RevenueChange],
+            ['label' => 'Profit Garasi', 'value' => $klaimBaret, 'change' => $incomeChange],
+            ['label' => 'Total Pengeluaran', 'value' => $klaimBbm, 'change' => $expenseChange],
+            ['label' => 'Laba Bersih', 'value' => $klaimOvertime, 'change' => $profitChange],
+            ['label' => 'Total Piutang', 'value' => $klaimOverland, 'change' => $receivablesChange],
+
+        ];
         $this->summaryTableData = [
             ['label' => 'Pendapatan Kotor', 'value' => $RevenueMonth, 'change' => $RevenueChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],

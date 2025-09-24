@@ -15,13 +15,13 @@
                 <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
-                            <th class="px-4 py-2 text-left">Kategori</th>
+                            <th class="px-4 py-2 text-left">Rincian</th>
                             <th class="px-4 py-2 text-right">Nilai</th>
                             <th class="px-4 py-2 text-center">Perubahan</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($summaryTableData as $row)
+                        @foreach ($rincianTableData as $row)
                             <tr class="border-b dark:border-gray-700">
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
