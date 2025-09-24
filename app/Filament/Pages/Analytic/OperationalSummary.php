@@ -214,11 +214,11 @@ class OperationalSummary extends Page implements HasForms
 
 
         ];
-        $this->costRentTableData = [
+        $this->costTableData = [
             ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
         ];
-        $this->costTableData = [
+        $this->costRentTableData = [
             ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
         ];
 
