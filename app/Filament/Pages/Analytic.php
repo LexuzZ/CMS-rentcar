@@ -36,7 +36,7 @@ class Analytic extends Page
             BiayaInvestorPerGarasiChart::class,
             RecentTransactions::class,
             Revenue::class,
-            OperationalSummary::class,
+            // OperationalSummary::class,
 
             // MoneyFlowChart::class,
 
