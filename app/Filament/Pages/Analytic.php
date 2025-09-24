@@ -20,7 +20,7 @@ class Analytic extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
-    protected static ?string $navigationLabel = 'Laporan Keuangan';
+    protected static ?string $navigationLabel = 'Statistik Keuangan';
     protected ?string $heading = 'Ringkasan Keuangan Bulan Ini';
     protected static string $view = 'filament.pages.analytic';
     protected function getHeaderWidgets(): array

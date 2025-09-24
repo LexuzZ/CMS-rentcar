@@ -23,7 +23,7 @@ class OperationalSummary extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
-    protected static ?string $title = 'Ringkasan Operasional';
+    protected static ?string $title = 'Laporan Keuangan';
 
     protected static string $view = 'filament.pages.analytic.operational-summary';
 
