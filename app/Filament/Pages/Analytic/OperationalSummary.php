@@ -97,7 +97,7 @@ class OperationalSummary extends Page implements HasForms
         // Untuk penalty, asumsikan tanggal dibuatnya penalty relevan dengan periode
         $klaimBbm = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
         $bbmLastMonth = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
-        $ongkirChange = $this->calculatePercentageChange($klaimBbm, $bbmLastMonth);
+        $bbmChange = $this->calculatePercentageChange($klaimBbm, $bbmLastMonth);
         $klaimOvertime = Penalty::where('klaim', 'overtime')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
         $klaimBaret = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
         $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
@@ -141,9 +141,9 @@ class OperationalSummary extends Page implements HasForms
 
 
         $this->rincianTableData = [
-            ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $RevenueChange],
+            ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
             ['label' => 'Klaim Kerusakan/Baret', 'value' => $klaimBaret, 'change' => $incomeChange],
-            ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $expenseChange],
+            ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $bbmChange],
             ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $profitChange],
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $receivablesChange],
             ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $receivablesChange],
