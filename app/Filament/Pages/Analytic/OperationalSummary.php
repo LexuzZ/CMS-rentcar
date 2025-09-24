@@ -90,9 +90,14 @@ class OperationalSummary extends Page implements HasForms
         $startOfLastMonth = $startOfMonth->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $startOfMonth->copy()->subMonth()->endOfMonth();
         $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('pickup_dropOff');
+        $ongkirLastMonth = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('pickup_dropOff');
+        $ongkirChange = $this->calculatePercentageChange($ongkir, $ongkirLastMonth);
 
         // Untuk penalty, asumsikan tanggal dibuatnya penalty relevan dengan periode
         $klaimBbm = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $bbmLastMonth = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $ongkirChange = $this->calculatePercentageChange($klaimBbm, $bbmLastMonth);
         $klaimOvertime = Penalty::where('klaim', 'overtime')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
         $klaimBaret = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
         $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
