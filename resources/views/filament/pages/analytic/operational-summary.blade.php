@@ -55,7 +55,7 @@
                         @endforeach
                         @foreach ($costRentTableData as $row)
                             <tr class="border-b dark:border-gray-700">
-                                <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
+                                <td class="px-4 py-2 font-medium text-gray-900 dark:text-gray-100">
                                     {{ $row['label'] }}
                                 </td>
                                 <td class="px-4 py-2 text-center">
