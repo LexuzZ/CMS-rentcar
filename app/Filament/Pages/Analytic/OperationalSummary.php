@@ -142,6 +142,13 @@ class OperationalSummary extends Page implements HasForms
             ->where('status', 'lunas')->get()
             ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
+        $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'lunas')->get()
+            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->where('status', 'lunas')->get()
+            ->sum(fn ($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
 
         // --- Profit Bersih (Income - Expense)
         $profitThisMonth = $incomeThisMonth - $expenseThisMonth;
@@ -158,8 +165,8 @@ class OperationalSummary extends Page implements HasForms
 
 
         $this->rincianTableData = [
-            ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
-            ['label' => 'Klaim Kerusakan/Baret', 'value' => $klaimBaret, 'change' => $baretChange],
+            ['label' => 'Ongkir', 'value' => $ongkir, 'change' => $ongkirChange],
+            ['label' => 'Klaim Baret', 'value' => $klaimBaret, 'change' => $baretChange],
             ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $bbmChange],
             ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $overtimeChange],
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
