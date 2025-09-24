@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Pages\Analytic\Widgets;
+
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Penalty;
@@ -66,10 +68,9 @@ class RevenueCategoryChart extends ChartWidget
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
             // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('pembayaran');
-        $PiutangMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+        $PiutangMonth = Booking::whereBetween('tanggal_keluar', [$startDate, $endDate])
             // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('pembayaran');
+            ->sum('estimasi_biaya');
 
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
