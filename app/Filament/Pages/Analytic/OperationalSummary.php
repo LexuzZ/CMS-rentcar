@@ -76,21 +76,6 @@ class OperationalSummary extends Page
             ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
-        // --- Utilisasi Armada
-        $jumlahMobilSPT = Car::where('garasi', 'SPT')->count();
-        $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
-        $totalHariTersedia = $jumlahMobilSPT * $jumlahHariDalamBulan;
-        $bookingsBulanIni = Booking::whereHas('car', fn ($q) => $q->where('garasi', 'SPT'))
-            ->where('tanggal_keluar', '<=', $endOfMonth)
-            ->where('tanggal_kembali', '>=', $startOfMonth)
-            ->get();
-        $totalHariDisewa = 0;
-        foreach ($bookingsBulanIni as $b) {
-            $actualStart = max(Carbon::parse($b->tanggal_keluar), $startOfMonth);
-            $actualEnd = min(Carbon::parse($b->tanggal_kembali), $endOfMonth);
-            $totalHariDisewa += $actualStart->diffInDays($actualEnd);
-        }
-        $utilizationRate = ($totalHariTersedia > 0) ? round(($totalHariDisewa / $totalHariTersedia) * 100) : 0;
 
         // --- Simpan ke tabel data
         $this->summaryTableData = [
@@ -99,7 +84,7 @@ class OperationalSummary extends Page
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
             ['label' => 'Total Piutang', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
-            ['label' => 'Utilisasi Armada SPT', 'value' => $utilizationRate . '%', 'change' => null],
+            // ['label' => 'Utilisasi Armada SPT', 'value' => $utilizationRate . '%', 'change' => null],
         ];
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
