@@ -30,6 +30,7 @@ class OperationalSummary extends Page implements HasForms
     public ?array $filterData = [];
     public array $summaryTableData = [];
     public array $rincianTableData = [];
+    public array $costTableData = [];
     public string $reportTitle = '';
 
     public function mount(): void
@@ -205,10 +206,19 @@ class OperationalSummary extends Page implements HasForms
         $this->summaryTableData = [
             ['label' => 'Pendapatan ', 'value' => $RevenueMonth, 'change' => $RevenueChange],
             ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
-            ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
-            ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
+
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
+
+
+        ];
+        $this->costTableData = [
+
+            ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+
+            ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
+
 
 
         ];
