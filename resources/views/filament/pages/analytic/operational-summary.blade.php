@@ -45,7 +45,7 @@
                                             {{ number_format($row['change'], 1) }}%
                                         </span>
                                     @else
-                                        <span class="text-success-600">-</span>
+                                        <span class="text-gray-400">-</span>
                                     @endif
                                 </td>
                             </tr>
