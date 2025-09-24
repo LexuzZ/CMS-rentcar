@@ -37,7 +37,7 @@
                                     @if (!is_null($row['change']))
                                         @php
                                             $isPositive = $row['change'] >= 0;
-                                            $changeColor = $isPositive ? 'text-success-600' : 'text-danger-600';
+                                            $changeColor = $isPositive ? 'text-success' : 'text-danger';
                                             $icon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
                                         @endphp
                                         <span class="{{ $changeColor }} flex items-center justify-center gap-1">
@@ -79,7 +79,7 @@
                                     @if (!is_null($row['change']))
                                         @php
                                             $isPositive = $row['change'] >= 0;
-                                            $changeColor = $isPositive ? 'text-success-600' : 'text-danger-600';
+                                            $changeColor = $isPositive ? 'text-success' : 'text-danger';
                                             $icon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
                                         @endphp
                                         <span class="{{ $changeColor }} flex items-center justify-center gap-1">
