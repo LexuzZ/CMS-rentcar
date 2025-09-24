@@ -67,20 +67,20 @@ class RevenueCategoryChart extends ChartWidget
         $RevenueMonth = Booking::whereBetween('tanggal_keluar', [$startDate, $endDate])
             // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('estimasi_biaya');
-        $PiutangMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->sum('pembayaran');
+        // $PiutangMonth = Payment::where('status', 'belum_lunas')
+        //     ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+        //     // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+        //     ->sum('pembayaran');
 
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
             'Profit Marketing', 'Ongkir', 'Klaim BBM', 'Klaim Baret',
-            'Klaim Overtime', 'Klaim Overland', 'Klaim Cuci Mobil', 'Pendapatan Kotor', 'Piutang',
+            'Klaim Overtime', 'Klaim Overland', 'Klaim Cuci Mobil', 'Pendapatan Sewa',
         ];
 
         $data = [
             $totalRevenueMonth, $ongkir, $klaimBbm, $klaimBaret,
-            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth, $PiutangMonth
+            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth,
         ];
 
         // Saring data dan label yang nilainya 0 agar chart lebih bersih
