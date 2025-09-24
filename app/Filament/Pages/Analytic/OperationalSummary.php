@@ -157,12 +157,12 @@ class OperationalSummary extends Page implements HasForms
         $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
 
-        // --- Piutang
-        // $receivablesThisMonth = Payment::where('status', 'belum_lunas')
-        //     ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
-        // $receivablesLastMonth = Payment::where('status', 'belum_lunas')
-        //     ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
-        // $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
+
+        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
+            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
 
 
@@ -178,10 +178,11 @@ class OperationalSummary extends Page implements HasForms
         $this->summaryTableData = [
             ['label' => 'Pendapatan Kotor', 'value' => $RevenueMonth, 'change' => $RevenueChange],
             ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
+            ['label' => 'Piutang Sewa', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
-            // ['label' => 'Total Piutang', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+
 
         ];
 
