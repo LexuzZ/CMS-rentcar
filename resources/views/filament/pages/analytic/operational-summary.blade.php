@@ -27,7 +27,7 @@
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-center">
+                                <td class="px-4 py-2 text-center dark:text-white">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
@@ -55,10 +55,10 @@
                         @endforeach
                         @foreach ($costRentTableData as $row)
                             <tr class="border-b dark:border-gray-700">
-                                <td class="px-4 py-2 font-medium text-gray-900 dark:text-gray-100">
+                                <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-center">
+                                <td class="px-4 py-2 text-center dark:text-white">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
@@ -103,7 +103,7 @@
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-center">
+                                <td class="px-4 py-2 text-center dark:text-white">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
@@ -134,7 +134,7 @@
                                 <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-4 py-2 text-center">
+                                <td class="px-4 py-2 text-center dark:text-white">
                                     @if (is_numeric($row['value']))
                                         Rp {{ number_format($row['value'], 0, ',', '.') }}
                                     @else
