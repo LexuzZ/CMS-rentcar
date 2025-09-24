@@ -177,6 +177,19 @@ class OperationalSummary extends Page implements HasForms
             ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
 
         $rentChange = $this->calculatePercentageChange($rentMonth, $rentLastMonth);
+        $rentPiutangMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->where('status', 'belum_lunas')
+            ->with('invoice.booking') // eager load supaya tidak N+1
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
+
+        $rentPiutangLastMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->where('status', 'belum_lunas')
+            ->with('invoice.booking')
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
+
+        $rentPiutangChange = $this->calculatePercentageChange($rentPiutangMonth, $rentPiutangLastMonth);
 
         $this->rincianTableData = [
             ['label' => 'Ongkir', 'value' => $ongkir, 'change' => $ongkirChange],
@@ -186,6 +199,7 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
             ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $washerChange],
             ['label' => 'Pendapatan Sewa', 'value' => $rentMonth, 'change' => $rentChange],
+            ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
 
         ];
         $this->summaryTableData = [
