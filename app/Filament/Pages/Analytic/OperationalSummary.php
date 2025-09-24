@@ -89,19 +89,38 @@ class OperationalSummary extends Page implements HasForms
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
         $startOfLastMonth = $startOfMonth->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $startOfMonth->copy()->subMonth()->endOfMonth();
+
+        // --- ONGKIR/PENGANTARAN
         $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('pickup_dropOff');
-        $ongkirLastMonth = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+        $ongkirLastMonth = Invoice::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
             ->sum('pickup_dropOff');
         $ongkirChange = $this->calculatePercentageChange($ongkir, $ongkirLastMonth);
 
-        // Untuk penalty, asumsikan tanggal dibuatnya penalty relevan dengan periode
+        // --- PENALTY BBM
         $klaimBbm = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
-        $bbmLastMonth = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $bbmLastMonth = Penalty::where('klaim', 'bbm')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('amount');
         $bbmChange = $this->calculatePercentageChange($klaimBbm, $bbmLastMonth);
+
+        // --- PENALTY OVERTIME
         $klaimOvertime = Penalty::where('klaim', 'overtime')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $overtimeLastMonth = Penalty::where('klaim', 'overtime')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('amount');
+        $overtimeChange = $this->calculatePercentageChange($klaimOvertime, $overtimeLastMonth);
+
+        // --- PENALTY BARET
         $klaimBaret = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $baretLastMonth = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('amount');
+        $baretChange = $this->calculatePercentageChange($klaimBaret, $baretLastMonth);
+
+        // --- PENALTY OVERLAND
         $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $overlandLastMonth = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('amount');
+        $overlandChange = $this->calculatePercentageChange($klaimOverland, $overlandLastMonth);
+
+        // --- PENALTY WASHER
         $klaimWasher = Penalty::where('klaim', 'washer')->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $washerLastMonth = Penalty::where('klaim', 'washer')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('amount');
+        $washerChange = $this->calculatePercentageChange($klaimWasher, $washerLastMonth);
+
 
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Payment::where('status', 'lunas')
@@ -142,11 +161,11 @@ class OperationalSummary extends Page implements HasForms
 
         $this->rincianTableData = [
             ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
-            ['label' => 'Klaim Kerusakan/Baret', 'value' => $klaimBaret, 'change' => $incomeChange],
+            ['label' => 'Klaim Kerusakan/Baret', 'value' => $klaimBaret, 'change' => $baretChange],
             ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $bbmChange],
-            ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $profitChange],
-            ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $receivablesChange],
-            ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $receivablesChange],
+            ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $overtimeChange],
+            ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
+            ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $washerChange],
 
         ];
         $this->summaryTableData = [
