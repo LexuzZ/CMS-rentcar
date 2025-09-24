@@ -23,7 +23,7 @@ class OperationalSummary extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
-    protected static ?string $title = 'Ringkasan Operasional Bulanan';
+    protected static ?string $title = 'Ringkasan Operasional';
 
     protected static string $view = 'filament.pages.analytic.operational-summary';
 
@@ -123,11 +123,9 @@ class OperationalSummary extends Page implements HasForms
 
 
         // --- Revenue (Pendapatan Kotor)
-        $RevenueMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
             ->sum('pembayaran');
-        $RevenueLastMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+        $RevenueLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
             ->sum('pembayaran');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
@@ -151,11 +149,11 @@ class OperationalSummary extends Page implements HasForms
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
 
         // --- Piutang
-        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
-        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
-        $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
+        // $receivablesThisMonth = Payment::where('status', 'belum_lunas')
+        //     ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        // $receivablesLastMonth = Payment::where('status', 'belum_lunas')
+        //     ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        // $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
 
 
@@ -173,7 +171,7 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
-            ['label' => 'Total Piutang', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+            // ['label' => 'Total Piutang', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
 
         ];
 

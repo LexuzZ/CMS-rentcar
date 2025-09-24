@@ -16,8 +16,8 @@
                     <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
                             <th class="px-4 py-2 text-left">Rincian</th>
-                            <th class="px-4 py-2 text-right">Nilai</th>
-                            <th class="px-4 py-2 text-center">Perubahan</th>
+                            <th class="px-4 py-2 text-center"></th>
+                            <th class="px-4 py-2 text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,8 +58,8 @@
                     <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
                             <th class="px-4 py-2 text-left">Kategori</th>
-                            <th class="px-4 py-2 text-right">Nilai</th>
-                            <th class="px-4 py-2 text-center">Perubahan</th>
+                            <th class="px-4 py-2 text-center"></th>
+                            <th class="px-4 py-2 text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
