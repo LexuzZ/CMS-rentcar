@@ -31,6 +31,7 @@ class OperationalSummary extends Page implements HasForms
     public array $summaryTableData = [];
     public array $rincianTableData = [];
     public array $costTableData = [];
+    public array $costRentTableData = [];
     public string $reportTitle = '';
 
     public function mount(): void
@@ -200,7 +201,7 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
             ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $washerChange],
             ['label' => 'Pendapatan Sewa', 'value' => $rentMonth, 'change' => $rentChange],
-            ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
+
 
         ];
         $this->summaryTableData = [
@@ -213,14 +214,12 @@ class OperationalSummary extends Page implements HasForms
 
 
         ];
-        $this->costTableData = [
-
+        $this->costRentTableData = [
             ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
-
             ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
-
-
-
+        ];
+        $this->costTableData = [
+            ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
         ];
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
