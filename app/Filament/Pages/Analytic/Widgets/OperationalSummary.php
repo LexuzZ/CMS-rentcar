@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Analytic;
+namespace App\Filament\Pages\Analytic\Widgets;
 
 use App\Models\Payment;
 use App\Models\Pengeluaran;
@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class OperationalSummary extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
-    protected static ?string $navigationGroup = 'Analitik';
-    protected static ?string $title = 'Ringkasan Operasional Bulanan';
+    // protected static ?string $navigationGroup = 'Analitik';
+    // protected static ?string $title = 'Ringkasan Operasional Bulanan';
 
     protected static string $view = 'filament.pages.analytic.operational-summary';
 

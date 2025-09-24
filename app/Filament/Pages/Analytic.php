@@ -8,6 +8,7 @@ use App\Filament\Pages\Analytic\Widgets\DashboardOverview;
 use App\Filament\Pages\Analytic\Widgets\ExpanseCategoryChart;
 use App\Filament\Pages\Analytic\Widgets\MobilPalingSepiChart;
 use App\Filament\Pages\Analytic\Widgets\MobilTerlarisChart;
+use App\Filament\Pages\Analytic\Widgets\OperationalSummary;
 use App\Filament\Pages\Analytic\Widgets\Piutang;
 use App\Filament\Pages\Analytic\Widgets\RecentTransactions;
 use App\Filament\Pages\Analytic\Widgets\Revenue;
@@ -35,6 +36,7 @@ class Analytic extends Page
             BiayaInvestorPerGarasiChart::class,
             RecentTransactions::class,
             Revenue::class,
+            OperationalSummary::class,
 
             // MoneyFlowChart::class,
 
