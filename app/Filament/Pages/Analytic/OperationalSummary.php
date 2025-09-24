@@ -136,11 +136,12 @@ class OperationalSummary extends Page implements HasForms
 
 
         $this->rincianTableData = [
-            ['label' => 'Pendapatan Kotor', 'value' => $ongkir, 'change' => $RevenueChange],
-            ['label' => 'Profit Garasi', 'value' => $klaimBaret, 'change' => $incomeChange],
-            ['label' => 'Total Pengeluaran', 'value' => $klaimBbm, 'change' => $expenseChange],
-            ['label' => 'Laba Bersih', 'value' => $klaimOvertime, 'change' => $profitChange],
-            ['label' => 'Total Piutang', 'value' => $klaimOverland, 'change' => $receivablesChange],
+            ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $RevenueChange],
+            ['label' => 'Klaim Kerusakan/Baret', 'value' => $klaimBaret, 'change' => $incomeChange],
+            ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $expenseChange],
+            ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $profitChange],
+            ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $receivablesChange],
+            ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $receivablesChange],
 
         ];
         $this->summaryTableData = [
