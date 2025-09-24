@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Operational\Widgets;
+namespace App\Filament\Pages\Analytic;
 
 use App\Models\Payment;
 use App\Models\Pengeluaran;
@@ -25,7 +25,7 @@ class OperationalSummary extends Page implements HasForms
     protected static ?string $navigationGroup = 'Laporan & Accounting';
     protected static ?string $title = 'Laporan Keuangan';
 
-    protected static string $view = 'filament.widgets.operational-summary';
+    protected static string $view = 'filament.pages.analytic.operational-summary';
 
     public ?array $filterData = [];
     public array $summaryTableData = [];
