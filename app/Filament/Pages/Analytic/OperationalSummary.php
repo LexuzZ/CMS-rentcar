@@ -233,7 +233,7 @@ class OperationalSummary extends Page implements HasForms
 
         $this->rincianTableData = [
             ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
-            ['label' => 'Klaim Baret', 'value' => $klaimBaret, 'change' => $baretChange],
+            ['label' => 'Klaim Baret/Kerusakan', 'value' => $klaimBaret, 'change' => $baretChange],
             ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $bbmChange],
             ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $overtimeChange],
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
