@@ -241,7 +241,7 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Pendapatan Sewa', 'value' => $rentMonth, 'change' => $rentChange],
         ];
         $this->rincianCostTableData = [
-            ['label' => 'Operasional Kantor', 'value' => $operational, 'change' => $operasionalChange],
+            ['label' => 'Operasional', 'value' => $operational, 'change' => $operasionalChange],
             ['label' => 'Gaji Karyawan', 'value' => $gaji, 'change' => $gajiChange],
             ['label' => 'Cicilan Mobil', 'value' => $cicilan, 'change' => $cicilanChange],
             ['label' => 'Perawatan Mobil', 'value' => $perawatan, 'change' => $perawatanChange],
