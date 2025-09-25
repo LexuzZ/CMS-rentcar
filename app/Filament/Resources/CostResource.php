@@ -44,6 +44,8 @@ class CostResource extends Resource
                         'operasional' => 'Operasional Kantor',
                         'cicilan' => 'Cicilan Mobil',
                         'setoran' => 'Setoran Investor',
+                        'rent' => 'Rent to Rent',
+                        'lainnya' => 'lainnya',
                     ])
                     ->required(),
                 DatePicker::make('tanggal_pengeluaran')
@@ -80,6 +82,8 @@ class CostResource extends Resource
                         'primary' => 'operasional',
                         'info' => 'cicilan',
                         'gray' => 'setoran',
+                        'info' => 'rent',
+                        'gray' => 'lainnya',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'gaji' => 'Gaji Karyawan',
@@ -88,6 +92,8 @@ class CostResource extends Resource
                         'operasional' => 'Operasional Kantor',
                         'cicilan' => 'Cicilan Mobil',
                         'setoran' => 'Setoran Investor',
+                        'rent' => 'Rent to Rent',
+                        'lainnya' => 'lainnya',
                         default => ucfirst($state),
                     }),
                 TextColumn::make('description')->label('Deskripsi')->alignCenter()->limit(1000)

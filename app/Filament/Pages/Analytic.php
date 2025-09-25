@@ -27,22 +27,12 @@ class Analytic extends Page
     {
         return [
             DashboardOverview::class,
-
             ExpanseCategoryChart::class,
             RevenueCategoryChart::class,
             \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
             BiayaInvestorPerGarasiChart::class,
-            // RecentTransactions::class,
-            // Revenue::class,
-            // OperationalSummary::class,
-
-            // MoneyFlowChart::class,
-
-            // Piutang::class,
-            // ArusKasTable::class,
-
         ];
     }
     public static function canAccess(): bool
