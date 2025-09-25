@@ -35,6 +35,7 @@ class OperationalSummary extends Page implements HasForms
     public array $summaryTableData = [];
     public array $rincianTableData = [];
     public array $costTableData = [];
+    public array $rincianCostTableData = [];
     public array $costRentTableData = [];
     public string $reportTitle = '';
 
@@ -95,6 +96,39 @@ class OperationalSummary extends Page implements HasForms
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
         $startOfLastMonth = $startOfMonth->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $startOfMonth->copy()->subMonth()->endOfMonth();
+
+        // Operasional Kantor
+        $operational = Pengeluaran::where('nama_pengeluaran', 'operasional')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $operationalLastMonth = Pengeluaran::where('nama_pengeluaran', 'operasional')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $operasionalChange = $this->calculatePercentageChange($operational, $operationalLastMonth);
+        // Gaji Karyawan
+        $gaji = Pengeluaran::where('nama_pengeluaran', 'gaji')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $gajiLastMonth = Pengeluaran::where('nama_pengeluaran', 'gaji')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $gajiChange = $this->calculatePercentageChange($gaji, $gajiLastMonth);
+        // Rent to Rent
+        $rent = Pengeluaran::where('nama_pengeluaran', 'rent')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $rentLastMonth = Pengeluaran::where('nama_pengeluaran', 'rent')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $rentChange = $this->calculatePercentageChange($rent, $rentLastMonth);
+        // Setoran Investor
+        $setoran = Pengeluaran::where('nama_pengeluaran', 'setoran')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $setoranLastMonth = Pengeluaran::where('nama_pengeluaran', 'setoran')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $setoranChange = $this->calculatePercentageChange($setoran, $setoranLastMonth);
+        // Cicilan Mobil
+        $cicilan = Pengeluaran::where('nama_pengeluaran', 'cicilan')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $cicilanLastMonth = Pengeluaran::where('nama_pengeluaran', 'cicilan')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $cicilanChange = $this->calculatePercentageChange($cicilan, $cicilanLastMonth);
+        // Pajak Mobil
+        $pajak = Pengeluaran::where('nama_pengeluaran', 'pajak')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $pajakLastMonth = Pengeluaran::where('nama_pengeluaran', 'pajak')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $pajakChange = $this->calculatePercentageChange($pajak, $pajakLastMonth);
+        // Perawatan Mobil
+        $perawatan = Pengeluaran::where('nama_pengeluaran', 'perawatan')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $perawatanLastMonth = Pengeluaran::where('nama_pengeluaran', 'perawatan')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $perawatanChange = $this->calculatePercentageChange($perawatan, $perawatanLastMonth);
+        // lainnya
+        $lainnya = Pengeluaran::where('nama_pengeluaran', 'lainnya')->whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
+        $lainnyaLastMonth = Pengeluaran::where('nama_pengeluaran', 'lainnya')->whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $lainnyaChange = $this->calculatePercentageChange($lainnya, $lainnyaLastMonth);
 
         // --- ONGKIR/PENGANTARAN
         $ongkir = Invoice::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('pickup_dropOff');
@@ -205,6 +239,16 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Klaim Keluar Pulau', 'value' => $klaimOverland, 'change' => $overlandChange],
             ['label' => 'Klaim Cuci Mobil', 'value' => $klaimWasher, 'change' => $washerChange],
             ['label' => 'Pendapatan Sewa', 'value' => $rentMonth, 'change' => $rentChange],
+        ];
+        $this->rincianCostTableData = [
+            ['label' => 'Operasional Kantor', 'value' => $operational, 'change' => $operasionalChange],
+            ['label' => 'Gaji Karyawan', 'value' => $gaji, 'change' => $gajiChange],
+            ['label' => 'Cicilan Mobil', 'value' => $cicilan, 'change' => $cicilanChange],
+            ['label' => 'Perawatan Mobil', 'value' => $perawatan, 'change' => $perawatanChange],
+            ['label' => 'Rent to Rent', 'value' => $rent, 'change' => $rentChange],
+            ['label' => 'Pajak', 'value' => $pajak, 'change' => $pajakChange],
+            ['label' => 'Setoran Investor', 'value' => $setoran, 'change' => $setoranChange],
+            ['label' => 'Lainnya', 'value' => $lainnya, 'change' => $lainnyaChange],
 
 
         ];
@@ -233,7 +277,7 @@ class OperationalSummary extends Page implements HasForms
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
-    public function getFooterWidgets():  array
+    public function getFooterWidgets(): array
     {
         return [
             RecentTransactions::class,
