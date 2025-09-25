@@ -232,7 +232,7 @@ class OperationalSummary extends Page implements HasForms
         $rentPiutangChange = $this->calculatePercentageChange($rentPiutangMonth, $rentPiutangLastMonth);
 
         $this->rincianTableData = [
-            ['label' => 'Ongkir', 'value' => $ongkir, 'change' => $ongkirChange],
+            ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
             ['label' => 'Klaim Baret', 'value' => $klaimBaret, 'change' => $baretChange],
             ['label' => 'Klaim BBM', 'value' => $klaimBbm, 'change' => $bbmChange],
             ['label' => 'Klaim Terlambat', 'value' => $klaimOvertime, 'change' => $overtimeChange],
@@ -264,7 +264,7 @@ class OperationalSummary extends Page implements HasForms
         ];
         $this->costTableData = [
             ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
-            ['label' => 'Total Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
+            ['label' => 'Total Kas Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
         ];
         $this->costRentTableData = [
             ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
