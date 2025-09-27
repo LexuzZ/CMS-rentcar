@@ -289,6 +289,7 @@ class BookingResource extends Resource
                                     'lepas_kunci' => 'Lepas Kunci',
                                     'dengan_driver' => 'Dengan Driver',
                                     'tour' => 'Paket Tour',
+                                    'kontrak' => 'Kontrak',
                                     default => '-'
                                 }),
                             Infolists\Components\TextEntry::make('driver.nama')->label('Staff Bertugas'),
