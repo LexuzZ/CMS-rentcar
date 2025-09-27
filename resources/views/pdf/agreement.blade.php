@@ -300,7 +300,7 @@
                     @endif
                     @if (!empty($foto_jaminan_sewa))
                         <td style="width:25%; text-align:center; padding:5px;">
-                            <h4 style="margin-bottom:5px;">Foto BBM</h4>
+                            <h4 style="margin-bottom:5px;">Foto Jaminan Sewa</h4>
                             <img src="{{ $foto_jaminan_sewa }}" alt="Foto Jaminan Sewa" style="max-width: 100%; height: auto;">
                         </td>
                     @endif
