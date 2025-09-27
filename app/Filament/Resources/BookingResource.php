@@ -189,17 +189,17 @@ class BookingResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Kirim ke Penyewa')
+                Infolists\Components\Section::make('Langkah Berikutnya') // <-- Bagian tombol aksi cepat
                     ->schema([
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('createInvoice')
-                                ->label('Buat Faktur Sewa')
+                                ->label('Terbitkan Tagihan')
                                 ->icon('heroicon-o-document-plus')
                                 ->color('primary')
                                 ->visible(fn(Booking $record) => !$record->invoice)
                                 ->url(fn(Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('addPayment')
-                                ->label('Tambah Pembayaran')
+                                ->label('Catat Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
                                 ->visible(fn(Booking $record) => $record->invoice && !$record->invoice->payment) // ✅ hanya muncul jika ada invoice, tapi belum ada payment
@@ -207,8 +207,8 @@ class BookingResource extends Resource
                                     'invoice_id' => $record->invoice->id
                                 ])),
                             Infolists\Components\Actions\Action::make('viewPayment')
-                                ->label('Edit Pembayaran')
-                                ->icon('heroicon-o-eye')
+                                ->label('Kelola Pembayaran')
+                                ->icon('heroicon-o-pencil-square')
                                 ->color('gray')
                                 // Hanya muncul jika pembayaran SUDAH ada
                                 ->visible(fn(Booking $record) => $record->invoice && $record->invoice->payment)

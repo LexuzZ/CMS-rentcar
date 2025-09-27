@@ -103,23 +103,23 @@ class InvoiceResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('')
+                Infolists\Components\Section::make('Langkah Berikutnya')
                     ->schema([
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('addPayment')
-                                ->label('Tambah Pembayaran')
+                                ->label('Catat Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
                                 ->visible(fn(Invoice $record) => $record && !$record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('viewPayment')
-                                ->label('Edit Pembayaran')
+                                ->label('Kelola Pembayaran')
                                 ->icon('heroicon-o-eye')
-                                ->color('gray')
+                                ->color('success')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
                             Infolists\Components\Actions\Action::make('copyInvoice')
-                                ->label('Copy Faktur')
+                                ->label('Copy Tagihan')
                                 ->icon('heroicon-o-clipboard-document')
                                 ->color('gray')
                                 ->modalHeading('Salin Detail Faktur')
@@ -169,11 +169,11 @@ class InvoiceResource extends Resource
                             Infolists\Components\Actions\Action::make('download')
                                 ->label('Unduh PDF')
                                 ->icon('heroicon-o-arrow-down-tray')
-                                ->color('gray')
+                                ->color('info')
                                 ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
                                 ->openUrlInNewTab(),
                             Infolists\Components\Actions\Action::make('sendWhatsapp')
-                                ->label('Faktur via WA')
+                                ->label('Kirim Tagihan via WA')
                                 ->icon('heroicon-o-chat-bubble-left-right')
                                 ->color('success')
                                 ->url(function (Invoice $record) {
