@@ -36,6 +36,7 @@ class EditAgreement extends EditRecord
                         'foto_dongkrak' => $data['foto_dongkrak'] ?? null,
                         'foto_pelunasan' => $data['foto_pelunasan'] ?? null,
                         'foto_serah_terima' => $data['foto_serah_terima'] ?? null,
+                        'foto_jaminan_sewa' => $data['foto_jaminan_sewa'] ?? null,
                     ]);
 
                     return response()->streamDownload(
