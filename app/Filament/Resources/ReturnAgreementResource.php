@@ -98,7 +98,12 @@ class ReturnAgreementResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make()->label('Form Kembali')->icon('heroicon-o-pencil')->color('success'),
+                // Tables\Actions\EditAction::make()->label('Form Kembali')->icon('heroicon-o-pencil')->color('success'),
+                Tables\Actions\EditAction::make()
+                    ->label('Form Kembali')
+                    ->icon('heroicon-o-pencil')
+                    ->color('success')
+                    ->button(),
             ])
             ->bulkActions([]);
     }
