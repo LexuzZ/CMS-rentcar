@@ -39,7 +39,7 @@ class EditReturnAgreement extends EditRecord
 
                     return response()->streamDownload(
                         fn() => print ($pdf->output()),
-                        "Perjanjian-Booking-{$this->getRecord()->customer->nama}.pdf"
+                        "form-kembali-{$this->getRecord()->customer->nama}.pdf"
                     );
                 }),
             Actions\Action::make('simpan')

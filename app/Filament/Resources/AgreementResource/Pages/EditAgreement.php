@@ -41,7 +41,7 @@ class EditAgreement extends EditRecord
 
                     return response()->streamDownload(
                         fn() => print ($pdf->output()),
-                        "Perjanjian-Booking-{$this->getRecord()->customer->nama}.pdf"
+                        "form-keluar-{$this->getRecord()->customer->nama}.pdf"
                     );
                 }),
             Actions\Action::make('simpan')
