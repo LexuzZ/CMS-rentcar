@@ -19,7 +19,7 @@ class ReturnAgreementResource extends Resource
     protected static ?string $model = Booking::class;
 
     // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Form Kembali';
     protected static ?string $navigationGroup = 'CheckList Garasi';
     protected static ?string $label = 'Form Kembali';
@@ -50,14 +50,6 @@ class ReturnAgreementResource extends Resource
 
             Forms\Components\Section::make('Data Pengembalian')
                 ->schema([
-                    Forms\Components\DatePicker::make('tanggal_kembali_real')
-                        ->label('Tanggal Kembali Real')
-                        ->required(),
-
-                    Forms\Components\TimePicker::make('waktu_kembali_real')
-                        ->label('Waktu Kembali Real')
-                        ->required(),
-
                     Forms\Components\View::make('filament.forms.camera-capture')
                         ->statePath('foto_kembali')
                         ->label('Foto Kondisi Mobil Saat Kembali'),
@@ -74,8 +66,8 @@ class ReturnAgreementResource extends Resource
                 Tables\Columns\TextColumn::make('customer.nama')->label('Penyewa')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('car.carModel.name')->label('Mobil')->sortable(),
                 Tables\Columns\TextColumn::make('car.nopol')->label('Nopol'),
-                Tables\Columns\TextColumn::make('tanggal_keluar')->date('d M Y')->label('Tanggal Keluar'),
-                Tables\Columns\TextColumn::make('tanggal_kembali')->date('d M Y')->label('Tanggal Kembali Estimasi'),
+                // Tables\Columns\TextColumn::make('tanggal_keluar')->date('d M Y')->label('Tanggal Keluar'),
+                Tables\Columns\TextColumn::make('tanggal_kembali')->date('d M Y')->label('Tanggal Kembali '),
             ])
             ->filters([])
             ->actions([
