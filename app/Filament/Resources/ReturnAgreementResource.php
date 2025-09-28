@@ -53,6 +53,36 @@ class ReturnAgreementResource extends Resource
                     Forms\Components\View::make('filament.forms.camera-capture')
                         ->statePath('foto_kembali')
                         ->label('Foto Kondisi Mobil Saat Kembali'),
+                    Forms\Components\Section::make('Foto Indikator BBM')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_bbm'), // State ini akan berisi data base64 dari foto
+                        ]),
+                    Forms\Components\Section::make('Foto Dongkrak')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_dongkrak'), // State ini akan berisi data base64 dari foto
+                        ]),
+                    Forms\Components\Section::make('Foto Pelunasan')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
+                        ]),
+                    Forms\Components\Section::make('Foto Serah Terima')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_serah_terima'), // State ini akan berisi data base64 dari foto
+                        ]),
+                    Forms\Components\Section::make('Foto Jaminan Sewa (Motor/STNK)')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_jaminan_sewa'), // State ini akan berisi data base64 dari foto
+                        ]),
                 ])
                 ->columns(2),
         ]);
