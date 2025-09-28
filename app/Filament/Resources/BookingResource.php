@@ -61,7 +61,7 @@ class BookingResource extends Resource
     public static function form(Form $form): Form
     {
         // PERBAIKAN: Mengembalikan skema form yang lengkap
-        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
 
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
