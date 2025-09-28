@@ -20,9 +20,10 @@ class AgreementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static ?string $navigationLabel = 'Checklist Garasi';
-    protected static ?string $label = 'Checklist';
-    protected static ?string $pluralLabel = 'Checklist Garasi';
+    protected static ?string $navigationLabel = 'Form Keluar';
+    protected static ?string $navigationGroup = 'CheckList Garasi';
+    protected static ?string $label = 'Form Keluar';
+    protected static ?string $pluralLabel = 'Form Keluar';
 
     public static function form(Form $form): Form
     {
