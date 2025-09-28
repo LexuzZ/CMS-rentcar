@@ -527,7 +527,7 @@ class BookingResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
     }
 
     public static function canEdit(Model $record): bool
