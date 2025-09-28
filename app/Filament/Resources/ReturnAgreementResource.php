@@ -50,9 +50,6 @@ class ReturnAgreementResource extends Resource
 
             Forms\Components\Section::make('Data Pengembalian')
                 ->schema([
-                    Forms\Components\View::make('filament.forms.camera-capture')
-                        ->statePath('foto_kembali')
-                        ->label('Foto Kondisi Mobil Saat Kembali'),
                     Forms\Components\Section::make('Foto Indikator BBM')
                         ->schema([
                             // Menggunakan View kustom untuk input kamera
