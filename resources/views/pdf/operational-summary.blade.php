@@ -76,6 +76,13 @@
                     {{-- <td>{{ $row['change'] ?? '-' }}%</td> --}}
                 </tr>
             @endforeach
+            @foreach ($costRentTableData as $row)
+                <tr>
+                    <td>{{ $row['label'] }}</td>
+                    <td>Rp {{ number_format($row['value'], 0, ',', '.') }}</td>
+                    {{-- <td>{{ $row['change'] ?? '-' }}%</td> --}}
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
@@ -89,6 +96,25 @@
             </tr>
         </thead>
         <tbody>
+            @foreach ($costTableData as $row)
+                <tr>
+                    <td>{{ $row['label'] }}</td>
+                    <td>
+                        @if (is_numeric($row['value']))
+                            Rp {{ number_format($row['value'], 0, ',', '.') }}
+                        @else
+                            {{ $row['value'] }}
+                        @endif
+                    </td>
+                    {{-- <td>
+                        @if (!is_null($row['change']))
+                            {{ number_format($row['change'], 1) }}%
+                        @else
+                            -
+                        @endif
+                    </td> --}}
+                </tr>
+            @endforeach
             @foreach ($summaryTableData as $row)
                 <tr>
                     <td>{{ $row['label'] }}</td>
