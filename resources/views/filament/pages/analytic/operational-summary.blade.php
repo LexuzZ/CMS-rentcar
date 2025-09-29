@@ -22,6 +22,15 @@
             <x-slot name="heading">
                 Ringkasan Operasional {{ $reportTitle }}
             </x-slot>
+             <div class="mt-4 pt-4">
+                <x-filament::button
+                    color="primary"
+                    wire:click="downloadPdf"
+                    icon="heroicon-o-printer"
+                >
+                    Cetak PDF
+                </x-filament::button>
+            </div>
 
             <div class="overflow-x-auto">
                 <table
