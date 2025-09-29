@@ -21,8 +21,7 @@
         <x-filament::section class="mt-6">
             <x-slot name="heading">
                 Ringkasan Operasional {{ $reportTitle }}
-            </x-slot>
-             <div class="mt-4 pt-4">
+                <div class="mt-4 pt-4">
                 <x-filament::button
                     color="primary"
                     wire:click="downloadPdf"
@@ -31,6 +30,8 @@
                     Cetak PDF
                 </x-filament::button>
             </div>
+            </x-slot>
+
 
             <div class="overflow-x-auto">
                 <table
