@@ -5,7 +5,7 @@
             {{ $this->form }}
         </x-filament::section> --}}
         <x-filament::section>
-            {{-- {{ $this->form }} --}}
+            {{ $this->form }}
             <div class="mt-4">
                 <x-filament::button
                     color="primary"
