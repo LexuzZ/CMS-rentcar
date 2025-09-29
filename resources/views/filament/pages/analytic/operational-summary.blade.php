@@ -10,8 +10,8 @@
         {{-- Ringkasan --}}
         <x-filament::section class="mt-6">
             <x-slot name="heading">
-                Ringkasan Operasional {{ $reportTitle }}
-                <div class="mt-4 pt-4 flex justify-end">
+                <div class="flex items-center justify-between w-full">
+                    <span>Ringkasan Operasional {{ $reportTitle }}</span>
                     <x-filament::button color="primary" wire:click="downloadPdf" icon="heroicon-o-printer">
                         Cetak PDF
                     </x-filament::button>
