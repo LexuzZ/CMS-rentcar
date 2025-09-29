@@ -37,7 +37,7 @@
 <body>
     <h2>Laporan Operasional - {{ $reportTitle }}</h2>
 
-    <h3>Rincian Biaya</h3>
+    <h3>Rincian Pengeluaran</h3>
     <table>
         <thead>
             <tr>
@@ -86,7 +86,7 @@
         </tbody>
     </table>
 
-    <h3>Ringkasan</h3>
+    <h3>Total Operasional</h3>
     <table>
         <thead>
             <tr>
