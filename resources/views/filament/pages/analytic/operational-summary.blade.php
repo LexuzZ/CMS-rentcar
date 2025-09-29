@@ -7,11 +7,7 @@
         <x-filament::section>
             {{ $this->form }}
             <div class="mt-4 pt-4">
-                <x-filament::button
-                    color="primary"
-                    wire:click="downloadPdf"
-                    icon="heroicon-o-printer"
-                >
+                <x-filament::button color="primary" wire:click="downloadPdf" icon="heroicon-o-printer">
                     Cetak PDF
                 </x-filament::button>
             </div>
@@ -20,16 +16,18 @@
         {{-- Ringkasan --}}
         <x-filament::section class="mt-6">
             <x-slot name="heading">
-                Ringkasan Operasional {{ $reportTitle }}
-                <div class="mt-4 pt-4 flex justify-end">
-                <x-filament::button
-                    color="primary"
-                    wire:click="downloadPdf"
-                    icon="heroicon-o-printer"
-                >
-                    Cetak PDF
-                </x-filament::button>
-            </div>
+                <div>
+                    <div class="flex justify-start">
+                        Ringkasan Operasional {{ $reportTitle }}
+                    </div>
+                    <div class="mt-4 pt-4 flex justify-end">
+                    <x-filament::button color="primary" wire:click="downloadPdf" icon="heroicon-o-printer">
+                        Cetak PDF
+                    </x-filament::button>
+                </div>
+                </div>
+
+
             </x-slot>
 
 
