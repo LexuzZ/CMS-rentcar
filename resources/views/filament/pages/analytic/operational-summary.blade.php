@@ -12,7 +12,7 @@
             <x-slot name="heading">
                 <div class="flex items-center justify-between w-full">
                     <span>Ringkasan Operasional {{ $reportTitle }}</span>
-                    <x-filament::button color="primary" wire:click="downloadPdf" icon="heroicon-o-printer">
+                    <x-filament::button color="success" wire:click="downloadPdf" icon="heroicon-o-printer">
                         Cetak PDF
                     </x-filament::button>
                 </div>
