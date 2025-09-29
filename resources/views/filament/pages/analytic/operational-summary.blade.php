@@ -4,6 +4,18 @@
         <x-filament::section>
             {{ $this->form }}
         </x-filament::section>
+        <x-filament::section>
+            {{ $this->form }}
+            <div class="mt-4">
+                <x-filament::button
+                    color="primary"
+                    wire:click="downloadPdf"
+                    icon="heroicon-o-printer"
+                >
+                    Cetak PDF
+                </x-filament::button>
+            </div>
+        </x-filament::section>
 
         {{-- Ringkasan --}}
         <x-filament::section class="mt-6">

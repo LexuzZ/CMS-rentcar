@@ -12,6 +12,7 @@ use App\Models\Booking;
 use App\Models\Car;
 use App\Models\Invoice;
 use App\Models\Penalty;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -271,6 +272,24 @@ class OperationalSummary extends Page implements HasForms
         ];
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
+    }
+     public function downloadPdf()
+    {
+        $this->loadSummaryData(); // refresh data
+
+        $pdf = Pdf::loadView('pdf.operational-summary', [
+            'reportTitle'        => $this->reportTitle,
+            'summaryTableData'   => $this->summaryTableData,
+            'rincianTableData'   => $this->rincianTableData,
+            'rincianCostTableData' => $this->rincianCostTableData,
+            'costTableData'      => $this->costTableData,
+            'costRentTableData'  => $this->costRentTableData,
+        ]);
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            "Laporan_Operasional_{$this->reportTitle}.pdf"
+        );
     }
 
     public static function canAccess(): bool
