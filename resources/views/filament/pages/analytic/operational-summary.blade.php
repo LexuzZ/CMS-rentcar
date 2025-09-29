@@ -21,7 +21,7 @@
         <x-filament::section class="mt-6">
             <x-slot name="heading">
                 Ringkasan Operasional {{ $reportTitle }}
-                <div class="mt-4 pt-4">
+                <div class="mt-4 pt-4 flex justify-end">
                 <x-filament::button
                     color="primary"
                     wire:click="downloadPdf"
