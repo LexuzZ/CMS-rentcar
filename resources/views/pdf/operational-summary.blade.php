@@ -43,7 +43,7 @@
             <tr>
                 <th>Kategori</th>
                 <th>Nilai</th>
-                <th>Perubahan</th>
+                {{-- <th>Perubahan</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -51,7 +51,7 @@
                 <tr>
                     <td>{{ $row['label'] }}</td>
                     <td>Rp {{ number_format($row['value'], 0, ',', '.') }}</td>
-                    <td>{{ $row['change'] ?? '-' }}%</td>
+                    {{-- <td>{{ $row['change'] ?? '-' }}%</td> --}}
                 </tr>
             @endforeach
         </tbody>
@@ -65,7 +65,7 @@
             <tr>
                 <th>Kategori</th>
                 <th>Nilai</th>
-                <th>Perubahan</th>
+                {{-- <th>Perubahan</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -73,7 +73,7 @@
                 <tr>
                     <td>{{ $row['label'] }}</td>
                     <td>Rp {{ number_format($row['value'], 0, ',', '.') }}</td>
-                    <td>{{ $row['change'] ?? '-' }}%</td>
+                    {{-- <td>{{ $row['change'] ?? '-' }}%</td> --}}
                 </tr>
             @endforeach
         </tbody>
@@ -85,7 +85,7 @@
             <tr>
                 <th>Kategori</th>
                 <th>Nilai</th>
-                <th>Perubahan</th>
+                {{-- <th>Perubahan</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -99,13 +99,13 @@
                             {{ $row['value'] }}
                         @endif
                     </td>
-                    <td>
+                    {{-- <td>
                         @if (!is_null($row['change']))
                             {{ number_format($row['change'], 1) }}%
                         @else
                             -
                         @endif
-                    </td>
+                    </td> --}}
                 </tr>
             @endforeach
         </tbody>
