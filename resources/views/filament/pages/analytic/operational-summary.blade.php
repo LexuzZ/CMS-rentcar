@@ -6,7 +6,7 @@
         </x-filament::section> --}}
         <x-filament::section>
             {{ $this->form }}
-            <div class="mt-4">
+            <div class="mt-4 pt-4">
                 <x-filament::button
                     color="primary"
                     wire:click="downloadPdf"
