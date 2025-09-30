@@ -20,6 +20,7 @@ class ServiceHistoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
+    protected static ?int $navigationSort = 3;
     protected static ?string $modelLabel = 'Riwayat Service';
     protected static ?string $pluralModelLabel = 'Riwayat Service';
 

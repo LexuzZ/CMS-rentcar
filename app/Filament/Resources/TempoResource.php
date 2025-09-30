@@ -25,6 +25,7 @@ class TempoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationLabel = 'Jatuh Tempo ';
     protected static ?string $modelLabel = 'Jatuh Tempo';
     protected static ?string $pluralModelLabel = 'Daftar Jatuh Tempo';
