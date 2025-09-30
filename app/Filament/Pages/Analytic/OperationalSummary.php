@@ -255,10 +255,8 @@ class OperationalSummary extends Page implements HasForms
         ];
         $this->summaryTableData = [
             ['label' => 'Pendapatan ', 'value' => $RevenueMonth, 'change' => $RevenueChange],
-            ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
-
+            // ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
-
             ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
 
 
