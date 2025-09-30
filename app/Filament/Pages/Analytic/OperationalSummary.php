@@ -193,10 +193,6 @@ class OperationalSummary extends Page implements HasForms
             ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
         $pokokChange = $this->calculatePercentageChange($pokokThisMonth, $pokokLastMonth);
 
-        // --- Profit Bersih (Income - Expense)
-        $profitThisMonth = $incomeThisMonth - $expenseThisMonth;
-        $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
-        $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
 
 
         $receivablesThisMonth = Payment::where('status', 'belum_lunas')
@@ -231,6 +227,10 @@ class OperationalSummary extends Page implements HasForms
             ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
 
         $rentPiutangChange = $this->calculatePercentageChange($rentPiutangMonth, $rentPiutangLastMonth);
+        // --- Profit Bersih (Income - Expense)
+        $profitThisMonth = $RevenueMonth - $expenseThisMonth;
+        $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
+        $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
 
         $this->rincianTableData = [
             ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
@@ -274,21 +274,21 @@ class OperationalSummary extends Page implements HasForms
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
     }
-     public function downloadPdf()
+    public function downloadPdf()
     {
         $this->loadSummaryData(); // refresh data
 
         $pdf = Pdf::loadView('pdf.operational-summary', [
-            'reportTitle'        => $this->reportTitle,
-            'summaryTableData'   => $this->summaryTableData,
-            'rincianTableData'   => $this->rincianTableData,
+            'reportTitle' => $this->reportTitle,
+            'summaryTableData' => $this->summaryTableData,
+            'rincianTableData' => $this->rincianTableData,
             'rincianCostTableData' => $this->rincianCostTableData,
-            'costTableData'      => $this->costTableData,
-            'costRentTableData'  => $this->costRentTableData,
+            'costTableData' => $this->costTableData,
+            'costRentTableData' => $this->costRentTableData,
         ]);
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
+            fn() => print ($pdf->output()),
             "Laporan_Operasional_{$this->reportTitle}.pdf"
         );
     }
