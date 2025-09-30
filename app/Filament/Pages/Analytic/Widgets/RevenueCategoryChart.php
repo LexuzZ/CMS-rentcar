@@ -80,7 +80,7 @@ class RevenueCategoryChart extends ChartWidget
 
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
-            'Profit Marketing',
+            'Profit Garasi',
             'Ongkir',
             'Klaim BBM',
             'Klaim Baret',
