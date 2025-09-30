@@ -32,7 +32,7 @@ class ExpanseCategoryChart extends ChartWidget
 
     }
 
-     protected function getData(): array
+    protected function getData(): array
     {
         $period = $this->filter;
 
@@ -46,24 +46,40 @@ class ExpanseCategoryChart extends ChartWidget
         // Ambil data pengeluaran berdasarkan kategori dalam rentang tanggal
         $expenseData = Pengeluaran::query()
             ->whereBetween('tanggal_pengeluaran', [$startDate, $endDate])
-            ->groupBy('nama_pengeluaran') // Ganti 'kategori' jika nama kolomnya berbeda
+            ->groupBy('nama_pengeluaran')
             ->select('nama_pengeluaran', DB::raw('SUM(pembayaran) as total'))
             ->pluck('total', 'nama_pengeluaran');
 
-        // Siapkan data untuk chart
-        $labels = $expenseData->keys()->toArray();
-        $data = $expenseData->values()->toArray();
-
-        // Gunakan palet warna yang sudah ditentukan
-        $colorPalette = [
-            '#6366F1', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981',
-            '#3B82F6', '#EF4444', '#84CC16', '#06B6D4', '#D946EF',
+        // Mapping label agar lebih readable
+        $labelMapping = [
+            'rent' => 'Rent to Rent',
+            'gaji' => 'Gaji Karyawan',
+            'operasional' => 'Operasional Kantor',
+            'pajak' => 'Pajak Mobil',
+            'cicilan' => 'Cicilan Mobil',
+            'perawatan' => 'Perawatan Mobil',
+            'setoran' => 'Setoran Investor',
+            'lainnya' => 'Lainnya',
         ];
 
-        // Petakan warna ke setiap label
-        $colors = collect($labels)->map(function ($label, $index) use ($colorPalette) {
-            return $colorPalette[$index % count($colorPalette)];
-        })->toArray();
+        $labels = $expenseData->keys()->map(fn($key) => $labelMapping[$key] ?? ucfirst($key))->toArray();
+        $data = $expenseData->values()->toArray();
+
+        // Palet warna tetap
+        $colorPalette = [
+            '#6366F1',
+            '#8B5CF6',
+            '#EC4899',
+            '#F59E0B',
+            '#10B981',
+            '#3B82F6',
+            '#EF4444',
+            '#84CC16',
+            '#06B6D4',
+            '#D946EF',
+        ];
+
+        $colors = collect($labels)->map(fn($label, $index) => $colorPalette[$index % count($colorPalette)])->toArray();
 
         return [
             'datasets' => [
@@ -76,6 +92,7 @@ class ExpanseCategoryChart extends ChartWidget
             'labels' => $labels,
         ];
     }
+
 
     protected function getType(): string
     {
