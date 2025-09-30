@@ -108,10 +108,10 @@ class DashboardOverview extends BaseWidget
 
         // --- LABA BERSIH (PROFIT) ---
         // Laba Bersih Bulan Ini
-        $profitThisMonth = $incomeThisMonth - $expenseThisMonth;
+        $profitThisMonth = $RevenueMonth - $expenseThisMonth;
 
         // Laba Bersih Bulan Lalu
-        $profitLastMonth = $incomeLastMonth - $expenseLastMonth;
+        $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
 
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
         // --- KALKULASI UTILISASI ARMADA (VERSI AKURAT) ---
