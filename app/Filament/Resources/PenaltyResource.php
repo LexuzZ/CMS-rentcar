@@ -56,7 +56,8 @@ class PenaltyResource extends Resource
                         'bbm' => 'BBM',
                         'overtime' => 'Overtime',
                         'overland' => 'Overland',
-                        'Washer' => 'Washer',
+                        'washer' => 'Washer',
+                        'event' => 'Event',
                         'no_penalty' => 'Tidak Ada Denda',
                     ])
                     ->default('no_penalty')
@@ -105,6 +106,7 @@ class PenaltyResource extends Resource
                         'warning' => 'overtime',
                         'info' => 'overland',
                         'primary' => 'washer',
+                        'success' => 'event',
                         'gray' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -113,6 +115,7 @@ class PenaltyResource extends Resource
                         'baret' => 'Baret/Kerusakan',
                         'overland' => 'Overland',
                         'washer' => 'Washer/Cuci Mobil',
+                        'event' => 'Event',
                         'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
@@ -129,6 +132,7 @@ class PenaltyResource extends Resource
                         'overtime' => 'Overtime',
                         'overland' => 'Overland',
                         'washer' => 'Washer/Cuci Mobil',
+                        'event' => 'Event',
                         'no_penalty' => 'Tidak Ada Denda',
                     ])
                     ->searchable(),
