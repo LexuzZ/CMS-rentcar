@@ -21,7 +21,8 @@ class ReturnAgreementResource extends Resource
     // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Form Kembali';
-    protected static ?string $navigationGroup = 'CheckList Garasi';
+    protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
+    protected static ?int $navigationSort = 1;
     protected static ?string $label = 'Form Kembali';
     protected static ?string $pluralLabel = 'Form Kembali';
 
