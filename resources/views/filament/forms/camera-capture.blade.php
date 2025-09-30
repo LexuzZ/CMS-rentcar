@@ -17,21 +17,47 @@
         accept="image/*"
         x-ref="fileInput"
         class="hidden"
-        @change="
+       @change="
             const file = $event.target.files[0];
             if (file) {
+                // Validasi ukuran file (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 2MB');
+                    $event.target.value = null;
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
+
                         const MAX_WIDTH = 800;
-                        const scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scaleSize;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        state = canvas.toDataURL('image/jpeg', 0.8);
+                        const MAX_HEIGHT = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Resize proporsional
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Kompres ke 70% quality
+                        state = canvas.toDataURL('image/jpeg', 0.7);
                     };
                     img.src = e.target.result;
                 };
