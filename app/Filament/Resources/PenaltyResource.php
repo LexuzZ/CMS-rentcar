@@ -106,7 +106,7 @@ class PenaltyResource extends Resource
                         'warning' => 'overtime',
                         'info' => 'overland',
                         'primary' => 'washer',
-                        'success' => 'event',
+                        '' => 'event',
                         'gray' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
