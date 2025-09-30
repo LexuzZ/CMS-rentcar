@@ -28,6 +28,7 @@ class CostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
+    protected static ?int $navigationSort = 4;
     protected static ?string $label = 'Kas Pengeluaran';
     protected static ?string $pluralLabel = 'Kas Pengeluaran';
 

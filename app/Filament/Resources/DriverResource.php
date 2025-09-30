@@ -26,6 +26,7 @@ class DriverResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Data';
+    protected static ?int $navigationSort = 2;
     protected static ?string $label = 'Staff';
     protected static ?string $pluralLabel = 'Data Staff';
 

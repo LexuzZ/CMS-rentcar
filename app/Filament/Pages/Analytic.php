@@ -20,6 +20,7 @@ class Analytic extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $navigationGroup = 'Laporan & Accounting';
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationLabel = 'Statistik Keuangan';
     protected ?string $heading = 'Ringkasan Keuangan Bulan Ini';
     protected static string $view = 'filament.pages.analytic';
