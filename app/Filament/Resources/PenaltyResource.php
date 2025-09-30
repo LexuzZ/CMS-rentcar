@@ -24,8 +24,8 @@ class PenaltyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
     protected static ?string $navigationLabel = 'Klaim Garasi';
-    protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
-    protected static ?int $navigationSort = 1;
+    // protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

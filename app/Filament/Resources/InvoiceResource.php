@@ -29,8 +29,8 @@ class InvoiceResource extends Resource
     protected static ?string $model = Invoice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
-    protected static ?int $navigationSort = 1;
+    // protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
+    protected static ?int $navigationSort = 2;
     protected static ?string $label = 'Faktur';
     protected static ?string $pluralLabel = 'Faktur Sewa';
 

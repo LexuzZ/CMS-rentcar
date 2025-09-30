@@ -21,8 +21,8 @@ class AgreementResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $navigationLabel = 'Form Keluar';
-    protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
-    protected static ?int $navigationSort = 1;
+    // protected static ?string $navigationGroup = 'Kelola Pesanan Sewa';
+    protected static ?int $navigationSort = 5;
     protected static ?string $label = 'Form Keluar';
     protected static ?string $pluralLabel = 'Form Keluar';
 
