@@ -67,20 +67,40 @@ class RevenueCategoryChart extends ChartWidget
         $RevenueMonth = Booking::whereBetween('tanggal_keluar', [$startDate, $endDate])
             // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->sum('estimasi_biaya');
-        // $PiutangMonth = Payment::where('status', 'belum_lunas')
-        //     ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-        //     // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-        //     ->sum('pembayaran');
+        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+            ->where('status', 'lunas')
+            ->with('invoice.booking') // eager load supaya tidak N+1
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
+        $piutang = Payment::whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+            ->where('status', 'belum_lunas')
+            ->with('invoice.booking') // eager load supaya tidak N+1
+            ->get()
+            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
 
         // === Mapping ke chart (tidak ada perubahan di sini) ===
         $labels = [
-            'Profit Marketing', 'Ongkir', 'Klaim BBM', 'Klaim Baret',
-            'Klaim Overtime', 'Klaim Overland', 'Klaim Cuci Mobil', 'Pendapatan Sewa',
+            'Profit Marketing',
+            'Ongkir',
+            'Klaim BBM',
+            'Klaim Baret',
+            'Klaim Overtime',
+            'Klaim Overland',
+            'Klaim Cuci Mobil',
+            'Pendapatan Sewa Mobil',
+            'Piutang Sewa Mobil',
         ];
 
         $data = [
-            $totalRevenueMonth, $ongkir, $klaimBbm, $klaimBaret,
-            $klaimOvertime, $klaimOverland, $klaimWasher, $RevenueMonth,
+            $totalRevenueMonth,
+            $ongkir,
+            $klaimBbm,
+            $klaimBaret,
+            $klaimOvertime,
+            $klaimOverland,
+            $klaimWasher,
+            $RevenueMonth,
+            $piutang
         ];
 
         // Saring data dan label yang nilainya 0 agar chart lebih bersih
@@ -92,8 +112,15 @@ class RevenueCategoryChart extends ChartWidget
         $finalData = $filteredData->pluck(0)->toArray();
 
         $colorPalette = [
-            '#8B5CF6', '#38BDF8', '#14B8A6', '#F59E0B', '#F97316',
-            '#64748B', '#6366F1', '#10B981' , '#F43F5E',
+            '#8B5CF6',
+            '#38BDF8',
+            '#14B8A6',
+            '#F59E0B',
+            '#F97316',
+            '#64748B',
+            '#6366F1',
+            '#10B981',
+            '#F43F5E',
         ];
 
         // $colors = collect($finalLabels)->map(function ($label, $index) use ($colorPalette) {
