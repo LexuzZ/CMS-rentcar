@@ -393,9 +393,9 @@ class BookingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
-                    ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
+                    ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'aktif' => 'Aktif',
+                        'disewa' => 'Disewa',
                         'booking' => 'Booking',
                         'selesai' => 'Selesai',
                         'batal' => 'Batal',
