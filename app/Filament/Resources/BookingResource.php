@@ -275,9 +275,9 @@ class BookingResource extends Resource
                         Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('status')
                                 ->badge()
-                                ->colors(['success' => 'aktif', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
+                                ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
                                 ->formatStateUsing(fn($state) => match ($state) {
-                                    'aktif' => 'Aktif',
+                                    'disewa' => 'Disewa',
                                     'booking' => 'Booking',
                                     'selesai' => 'Selesai',
                                     'batal' => 'Batal',
