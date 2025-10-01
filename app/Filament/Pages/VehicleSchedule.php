@@ -21,6 +21,7 @@ class VehicleSchedule extends Page implements HasForms
     protected static ?string $title = 'Jadwal Unit Mobil';
 
     protected static ?string $navigationLabel = 'Jadwal Unit';
+    protected static ?int $navigationSort = 7;
 
     protected static string $view = 'filament.pages.vehicle-schedule';
 

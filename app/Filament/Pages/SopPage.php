@@ -9,6 +9,7 @@ class SopPage extends Page
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static string $view = 'filament.pages.sop-page';
+    protected static ?int $navigationSort = 8;
 
 
 
