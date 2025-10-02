@@ -392,6 +392,13 @@ class BookingResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
+                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
+                TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter()->wrap()->width(50),
+                Tables\Columns\TextColumn::make('customer.nama')->label('Penyewa')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
+                    ->width(250),
+
+                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tgl Keluar')->date('d M Y')->alignCenter(),
+                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tgl Kembali')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()->alignCenter()
                     ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
@@ -402,13 +409,6 @@ class BookingResource extends Resource
                         'batal' => 'Batal',
                         default => ucfirst($state)
                     }),
-                Tables\Columns\TextColumn::make('car.nopol')->label('No Polisi')->alignCenter()->searchable(),
-                TextColumn::make('car.carModel.name')->label('Nama Mobil')->searchable()->alignCenter()->wrap()->width(50),
-                Tables\Columns\TextColumn::make('customer.nama')->label('Penyewa')->alignCenter()->searchable()->wrap() // <-- Tambahkan wrap agar teks turun
-                    ->width(250),
-
-                Tables\Columns\TextColumn::make('tanggal_keluar')->label('Tgl Keluar')->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('tanggal_kembali')->label('Tgl Kembali')->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
