@@ -77,9 +77,10 @@ class AdminPanelProvider extends PanelProvider
                 WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
                 OverdueTasksWidget::class,
+                MobilKeluar::class,
                 MobilKembali::class,
                 TempoDueToday::class,
-                MobilKeluar::class,
+
                 StaffRankingWidget::class,
                 MonthlyStaffRankingWidget::class,
                 DaftarTungguTable::class,
