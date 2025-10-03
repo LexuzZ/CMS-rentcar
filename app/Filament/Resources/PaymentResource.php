@@ -62,15 +62,31 @@ class PaymentResource extends Resource
                     ->required()
                     ->searchable()
                     ->live()
-                    ->afterStateUpdated(function (Forms\Set $set, ?string $state) {
-                        $invoice = Invoice::with('booking.penalty')->find($state);
+                    ->afterStateHydrated(function ($state, Forms\Set $set) {
+                        // ✅ jalan otomatis waktu form dibuka (edit)
+                        if ($state) {
+                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
 
-                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
-                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
 
-                        $set('pembayaran', $biayaSewa + $biayaAntarJemput + $totalDenda);
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                        }
+                    })
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        // ✅ jalan otomatis waktu invoice dipilih ulang
+                        if ($state) {
+                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
+
+                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                        }
                     }),
+
                 Forms\Components\DatePicker::make('tanggal_pembayaran')
                     ->required()
                     ->default(now()),
