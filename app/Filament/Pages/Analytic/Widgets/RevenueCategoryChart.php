@@ -63,6 +63,7 @@ class RevenueCategoryChart extends ChartWidget
         $klaimBaret = Penalty::where('klaim', 'baret')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
         $klaimOverland = Penalty::where('klaim', 'overland')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
         $klaimWasher = Penalty::where('klaim', 'washer')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $klaimEvent = Penalty::where('klaim', 'event')->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
 
         $RevenueMonth = Booking::whereBetween('tanggal_keluar', [$startDate, $endDate])
             // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
@@ -87,6 +88,7 @@ class RevenueCategoryChart extends ChartWidget
             'Klaim Overtime',
             'Klaim Overland',
             'Klaim Cuci Mobil',
+            'Klaim Event',
             'Pendapatan Sewa Mobil',
             'Piutang Sewa Mobil',
         ];
@@ -99,6 +101,7 @@ class RevenueCategoryChart extends ChartWidget
             $klaimOvertime,
             $klaimOverland,
             $klaimWasher,
+            $klaimEvent,
             $RevenueMonth,
             $piutang
         ];
