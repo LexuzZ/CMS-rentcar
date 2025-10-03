@@ -82,7 +82,19 @@ class PaymentResource extends Resource
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
-                    ->readOnly(),
+                    ->readOnly()
+                    ->afterStateHydrated(function (Forms\Set $set, $state, $record) {
+                        if ($record && $record->invoice) {
+                            $invoice = $record->invoice->load('booking.penalty');
+
+                            $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
+
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                        }
+                    }),
+
                 Forms\Components\Select::make('status')
                     ->options(['lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas'])
                     ->default('belum_lunas')
