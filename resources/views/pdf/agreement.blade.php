@@ -287,7 +287,7 @@
 
         {{-- FOTO-FOTO --}}
         {{-- FOTO-FOTO --}}
-        @if (!empty($foto_bbm) || !empty($foto_jaminan_sewa) || !empty($foto_dongkrak) || !empty($foto_pelunasan) || !empty($foto_serah_terima))
+        {{-- @if (!empty($foto_bbm) || !empty($foto_jaminan_sewa) || !empty($foto_dongkrak) || !empty($foto_pelunasan) || !empty($foto_serah_terima))
             <h3 style="margin-top: 20px; margin-bottom: 10px;">Dokumentasi Foto</h3>
 
             <table style="width:100%; border-collapse: collapse;">
@@ -329,7 +329,7 @@
                     @endif
                 </tr>
             </table>
-        @endif
+        @endif --}}
 
         <div style="margin-top:20px; page-break-inside: avoid;">
 
