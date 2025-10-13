@@ -104,6 +104,7 @@ class CostResource extends Resource
                 TextColumn::make('pembayaran')->label('Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->alignCenter(),
 
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
