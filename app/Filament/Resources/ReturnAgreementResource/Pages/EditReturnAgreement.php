@@ -28,7 +28,7 @@ class EditReturnAgreement extends EditRecord
                 ->action(function () {
                     $data = $this->form->getState();
 
-                    $pdf = Pdf::loadView('pdf.agreement', [
+                    $pdf = Pdf::loadView('pdf.returnAgreement', [
                         'booking' => $this->getRecord(),
                         'foto_bbm' => $data['foto_bbm'] ?? null,
                         'foto_dongkrak' => $data['foto_dongkrak'] ?? null,
