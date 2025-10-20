@@ -11,6 +11,7 @@ class Booking extends Model
         'customer_id',
         'driver_id',
         'paket',
+        'source',
         'tanggal_keluar',
         'tanggal_kembali',
         'waktu_keluar',
