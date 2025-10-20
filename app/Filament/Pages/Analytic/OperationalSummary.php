@@ -257,13 +257,13 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Pendapatan ', 'value' => $RevenueMonth, 'change' => $RevenueChange],
             // ['label' => 'Pendapatan Pokok', 'value' => $pokokThisMonth, 'change' => $pokokChange],
             ['label' => 'Profit Garasi', 'value' => $incomeThisMonth, 'change' => $incomeChange],
-            ['label' => 'Laba Bersih', 'value' => $profitThisMonth, 'change' => $profitChange],
+            ['label' => 'Kas Saldo', 'value' => $profitThisMonth, 'change' => $profitChange],
 
 
         ];
         $this->costTableData = [
             ['label' => 'Total Kas Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
-            ['label' => 'Piutang ', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+            ['label' => 'Belum Lunas', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
 
         ];
         $this->costRentTableData = [
