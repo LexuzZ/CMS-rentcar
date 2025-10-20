@@ -284,7 +284,7 @@ class BookingResource extends Resource
 
                 Infolists\Components\Section::make('Informasi Booking')
                     ->schema([
-                        Infolists\Components\Grid::make(3)->schema([
+                        Infolists\Components\Grid::make(4)->schema([
                             Infolists\Components\TextEntry::make('status')
                                 ->badge()
                                 ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
