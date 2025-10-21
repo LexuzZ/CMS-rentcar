@@ -69,11 +69,11 @@ class ReturnAgreementResource extends Resource
                             Forms\Components\View::make('filament.forms.camera-capture')
                                 ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
                         ]),
-                    Forms\Components\Section::make('Foto Serah Terima')
+                    Forms\Components\Section::make('Foto Ban Serep')
                         ->schema([
                             // Menggunakan View kustom untuk input kamera
                             Forms\Components\View::make('filament.forms.camera-capture')
-                                ->statePath('foto_serah_terima'), // State ini akan berisi data base64 dari foto
+                                ->statePath('foto_ban_serep'), // State ini akan berisi data base64 dari foto
                         ]),
                     // Forms\Components\Section::make('Foto Jaminan Sewa (Motor/STNK)')
                     //     ->schema([
