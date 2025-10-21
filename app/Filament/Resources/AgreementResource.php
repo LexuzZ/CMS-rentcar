@@ -129,59 +129,31 @@ class AgreementResource extends Resource
                     Forms\Components\View::make('filament.forms.signature-pad')
                         ->statePath('ttd'), // Kunci utama perbaikan ada di sini.
                 ]),
-            // Forms\Components\Section::make('Foto Indikator BBM')
-            //     ->schema([
-            //         // Menggunakan View kustom untuk input kamera
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->statePath('foto_bbm'), // State ini akan berisi data base64 dari foto
-            //     ]),
-            // Forms\Components\Section::make('Foto Dongkrak')
-            //     ->schema([
-            //         // Menggunakan View kustom untuk input kamera
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->statePath('foto_dongkrak'), // State ini akan berisi data base64 dari foto
-            //     ]),
-            // Forms\Components\Section::make('Foto Pelunasan')
-            //     ->schema([
-            //         // Menggunakan View kustom untuk input kamera
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
-            //     ]),
-            // Forms\Components\Section::make('Foto Serah Terima')
-            //     ->schema([
-            //         // Menggunakan View kustom untuk input kamera
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->statePath('foto_serah_terima'), // State ini akan berisi data base64 dari foto
-            //     ]),
-            // Forms\Components\Section::make('Foto Jaminan Sewa (Motor/STNK)')
-            //     ->schema([
-            //         // Menggunakan View kustom untuk input kamera
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->statePath('foto_jaminan_sewa'), // State ini akan berisi data base64 dari foto
-            //     ]),
-            // Forms\Components\Section::make('Foto Kendaraan & Dokumen')
-            //     ->schema([
-            //         // Foto BBM
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->label('Foto Indikator BBM')
-            //             ->statePath('foto_bbm'),
 
-            //         // Foto Dongkrak
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->label('Foto Dongkrak')
-            //             ->statePath('foto_dongkrak'),
 
-            //         // Foto Pelunasan
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->label('Foto Pelunasan')
-            //             ->statePath('foto_pelunasan'),
+            Forms\Components\Section::make('Foto Kendaraan & Dokumen')
+                ->schema([
+                    // Foto BBM
+                    Forms\Components\View::make('filament.forms.camera-capture')
+                        ->label('Foto Indikator BBM')
+                        ->statePath('foto_bbm'),
 
-            //         // Foto Serah Terima
-            //         Forms\Components\View::make('filament.forms.camera-capture')
-            //             ->label('Foto Serah Terima')
-            //             ->statePath('foto_serah_terima'),
-            //     ])
-            //     ->columns(2),
+                    // Foto Dongkrak
+                    Forms\Components\View::make('filament.forms.camera-capture')
+                        ->label('Foto Dongkrak')
+                        ->statePath('foto_dongkrak'),
+
+                    // Foto Pelunasan
+                    Forms\Components\View::make('filament.forms.camera-capture')
+                        ->label('Foto Pelunasan')
+                        ->statePath('foto_pelunasan'),
+
+                    // Foto Serah Terima
+                    Forms\Components\View::make('filament.forms.camera-capture')
+                        ->label('Foto Ban Serep')
+                        ->statePath('foto_ban_serep'),
+                ])
+                ->columns(2),
 
         ]);
     }
