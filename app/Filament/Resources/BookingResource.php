@@ -169,7 +169,7 @@ class BookingResource extends Resource
                     ->disabled($isNotAdmin),
 
                 Forms\Components\Select::make('driver_id')->label('Staff Bertugas')->relationship('driver', 'nama')->searchable()->preload()->nullable(),
-                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour', 'kontrak' => 'Kontrak'])->nullable()->disabled($isNotAdmin),
+                Forms\Components\Select::make('paket')->label('Paket Sewa')->options(['lepas_kunci' => 'Lepas Kunci', 'dengan_driver' => 'Dengan Driver', 'tour' => 'Paket Tour', 'kontrak' => 'Kontrak', 'perdua_belas_jam' => 'Per 12 Jam'])->nullable()->disabled($isNotAdmin),
                 Forms\Components\Select::make('source')->label('Sumber Orderan')->options([
                     'website' => 'Website',
                     'ro' => 'Repeat Order',
@@ -302,6 +302,7 @@ class BookingResource extends Resource
                                     'dengan_driver' => 'Dengan Driver',
                                     'tour' => 'Paket Tour',
                                     'kontrak' => 'Kontrak',
+                                    'perdua_belas_jam' => 'Per 12 Jam',
                                     default => '-'
                                 }),
                             Infolists\Components\TextEntry::make('source')
