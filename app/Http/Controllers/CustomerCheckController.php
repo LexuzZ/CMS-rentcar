@@ -48,8 +48,8 @@ class CustomerCheckController extends Controller
             'no_telp' => 'required|unique:customers,no_telp',
             'alamat' => 'required',
             'lisence' => 'nullable|unique:customers,lisence',
-            'identity_file' => 'nullable|image|max:2048',
-            'lisence_file' => 'nullable|image|max:2048',
+            'identity_file' => 'nullable|image|max:10240',
+            'lisence_file' => 'nullable|image|max:10240',
         ]);
 
         // handle upload
