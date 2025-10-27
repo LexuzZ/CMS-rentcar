@@ -51,22 +51,22 @@
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Penyewa</span>
             <span
-                class="font-medium text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
+                class="text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
         </div>
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">No. Telepon</span>
             <span
-                class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->customer->no_telp ?? 'N/A' }}</span>
+                class="text-xs text-gray-900 dark:text-white">{{ $record->customer->no_telp ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Vendor</span>
-            <span class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->car->garasi ?? 'N/A' }}</span>
+            <span class="text-xs text-gray-900 dark:text-white">{{ $record->car->garasi ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
-            <span class="font-medium text-gray-900 dark:text-white text-xs">
+            <span class=" text-gray-900 dark:text-white text-xs">
                 {{ $record->driver->nama ?? 'N/A' }}
             </span>
         </div>
@@ -74,13 +74,13 @@
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Lokasi Pengembalian</span>
             <span
-                class="text-xs text-gray-900 dark:text-white font-semibold">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
+                class="text-xs text-gray-900 dark:text-white">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between items-center">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Kembali</span>
             <div class="text-right">
-                <p class="font-semibold text-xs">
+                <p class="text-xs">
                     Pukul {{ \Carbon\Carbon::parse($record->waktu_kembali)->locale('id')->format('H:i') }} WITA
                 </p>
             </div>
@@ -89,7 +89,7 @@
         <div class="flex justify-between items-center">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
             <div class="text-right">
-                <p class="font-semibold text-xs">
+                <p class="text-xs">
                     {{ \Carbon\Carbon::parse($record->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y') }}
                 </p>
             </div>
