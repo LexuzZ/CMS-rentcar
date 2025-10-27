@@ -2,7 +2,7 @@
     {{-- Cek apakah ada data untuk hari ini --}}
     @if ($bookingsToday->isNotEmpty())
         <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Mobil Keluar Hari Ini</h3>
+            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-4">Mobil Keluar Hari Ini</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach ($bookingsToday as $record)
                     {{-- Menyertakan view kartu yang sudah ada --}}
