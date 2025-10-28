@@ -128,7 +128,7 @@
                 </div>
                 <div>
                     <label for="jam_kembali" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                        Pengantaran</label>
+                        Pengembalian</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
