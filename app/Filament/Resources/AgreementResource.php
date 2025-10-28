@@ -66,12 +66,7 @@ class AgreementResource extends Resource
                         ->label('No. Polisi')
                         ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
 
-                    Forms\Components\Placeholder::make('waktu_keluar')
-                        ->label('Waktu Keluar')
-                        ->content(
-                            fn(?Booking $record): string =>
-                            $record?->waktu_keluar ? Carbon::parse($record->waktu_keluar)->format('H:i') : '-'
-                        ),
+
                     Forms\Components\Placeholder::make('waktu_keluar')
                         ->label('Waktu Keluar')
                         ->content(
@@ -85,7 +80,9 @@ class AgreementResource extends Resource
                         ->label('Waktu Kembali')
                         ->content(
                             fn(?Booking $record): string =>
-                            $record?->waktu_kembali ? Carbon::parse($record->waktu_kembali)->format('H:i') : '-'
+                            $record?->waktu_kembali
+                            ? Carbon::parse($record->waktu_kembali)->format('H:i') . ' WITA'
+                            : '-'
                         ),
 
                     Forms\Components\Placeholder::make('total_hari')
