@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Tables\Filters\Filter;
 
 class AgreementResource extends Resource
@@ -25,6 +28,45 @@ class AgreementResource extends Resource
     protected static ?int $navigationSort = 5;
     protected static ?string $label = 'Form Keluar';
     protected static ?string $pluralLabel = 'Form Keluar';
+
+    public static function make(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Detail Booking')
+                    ->schema([
+                        TextEntry::make('id')->label('Booking ID'),
+                        TextEntry::make('customer.nama')->label('Nama Customer'),
+                        TextEntry::make('car.carModel.name')->label('Nama Mobil'),
+                        TextEntry::make('tanggal_keluar')
+                            ->label('Tanggal Keluar')
+                            ->formatStateUsing(fn($state) => $state ? Carbon::parse($state)->format('d M Y') : '-'),
+                        TextEntry::make('tanggal_kembali')
+                            ->label('Tanggal Kembali')
+                            ->formatStateUsing(fn($state) => $state ? Carbon::parse($state)->format('d M Y') : '-'),
+                        TextEntry::make('car.nopol')->label('No. Polisi'),
+                        TextEntry::make('waktu_keluar')
+                            ->label('Waktu Keluar')
+                            ->formatStateUsing(fn($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
+                        TextEntry::make('waktu_kembali')
+                            ->label('Waktu Kembali')
+                            ->formatStateUsing(fn($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
+                        TextEntry::make('total_hari')
+                            ->label('Total Hari')
+                            ->formatStateUsing(fn($state) => $state ? "{$state} Hari" : '-'),
+                        TextEntry::make('invoice.dp')
+                            ->label('Uang Muka (DP)')
+                            ->formatStateUsing(fn($state) => $state ? 'Rp ' . number_format($state, 0, ',', '.') : '-'),
+                        TextEntry::make('invoice.sisa_pembayaran')
+                            ->label('Sisa Pembayaran')
+                            ->formatStateUsing(fn($state) => $state ? 'Rp ' . number_format($state, 0, ',', '.') : '-'),
+                        TextEntry::make('invoice.total')
+                            ->label('Total Tagihan')
+                            ->formatStateUsing(fn($state) => $state ? 'Rp ' . number_format($state, 0, ',', '.') : '-'),
+                    ])
+                    ->columns(3),
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
