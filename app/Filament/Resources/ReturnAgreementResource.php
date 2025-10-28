@@ -6,6 +6,7 @@ use App\Filament\Resources\ReturnAgreementResource\Pages;
 use App\Filament\Resources\ReturnAgreementResource\RelationManagers;
 use App\Models\Booking;
 use App\Models\ReturnAgreement;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -43,11 +44,85 @@ class ReturnAgreementResource extends Resource
                         ->label('Nama Mobil')
                         ->content(fn(?Booking $record): string => $record?->car?->carModel->name ?? '-'),
 
+                    Forms\Components\Placeholder::make('tanggal_keluar')
+                        ->label('Tanggal Keluar')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->tanggal_keluar ? Carbon::parse($record->tanggal_keluar)->format('d M Y') : '-'
+                        ),
+
+                    Forms\Components\Placeholder::make('tanggal_kembali')
+                        ->label('Tanggal Kembali')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->tanggal_kembali ? Carbon::parse($record->tanggal_kembali)->format('d M Y') : '-'
+                        ),
+
                     Forms\Components\Placeholder::make('car.nopol')
                         ->label('No. Polisi')
                         ->content(fn(?Booking $record): string => $record?->car?->nopol ?? '-'),
+
+                    Forms\Components\Placeholder::make('waktu_keluar')
+                        ->label('Waktu Keluar')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->waktu_keluar ? Carbon::parse($record->waktu_keluar)->format('H:i') : '-'
+                        ),
+
+                    Forms\Components\Placeholder::make('waktu_kembali')
+                        ->label('Waktu Kembali')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->waktu_kembali ? Carbon::parse($record->waktu_kembali)->format('H:i') : '-'
+                        ),
+
+                    Forms\Components\Placeholder::make('total_hari')
+                        ->label('Total Hari')
+                        ->content(fn(?Booking $record): string => $record?->total_hari ? "{$record->total_hari} Hari" : '-'),
+
+                    Forms\Components\Placeholder::make('invoice.dp')
+                        ->label('Uang Muka (DP)')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->invoice?->dp ? 'Rp ' . number_format($record->invoice->dp, 0, ',', '.') : '-'
+                        ),
+
+                    Forms\Components\Placeholder::make('sisa_pembayaran')
+                        ->label('Sisa Pembayaran')
+                        ->content(function (?Booking $record): string {
+                            if (!$record) {
+                                return '-';
+                            }
+
+                            $biayaSewa = $record->estimasi_biaya ?? 0;
+                            $biayaAntarJemput = $record->invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $record->penalty?->sum('amount') ?? 0;
+                            $dp = $record->invoice?->dp ?? 0;
+
+                            $sisa = ($biayaSewa + $biayaAntarJemput + $totalDenda) - $dp;
+
+                            return 'Rp ' . number_format($sisa, 0, ',', '.');
+                        }),
+
+
+                    Forms\Components\Placeholder::make('total_tagihan')
+                        ->label('Total Tagihan')
+                        ->content(function (?Booking $record): string {
+                            if (!$record) {
+                                return '-';
+                            }
+
+                            $biayaSewa = $record->estimasi_biaya ?? 0;
+                            $biayaAntarJemput = $record->invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $record->penalty?->sum('amount') ?? 0;
+
+                            $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+
+                            return 'Rp ' . number_format($totalTagihan, 0, ',', '.');
+                        }),
+
                 ])
-                ->columns(2),
+                ->columns(3),
 
             Forms\Components\Section::make('Data Pengembalian')
                 ->schema([
