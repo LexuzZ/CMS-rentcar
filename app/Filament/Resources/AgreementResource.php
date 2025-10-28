@@ -109,12 +109,22 @@ class AgreementResource extends Resource
                         }),
 
 
-                    Forms\Components\Placeholder::make('invoice.total')
+                    Forms\Components\Placeholder::make('total_tagihan')
                         ->label('Total Tagihan')
-                        ->content(
-                            fn(?Booking $record): string =>
-                            $record?->invoice?->total ? 'Rp ' . number_format($record->invoice->total, 0, ',', '.') : '-'
-                        ),
+                        ->content(function (?Booking $record): string {
+                            if (!$record) {
+                                return '-';
+                            }
+
+                            $biayaSewa = $record->estimasi_biaya ?? 0;
+                            $biayaAntarJemput = $record->invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $record->penalty?->sum('amount') ?? 0;
+
+                            $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+
+                            return 'Rp ' . number_format($totalTagihan, 0, ',', '.');
+                        }),
+
                 ])
                 ->columns(3),
             // Forms\Components\Section::make('Foto Indikator BBM')
