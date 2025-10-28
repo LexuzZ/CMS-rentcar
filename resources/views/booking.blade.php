@@ -363,7 +363,7 @@ ${catatanText}
 Mohon segera cek ketersediaan unit. Terima kasih 🙏
 `;
 
-            let wa = "6282341509198"; // GANTI NOMOR ADMIN
+            let wa = "6281128948884"; // GANTI NOMOR ADMIN
             window.open(`https://wa.me/${wa}?text=${encodeURIComponent(message)}`);
         }
     </script>
