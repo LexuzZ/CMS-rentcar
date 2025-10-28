@@ -72,6 +72,14 @@ class AgreementResource extends Resource
                             fn(?Booking $record): string =>
                             $record?->waktu_keluar ? Carbon::parse($record->waktu_keluar)->format('H:i') : '-'
                         ),
+                    Forms\Components\Placeholder::make('waktu_keluar')
+                        ->label('Waktu Keluar')
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->waktu_keluar
+                            ? Carbon::parse($record->waktu_keluar)->format('H:i') . ' WITA'
+                            : '-'
+                        ),
 
                     Forms\Components\Placeholder::make('waktu_kembali')
                         ->label('Waktu Kembali')
