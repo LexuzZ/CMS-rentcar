@@ -62,7 +62,7 @@ class SumberOrderanChart extends ChartWidget
         ];
 
         // Siapkan label dan data
-        $labels = ['Website','Agent','Cust_garasi','Tiktok','Traveloka','Repeat Order','Tiket','Instagram','Facebook'];
+        $labels = ['Website','Agent','Cust. Garasi','Tiktok','Traveloka','Repeat Order','Tiket','Instagram','Facebook'];
         $values = [];
 
         foreach (['website','agent','cust_garasi','tiktok','traveloka','ro','tiket','instagram','facebook'] as $method) {
