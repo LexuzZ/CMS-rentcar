@@ -14,6 +14,7 @@ use App\Filament\Pages\Analytic\Widgets\Piutang;
 use App\Filament\Pages\Analytic\Widgets\RecentTransactions;
 use App\Filament\Pages\Analytic\Widgets\Revenue;
 use App\Filament\Pages\Analytic\Widgets\RevenueCategoryChart;
+use App\Filament\Pages\Analytic\Widgets\SumberOrderanChart;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,6 +33,7 @@ class Analytic extends Page
             ExpanseCategoryChart::class,
             RevenueCategoryChart::class,
             MetodePembayaranChart::class,
+            SumberOrderanChart::class,
             \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
