@@ -41,6 +41,7 @@ class MetodePembayaranChart extends ChartWidget
         $data = Payment::query()
             ->select('metode_pembayaran', DB::raw('SUM(pembayaran) as total'))
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
+            ->where('status', 'lunas')
             ->groupBy('metode_pembayaran')
             ->orderByDesc('total')
             ->get();
