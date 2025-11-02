@@ -39,9 +39,9 @@ class MetodePembayaranChart extends ChartWidget
 
         // Ambil data dari tabel payments berdasarkan tanggal_pembayaran
         $data = Payment::query()
-            ->select('metode', DB::raw('COUNT(*) as total'))
+            ->select('metode_pembayaran', DB::raw('COUNT(*) as total'))
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->groupBy('metode')
+            ->groupBy('metode_pembayaran')
             ->orderByDesc('total')
             ->get();
 
