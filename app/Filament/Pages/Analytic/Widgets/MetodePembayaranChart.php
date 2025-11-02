@@ -37,7 +37,7 @@ class MetodePembayaranChart extends ChartWidget
             'this_year' => now()->endOfYear(),
         };
 
-        // Ambil data dari tabel payments berdasarkan tanggal_pembayaran
+        // Query sesuai dengan tanggal_pembayaran
         $data = Payment::query()
             ->select('metode_pembayaran', DB::raw('COUNT(*) as total'))
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
@@ -45,32 +45,27 @@ class MetodePembayaranChart extends ChartWidget
             ->orderByDesc('total')
             ->get();
 
-        // Warna-warna yang rapi
+        // Warna per metode (disesuaikan dengan enum)
         $colors = [
-            'tunai' => '#2ecc71',     // Hijau
-            'transfer' => '#3498db',  // Biru
-            'qris' => '#f1c40f',      // Kuning
-            // 'lainnya' => '#95a5a6',   // Abu
+            'tunai'    => '#2ecc71', // hijau
+            'transfer' => '#3498db', // biru
+            'qris'     => '#f1c40f', // kuning
         ];
 
-        // Map data ke label dan warna
-        $labels = [];
+        // Siapkan label dan data
+        $labels = ['Tunai', 'Transfer', 'QRIS'];
         $values = [];
-        $bgColors = [];
 
-        foreach ($data as $row) {
-            $method = $row->metode;
-            $labels[] = ucfirst($method);
-            $values[] = $row->total;
-            $bgColors[] = $colors[$method] ?? '#7f8c8d';
+        foreach (['tunai', 'transfer', 'qris'] as $method) {
+            $values[] = $data->firstWhere('metode_pembayaran', $method)->total ?? 0;
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Jumlah Pembayaran',
+                    'label' => 'Jumlah Transaksi',
                     'data' => $values,
-                    'backgroundColor' => $bgColors,
+                    'backgroundColor' => array_values($colors),
                 ],
             ],
             'labels' => $labels,
