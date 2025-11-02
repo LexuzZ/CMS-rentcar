@@ -41,7 +41,7 @@ class MetodePembayaranChart extends ChartWidget
         $data = Payment::query()
             ->select('metode', DB::raw('COUNT(*) as total'))
             ->whereBetween('tanggal_pembayaran', [$startDate, $endDate])
-            ->groupBy('metode_pembayaran')
+            ->groupBy('metode')
             ->orderByDesc('total')
             ->get();
 
