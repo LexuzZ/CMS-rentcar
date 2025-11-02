@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class MetodePembayaranChart extends ChartWidget
 {
-    protected static ?string $heading = 'Metode Pembayaran Terpopuler';
+    protected static ?string $heading = 'Metode Pembayaran';
     protected static ?int $sort = 3;
     public ?string $filter = 'this_month';
 
