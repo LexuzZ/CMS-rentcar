@@ -87,7 +87,7 @@
         </div>
 
         <div class="flex justify-between items-center">
-            <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Kembali</span>
+            <span class="text-gray-500 dark:text-gray-400 text-xs">Tgl Kembali</span>
             <div class="text-right">
                 <p class="text-xs">
                     {{ \Carbon\Carbon::parse($record->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y') }}

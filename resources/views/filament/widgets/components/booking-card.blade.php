@@ -76,7 +76,7 @@
         </div>
 
         <div class="flex justify-between items-center">
-            <span class="text-gray-500 dark:text-gray-400 text-xs">Jadwal Keluar</span>
+            <span class="text-gray-500 dark:text-gray-400 text-xs">Waktu Keluar</span>
             <div class="text-right">
                 <p class=" text-xs">
                     Pukul {{ \Carbon\Carbon::parse($record->waktu_keluar)->locale('id')->format('H:i') }} WITA
@@ -85,7 +85,7 @@
         </div>
 
         <div class="flex justify-between items-center">
-            <span class="text-gray-500 dark:text-gray-400 text-xs">Tanggal Keluar</span>
+            <span class="text-gray-500 dark:text-gray-400 text-xs">Tgl Keluar</span>
             <div class="text-right">
                 <p class=" text-xs">
                     {{ \Carbon\Carbon::parse($record->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y') }}
