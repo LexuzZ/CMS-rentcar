@@ -16,7 +16,7 @@
     @if ($bookingsTomorrow->isNotEmpty())
         <div>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 pt-4">Mobil Keluar Besok</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
                 @foreach ($bookingsTomorrow as $record)
                     {{-- Menyertakan view kartu yang sudah ada --}}
                     @include('filament.widgets.components.booking-card', ['record' => $record, 'theme' => 'info'])
