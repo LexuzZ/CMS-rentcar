@@ -50,7 +50,7 @@ class MetodePembayaranChart extends ChartWidget
             'tunai' => '#2ecc71',     // Hijau
             'transfer' => '#3498db',  // Biru
             'qris' => '#f1c40f',      // Kuning
-            'lainnya' => '#95a5a6',   // Abu
+            // 'lainnya' => '#95a5a6',   // Abu
         ];
 
         // Map data ke label dan warna
@@ -59,7 +59,7 @@ class MetodePembayaranChart extends ChartWidget
         $bgColors = [];
 
         foreach ($data as $row) {
-            $method = $row->metode ?? 'lainnya';
+            $method = $row->metode;
             $labels[] = ucfirst($method);
             $values[] = $row->total;
             $bgColors[] = $colors[$method] ?? '#7f8c8d';
