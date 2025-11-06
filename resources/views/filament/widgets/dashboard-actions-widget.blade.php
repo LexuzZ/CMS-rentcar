@@ -8,7 +8,7 @@
         {{-- Tombol Anda --}}
         <x-filament::button
             {{-- Ganti SewaResource dengan nama Resource Anda yang sebenarnya --}}
-            href="{{ \App\Filament\Resources\SewaResource::getUrl('create') }}"
+            href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
             icon="heroicon-o-plus"
             tag="a"
         >
