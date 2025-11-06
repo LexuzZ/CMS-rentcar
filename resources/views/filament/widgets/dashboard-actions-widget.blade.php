@@ -3,18 +3,7 @@
         <x-slot name="heading">
             ✅ Akses Cepat
         </x-slot>
-        <x-filament::card>
-
-            {{-- Slot untuk Judul Widget --}}
-
-            {{-- Judul "Akses Cepat" --}}
-
-
-            {{-- Ini adalah Grid container --}}
-            {{-- Kita buat 3 kolom (grid-cols-3), Anda bisa ganti ke 4 atau 5 --}}
-            {{-- 2 kolom di semua ukuran layar --}}
-            {{-- 2 kolom di mobile, 4 kolom di medium (tablet) ke atas --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
+         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
 
                 {{-- TOMBOL 1: Form Sewa --}}
                 <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
@@ -69,7 +58,19 @@
                 </a>
 
             </div>
-        </x-filament::card>
+        {{-- <x-filament::card> --}}
+
+            {{-- Slot untuk Judul Widget --}}
+
+            {{-- Judul "Akses Cepat" --}}
+
+
+            {{-- Ini adalah Grid container --}}
+            {{-- Kita buat 3 kolom (grid-cols-3), Anda bisa ganti ke 4 atau 5 --}}
+            {{-- 2 kolom di semua ukuran layar --}}
+            {{-- 2 kolom di mobile, 4 kolom di medium (tablet) ke atas --}}
+
+        {{-- </x-filament::card> --}}
 
     </x-filament::section>
 
