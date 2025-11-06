@@ -19,43 +19,34 @@
                     Form Sewa
                 </span>
             </a>
-
-            {{-- TOMBOL 2: Transaksi (Contoh) --}}
-            {{-- Ganti 'SewaResource' dan 'index' dengan link Anda --}}
             <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
-                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
-                {{-- Ikon ganti jadi 'credit-card' --}}
-                <x-heroicon-o-credit-card class="w-10 h-10 text-primary-600" />
+                {{-- Ganti ikon di sini --}}
+                <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                    <x-heroicon-o-credit-card class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                     Transaksi
                 </span>
             </a>
+            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
-            {{-- TOMBOL 3: Approval (Contoh) --}}
-            <a href="#" {{-- Ganti link # --}}
-                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-
-                {{-- Ikon ganti jadi 'check-badge' --}}
-                <x-heroicon-o-check-badge class="w-10 h-10 text-primary-600" />
-
-                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Approval
-                </span>
-            </a>
-
-            {{-- Tambahkan tombol lain di sini (Kalender, Laporan, dll) --}}
-            {{-- Contoh Kalender --}}
-            <a href="#" {{-- Ganti link # --}}
-                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-
-                <x-heroicon-o-calendar-days class="w-10 h-10 text-primary-600" />
+                {{-- Ganti ikon di sini --}}
+                <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                     Kalender
                 </span>
             </a>
+
+
 
         </div>
         {{-- <x-filament::card> --}}
