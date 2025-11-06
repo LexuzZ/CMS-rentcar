@@ -26,7 +26,7 @@
                         <x-heroicon-o-document-plus class="w-8 h-8 text-info-500 dark:text-blue-400" />
                     </div>
 
-                    <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                         Form Sewa
                     </span>
                 </a>
