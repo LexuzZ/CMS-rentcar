@@ -47,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
             // ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(true)
             ->favicon(asset('semetonpesiar.png'))
-            //   ->brandLogo(asset('semetonpesiar.svg'))
+              ->brandLogo(asset('semetonpesiar.svg'))
             // ->domain('');
             ->colors([
                 'primary' => Color::Indigo,   // untuk tombol utama, link
