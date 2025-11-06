@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
 
             {{-- TOMBOL 1: Form Sewa --}}
-            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('create') }}"
+            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
                class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
@@ -23,7 +23,7 @@
 
             {{-- TOMBOL 2: Transaksi (Contoh) --}}
             {{-- Ganti 'SewaResource' dan 'index' dengan link Anda --}}
-            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
+            <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
                class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
                 {{-- Ikon ganti jadi 'credit-card' --}}
