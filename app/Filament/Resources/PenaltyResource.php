@@ -58,6 +58,8 @@ class PenaltyResource extends Resource
                         'overland' => 'Overland',
                         'washer' => 'Washer',
                         'event' => 'Event',
+                        'check_in' => 'Check In',
+                        'check_out' => 'Check Out',
                         'no_penalty' => 'Tidak Ada Denda',
                     ])
                     ->default('no_penalty')
@@ -106,7 +108,9 @@ class PenaltyResource extends Resource
                         'warning' => 'overtime',
                         'info' => 'overland',
                         'primary' => 'washer',
-                        '' => 'event',
+                        'success' => 'event',
+                        'gray' => 'Check In',
+                        'info' => 'Check Out',
                         'gray' => 'no_penalty',
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -116,6 +120,8 @@ class PenaltyResource extends Resource
                         'overland' => 'Overland',
                         'washer' => 'Washer/Cuci Mobil',
                         'event' => 'Event',
+                        'check_in' => 'Check In',
+                        'check_out' => 'Check Out',
                         'no_penalty' => 'Tidak Ada Denda',
                         default => ucfirst($state),
                     }),
@@ -133,6 +139,8 @@ class PenaltyResource extends Resource
                         'overland' => 'Overland',
                         'washer' => 'Washer/Cuci Mobil',
                         'event' => 'Event',
+                        'check_in' => 'Check In',
+                        'check_out' => 'Check Out',
                         'no_penalty' => 'Tidak Ada Denda',
                     ])
                     ->searchable(),
