@@ -3,74 +3,63 @@
         <x-slot name="heading">
             ✅ Akses Cepat
         </x-slot>
-         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
 
-                {{-- TOMBOL 1: Form Sewa --}}
-                <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
-                    class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+            {{-- TOMBOL 1: Form Sewa --}}
+            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
-                    {{-- Ganti ikon di sini --}}
-                    <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                        {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                        <x-heroicon-o-document-plus class="w-8 h-8 text-info-500 dark:text-blue-400" />
-                    </div>
+                {{-- Ganti ikon di sini --}}
+                <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                    <x-heroicon-o-document-plus class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                </div>
 
-                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Form Sewa
-                    </span>
-                </a>
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Form Sewa
+                </span>
+            </a>
 
-                {{-- TOMBOL 2: Transaksi (Contoh) --}}
-                {{-- Ganti 'SewaResource' dan 'index' dengan link Anda --}}
-                <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
-                    class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {{-- TOMBOL 2: Transaksi (Contoh) --}}
+            {{-- Ganti 'SewaResource' dan 'index' dengan link Anda --}}
+            <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
-                    {{-- Ikon ganti jadi 'credit-card' --}}
-                    <x-heroicon-o-credit-card class="w-10 h-10 text-primary-600" />
+                {{-- Ikon ganti jadi 'credit-card' --}}
+                <x-heroicon-o-credit-card class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Transaksi
-                    </span>
-                </a>
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Transaksi
+                </span>
+            </a>
 
-                {{-- TOMBOL 3: Approval (Contoh) --}}
-                <a href="#" {{-- Ganti link # --}}
-                    class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {{-- TOMBOL 3: Approval (Contoh) --}}
+            <a href="#" {{-- Ganti link # --}}
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
-                    {{-- Ikon ganti jadi 'check-badge' --}}
-                    <x-heroicon-o-check-badge class="w-10 h-10 text-primary-600" />
+                {{-- Ikon ganti jadi 'check-badge' --}}
+                <x-heroicon-o-check-badge class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Approval
-                    </span>
-                </a>
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Approval
+                </span>
+            </a>
 
-                {{-- Tambahkan tombol lain di sini (Kalender, Laporan, dll) --}}
-                {{-- Contoh Kalender --}}
-                <a href="#" {{-- Ganti link # --}}
-                    class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {{-- Tambahkan tombol lain di sini (Kalender, Laporan, dll) --}}
+            {{-- Contoh Kalender --}}
+            <a href="#" {{-- Ganti link # --}}
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
-                    <x-heroicon-o-calendar-days class="w-10 h-10 text-primary-600" />
+                <x-heroicon-o-calendar-days class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Kalender
-                    </span>
-                </a>
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Kalender
+                </span>
+            </a>
 
-            </div>
+        </div>
         {{-- <x-filament::card> --}}
 
-            {{-- Slot untuk Judul Widget --}}
-
-            {{-- Judul "Akses Cepat" --}}
-
-
-            {{-- Ini adalah Grid container --}}
-            {{-- Kita buat 3 kolom (grid-cols-3), Anda bisa ganti ke 4 atau 5 --}}
-            {{-- 2 kolom di semua ukuran layar --}}
-            {{-- 2 kolom di mobile, 4 kolom di medium (tablet) ke atas --}}
-
-        {{-- </x-filament::card> --}}
 
     </x-filament::section>
 
