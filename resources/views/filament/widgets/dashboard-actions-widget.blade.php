@@ -21,7 +21,7 @@
                     {{-- Ganti ikon di sini --}}
                     <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                         {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                        <x-heroicon-o-document-plus class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                        <x-heroicon-o-document-plus class="w-8 h-8 text-info-500 dark:text-gray-900" />
                     </div>
 
                     <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
