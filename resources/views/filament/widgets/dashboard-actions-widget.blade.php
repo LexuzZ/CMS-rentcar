@@ -19,7 +19,10 @@
                     class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
                     {{-- Ganti ikon di sini --}}
-                    <x-heroicon-o-document-plus class="w-10 h-10 text-danger-500" />
+                    <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                        {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                        <x-heroicon-o-document-plus class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    </div>
 
                     <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                         Form Sewa
