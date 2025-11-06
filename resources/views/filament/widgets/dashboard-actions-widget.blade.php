@@ -7,7 +7,7 @@
 
         {{-- Ini adalah Grid container --}}
         {{-- Kita buat 3 kolom (grid-cols-3), Anda bisa ganti ke 4 atau 5 --}}
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
 
             {{-- TOMBOL 1: Form Sewa --}}
             <a href="{{ \App\Filament\Resources\BookingResource::getUrl('create') }}"
