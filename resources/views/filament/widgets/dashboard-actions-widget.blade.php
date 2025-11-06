@@ -1,8 +1,8 @@
 <x-filament::widget>
     <x-filament::card>
         {{-- Judul "Akses Cepat" --}}
-        <x-slot name="heading">
-            Akses Cepat
+        <<x-slot name="heading">
+            <span class="text-danger-500">🚨 Tugas Terlambat</span>
         </x-slot>
 
         {{-- Ini adalah Grid container --}}
