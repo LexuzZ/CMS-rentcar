@@ -39,7 +39,7 @@
                     {{-- Ikon ganti jadi 'credit-card' --}}
                     <x-heroicon-o-credit-card class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                         Transaksi
                     </span>
                 </a>
@@ -51,7 +51,7 @@
                     {{-- Ikon ganti jadi 'check-badge' --}}
                     <x-heroicon-o-check-badge class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                         Approval
                     </span>
                 </a>
@@ -63,7 +63,7 @@
 
                     <x-heroicon-o-calendar-days class="w-10 h-10 text-primary-600" />
 
-                    <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
                         Kalender
                     </span>
                 </a>
