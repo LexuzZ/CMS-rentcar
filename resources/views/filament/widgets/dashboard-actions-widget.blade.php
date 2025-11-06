@@ -16,7 +16,7 @@
 
                 {{-- TOMBOL 1: Form Sewa --}}
                 <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
-                    class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm bg-white  dark:hover:bg-gray-900 transition-colors">
+                    class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm bg-gray-900  dark:hover:bg-gray-900 transition-colors">
 
                     {{-- Ganti ikon di sini --}}
                     <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
