@@ -19,7 +19,7 @@
                     class="flex flex-col items-center justify-center p-4 border rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
 
                     {{-- Ganti ikon di sini --}}
-                    <x-heroicon-o-document-plus class="w-10 h-10 text-success-600" />
+                    <x-heroicon-o-document-plus class="w-10 h-10 text-red-600" />
 
                     <span class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                         Form Sewa
