@@ -1,7 +1,7 @@
 <x-filament::widget>
     <x-filament::section>
         <x-slot name="heading">
-            ✅ Akses Cepat
+            🚀 Akses Cepat
         </x-slot>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
 
@@ -12,7 +12,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <x-heroicon-o-document-plus class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                     <div class="text-4xl">🧾</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -25,7 +25,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <x-heroicon-o-credit-card class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                    <div class="text-4xl">💳</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -38,7 +38,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                    <div class="text-4xl">📅</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -51,7 +51,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                    <div class="text-4xl">✅</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -64,7 +64,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                    <div class="text-4xl">📦</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
