@@ -10,6 +10,19 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+.fi-stats-overview-stat.color-info {
+    background-color: #3b82f6 !important;
+    color: white;
+}
+.fi-stats-overview-stat.color-success {
+    background-color: #22c55e !important;
+    color: white;
+}
+.fi-stats-overview-stat.color-warning {
+    background-color: #f97316 !important;
+    color: white;
+}
+
 
 
 
