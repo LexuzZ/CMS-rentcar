@@ -16,6 +16,7 @@ use App\Filament\Widgets\MonthlyStaffRankingWidget;
 use App\Filament\Widgets\OverdueTasksWidget;
 use App\Filament\Widgets\StaffRankingWidget;
 use App\Filament\Widgets\TempoDueToday;
+use App\Filament\Widgets\TransactionChart;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -79,6 +80,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
+                TransactionChart::class,
                 // OverdueTasksWidget::class,
                 // MobilKeluar::class,
                 // MobilKembali::class,
