@@ -33,7 +33,7 @@ class RecentTransactions extends BaseWidget
                 ->label('Penyewa')
                 ->alignCenter()
                 ->wrap()
-                ->width(100)
+                ->width(150)
                 ->searchable(),
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
