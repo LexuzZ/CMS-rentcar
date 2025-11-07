@@ -27,13 +27,13 @@ class Worksheet extends Page
         return [
             AvailableCarsOverview::class,
             DashboardMonthlySummary::class,
-            // InvoiceTable::class,
+            TempoDueToday::class,
             OverdueTasksWidget::class,
             MobilKeluar::class,
             MobilKembali::class,
             StaffRankingWidget::class,
             MonthlyStaffRankingWidget::class,
-            TempoDueToday::class,
+
 
 
             // \app\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
