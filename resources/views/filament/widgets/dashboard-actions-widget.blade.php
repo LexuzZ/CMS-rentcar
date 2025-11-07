@@ -32,7 +32,7 @@
                     Transaksi
                 </span>
             </a>
-            <a href="{{ VehicleSchedule::getUrl('index') }}"
+            <a href="{{ \App\Filament\Pages\VehicleSchedule::getUrl() }}"
                 class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
