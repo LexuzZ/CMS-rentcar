@@ -45,7 +45,7 @@
                     Kalender Unit
                 </span>
             </a>
-            <a href="{{ AgreementResource::getUrl('index') }}"
+            <a href="{{ \App\Filament\Resources\AgreementResource::getUrl('index') }}"
                 class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
@@ -58,7 +58,7 @@
                     Checklist Keluar
                 </span>
             </a>
-            <a href="{{ ReturnAgreementResource::getUrl('index') }}"
+            <a href="{{ \App\Filament\Resources\ReturnAgreementResource::getUrl('index') }}"
                 class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
