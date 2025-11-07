@@ -32,7 +32,7 @@
                     Transaksi
                 </span>
             </a>
-            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
+            <a href="{{ VehicleSchedule::getUrl('index') }}"
                 class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
@@ -42,7 +42,33 @@
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Kalender
+                    Kalender Unit
+                </span>
+            </a>
+            <a href="{{ AgreementResource::getUrl('index') }}"
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+
+                {{-- Ganti ikon di sini --}}
+                <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                </div>
+
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Checklist Keluar
+                </span>
+            </a>
+            <a href="{{ ReturnAgreementResource::getUrl('index') }}"
+                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+
+                {{-- Ganti ikon di sini --}}
+                <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                    {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
+                    <x-heroicon-o-calendar-days class="w-8 h-8 text-info-500 dark:text-blue-400" />
+                </div>
+
+                <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Checklist Kembali
                 </span>
             </a>
 
