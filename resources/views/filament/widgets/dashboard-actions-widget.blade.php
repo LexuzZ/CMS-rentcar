@@ -1,7 +1,7 @@
 <x-filament::widget>
     <x-filament::section>
         <x-slot name="heading">
-            🚀 Akses Cepat
+            🚀 Quick Menu
         </x-slot>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
 
