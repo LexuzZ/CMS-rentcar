@@ -47,7 +47,7 @@ class DashboardMonthlySummary extends BaseWidget
             Stat::make('Mobil Kembali Hari Ini', $returnsToday)
                 ->description('Jumlah mobil yang kembali hari ini')
                 ->icon('heroicon-o-bell-alert')
-                ->color($returnsToday > 0 ? 'warning' : 'gray'),
+                ->color($returnsToday > 0 ? 'warning' : 'success'),
            Stat::make('Mobil Disewa', $carsRented)
                 ->description("Jumlah Booking Bulan Ini")
                 ->icon('heroicon-o-truck')
