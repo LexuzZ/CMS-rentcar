@@ -77,17 +77,17 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                WidgetsAvailableCarsOverview::class,
+                // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
-                OverdueTasksWidget::class,
-                MobilKeluar::class,
-                MobilKembali::class,
-                TempoDueToday::class,
+                // OverdueTasksWidget::class,
+                // MobilKeluar::class,
+                // MobilKembali::class,
+                // TempoDueToday::class,
                 DashboardActionsWidget::class,
 
-                StaffRankingWidget::class,
-                MonthlyStaffRankingWidget::class,
-                DaftarTungguTable::class,
+                // StaffRankingWidget::class,
+                // MonthlyStaffRankingWidget::class,
+                // DaftarTungguTable::class,
             ])
             ->middleware([
                 EncryptCookies::class,
