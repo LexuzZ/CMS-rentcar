@@ -26,7 +26,7 @@ class Worksheet extends Page
     {
         return [
             AvailableCarsOverview::class,
-            DashboardMonthlySummary::class,
+            // DashboardMonthlySummary::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
             MobilKeluar::class,
