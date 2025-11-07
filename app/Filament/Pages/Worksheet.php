@@ -27,7 +27,7 @@ class Worksheet extends Page
         return [
             AvailableCarsOverview::class,
             DashboardMonthlySummary::class,
-            InvoiceTable::class,
+            // InvoiceTable::class,
             OverdueTasksWidget::class,
             MobilKeluar::class,
             MobilKembali::class,
