@@ -51,7 +51,7 @@ class DashboardMonthlySummary extends BaseWidget
            Stat::make('Mobil Disewa', $carsRented)
                 ->description("Jumlah Booking Bulan Ini")
                 ->icon('heroicon-o-truck')
-                ->color('primary'),
+                ->color('info'),
 
 
 
