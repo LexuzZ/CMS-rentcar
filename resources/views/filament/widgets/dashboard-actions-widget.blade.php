@@ -64,7 +64,7 @@
                 {{-- Ganti ikon di sini --}}
                 <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
-                    <div class="text-4xl">📦</div>
+                    <div class="text-6xl">📦</div>
                 </div>
 
                 <span class="mt-2 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
