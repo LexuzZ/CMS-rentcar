@@ -3,7 +3,7 @@
         <x-slot name="heading">
             🚀 Quick Menu
         </x-slot>
-        <div class="flex flex-wrap gap-2">
+        <div class="quick-menu-grid">
             {{-- TOMBOL 1: Form Sewa --}}
             <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
                 class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
@@ -69,5 +69,24 @@
                 </span>
             </a>
         </div>
+        <style>
+            .quick-menu-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+
+            @media (min-width: 768px) {
+                .quick-menu-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .quick-menu-grid {
+                    grid-template-columns: repeat(5, 1fr);
+                }
+            }
+        </style>
     </x-filament::section>
 </x-filament::widget>
