@@ -37,7 +37,7 @@
                                             : 'heroicon-m-arrow-trending-down';
                                     @endphp
                                     <x-filament::badge :color="$badgeColor" size="xs" class="flex items-center gap-1">
-                                        <x-filament::icon :icon="$icon" class="w-5 h-8" />
+                                        <x-filament::icon :icon="$icon" class="w-8 h-3" />
                                         {{ number_format($stat['change'], 1) }}%
                                     </x-filament::badge>
                                 @endif
