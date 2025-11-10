@@ -19,6 +19,7 @@ class ArusKasTable extends BaseWidget
 {
     protected int|string|array $columnSpan = 'full';
     protected static ?string $heading = 'Arus Kas Perusahaan';
+    protected int|string|array $perPage = 5;
 
     public function table(Table $table): Table
     {
@@ -133,5 +134,9 @@ class ArusKasTable extends BaseWidget
                     }),
 
             ]);
+    }
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [5, 10]; // 3 sebagai default
     }
 }
