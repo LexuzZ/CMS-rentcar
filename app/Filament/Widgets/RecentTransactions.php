@@ -67,6 +67,6 @@ class RecentTransactions extends BaseWidget
     // Opsional: Jika ingin custom pagination options
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [2]; // 3 sebagai default
+        return [2,5]; // 3 sebagai default
     }
 }
