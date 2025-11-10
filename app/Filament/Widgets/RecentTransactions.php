@@ -16,7 +16,7 @@ class RecentTransactions extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        return Payment::query()->paginate($this->perPage)
+        return Payment::query()
             ->whereDate('tanggal_pembayaran', today())
             ->latest('created_at');
     }
