@@ -10,36 +10,25 @@ use Illuminate\Database\Eloquent\Builder;
 class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
-    protected static ?int $sort = 2; // Sesuaikan urutan widget di dashboard
-    protected int|string|array $columnSpan = 'half';
-    protected function getTablePaginationPageSize(): int
-{
-    return 3;
-}
-
+    protected static ?int $sort = 2;
+    protected int|string|array $columnSpan = 'third'; // ⬅️ ubah ke 1/3
 
     protected function getTableQuery(): Builder
     {
-        // PERBAIKAN: Query diubah untuk hanya mengambil data hari ini
         return Payment::query()
-            ->whereDate('tanggal_pembayaran', today()) // Filter berdasarkan tanggal hari ini
-            ->latest('created_at'); // Urutkan berdasarkan waktu pembuatan terbaru
-
+            ->whereDate('tanggal_pembayaran', today())
+            ->latest('created_at');
     }
 
     protected function getTableColumns(): array
     {
         return [
-            // Tables\Columns\TextColumn::make('updated_at')
-            //     ->label('Tgl Pembayaran')
-            //     ->alignCenter()
-            //     ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->alignCenter()
                 ->wrap()
                 ->width(200),
-                // ->searchable()
+
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
@@ -63,5 +52,9 @@ class RecentTransactions extends BaseWidget
                 }),
         ];
     }
-}
 
+    protected function getTablePaginationPageSize(): int
+    {
+        return 3; // ⬅️ hanya 3 data per halaman
+    }
+}
