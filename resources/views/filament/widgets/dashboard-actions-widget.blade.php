@@ -84,7 +84,7 @@
 
             @media (min-width: 1024px) {
                 .quick-menu-grid {
-                    grid-template-columns: repeat(5, 1fr);
+                    grid-template-columns: repeat(3, 1fr);
                 }
             }
         </style>
