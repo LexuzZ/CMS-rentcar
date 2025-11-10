@@ -12,6 +12,7 @@ class RecentTransactions extends BaseWidget
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 1; // Sesuaikan urutan widget di dashboard
     protected int|string|array $columnSpan = 'full';
+    protected int|string|array $perPage = 5;
 
     protected function getTableQuery(): Builder
     {
@@ -57,6 +58,10 @@ class RecentTransactions extends BaseWidget
                     default => ucfirst($state),
                 }),
         ];
+    }
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [5, 10]; // 3 sebagai default
     }
 }
 
