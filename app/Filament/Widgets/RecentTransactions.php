@@ -17,7 +17,8 @@ class RecentTransactions extends BaseWidget
     {
         return Payment::query()
             ->whereDate('tanggal_pembayaran', today())
-            ->latest('created_at');
+            ->latest('created_at')
+            ->limit(3);
     }
 
     protected function getTableColumns(): array
