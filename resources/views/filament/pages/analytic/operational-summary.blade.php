@@ -21,7 +21,7 @@
                                 </span>
                             </div>
 
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <span class="text-2xl font-bold text-gray-900 dark:text-white">
                                     Rp {{ number_format($stat['value'], 0, ',', '.') }}
                                 </span>
