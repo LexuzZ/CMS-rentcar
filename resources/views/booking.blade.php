@@ -22,335 +22,173 @@
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6 text-sm text-blue-800">
             <p><strong class="font-medium">Nama:</strong> {{ $customer->nama }}</p>
             <p><strong class="font-medium">NIK:</strong> {{ $customer->ktp }}</p>
-            {{-- <p><strong>WhatsApp:</strong> {{ $customer->no_telp }}</p> --}}
-        </div>
-        {{-- PESAN SUKSES & INFO --}}
-        <div class="mb-4 space-y-3">
-            @if (session('success'))
-                <div class="bg-green-500 text-white rounded-lg p-3 flex items-center gap-2 text-sm font-medium">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if (session('info'))
-                <div class="bg-blue-500 text-white rounded-lg p-3 flex items-center gap-2 text-sm font-medium">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span>{{ session('info') }}</span>
-                </div>
-            @endif
         </div>
 
         <form id="bookingForm" class="space-y-5">
             @csrf
 
+            {{-- Pilihan Mobil --}}
             <div>
                 <label for="mobil" class="block text-sm font-medium text-gray-700 mb-2">Pilih Mobil</label>
                 <select id="mobil"
-                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
+                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-200"
                     required>
-                    <option value="">-- pilih mobil --</option>
+                    <option value="">-- Pilih Mobil --</option>
                     @foreach ($cars as $car)
                         <option value="{{ $car->carModel->name }}">
                             {{ $car->carModel->brand->name }} - {{ $car->carModel->name }}
                         </option>
                     @endforeach
                 </select>
-                {{-- <select id="Mobil"
-                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
-                    required>
-                    <option value="">-- Pilih Mobil --</option>
-                    <option value="Avanza">Toyota Avanza</option>
-                    <option value="Innova">Toyota Innova Zenix</option>
-                    <option value="Innova">Toyota Innova Reborn</option>
-
-                </select> --}}
             </div>
 
+            {{-- Tanggal Keluar & Kembali --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label for="tanggal_keluar" class="block text-sm font-medium text-gray-700 mb-2">Tanggal
                         Keluar</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                        </div>
-                        <input type="date" id="tanggal_keluar"
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
-                            required>
-                    </div>
+                    <input type="date" id="tanggal_keluar"
+                        class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
                 </div>
                 <div>
                     <label for="tanggal_kembali" class="block text-sm font-medium text-gray-700 mb-2">Tanggal
                         Kembali</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                            </svg>
-                        </div>
-                        <input type="date" id="tanggal_kembali"
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
-                            required>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label for="jam_keluar" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                        Pengantaran</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <input type="time" id="jam_keluar"
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
-                            required>
-                    </div>
-                </div>
-                <div>
-                    <label for="jam_kembali" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                        Pengembalian</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <input type="time" id="jam_kembali"
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
-                            required>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label for="paket" class="block text-sm font-medium text-gray-700 mb-2">Pilih Paket Sewa</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.81m5.84-2.57a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.57m5.841-2.57l-2.57-5.84m0 0a14.926 14.926 0 00-2.57 5.84m2.57-5.84l.7-1.68a.75.75 0 011.4 0l.7 1.68m-2.8 0l-.63.63.63-.63zM6.75 12.75l-1.06-1.06a1.5 1.5 0 010-2.12l1.06-1.06a1.5 1.5 0 012.12 0l1.06 1.06a1.5 1.5 0 010 2.12l-1.06 1.06a1.5 1.5 0 01-2.12 0z" />
-                        </svg>
-                    </div>
-                    <select id="paket"
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
-                        required>
-                        <option value="">-- Pilih Paket --</option>
-                        <option value="Lepas Kunci">Lepas Kunci</option>
-                        <option value="Dengan Driver">Dengan Driver</option>
-                        <option value="12 Jam">12 Jam (Lepas Kunci)</option>
-                        <option value="12 Jam">12 Jam (Dengan Driver)</option>
-                        <option value="Paket Tour">Paket Tour</option>
-                    </select>
+                    <input type="date" id="tanggal_kembali"
+                        class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
                 </div>
             </div>
 
+            {{-- Jam --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label for="jam_keluar" class="block text-sm font-medium text-gray-700 mb-2">Waktu Pengantaran</label>
+                    <input type="time" id="jam_keluar"
+                        class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label for="jam_kembali" class="block text-sm font-medium text-gray-700 mb-2">Waktu Pengembalian</label>
+                    <input type="time" id="jam_kembali"
+                        class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+            </div>
+
+            {{-- Paket --}}
+            <div>
+                <label for="paket" class="block text-sm font-medium text-gray-700 mb-2">Pilih Paket Sewa</label>
+                <select id="paket"
+                    class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
+                    <option value="">-- Pilih Paket --</option>
+                    <option value="Lepas Kunci">Lepas Kunci</option>
+                    <option value="Dengan Driver">Dengan Driver</option>
+                    <option value="12 Jam Lepas Kunci">12 Jam (Lepas Kunci)</option>
+                    <option value="12 Jam Dengan Driver">12 Jam (Dengan Driver)</option>
+                    <option value="Paket Tour">Paket Tour</option>
+                </select>
+            </div>
+
+            {{-- Lokasi --}}
             <div>
                 <label for="lokasi_pengantaran" class="block text-sm font-medium text-gray-700 mb-2">Lokasi
                     Pengantaran</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                        </svg>
-                    </div>
-                    <input type="text" id="lokasi_pengantaran" placeholder="Hotel/Alamat Lengkap..."
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
+                <input type="text" id="lokasi_pengantaran" placeholder="Hotel/Alamat Lengkap..."
+                    class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
             </div>
             <div>
                 <label for="lokasi_pengembalian" class="block text-sm font-medium text-gray-700 mb-2">Lokasi
                     Pengembalian</label>
+                <input type="text" id="lokasi_pengembalian" placeholder="Hotel/Alamat Lengkap..."
+                    class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500" required>
+            </div>
+
+            {{-- Facebook --}}
+            <div>
+                <label for="facebook" class="block text-sm font-medium text-gray-700 mb-2">Facebook (Opsional)</label>
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    <span class="absolute inset-y-0 left-3 flex items-center text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M22.675 0H1.325A1.326 1.326 0 000 1.325v21.351A1.326 1.326 0 001.325 24h11.497v-9.294H9.692V11.01h3.13V8.41c0-3.1 1.894-4.788 4.66-4.788 1.325 0 2.463.099 2.794.143v3.24h-1.917c-1.505 0-1.797.716-1.797 1.767v2.317h3.59l-.467 3.697h-3.123V24h6.116A1.326 1.326 0 0024 22.676V1.325A1.326 1.326 0 0022.675 0z" />
                         </svg>
-                    </div>
-                    <input type="text" id="lokasi_pengembalian" placeholder="Hotel/Alamat Lengkap..."
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </span>
+                    <input type="text" id="facebook" placeholder="Masukkan link atau username Facebook..."
+                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500">
                 </div>
             </div>
 
+            {{-- Instagram --}}
+            <div>
+                <label for="instagram" class="block text-sm font-medium text-gray-700 mb-2">Instagram (Opsional)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-pink-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.056 1.96.24 2.418.404a4.9 4.9 0 011.772 1.153 4.9 4.9 0 011.153 1.772c.164.458.348 1.248.404 2.418.058 1.266.07 1.65.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.24 1.96-.404 2.418a4.9 4.9 0 01-1.153 1.772 4.9 4.9 0 01-1.772 1.153c-.458.164-1.248.348-2.418.404-1.266.058-1.65.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.96-.24-2.418-.404a4.9 4.9 0 01-1.772-1.153 4.9 4.9 0 01-1.153-1.772c-.164-.458-.348-1.248-.404-2.418C2.212 15.584 2.2 15.2 2.2 12s.012-3.584.07-4.85c.056-1.17.24-1.96.404-2.418a4.9 4.9 0 011.153-1.772A4.9 4.9 0 015.6 1.78c.458-.164 1.248-.348 2.418-.404C9.284 1.312 9.668 1.3 12 1.3zm0 1.8c-3.17 0-3.548.012-4.797.07-1.03.048-1.59.22-1.96.366-.493.191-.845.42-1.215.79a3.1 3.1 0 00-.79 1.215c-.146.37-.318.93-.366 1.96-.058 1.25-.07 1.627-.07 4.797s.012 3.548.07 4.797c.048 1.03.22 1.59.366 1.96.191.493.42.845.79 1.215.37.37.722.599 1.215.79.37.146.93.318 1.96.366 1.25.058 1.627.07 4.797.07s3.548-.012 4.797-.07c1.03-.048 1.59-.22 1.96-.366.493-.191.845-.42 1.215-.79.37-.37.599-.722.79-1.215.146-.37.318-.93.366-1.96.058-1.25.07-1.627.07-4.797s-.012-3.548-.07-4.797c-.048-1.03-.22-1.59-.366-1.96a3.1 3.1 0 00-.79-1.215 3.1 3.1 0 00-1.215-.79c-.37-.146-.93-.318-1.96-.366C15.548 4.012 15.17 4 12 4zM12 7.2a4.8 4.8 0 110 9.6 4.8 4.8 0 010-9.6zm0 1.8a3 3 0 100 6 3 3 0 000-6zm5.85-1.95a1.12 1.12 0 110 2.24 1.12 1.12 0 010-2.24z" />
+                        </svg>
+                    </span>
+                    <input type="text" id="instagram" placeholder="Masukkan username Instagram..."
+                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            {{-- Catatan --}}
             <div>
                 <label for="catatan" class="block text-sm font-medium text-gray-700 mb-2">Catatan Tambahan</label>
-                <div class="relative">
-                    <div class="absolute top-3.5 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                        </svg>
-                    </div>
-                    <textarea id="catatan" rows="3"
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        placeholder="Contoh: Minta baby seat, jemput di bandara..."></textarea>
-                </div>
+                <textarea id="catatan" rows="3"
+                    class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Contoh: Minta baby seat, jemput di bandara..."></textarea>
             </div>
 
             <button type="submit"
-                class="w-full flex justify-center items-center gap-2 py-3 px-4 !mt-8 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.875L6 12zm0 0h7.5" />
-                </svg>
-                <span>Kirim Booking via WhatsApp</span>
+                class="w-full py-3 px-4 mt-6 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-all">
+                Kirim Booking via WhatsApp
             </button>
         </form>
-
-        <p class="text-center text-xs mt-5 text-gray-500">Admin akan merespon dalam ≤ 30 menit</p>
-
     </div>
-
-    <style>
-        .animate-fade-in-up {
-            animation: fade-in-up 0.5s ease-out;
-        }
-
-        @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Perbaikan placeholder untuk input date/time di beberapa browser */
-        input[type="date"]:required:invalid::-webkit-datetime-edit,
-        input[type="time"]:required:invalid::-webkit-datetime-edit {
-            color: transparent;
-        }
-
-        input[type="date"]:focus::-webkit-datetime-edit,
-        input[type="time"]:focus::-webkit-datetime-edit {
-            color: #374151;
-            /* gray-700 */
-        }
-
-        .ts-control {
-            @apply w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent transition duration-200;
-            padding-top: 0.60rem !important;
-            padding-bottom: 0.60rem !important;
-        }
-
-        .ts-control input::placeholder {
-            @apply text-gray-400;
-        }
-
-        .ts-control:not(.focus) input {
-            padding-top: 0.1rem !important;
-            /* Perbaikan kecil untuk alignment placeholder */
-        }
-
-        .ts-dropdown {
-            @apply bg-white border border-gray-300 rounded-lg shadow-lg mt-1 z-50;
-        }
-
-        .ts-dropdown .ts-option {
-            @apply p-2.5 transition duration-150 ease-in-out;
-        }
-
-        .ts-dropdown .ts-option:hover {
-            @apply bg-indigo-50;
-        }
-
-        .ts-dropdown .active {
-            @apply bg-indigo-500 text-white;
-        }
-
-        .ts-dropdown .active:hover {
-            @apply bg-indigo-600 text-white;
-        }
-    </style>
 
     <script>
         document.getElementById('bookingForm').onsubmit = function(e) {
             e.preventDefault();
 
-            // Ambil data Customer dari Blade
             let nama = "{{ $customer->nama }}";
             let no_telp = "{{ $customer->no_telp }}";
             let ktp = "{{ $customer->ktp }}";
 
-            // Ambil data Form
             let mobil = document.getElementById("mobil").value;
             let tanggal_keluar = document.getElementById("tanggal_keluar").value;
             let tanggal_kembali = document.getElementById("tanggal_kembali").value;
-            let paket = document.getElementById("paket").value;
             let jam_keluar = document.getElementById("jam_keluar").value;
             let jam_kembali = document.getElementById("jam_kembali").value;
+            let paket = document.getElementById("paket").value;
             let lokasi_pengantaran = document.getElementById("lokasi_pengantaran").value;
             let lokasi_pengembalian = document.getElementById("lokasi_pengembalian").value;
-            let catatan = document.getElementById("catatan").value;
+            let facebook = document.getElementById("facebook").value.trim();
+            let instagram = document.getElementById("instagram").value.trim();
+            let catatan = document.getElementById("catatan").value.trim();
 
-            // --- VALIDASI (Diperbaiki) ---
-            if (!mobil || !tanggal_keluar || !tanggal_kembali || !jam_keluar || !jam_kembali || !lokasi_pengantaran || !
-                lokasi_pengembalian) {
+            if (!mobil || !tanggal_keluar || !tanggal_kembali || !jam_keluar || !jam_kembali || !lokasi_pengantaran || !lokasi_pengembalian) {
                 alert("Mohon lengkapi semua field wajib (Mobil, Tanggal, Jam, Lokasi)!");
                 return;
             }
 
-            // --- (Tambahan) Format Tanggal agar lebih rapi ---
-            const formatDate = (dateString) => {
-                if (!dateString) return '';
-                const options = {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                };
-                return new Date(dateString).toLocaleDateString('id-ID', options);
-            };
+            const formatDate = (d) => new Date(d).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
 
-            let tglKeluarFormatted = formatDate(tanggal_keluar);
-            let tglKembaliFormatted = formatDate(tanggal_kembali);
-            let catatanText = catatan.trim() === '' ? 'Tidak ada' : catatan;
-
-            // --- Format Pesan WhatsApp (Ditingkatkan) ---
             let message = `
 *--- 🚗 BOOKING RENTAL MOBIL 🚗 ---*
 
 *Nama:* ${nama}
 *NIK:* ${ktp}
 *WhatsApp:* ${no_telp}
+*Facebook:* ${facebook || '-'}
+*Instagram:* ${instagram || '-'}
 
 *DETAIL BOOKING:*
 *Mobil:* ${mobil}
-*Tanggal Keluar:* ${tglKeluarFormatted}
-*Tanggal Kembali:* ${tglKembaliFormatted}
+*Tanggal Keluar:* ${formatDate(tanggal_keluar)}
+*Tanggal Kembali:* ${formatDate(tanggal_kembali)}
 *Jam Antar:* ${jam_keluar}
 *Jam Kembali:* ${jam_kembali}
 *Paket Sewa:* ${paket}
@@ -358,28 +196,13 @@
 *Lokasi Pengembalian:* ${lokasi_pengembalian}
 
 *Catatan:*
-${catatanText}
-
-Mohon segera cek ketersediaan unit. Terima kasih 🙏
+${catatan || '-'}
 `;
 
-            let wa = "6281128948884"; // GANTI NOMOR ADMIN
+            let wa = "6281128948884"; // GANTI DENGAN NOMOR ADMIN
             window.open(`https://wa.me/${wa}?text=${encodeURIComponent(message)}`);
-        }
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            new TomSelect('#mobil', {
-                create: false, // tidak izinkan user menambah mobil baru
-                sortField: {
-                    field: "text",
-                    direction: "asc"
-                },
-                placeholder: "-- Cari dan Pilih Mobil --"
-            });
-        });
+        };
     </script>
 
 </body>
-
 </html>
