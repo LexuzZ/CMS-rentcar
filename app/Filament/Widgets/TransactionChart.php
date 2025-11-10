@@ -9,6 +9,7 @@ class TransactionChart extends ChartWidget
 {
     protected static ?string $heading = 'Transaksi Bulan Ini';
     protected static ?int $sort = 3;
+    protected int|string|array $columnSpan = 'two-thirds';
 
     protected function getData(): array
     {

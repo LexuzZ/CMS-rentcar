@@ -11,10 +11,7 @@ class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 2; // Sesuaikan urutan widget di dashboard
-    protected int|string|array $columnSpan = 'one-third';
-
-    // PERBAIKAN: Menambahkan pagination untuk 3 data per halaman
-    protected static ?int $defaultPaginationPageSize = 3;
+    protected int|string|array $columnSpan = 'half';
 
     protected function getTableQuery(): Builder
     {
