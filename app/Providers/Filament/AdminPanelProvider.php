@@ -14,6 +14,7 @@ use App\Filament\Widgets\MobilKeluar;
 use App\Filament\Widgets\MobilKembali;
 use App\Filament\Widgets\MonthlyStaffRankingWidget;
 use App\Filament\Widgets\OverdueTasksWidget;
+use App\Filament\Widgets\RecentTransactions;
 use App\Filament\Widgets\StaffRankingWidget;
 use App\Filament\Widgets\TempoDueToday;
 use App\Filament\Widgets\TransactionChart;
@@ -80,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
+                RecentTransactions::class,
                 TransactionChart::class,
                 // OverdueTasksWidget::class,
                 // MobilKeluar::class,
