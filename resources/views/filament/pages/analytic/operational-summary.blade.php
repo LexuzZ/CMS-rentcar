@@ -6,6 +6,50 @@
             {{ $this->form }}
 
         </x-filament::section>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            @foreach ($statistics as $stat)
+                <x-filament::section class="relative overflow-hidden">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <x-filament::icon
+                                    :icon="$stat['icon']"
+                                    class="w-5 h-5 text-gray-400"
+                                />
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {{ $stat['label'] }}
+                                </span>
+                            </div>
+
+                            <div class="mb-1">
+                                <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                                    Rp {{ number_format($stat['value'], 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                @if (!is_null($stat['change']))
+                                    @php
+                                        $isPositive = $stat['change'] >= 0;
+                                        $badgeColor = $stat['color'];
+                                        $icon = $isPositive
+                                            ? 'heroicon-m-arrow-trending-up'
+                                            : 'heroicon-m-arrow-trending-down';
+                                    @endphp
+                                    <x-filament::badge :color="$badgeColor" size="xs" class="flex items-center gap-1">
+                                        <x-filament::icon :icon="$icon" class="w-3 h-3" />
+                                        {{ number_format($stat['change'], 1) }}%
+                                    </x-filament::badge>
+                                @endif
+                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $stat['description'] }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </x-filament::section>
+            @endforeach
+        </div>
 
         {{-- Ringkasan --}}
         <x-filament::section class="mt-6">

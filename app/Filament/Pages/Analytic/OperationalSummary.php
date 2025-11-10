@@ -39,6 +39,8 @@ class OperationalSummary extends Page implements HasForms
     public array $rincianCostTableData = [];
     public array $costRentTableData = [];
     public string $reportTitle = '';
+    // TAMBAHKAN: Property untuk statistik cards
+    public array $statistics = [];
 
     public function mount(): void
     {
@@ -231,7 +233,40 @@ class OperationalSummary extends Page implements HasForms
         $profitThisMonth = $RevenueMonth - $expenseThisMonth;
         $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
-
+ $this->statistics = [
+            [
+                'label' => 'Kas Saldo',
+                'value' => $profitThisMonth,
+                'change' => $profitChange,
+                'color' => $profitThisMonth >= 0 ? 'success' : 'danger',
+                'icon' => $profitThisMonth >= 0 ? 'heroicon-o-banknotes' : 'heroicon-o-exclamation-triangle',
+                'description' => 'Pendapatan bersih setelah pengeluaran'
+            ],
+            [
+                'label' => 'Lunas',
+                'value' => $RevenueMonth,
+                'change' => $RevenueChange,
+                'color' => 'success',
+                'icon' => 'heroicon-o-check-circle',
+                'description' => 'Total pembayaran yang sudah lunas'
+            ],
+            [
+                'label' => 'Piutang',
+                'value' => $receivablesThisMonth,
+                'change' => $receivablesChange,
+                'color' => 'warning',
+                'icon' => 'heroicon-o-clock',
+                'description' => 'Total pembayaran yang belum lunas'
+            ],
+            [
+                'label' => 'Pengeluaran',
+                'value' => $expenseThisMonth,
+                'change' => $expenseChange,
+                'color' => 'danger',
+                'icon' => 'heroicon-o-arrow-trending-down',
+                'description' => 'Total pengeluaran operasional'
+            ]
+        ];
         $this->rincianTableData = [
             ['label' => 'Ongkir/Pengantaran', 'value' => $ongkir, 'change' => $ongkirChange],
             ['label' => 'Klaim Baret/Kerusakan', 'value' => $klaimBaret, 'change' => $baretChange],
