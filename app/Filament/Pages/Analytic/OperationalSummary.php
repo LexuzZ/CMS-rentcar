@@ -333,7 +333,7 @@ class OperationalSummary extends Page implements HasForms
     public function getFooterWidgets(): array
     {
         return [
-            RecentTransactions::class,
+            // RecentTransactions::class,
             Piutang::class,
             Revenue::class,
             ArusKasTable::class

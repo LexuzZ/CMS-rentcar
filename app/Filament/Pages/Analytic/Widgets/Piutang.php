@@ -106,6 +106,6 @@ class Piutang extends BaseWidget
     }
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [5, 10]; // 3 sebagai default
+        return [5]; // 3 sebagai default
     }
 }
