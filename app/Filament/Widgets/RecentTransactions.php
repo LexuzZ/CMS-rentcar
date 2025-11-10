@@ -50,7 +50,7 @@ class RecentTransactions extends BaseWidget
                     'transfer' => 'Transfer',
                     'qris' => 'QRIS',
                     default => ucfirst($state),
-                })->paginated([3, 10, 25, 50]),
+                }),
         ];
     }
 
