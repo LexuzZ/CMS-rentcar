@@ -3,7 +3,7 @@
         <x-slot name="heading">
             🚀 Quick Menu
         </x-slot>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-2">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
 
             {{-- TOMBOL 1: Form Sewa --}}
             <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
