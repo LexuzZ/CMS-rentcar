@@ -13,7 +13,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DashboardMonthlySummary extends BaseWidget
 {
-    // protected int|string|array $columnSpan = 8;
+    protected int|string|array $columnSpan = 10;
 
 
     protected function getStats(): array
