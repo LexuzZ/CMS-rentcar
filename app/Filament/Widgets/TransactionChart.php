@@ -8,6 +8,7 @@ use Filament\Widgets\ChartWidget;
 class TransactionChart extends ChartWidget
 {
     protected static ?string $heading = 'Transaksi Bulan Ini';
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {
