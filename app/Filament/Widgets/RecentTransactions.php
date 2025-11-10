@@ -13,7 +13,7 @@ class RecentTransactions extends BaseWidget
     protected static ?int $sort = 2;
 
     // Untuk column span widget di dashboard
-    protected int|string|array $columnSpan = '1/3';
+    protected int|string|array $columnSpan = 8;
 
     // Untuk pagination table di dalam widget
     protected int | string | array $perPage = 3; // Ubah dari 10 menjadi 3
