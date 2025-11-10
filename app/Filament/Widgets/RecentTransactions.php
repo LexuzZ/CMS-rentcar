@@ -11,14 +11,13 @@ class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 2;
-    protected int|string|array $columnSpan = 'third'; // ⬅️ ubah ke 1/3
+    protected int|string|array $columnSpan = '1/3';
 
     protected function getTableQuery(): Builder
     {
         return Payment::query()
             ->whereDate('tanggal_pembayaran', today())
-            ->latest('created_at')
-            ->limit(3);
+            ->latest('created_at');
     }
 
     protected function getTableColumns(): array
