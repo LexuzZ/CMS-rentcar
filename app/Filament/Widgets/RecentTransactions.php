@@ -12,6 +12,11 @@ class RecentTransactions extends BaseWidget
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 2; // Sesuaikan urutan widget di dashboard
     protected int|string|array $columnSpan = 'half';
+    protected function getTablePaginationPageSize(): int
+{
+    return 3;
+}
+
 
     protected function getTableQuery(): Builder
     {
