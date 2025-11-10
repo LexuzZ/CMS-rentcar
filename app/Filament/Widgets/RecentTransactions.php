@@ -4,8 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\Payment;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Columns;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -52,7 +50,7 @@ class RecentTransactions extends BaseWidget
                     'transfer' => 'Transfer',
                     'qris' => 'QRIS',
                     default => ucfirst($state),
-                }),
+                })->paginated([3, 10, 25, 50]),
         ];
     }
 
