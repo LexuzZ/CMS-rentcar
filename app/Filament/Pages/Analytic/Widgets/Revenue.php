@@ -14,6 +14,7 @@ class Revenue extends BaseWidget
 {
     protected int|string|array $columnSpan = '300px';
     protected static ?string $heading = 'Pendapatan (Lunas)';
+    protected int|string|array $perPage = 5;
 
     public function table(Tables\Table $table): Tables\Table
     {
@@ -72,5 +73,9 @@ class Revenue extends BaseWidget
                         return $query;
                     }),
             ]);
+    }
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [5, 10]; // 3 sebagai default
     }
 }
