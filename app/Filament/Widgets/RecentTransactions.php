@@ -20,7 +20,7 @@ class RecentTransactions extends BaseWidget
     ];
 
     // Untuk pagination table di dalam widget
-    protected int|string|array $perPage = 3; // Ubah dari 10 menjadi 3
+    protected int|string|array $perPage = 2; // Ubah dari 10 menjadi 3
 
     protected function getTableQuery(): Builder
     {
@@ -67,6 +67,6 @@ class RecentTransactions extends BaseWidget
     // Opsional: Jika ingin custom pagination options
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [3]; // 3 sebagai default
+        return [2]; // 3 sebagai default
     }
 }
