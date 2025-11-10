@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-blue-700 p-4 font-sans">
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 p-4 font-sans">
 
     <div class="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg animate-fade-in-up">
 
