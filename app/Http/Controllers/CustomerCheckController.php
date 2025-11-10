@@ -31,7 +31,7 @@ class CustomerCheckController extends Controller
     public function bookingForm()
     {
         $customer = Customer::find(session('customer_id'));
-        $cars = CarModel::with('carModel.brand')->get();
+        $cars = CarModel::with('brand')->get();
 
         return view('booking', compact('customer', 'car_models'));
     }
