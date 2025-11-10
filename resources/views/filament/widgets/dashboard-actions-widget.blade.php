@@ -7,7 +7,7 @@
 
             {{-- TOMBOL 1: Form Sewa --}}
             <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
-                class="flex flex-col items-center justify-center p-2 border rounded-lg shadow-sm bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
+                class="flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
 
                 {{-- Ganti ikon di sini --}}
                 <div
