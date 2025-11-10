@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
-    protected static ?int $sort = 1; // Sesuaikan urutan widget di dashboard
+    protected static ?int $sort = 2; // Sesuaikan urutan widget di dashboard
     protected int|string|array $columnSpan = 'half';
 
     protected function getTableQuery(): Builder
