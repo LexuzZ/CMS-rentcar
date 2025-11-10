@@ -33,7 +33,7 @@ class CustomerCheckController extends Controller
         $customer = Customer::find(session('customer_id'));
         $cars = CarModel::with('carModel.brand')->get();
 
-        return view('booking', compact('customer', 'carModels'));
+        return view('booking', compact('customer', 'car_models'));
     }
     public function dataPenyewa()
     {
