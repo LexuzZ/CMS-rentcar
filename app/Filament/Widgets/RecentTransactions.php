@@ -12,10 +12,11 @@ class RecentTransactions extends BaseWidget
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 2;
     protected int|string|array $columnSpan = '1/3';
+    public int | string $perPage = 10;
 
     protected function getTableQuery(): Builder
     {
-        return Payment::query()
+        return Payment::query()->paginate($this->perPage)
             ->whereDate('tanggal_pembayaran', today())
             ->latest('created_at');
     }
@@ -53,8 +54,5 @@ class RecentTransactions extends BaseWidget
         ];
     }
 
-    protected function getTablePaginationPageSize(): int
-    {
-        return 3; // ⬅️ hanya 3 data per halaman
-    }
+
 }
