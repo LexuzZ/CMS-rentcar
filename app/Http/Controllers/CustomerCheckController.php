@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\CarModel;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -30,9 +31,14 @@ class CustomerCheckController extends Controller
     public function bookingForm()
     {
         $customer = Customer::find(session('customer_id'));
-        $cars = Car::with('carModel.brand')->get();
+        $carModels = CarModel::with('brand')
+            ->whereHas('cars', function ($query) {
+                $query->where('garasi', 'SPT'); // Optional: filter garasi
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('booking', compact('customer', 'cars'));
+        return view('booking', compact('customer', 'carModels'));
     }
     public function dataPenyewa()
     {
