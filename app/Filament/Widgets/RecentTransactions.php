@@ -25,10 +25,10 @@ class RecentTransactions extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('updated_at')
-                ->label('Tgl Pembayaran')
-                ->alignCenter()
-                ->date('d M Y'), // Tambahkan format waktu
+            // Tables\Columns\TextColumn::make('updated_at')
+            //     ->label('Tgl Pembayaran')
+            //     ->alignCenter()
+            //     ->date('d M Y'), // Tambahkan format waktu
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->alignCenter()
