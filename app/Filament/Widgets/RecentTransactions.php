@@ -16,28 +16,45 @@ class RecentTransactions extends BaseWidget
     protected int|string|array $columnSpan = '1/3';
     public int | string $perPage = 10;
 
-    protected static function table(Table $table): Table
-{
-    return $table
-        ->query(fn () => Payment::query()->whereDate('tanggal_pembayaran', today())->latest('created_at'))
-        ->columns([
-            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->alignCenter()->wrap()->width(200),
-            Tables\Columns\TextColumn::make('pembayaran')->label('Nominal')->alignCenter()
+    protected function getTableQuery(): Builder
+    {
+        return Payment::query()
+            ->whereDate('tanggal_pembayaran', today())
+            ->latest('created_at');
+    }
+
+    protected function getTableColumns(): array
+    {
+        return [
+            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
+                ->label('Penyewa')
+                ->alignCenter()
+                ->wrap()
+                ->width(200),
+
+            Tables\Columns\TextColumn::make('pembayaran')
+                ->label('Nominal')
+                ->alignCenter()
                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
-            Tables\Columns\TextColumn::make('metode_pembayaran')->label('Metode')->badge()->alignCenter()
-                ->colors(['success' => 'tunai','info' => 'transfer','gray' => 'qris'])
+
+            Tables\Columns\TextColumn::make('metode_pembayaran')
+                ->label('Metode')
+                ->badge()
+                ->alignCenter()
+                ->colors([
+                    'success' => 'tunai',
+                    'info' => 'transfer',
+                    'gray' => 'qris',
+                ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'tunai' => 'Tunai',
                     'transfer' => 'Transfer',
                     'qris' => 'QRIS',
                     default => ucfirst($state),
                 }),
-        ])
-        // set pilihan per-page yang tersedia dan default (pastikan 3 ada dalam array)
-        ->paginated([3, 10, 25])
-        ->defaultPaginationPageOption(3);
-}
+        ];
+    }
 
 
 }
