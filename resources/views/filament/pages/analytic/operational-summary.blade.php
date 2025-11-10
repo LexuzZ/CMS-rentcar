@@ -6,7 +6,7 @@
             {{ $this->form }}
 
         </x-filament::section>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
             @foreach ($statistics as $stat)
                 <x-filament::section class="relative overflow-hidden">
                     <div class="flex items-start justify-between">
