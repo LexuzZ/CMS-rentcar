@@ -143,6 +143,42 @@ class ServiceHistoryResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('addToTempo')
+                ->label('')
+                ->tooltip('Tambah ke Jatuh Tempo')
+                ->icon('heroicon-o-calendar')
+                ->color('success')
+                ->hiddenLabel()
+                ->button()
+                ->action(function (ServiceHistory $record) {
+                    // Cek apakah sudah ada di Tempo untuk mobil yang sama
+                    $existingTempo = \App\Models\Tempo::where('car_id', $record->car_id)
+                        ->where('perawatan', 'service')
+                        ->whereDate('jatuh_tempo', $record->next_service_date)
+                        ->first();
+
+                    if ($existingTempo) {
+                        throw new \Exception('Jatuh tempo service untuk mobil ini sudah ada!');
+                    }
+
+                    // Buat data di Tempo
+                    \App\Models\Tempo::create([
+                        'car_id' => $record->car_id,
+                        'perawatan' => 'service',
+                        'jatuh_tempo' => $record->next_service_date,
+                        'description' => "Service berikutnya - " . ($record->description ?: 'Service rutin'),
+                    ]);
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Berhasil!')
+                        ->body('Data service berhasil ditambahkan ke Jatuh Tempo')
+                        ->success()
+                        ->send();
+                })
+                ->visible(fn(ServiceHistory $record): bool =>
+                    $record->next_service_date !== null &&
+                    Auth::user()->hasAnyRole(['superadmin', 'admin'])
+                ),
                 Tables\Actions\EditAction::make()
                     ->label('')
                     ->tooltip('Edit Riwayat Service')
