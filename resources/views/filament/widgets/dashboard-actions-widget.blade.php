@@ -11,7 +11,7 @@
 
                 {{-- Ganti ikon di sini --}}
                 <div
-                    class="w-16 h-16 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center justify-center">
+                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center justify-center">
                     {{-- IKON (ukurannya lebih kecil dari lingkaran) --}}
                     <div class="text-4xl">🧾</div>
                 </div>
