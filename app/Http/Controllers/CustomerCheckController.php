@@ -32,13 +32,10 @@ class CustomerCheckController extends Controller
     {
         $customer = Customer::find(session('customer_id'));
         $carModels = CarModel::with('brand')
-            ->whereHas('cars', function ($query) {
-                $query->where('garasi', 'SPT'); // Optional: filter garasi
-            })
-            ->orderBy('name')
-            ->get();
+        ->orderBy('name')
+        ->get();
 
-        return view('booking', compact('customer', 'carModels'));
+    return view('booking', compact('customer', 'carModels'));
     }
     public function dataPenyewa()
     {
