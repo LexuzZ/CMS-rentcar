@@ -29,64 +29,59 @@ class StaffRankingWidget extends Widget implements HasForms
         ]);
     }
 
-    /**
-     * Definisikan form dan hubungkan ke properti $data.
-     */
     public function form(Form $form): Form
     {
         return $form
             ->schema($this->getFormSchema())
-            ->statePath('data'); // <-- KUNCI PERBAIKANNYA DI SINI
+            ->statePath('data');
     }
 
-    /**
-     * Definisikan skema form di sini.
-     */
     protected function getFormSchema(): array
     {
         return [
             DatePicker::make('selectedDate')
                 ->label('Pilih Tanggal')
                 ->maxDate(now())
-                ->live(), // ->live() akan otomatis me-refresh widget saat tanggal diubah
+                ->live(),
         ];
     }
 
-    /**
-     * Fungsi utama untuk mengambil, menghitung, dan mengurutkan statistik staff.
-     */
     protected function getStats(): Collection
     {
         try {
-            // Ambil tanggal dari data form
             $date = Carbon::parse($this->form->getState()['selectedDate']);
         } catch (\Exception $e) {
             $date = now();
         }
 
-        // 1. Ambil semua data penyerahan pada tanggal yang dipilih
+        // ============
+        // PENYERAHAN
+        // ============
         $penyerahan = Booking::whereDate('tanggal_keluar', $date)
-            ->whereNotNull('driver_id')
+            ->whereNotNull('driver_pengantaran_id')
             ->get()
-            ->groupBy('driver_id');
+            ->groupBy('driver_pengantaran_id');
 
-        // 2. Ambil semua data pengembalian pada tanggal yang dipilih
+        // =============
+        // PENGEMBALIAN
+        // =============
         $pengembalian = Booking::whereDate('tanggal_kembali', $date)
-            ->whereNotNull('driver_id')
+            ->whereNotNull('driver_pengembalian_id')
             ->get()
-            ->groupBy('driver_id');
+            ->groupBy('driver_pengembalian_id');
 
-        // 3. Dapatkan semua ID staff yang terlibat
-        $involvedDriverIds = $penyerahan->keys()->merge($pengembalian->keys())->unique();
+        // Gabungkan semua driver yang terlibat
+        $involvedDriverIds = $penyerahan->keys()
+            ->merge($pengembalian->keys())
+            ->unique();
 
         if ($involvedDriverIds->isEmpty()) {
             return collect();
         }
 
-        // 4. Ambil data staff yang terlibat
         $drivers = Driver::whereIn('id', $involvedDriverIds)->get();
 
-        // 5. Gabungkan data menjadi satu koleksi yang rapi
+        // Hitung total masing-masing driver
         $stats = $drivers->map(function ($driver) use ($penyerahan, $pengembalian) {
             $penyerahanCount = $penyerahan->get($driver->id, collect())->count();
             $pengembalianCount = $pengembalian->get($driver->id, collect())->count();
@@ -99,18 +94,17 @@ class StaffRankingWidget extends Widget implements HasForms
             ];
         });
 
-        // 6. Urutkan berdasarkan total terbanyak, lalu berdasarkan nama
+        // Urutkan
         return $stats->sortByDesc('total')->values();
     }
 
-    /**
-     * Kirim data yang sudah diproses ke file view.
-     */
-    protected function getViewData(): array
+    public function getViewData(): array
     {
         return [
             'stats' => $this->getStats(),
-            'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])->locale('id')->isoFormat('D MMMM YYYY'),
+            'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])
+                ->locale('id')
+                ->isoFormat('D MMMM YYYY'),
         ];
     }
 }
