@@ -25,7 +25,7 @@
                     <div class="text-4xl">💳</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
                     Transaksi
                 </span>
             </a>
@@ -38,7 +38,7 @@
                     <div class="text-4xl">📅</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
                     Kalender Unit
                 </span>
             </a>
@@ -51,7 +51,7 @@
                     <div class="text-4xl">✅</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
                     Checklist Keluar
                 </span>
             </a>
@@ -64,7 +64,7 @@
                     <div class="text-6xl">📦</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-900 dark:text-gray-100">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
                     Checklist Kembali
                 </span>
             </a>
