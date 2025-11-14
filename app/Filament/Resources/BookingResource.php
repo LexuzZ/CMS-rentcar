@@ -337,7 +337,12 @@ class BookingResource extends Resource
                                     'tiktok' => 'Tiktok',
                                     default => '-'
                                 }),
-                            Infolists\Components\TextEntry::make('driver.nama')->label('Staff Bertugas'),
+                            Infolists\Components\TextEntry::make('driverPengantaran.nama')
+                                ->label('Petugas Pengantaran'),
+
+                            Infolists\Components\TextEntry::make('driverPengembalian.nama')
+                                ->label('Petugas Pengembalian'),
+
                         ]),
                     ]),
 
