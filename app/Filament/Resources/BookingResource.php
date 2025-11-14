@@ -167,7 +167,17 @@ class BookingResource extends Resource
                     ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                     ->required()
                     ->disabled($isNotAdmin),
-
+                Forms\Components\Select::make('source')->label('Sumber Orderan')->options([
+                    'website' => 'Website',
+                    'ro' => 'Repeat Order',
+                    'instagram' => 'Instagram',
+                    'facebook' => 'Facebook',
+                    'cust_garasi' => 'Customer Garasi',
+                    'agent' => 'Agent Garasi',
+                    'tiket' => 'Tiket.com',
+                    'traveloka' => 'Traveloka',
+                    'tiktok' => 'Tiktok',
+                ])->disabled($isNotAdmin)->required(),
                 Forms\Components\Select::make('driver_pengantaran_id')
                     ->label('Petugas Pengantaran')
                     ->relationship('driverPengantaran', 'nama')
@@ -188,17 +198,7 @@ class BookingResource extends Resource
                     'kontrak' => 'Kontrak',
                     'perdua_belas_jam' => 'Per 12 Jam'
                 ])->nullable()->disabled($isNotAdmin),
-                Forms\Components\Select::make('source')->label('Sumber Orderan')->options([
-                    'website' => 'Website',
-                    'ro' => 'Repeat Order',
-                    'instagram' => 'Instagram',
-                    'facebook' => 'Facebook',
-                    'cust_garasi' => 'Customer Garasi',
-                    'agent' => 'Agent Garasi',
-                    'tiket' => 'Tiket.com',
-                    'traveloka' => 'Traveloka',
-                    'tiktok' => 'Tiktok',
-                ])->disabled($isNotAdmin)->required(),
+
                 Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
