@@ -4,9 +4,9 @@
         <x-slot name="heading">
             <div class="flex items-center gap-2">
                 <span class="text-base font-semibold">⭐ Staff Paling Aktif</span>
-                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                {{-- <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
                     {{ $dateForHumans }}
-                </span>
+                </span> --}}
             </div>
         </x-slot>
 
