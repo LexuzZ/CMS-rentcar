@@ -171,11 +171,15 @@ class PaymentResource extends Resource
                         'success' => 'tunai',
                         'info' => 'transfer',
                         'gray' => 'qris',
+                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
                     ])
                     ->formatStateUsing(fn($state) => match ($state) {
                         'tunai' => 'Tunai',
                         'transfer' => 'Transfer',
                         'qris' => 'QRIS',
+                        'tunai_transfer' => 'Tunai & Transfer',
+                        'tunai_qris' => 'Tunai & QRIS',
+                        'transfer_qris' => 'Transfer & QRIS',
                         default => ucfirst($state),
                     }),
             ])
@@ -192,6 +196,9 @@ class PaymentResource extends Resource
                         'tunai' => 'Tunai',
                         'transfer' => 'Transfer',
                         'qris' => 'QRIS',
+                        'tunai_transfer' => 'Tunai & Transfer',
+                        'tunai_qris' => 'Tunai & QRIS',
+                        'transfer_qris' => 'Transfer & QRIS',
                     ]),
 
                 Filter::make('tanggal_pembayaran')
@@ -332,11 +339,15 @@ class PaymentResource extends Resource
                                         'success' => 'tunai',
                                         'info' => 'transfer',
                                         'gray' => 'qris',
+                                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
                                     ])
                                     ->formatStateUsing(fn($state) => match ($state) {
                                         'tunai' => 'Tunai',
                                         'transfer' => 'Transfer',
                                         'qris' => 'QRIS',
+                                        'tunai_transfer' => 'Tunai & Transfer',
+                                        'tunai_qris' => 'Tunai & QRIS',
+                                        'transfer_qris' => 'Transfer & QRIS',
                                         default => ucfirst($state),
                                     }),
 
