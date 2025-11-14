@@ -168,7 +168,19 @@ class BookingResource extends Resource
                     ->required()
                     ->disabled($isNotAdmin),
 
-                Forms\Components\Select::make('driver_id')->label('Staff Bertugas')->relationship('driver', 'nama')->searchable()->preload()->nullable(),
+                Forms\Components\Select::make('driver_pengantaran_id')
+                    ->label('Petugas Pengantaran')
+                    ->relationship('driverPengantaran', 'nama')
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
+
+                Forms\Components\Select::make('driver_pengembalian_id')
+                    ->label('Petugas Pengembalian')
+                    ->relationship('driverPengembalian', 'nama')
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options([
                     'lepas_kunci' => 'Lepas Kunci',
                     'dengan_driver' => 'Dengan Driver',
