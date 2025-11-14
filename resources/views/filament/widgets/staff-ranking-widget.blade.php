@@ -90,9 +90,7 @@
             </table>
         </div>
 
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">
-            ℹ️ Data akumulasi dari penyerahan (driver_pengantaran_id) dan pengembalian (driver_pengembalian_id).
-        </p>
+        <p class="text-xs text-gray-500 mt-2"> ℹ️ Data menampilkan kinerja staff pada tanggal {{ $dateForHumans }}. </p>
 
     </x-filament::section>
 </x-filament-widgets::widget>
