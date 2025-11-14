@@ -12,7 +12,7 @@
                     <div class="text-4xl">🧾</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100 dark:hover:text-gray-800">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100 dark:hover:text-gray-800/30 transition-colors">
                     Form Sewa
                 </span>
             </a>
