@@ -302,7 +302,7 @@ class BookingResource extends Resource
 
                 Infolists\Components\Section::make('Informasi Booking')
                     ->schema([
-                        Infolists\Components\Grid::make(4)->schema([
+                        Infolists\Components\Grid::make(5)->schema([
                             Infolists\Components\TextEntry::make('status')
                                 ->badge()
                                 ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
@@ -338,10 +338,10 @@ class BookingResource extends Resource
                                     default => '-'
                                 }),
                             Infolists\Components\TextEntry::make('driverPengantaran.nama')
-                                ->label('Petugas Pengantaran'),
+                                ->label('Petugas Pengantaran')->badge(),
 
                             Infolists\Components\TextEntry::make('driverPengembalian.nama')
-                                ->label('Petugas Pengembalian'),
+                                ->label('Petugas Pengembalian')->badge(),
 
                         ]),
                     ]),
