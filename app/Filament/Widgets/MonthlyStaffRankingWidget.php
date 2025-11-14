@@ -17,15 +17,12 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
 {
     use InteractsWithForms;
 
-    // Arahkan ke file view yang baru
     protected static string $view = 'filament.widgets.monthly-staff-ranking-widget';
     protected int|string|array $columnSpan = 'full';
     protected static ?int $sort = 7;
+
     public ?array $data = [];
 
-    /**
-     * Inisialisasi widget dengan bulan dan tahun saat ini.
-     */
     public function mount(): void
     {
         $this->form->fill([
@@ -34,9 +31,6 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
         ]);
     }
 
-    /**
-     * Definisikan form dan hubungkan ke properti $data.
-     */
     public function form(Form $form): Form
     {
         return $form
@@ -44,12 +38,8 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
             ->statePath('data');
     }
 
-    /**
-     * Definisikan skema form dengan filter bulan dan tahun.
-     */
     protected function getFormSchema(): array
     {
-        // Membuat daftar tahun, misalnya 5 tahun ke belakang dari sekarang
         $years = range(now()->year, now()->year - 5);
 
         return [
@@ -70,19 +60,16 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
                         '11' => 'November',
                         '12' => 'Desember',
                     ])
-                    ->live(), // Memicu refresh saat bulan diubah
+                    ->live(),
 
                 Select::make('selectedYear')
                     ->label('Pilih Tahun')
-                    ->options(array_combine($years, $years)) // Membuat array [2025 => 2025, ...]
-                    ->live(), // Memicu refresh saat tahun diubah
+                    ->options(array_combine($years, $years))
+                    ->live(),
             ])
         ];
     }
 
-    /**
-     * Fungsi utama untuk mengambil statistik staff berdasarkan bulan dan tahun yang dipilih.
-     */
     protected function getStats(): Collection
     {
         try {
@@ -94,31 +81,31 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
             $year = now()->year;
         }
 
-        // 1. Ambil semua data penyerahan pada bulan dan tahun yang dipilih
+        // 1. Penyerahan (driver pengantaran)
         $penyerahan = Booking::whereYear('tanggal_keluar', $year)
             ->whereMonth('tanggal_keluar', $month)
-            ->whereNotNull('driver_id')
+            ->whereNotNull('driver_pengantaran_id')
             ->get()
-            ->groupBy('driver_id');
+            ->groupBy('driver_pengantaran_id');
 
-        // 2. Ambil semua data pengembalian pada bulan dan tahun yang dipilih
+        // 2. Pengembalian (driver pengembalian)
         $pengembalian = Booking::whereYear('tanggal_kembali', $year)
             ->whereMonth('tanggal_kembali', $month)
-            ->whereNotNull('driver_id')
+            ->whereNotNull('driver_pengembalian_id')
             ->get()
-            ->groupBy('driver_id');
+            ->groupBy('driver_pengembalian_id');
 
-        // 3. Dapatkan semua ID staff yang terlibat
+        // 3. Ambil daftar driver yang terlibat
         $involvedDriverIds = $penyerahan->keys()->merge($pengembalian->keys())->unique();
 
         if ($involvedDriverIds->isEmpty()) {
             return collect();
         }
 
-        // 4. Ambil data staff yang terlibat
+        // 4. Ambil data driver
         $drivers = Driver::whereIn('id', $involvedDriverIds)->get();
 
-        // 5. Gabungkan data menjadi satu koleksi yang rapi
+        // 5. Gabungkan hasil
         $stats = $drivers->map(function ($driver) use ($penyerahan, $pengembalian) {
             $penyerahanCount = $penyerahan->get($driver->id, collect())->count();
             $pengembalianCount = $pengembalian->get($driver->id, collect())->count();
@@ -131,17 +118,16 @@ class MonthlyStaffRankingWidget extends Widget implements HasForms
             ];
         });
 
-        // 6. Urutkan berdasarkan total terbanyak, lalu berdasarkan nama
+        // 6. Urutkan berdasarkan total terbanyak
         return $stats->sortByDesc('total')->values();
     }
 
-    /**
-     * Kirim data yang sudah diproses ke file view.
-     */
     protected function getViewData(): array
     {
         $state = $this->form->getState();
-        $dateForHumans = Carbon::createFromDate($state['selectedYear'], $state['selectedMonth'], 1)->locale('id')
+
+        $dateForHumans = Carbon::createFromDate($state['selectedYear'], $state['selectedMonth'], 1)
+            ->locale('id')
             ->isoFormat('MMMM YYYY');
 
         return [
