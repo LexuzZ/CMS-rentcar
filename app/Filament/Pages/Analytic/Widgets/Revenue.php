@@ -76,6 +76,6 @@ class Revenue extends BaseWidget
     }
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [5]; // 3 sebagai default
+        return [3,5]; // 3 sebagai default
     }
 }
