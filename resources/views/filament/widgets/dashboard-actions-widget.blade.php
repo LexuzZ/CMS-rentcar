@@ -12,7 +12,7 @@
                     <div class="text-4xl">🧾</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100 dark:hover:text-gray-800/30 transition-colors">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
                     Form Sewa
                 </span>
             </a>
@@ -25,7 +25,7 @@
                     <div class="text-4xl">💳</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
                     Transaksi
                 </span>
             </a>
@@ -38,7 +38,7 @@
                     <div class="text-4xl">📅</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
                     Kalender Unit
                 </span>
             </a>
@@ -51,7 +51,7 @@
                     <div class="text-4xl">✅</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
                     Checklist Keluar
                 </span>
             </a>
@@ -64,7 +64,7 @@
                     <div class="text-6xl">📦</div>
                 </div>
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-800">
+                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
                     Checklist Kembali
                 </span>
             </a>
