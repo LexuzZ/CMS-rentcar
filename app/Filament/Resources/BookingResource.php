@@ -361,7 +361,7 @@ class BookingResource extends Resource
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
-                        Infolists\Components\Grid::make(2)->schema([
+                        Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('estimasi_biaya')
                                 ->label('Biaya Sewa')
                                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
