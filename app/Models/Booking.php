@@ -25,6 +25,15 @@ class Booking extends Model
         'lokasi_pengembalian',
         'ttd',
     ];
+    public function driverPengantaran()
+    {
+        return $this->belongsTo(Driver::class, 'driver_pengantaran_id');
+    }
+
+    public function driverPengembalian()
+    {
+        return $this->belongsTo(Driver::class, 'driver_pengembalian_id');
+    }
 
     public function car()
     {
@@ -50,15 +59,15 @@ class Booking extends Model
         return $this->hasMany(Penalty::class);
     }
     protected function handleRecordCreation(array $data): Model
-{
-    $record = static::getModel()::create($data);
+    {
+        $record = static::getModel()::create($data);
 
-    // Ubah status booking menjadi 'selesai'
-    if (isset($data['booking_id'])) {
-        Booking::where('id', $data['booking_id'])
-            ->update(['status' => 'selesai']);
+        // Ubah status booking menjadi 'selesai'
+        if (isset($data['booking_id'])) {
+            Booking::where('id', $data['booking_id'])
+                ->update(['status' => 'selesai']);
+        }
+
+        return $record;
     }
-
-    return $record;
-}
 }
