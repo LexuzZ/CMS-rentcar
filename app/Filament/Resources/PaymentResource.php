@@ -91,7 +91,7 @@ class PaymentResource extends Resource
                     ->required()
                     ->default(now()),
                 Forms\Components\Select::make('metode_pembayaran')
-                    ->options(['tunai' => 'Tunai', 'transfer' => 'Transfer', 'qris' => 'QRIS'])
+                    ->options(['tunai' => 'Tunai', 'transfer' => 'Transfer', 'qris' => 'QRIS', 'tunai_transfer' => 'Tunai & Transfer', 'tunai_qris' => 'Tunai & QRIS', 'transfer_qris' => 'Transfer & QRIS'])
                     ->required(),
                 Forms\Components\TextInput::make('pembayaran')
                     ->label('Jumlah Pembayaran')
