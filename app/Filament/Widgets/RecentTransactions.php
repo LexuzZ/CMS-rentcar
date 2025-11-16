@@ -53,11 +53,17 @@ class RecentTransactions extends BaseWidget
                     'success' => 'tunai',
                     'info' => 'transfer',
                     'gray' => 'qris',
+                    'primary' => 'tunai_transfer',
+                    'warning' => 'tunai_qris',
+                    'danger' => 'transfer_qris',
                 ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'tunai' => 'Tunai',
                     'transfer' => 'Transfer',
                     'qris' => 'QRIS',
+                    'tunai_transfer' => 'Tunai & Transfer',
+                    'tunai_qris' => 'Tunai & QRIS',
+                    'transfer_qris' => 'Transfer & QRIS',
                     default => ucfirst($state),
                 })
                 ->width('33%'), // Atau ->width('1/3')
