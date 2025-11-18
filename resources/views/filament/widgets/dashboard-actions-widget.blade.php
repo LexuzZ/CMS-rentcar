@@ -5,7 +5,7 @@
         </x-slot>
         <div class="quick-menu-grid">
             {{-- TOMBOL 1: Form Sewa --}}
-            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('index') }}"
+            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('create') }}"
                 class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
 
                 <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center justify-center">
