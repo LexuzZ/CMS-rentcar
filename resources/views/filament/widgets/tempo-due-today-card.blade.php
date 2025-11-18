@@ -22,7 +22,7 @@
                     {{-- Detail Konten --}}
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-500 dark:text-gray-400">Jenis Perawatan</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-xs">Jenis Perawatan</span>
                             @php
                                 $perawatanText = match($record->perawatan) {
                                     'pajak'   => 'Pajak STNK',
@@ -30,12 +30,12 @@
                                     default   => ucfirst($record->perawatan)
                                 };
                             @endphp
-                            <span class="font-semibold text-gray-900 dark:text-white" style="color: #EF4444">
+                            <span class="font-semibold text-xs text-gray-900 dark:text-white" style="color: #EF4444">
                                 {{ $perawatanText }}
                             </span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-500 dark:text-gray-400">Jatuh Tempo</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-xs">Jatuh Tempo</span>
                             @php
                                 $dueDate = \Carbon\Carbon::parse($record->jatuh_tempo);
                                 $daysRemaining = now()->diffInDays($dueDate, false);
