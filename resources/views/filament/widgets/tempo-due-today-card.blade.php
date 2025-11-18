@@ -51,7 +51,7 @@
                                     $color = '#10B981'; // Hijau untuk yang masih lama
                                 }
                             @endphp
-                            <span class="font-bold" style="color: {{ $color }};">
+                            <span class="font-bold text-xs" style="color: {{ $color }};">
                                 {{ $dueDate->locale('id')->diffForHumans() }}
                             </span>
                         </div>
