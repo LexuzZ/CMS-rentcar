@@ -62,7 +62,7 @@ class BookingResource extends Resource
     public static function form(Form $form): Form
     {
         // PERBAIKAN: Mengembalikan skema form yang lengkap
-        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
 
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
@@ -572,12 +572,12 @@ class BookingResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
     }
 
     public static function canEdit(Model $record): bool
