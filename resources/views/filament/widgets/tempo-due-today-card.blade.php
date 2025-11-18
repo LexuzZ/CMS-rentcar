@@ -1,5 +1,5 @@
 <x-filament-widgets::widget>
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         @forelse ($tempos as $record)
             <div class="bg-white p-6 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 flex flex-col justify-between">
                 <div>
