@@ -33,7 +33,7 @@ class UserActivityStatus extends BaseWidget
                     ->label('Role')
                     ->badge()
                     ->alignCenter()
-                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->formatStateUsing(fn($state) => strtoupper($state))
                     ->colors([
                         'primary' => 'superadmin',
                         'success' => 'admin',
