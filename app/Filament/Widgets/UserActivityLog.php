@@ -52,7 +52,6 @@ class UserActivityLog extends BaseWidget
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('')
-                    ->sortable()
                     ->formatStateUsing(
                         fn($state) =>
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
