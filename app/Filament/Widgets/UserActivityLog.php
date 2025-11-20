@@ -10,25 +10,23 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class UserActivityLog extends BaseWidget
 {
     protected static ?int $sort = 6;
+
     protected int|string|array $columnSpan = [
         'sm' => 'full',
         'md' => '6',
         'lg' => '6',
     ];
-    protected int|string|array $perPage = 4;
+
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                UserActivity::with('user')
-                    ->latest()
+                UserActivity::with('user')->latest()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
-                    ,
+                    ->label('User'),
 
-                // ACTION
                 Tables\Columns\TextColumn::make('action')
                     ->label('Aksi')
                     ->badge()
@@ -40,7 +38,6 @@ class UserActivityLog extends BaseWidget
                         'danger' => 'delete',
                     ]),
 
-                // MODEL / MODULE
                 Tables\Columns\TextColumn::make('module')
                     ->label('Modul')
                     ->formatStateUsing(fn($state) => strtoupper($state))
@@ -48,27 +45,30 @@ class UserActivityLog extends BaseWidget
                     ->alignCenter()
                     ->color('primary'),
 
-                // DESCRIPTION
                 Tables\Columns\TextColumn::make('description')
                     ->label('Deskripsi')
                     ->limit(40)
-                    ->alignCenter()
-                    ,
+                    ->alignCenter(),
 
-                // WAKTU
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Perubahan Terakhir')
-                    ->since()
+                    ->sortable()
                     ->formatStateUsing(
                         fn($state) =>
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
-                    )
-                    ->sortable()
-                    ,
+                    ),
             ]);
     }
+
+    // ✔️ Default per page menjadi 4
+    protected function getDefaultTableRecordsPerPage(): int
+    {
+        return 4;
+    }
+
+    // ✔️ Dropdown per page hanya 4 dan 5
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [4,5]; // 3 sebagai default
+        return [4, 5];
     }
 }
