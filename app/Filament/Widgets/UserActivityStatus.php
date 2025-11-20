@@ -43,21 +43,18 @@ class UserActivityStatus extends BaseWidget
                     ->label('Status')
                     ->formatStateUsing(function ($record) {
 
-                        $isOnline = false;
-
-                        if ($record->last_seen_at) {
-                            $isOnline = Carbon::parse($record->last_seen_at)
-                                ->greaterThan(now()->subMinutes(5)); // online jika aktivitas < 5 menit
+                        if (!$record->last_seen_at) {
+                            return '🔴 Offline';
                         }
 
-                        return $isOnline
-                            ? '🟢 Online'
-                            : '🔴 Offline';
+                        $isOnline = $record->last_seen_at->gt(now()->subMinutes(5));
+
+                        return $isOnline ? '🟢 Online' : '🔴 Offline';
                     })
                     ->badge()
                     ->colors([
-                        'success' => fn($record) => $record->last_seen_at && Carbon::parse($record->last_seen_at)->greaterThan(now()->subMinutes(5)),
-                        'danger' => fn($record) => !$record->last_seen_at || Carbon::parse($record->last_seen_at)->lt(now()->subMinutes(5)),
+                        'success' => fn($record) => $record->last_seen_at && $record->last_seen_at->gt(now()->subMinutes(5)),
+                        'danger' => fn($record) => !$record->last_seen_at || $record->last_seen_at->lte(now()->subMinutes(5)),
                     ]),
 
                 Tables\Columns\TextColumn::make('last_seen_at')
