@@ -26,8 +26,7 @@ class UserActivityStatus extends BaseWidget
             ->columns([
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nama')
-                    ->searchable(),
+                    ->label('Nama'),
 
                 Tables\Columns\TextColumn::make('role')
                     ->label('Role')
