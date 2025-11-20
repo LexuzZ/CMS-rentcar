@@ -55,6 +55,7 @@ class UserActivityLog extends BaseWidget
                 // WAKTU
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Waktu')
+                    ->since()
                     ->formatStateUsing(
                         fn($state) =>
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()

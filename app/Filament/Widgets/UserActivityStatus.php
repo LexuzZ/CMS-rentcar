@@ -67,6 +67,10 @@ class UserActivityStatus extends BaseWidget
                 Tables\Columns\TextColumn::make('last_seen_at')
                     ->label('Terakhir Aktif')
                     ->since()
+                    ->formatStateUsing(
+                        fn($state) =>
+                        \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
+                    )
                     ->placeholder('Belum pernah login'),
             ]);
     }
