@@ -83,6 +83,7 @@ class AdminPanelProvider extends PanelProvider
                 DashboardMonthlySummary::class,
                 RecentTransactions::class,
                 TransactionChart::class,
+                  \App\Filament\Widgets\UserActivityStatus::class,
                 // OverdueTasksWidget::class,
                 // MobilKeluar::class,
                 // MobilKembali::class,
