@@ -12,8 +12,8 @@ class UserActivityLog extends BaseWidget
     protected static ?int $sort = 6;
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '5',
-        'lg' => '5',
+        'md' => '6',
+        'lg' => '6',
     ];
     public function table(Table $table): Table
     {
