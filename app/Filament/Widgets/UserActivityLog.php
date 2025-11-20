@@ -25,13 +25,14 @@ class UserActivityLog extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Pengguna')
-                    ->width(50),
+                    ->label('User')
+                    ->width(20),
 
                 // ACTION
                 Tables\Columns\TextColumn::make('action')
                     ->label('Aksi')
                     ->badge()
+                    ->alignCenter()
                     ->formatStateUsing(fn($state) => strtoupper($state))
                     ->colors([
                         'success' => 'create',
@@ -44,24 +45,26 @@ class UserActivityLog extends BaseWidget
                     ->label('Modul')
                     ->formatStateUsing(fn($state) => strtoupper($state))
                     ->badge()
+                    ->alignCenter()
                     ->color('primary'),
 
                 // DESCRIPTION
                 Tables\Columns\TextColumn::make('description')
                     ->label('Deskripsi')
                     ->limit(40)
-                    ->width(75),
+                    ->alignCenter()
+                    ->width(35),
 
                 // WAKTU
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Waktu')
+                    ->label('Perubahan Terakhir')
                     ->since()
                     ->formatStateUsing(
                         fn($state) =>
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
                     )
                     ->sortable()
-                    ->width(50),
+                    ->width(20),
             ]);
     }
     protected function getTableRecordsPerPageSelectOptions(): array
