@@ -26,7 +26,7 @@ class UserActivityLog extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('User')
-                    ->width(20),
+                    ,
 
                 // ACTION
                 Tables\Columns\TextColumn::make('action')
@@ -53,7 +53,7 @@ class UserActivityLog extends BaseWidget
                     ->label('Deskripsi')
                     ->limit(40)
                     ->alignCenter()
-                    ->width(35),
+                    ,
 
                 // WAKTU
                 Tables\Columns\TextColumn::make('created_at')
@@ -64,7 +64,7 @@ class UserActivityLog extends BaseWidget
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
                     )
                     ->sortable()
-                    ->width(20),
+                    ,
             ]);
     }
     protected function getTableRecordsPerPageSelectOptions(): array
