@@ -27,19 +27,20 @@ class UserActivityStatus extends BaseWidget
             ->columns([
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nama'),
+                    ->label('Nama')
+                    ->badge(),
 
-                Tables\Columns\TextColumn::make('role')
-                    ->label('Role')
-                    ->badge()
-                    ->alignCenter()
-                    ->formatStateUsing(fn($state) => strtoupper($state))
-                    ->colors([
-                        'primary' => 'superadmin',
-                        'success' => 'admin',
-                        'warning' => 'staff',
-                        'info' => 'supervisor',
-                    ]),
+                // Tables\Columns\TextColumn::make('role')
+                //     ->label('Role')
+                //     ->badge()
+                //     ->alignCenter()
+                //     ->formatStateUsing(fn($state) => strtoupper($state))
+                //     ->colors([
+                //         'primary' => 'superadmin',
+                //         'success' => 'admin',
+                //         'warning' => 'staff',
+                //         'info' => 'supervisor',
+                //     ]),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
