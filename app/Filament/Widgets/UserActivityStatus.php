@@ -33,10 +33,10 @@ class UserActivityStatus extends BaseWidget
                     ->label('Role')
                     ->badge()
                     ->colors([
-                        'primary' => 'superadmin',
-                        'success' => 'admin',
-                        'warning' => 'staff',
-                        'info' => 'supervisor',
+                        'primary' => 'Super Admin',
+                        'success' => 'Admin',
+                        'warning' => 'Staff',
+                        'info' => 'Supervisor',
                     ]),
 
                 Tables\Columns\TextColumn::make('status')
