@@ -16,12 +16,14 @@ class UpdateLastUserActivity
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $response = $next($request);
+
         if (Auth::check()) {
-            Auth::user()->update([
+            Auth::user()->forceFill([
                 'last_seen_at' => now(),
-            ]);
+            ])->save();
         }
 
-        return $next($request);
+        return $response;
     }
 }
