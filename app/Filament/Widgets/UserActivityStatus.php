@@ -11,11 +11,7 @@ class UserActivityStatus extends BaseWidget
 {
     protected static ?int $sort = 5;
 
-    protected int|string|array $columnSpan = [
-        'sm' => 'full',
-        'md' => '3',
-        'lg' => '3',
-    ];
+    protected int|string|array $columnSpan = 'full';
 
 
     public function table(Table $table): Table
