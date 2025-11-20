@@ -24,8 +24,7 @@ class UserActivityLog extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Pengguna')
-                    ->searchable(),
+                    ->label('Pengguna'),
 
                 // ACTION
                 Tables\Columns\TextColumn::make('action')
