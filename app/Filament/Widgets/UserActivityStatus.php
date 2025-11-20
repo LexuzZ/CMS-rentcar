@@ -16,7 +16,7 @@ class UserActivityStatus extends BaseWidget
         'md' => '5',
         'lg' => '5',
     ];
-    protected int|string|array $perPage = 2; // Ubah dari 10 menjadi 3
+
 
     public function table(Table $table): Table
     {
@@ -73,10 +73,8 @@ class UserActivityStatus extends BaseWidget
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
                     )
                     ->placeholder('Belum pernah login'),
-            ]);
+            ])
+            ->paginated([4, 5]);
     }
-    protected function getTableRecordsPerPageSelectOptions(): array
-    {
-        return [2,5]; // 3 sebagai default
-    }
+
 }
