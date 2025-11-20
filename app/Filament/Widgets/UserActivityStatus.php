@@ -11,6 +11,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class UserActivityStatus extends BaseWidget
 {
+    protected static ?int $sort = 5;
     public function table(Table $table): Table
     {
         return $table
