@@ -57,18 +57,12 @@ class UserActivityLog extends BaseWidget
                         fn($state) =>
                         \Carbon\Carbon::parse($state)->locale('id')->diffForHumans()
                     ),
-            ]);
+            ])
+
+            // ⬇️ FIX UTAMA DI SINI
+            ->paginated([4, 5]);
     }
 
-    // ✔️ Default per page menjadi 4
-    protected function getDefaultTableRecordsPerPage(): int
-    {
-        return 4;
-    }
 
-    // ✔️ Dropdown per page hanya 4 dan 5
-    protected function getTableRecordsPerPageSelectOptions(): array
-    {
-        return [4, 5];
-    }
+
 }
