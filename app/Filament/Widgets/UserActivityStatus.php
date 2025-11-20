@@ -32,6 +32,7 @@ class UserActivityStatus extends BaseWidget
                 Tables\Columns\TextColumn::make('role')
                     ->label('Role')
                     ->badge()
+                    ->alignCenter()
                     ->formatStateUsing(fn($state) => ucfirst($state))
                     ->colors([
                         'primary' => 'superadmin',
