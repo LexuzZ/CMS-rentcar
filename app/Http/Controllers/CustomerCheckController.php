@@ -50,7 +50,7 @@ class CustomerCheckController extends Controller
             'nama' => 'required',
             'no_telp' => 'required|unique:customers,no_telp',
             'alamat' => 'required',
-            'lisence' => 'nullable|unique:customers,lisence',
+            'lisence' => 'nullable|max:16',
             'identity_file' => 'nullable|image|max:10240',
             'lisence_file' => 'nullable|image|max:10240',
         ]);
