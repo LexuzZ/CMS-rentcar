@@ -13,8 +13,8 @@ class UserActivityStatus extends BaseWidget
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '1/2',
-        'lg' => '1/2',
+        'md' => 'full',
+        'lg' => 'full',
     ];
     protected int|string|array $perPage = 5; // Ubah dari 10 menjadi 3
 
