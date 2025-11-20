@@ -3,20 +3,20 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class UserActivityStatus extends BaseWidget
 {
     protected static ?int $sort = 5;
+
     protected int|string|array $columnSpan = [
         'sm' => 'full',
         'md' => '6',
         'lg' => '6',
     ];
+
     public function table(Table $table): Table
     {
         return $table
@@ -24,37 +24,42 @@ class UserActivityStatus extends BaseWidget
                 User::query()->orderBy('last_seen_at', 'desc')
             )
             ->columns([
-                // TextColumn::make('name')->label('User Name'),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('role')
+                    ->label('Role')
                     ->badge()
                     ->colors([
                         'primary' => 'superadmin',
                         'success' => 'admin',
                         'warning' => 'staff',
                         'info' => 'supervisor',
-                    ])
-                    ->label('Role'),
+                    ]),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(function ($record) {
+                    ->getStateUsing(function ($record) {
 
                         if (!$record->last_seen_at) {
-                            return '🔴 Offline';
+                            return 'Offline';
                         }
 
                         $isOnline = $record->last_seen_at->gt(now()->subMinutes(5));
 
-                        return $isOnline ? '🟢 Online' : '🔴 Offline';
+                        return $isOnline ? 'Online' : 'Offline';
                     })
                     ->badge()
                     ->colors([
-                        'success' => fn($record) => $record->last_seen_at && $record->last_seen_at->gt(now()->subMinutes(5)),
-                        'danger' => fn($record) => !$record->last_seen_at || $record->last_seen_at->lte(now()->subMinutes(5)),
+                        'success' => fn($record) =>
+                            $record->last_seen_at &&
+                            $record->last_seen_at->gt(now()->subMinutes(5)),
+
+                        'danger' => fn($record) =>
+                            !$record->last_seen_at ||
+                            $record->last_seen_at->lte(now()->subMinutes(5)),
                     ]),
 
                 Tables\Columns\TextColumn::make('last_seen_at')
