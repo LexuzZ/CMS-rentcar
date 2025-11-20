@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_activities', function (Blueprint $table) {
+
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('action');
             $table->string('module');
             $table->text('description');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
