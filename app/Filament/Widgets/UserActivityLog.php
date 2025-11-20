@@ -13,8 +13,8 @@ class UserActivityLog extends BaseWidget
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '5',
-        'lg' => '5',
+        'md' => '7',
+        'lg' => '7',
     ];
 
     public function table(Table $table): Table
