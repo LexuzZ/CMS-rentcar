@@ -16,7 +16,7 @@ class UserActivityStatus extends BaseWidget
         'md' => '4',
         'lg' => '4',
     ];
-    protected int|string|array $perPage = 5; // Ubah dari 10 menjadi 3
+    protected int|string|array $perPage = 4; // Ubah dari 10 menjadi 3
 
     public function table(Table $table): Table
     {
@@ -72,6 +72,6 @@ class UserActivityStatus extends BaseWidget
     }
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [3,5]; // 3 sebagai default
+        return [4,5]; // 3 sebagai default
     }
 }

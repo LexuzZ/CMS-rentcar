@@ -15,6 +15,7 @@ class UserActivityLog extends BaseWidget
         'md' => '6',
         'lg' => '6',
     ];
+    protected int|string|array $perPage = 4;
     public function table(Table $table): Table
     {
         return $table
@@ -61,5 +62,9 @@ class UserActivityLog extends BaseWidget
                     ->sortable()
                     ->width(50),
             ]);
+    }
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [4,5]; // 3 sebagai default
     }
 }
