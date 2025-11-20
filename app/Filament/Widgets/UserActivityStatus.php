@@ -16,6 +16,7 @@ class UserActivityStatus extends BaseWidget
         'md' => '6',
         'lg' => '6',
     ];
+    protected int|string|array $perPage = 2; // Ubah dari 10 menjadi 3
 
     public function table(Table $table): Table
     {
@@ -68,5 +69,9 @@ class UserActivityStatus extends BaseWidget
                     ->since()
                     ->placeholder('Belum pernah login'),
             ]);
+    }
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [3,5]; // 3 sebagai default
     }
 }
