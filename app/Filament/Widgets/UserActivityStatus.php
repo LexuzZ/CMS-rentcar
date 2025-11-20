@@ -16,7 +16,7 @@ class UserActivityStatus extends BaseWidget
         'md' => '6',
         'lg' => '6',
     ];
-    protected int|string|array $perPage = 2; // Ubah dari 10 menjadi 3
+    protected int|string|array $perPage = 5; // Ubah dari 10 menjadi 3
 
     public function table(Table $table): Table
     {
