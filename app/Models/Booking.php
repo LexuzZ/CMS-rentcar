@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -69,5 +70,9 @@ class Booking extends Model
         }
 
         return $record;
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -23,6 +24,10 @@ class Invoice extends Model
      public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
     }
 
 

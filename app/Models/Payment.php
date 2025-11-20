@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
@@ -18,5 +19,9 @@ class Payment extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
     }
 }
