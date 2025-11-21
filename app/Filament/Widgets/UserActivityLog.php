@@ -14,8 +14,8 @@ class UserActivityLog extends BaseWidget
     // protected int|string|array $columnSpan = 'full';
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '6',
-        'lg' => '6',
+        'md' => '4',
+        'lg' => '4',
     ];
 
     public function table(Table $table): Table
