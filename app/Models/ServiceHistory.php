@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,5 +26,9 @@ class ServiceHistory extends Model
     public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class);
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
     }
 }

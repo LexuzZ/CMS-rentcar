@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,5 +19,9 @@ class Tempo extends Model
     public function car()
     {
         return $this->belongsTo(Car::class);
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
     }
 }

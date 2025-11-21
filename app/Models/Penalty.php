@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,5 +21,8 @@ class Penalty extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-    
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
+    }
 }

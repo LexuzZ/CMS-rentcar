@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +21,11 @@ class Customer extends Model
         'alamat',
     ];
     public function bookings(): HasMany
-{
-    return $this->hasMany(Booking::class);
-}
+    {
+        return $this->hasMany(Booking::class);
+    }
+    protected static function booted()
+    {
+        static::observe(ActivityObserver::class);
+    }
 }
