@@ -71,8 +71,8 @@ class User extends Authenticatable
     {
         return in_array($this->role, $roles);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+    // protected static function booted()
+    // {
+    //     static::observe(ActivityObserver::class);
+    // }
 }
