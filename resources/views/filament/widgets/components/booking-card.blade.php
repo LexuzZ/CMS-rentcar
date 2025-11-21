@@ -71,7 +71,7 @@
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Staff</span>
             <span class=" bg-green-500 text-gray-900 dark:text-white text-xs">
-                {{ $record->driver_pengantaran_id->nama ?? 'N/A' }}
+                {{ $record->driverPengantaran->nama ?? 'N/A' }}
             </span>
         </div>
 
