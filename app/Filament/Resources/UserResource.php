@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -94,5 +95,33 @@ class UserResource extends Resource
             'create' => UserResource\Pages\CreateUser::route('/create'),
             'edit' => UserResource\Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+    public static function canCreate(): bool
+    {
+        // Hanya superadmin dan admin yang bisa membuat data baru
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa mengedit
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        // Hanya superadmin dan admin yang bisa menghapus
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        // Hanya superadmin dan admin yang bisa hapus massal
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+    public static function canAccess(): bool
+    {
+        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
