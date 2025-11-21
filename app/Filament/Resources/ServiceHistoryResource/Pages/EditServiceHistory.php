@@ -10,6 +10,10 @@ class EditServiceHistory extends EditRecord
 {
     protected static string $resource = ServiceHistoryResource::class;
     protected static ?string $title = 'Edit Riwayat Servis';
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     protected function getHeaderActions(): array
     {

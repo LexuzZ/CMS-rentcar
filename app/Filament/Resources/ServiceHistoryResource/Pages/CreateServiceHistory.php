@@ -10,4 +10,8 @@ class CreateServiceHistory extends CreateRecord
 {
     protected static string $resource = ServiceHistoryResource::class;
     protected static ?string $title = 'Tambah Riwayat Servis';
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
