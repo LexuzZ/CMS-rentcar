@@ -15,8 +15,8 @@ class RecentTransactions extends BaseWidget
     // Untuk column span widget di dashboard
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '6',
-        'lg' => '6',
+        'md' => '7',
+        'lg' => '7',
     ];
 
     // Untuk pagination table di dalam widget
