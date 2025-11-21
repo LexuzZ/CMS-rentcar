@@ -12,8 +12,8 @@ class TransactionChart extends ChartWidget
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '6',
-        'lg' => '6',
+        'md' => '8',
+        'lg' => '8',
     ];
 
     protected function getData(): array
