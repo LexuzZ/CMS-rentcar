@@ -57,13 +57,13 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('role')
-                    // ->searchable()
+                    ->badge()
                     ,
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->since()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->label('Dibuat')
+                //     ->since()
+                //     ->sortable(),
             ])
             ->filters([
                 //
