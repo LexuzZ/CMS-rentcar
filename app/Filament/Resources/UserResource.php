@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -33,14 +34,24 @@ class UserResource extends Resource
                     ->email()
                     ->unique(ignoreRecord: true)
                     ->required(),
+                Select::make('role')
+                    ->label('Role User')
+                    ->options([
+                        'superadmin' => 'Superadmin',
+                        'admin' => 'Admin',
+                        'staff' => 'Staff',
+                        'supervisor' => 'Supervisor',
+                    ])
+                    ->default('staff')
+                    ->required(),
 
                 Forms\Components\TextInput::make('password')
                     ->label('Password')
                     ->password()
                     ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => $state ? Hash::make($state) : null)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (string $context): bool => $context === 'create'),
+                    ->dehydrateStateUsing(fn($state) => $state ? Hash::make($state) : null)
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $context): bool => $context === 'create'),
             ]);
     }
 
@@ -58,7 +69,7 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('role')
                     ->badge()
-                    ,
+                ,
 
                 // Tables\Columns\TextColumn::make('created_at')
                 //     ->label('Dibuat')
