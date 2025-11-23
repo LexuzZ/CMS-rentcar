@@ -72,7 +72,7 @@ class Revenue extends BaseWidget
                         }
                         return $query;
                     }),
-            ])->paginated([5, 10]);
+            ])->paginated([5]);
     }
 
 }

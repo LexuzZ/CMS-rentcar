@@ -60,7 +60,7 @@ class UserActivityLog extends BaseWidget
             ])
 
             // ⬇️ FIX UTAMA DI SINI
-            ->paginated([5, 10]);
+            ->paginated([5]);
     }
 
 

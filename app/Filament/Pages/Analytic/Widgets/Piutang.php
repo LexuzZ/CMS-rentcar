@@ -103,7 +103,7 @@ class Piutang extends BaseWidget
                         );
                     }),
             ])
-            ->paginated([5, 10]);
+            ->paginated([5]);
     }
 
 }
