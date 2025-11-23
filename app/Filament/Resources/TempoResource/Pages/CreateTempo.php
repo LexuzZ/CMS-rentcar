@@ -10,4 +10,8 @@ class CreateTempo extends CreateRecord
 {
     protected static string $resource = TempoResource::class;
     protected static ?string $title = 'Tambah Jadwal Jatuh Tempo';
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
