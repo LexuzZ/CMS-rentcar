@@ -45,8 +45,10 @@
                                     $color = '#9B2C2C'; // Merah tua untuk yang sudah lewat
                                 } elseif ($daysRemaining <= 7) {
                                     $color = '#EF4444'; // Merah untuk 7 hari ke depan
-                                } elseif ($daysRemaining <= 30) {
+                                } elseif ($daysRemaining <= 15) {
                                     $color = '#F59E0B'; // Kuning/Amber untuk 1 bulan ke depan
+                                } elseif ($daysRemaining <= 30) {
+                                    $color = '#10B981'; // Kuning/Amber untuk 1 bulan ke depan
                                 } else {
                                     $color = '#10B981'; // Hijau untuk yang masih lama
                                 }
