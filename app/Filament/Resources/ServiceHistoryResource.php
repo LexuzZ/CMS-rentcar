@@ -139,6 +139,7 @@ class ServiceHistoryResource extends Resource
                     ->wrap()
                     ->width(150),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
