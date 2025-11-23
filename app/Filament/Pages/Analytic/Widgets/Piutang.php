@@ -102,10 +102,8 @@ class Piutang extends BaseWidget
                             'piutang.pdf'
                         );
                     }),
-            ]);
+            ])
+            ->paginated([5, 10]);
     }
-    protected function getTableRecordsPerPageSelectOptions(): array
-    {
-        return [3,5]; // 3 sebagai default
-    }
+
 }

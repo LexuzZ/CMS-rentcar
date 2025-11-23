@@ -73,7 +73,7 @@ class UserActivityStatus extends BaseWidget
                     )
                     ->placeholder('Belum pernah login'),
             ])
-            ->paginated([4, 5]);
+            ->paginated([5, 10]);
     }
 
 }
