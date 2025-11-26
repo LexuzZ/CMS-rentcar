@@ -588,7 +588,7 @@ class BookingResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user()->isSuperAdmin(); // Hanya superadmin
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']); // Hanya superadmin
     }
 
     public static function canDeleteAny(): bool
