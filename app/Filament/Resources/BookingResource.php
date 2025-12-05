@@ -101,37 +101,45 @@ class BookingResource extends Resource
                         name: 'car',
                         titleAttribute: 'nopol',
                         modifyQueryUsing: function (Builder $query, Forms\Get $get, ?Model $record) {
-                            // Saat EDIT, tampilkan mobil yg sudah dipilih tanpa filter ketat
-                            if ($record && $record->exists) {
-                                return $query->orWhere('id', $record->car_id);
-                            }
-
                             $startDate = $get('tanggal_keluar');
                             $endDate = $get('tanggal_kembali');
                             $garasiType = $get('garasi_type');
 
+                            // Jika tidak ada tanggal / garasi → kosongkan dropdown
                             if (!$startDate || !$endDate || !$garasiType) {
-                                return $query->whereRaw('1 = 0');
+                                $query->whereRaw('1 = 0');
+                                return;
                             }
 
-                            // Filter berdasarkan garasi
+                            // Filter GARASI
                             if ($garasiType === 'spt') {
                                 $query->where('garasi', 'SPT');
                             } else {
                                 $query->where('garasi', '!=', 'SPT');
                             }
 
-                            // Filter ketersediaan mobil
-                            return $query
-                                ->whereNotIn('status', ['perawatan', 'nonaktif'])
-                                ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
+                            // Filter STATUS mobil
+                            $query->whereNotIn('status', ['perawatan', 'nonaktif']);
+
+                            // Filter mobils yang BERTABRAKAN dengan booking lain
+                            $query->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $record) {
                                 $bookingQuery
-                                    ->whereIn('status', ['booking', 'disewa']) // ✅ hanya hitung yang masih berlaku
+                                    ->whereIn('status', ['booking', 'disewa'])
                                     ->where(function (Builder $q) use ($startDate, $endDate) {
                                         $q->where('tanggal_keluar', '<', $endDate)
                                             ->where('tanggal_kembali', '>', $startDate);
                                     });
+
+                                // Abaikan bentrok dengan booking miliknya sendiri saat EDIT
+                                if ($record) {
+                                    $bookingQuery->where('id', '!=', $record->id);
+                                }
                             });
+
+                            // Saat edit → masukkan juga mobil yang dipakai saat ini
+                            if ($record) {
+                                $query->orWhere('id', $record->car_id);
+                            }
                         }
                     )
                     ->getOptionLabelFromRecordUsing(function (Car $record) {
