@@ -287,6 +287,10 @@ class PaymentResource extends Resource
 
                                 \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.carModel.name')
                                     ->label('Mobil'),
+                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_keluar')
+                                    ->label('Tanggal Mulai'),
+                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_kembali')
+                                    ->label('Tanggal Masuk'),
                             ])
                             ->columns(2),
 
