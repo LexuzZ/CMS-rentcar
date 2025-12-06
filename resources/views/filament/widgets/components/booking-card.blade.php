@@ -47,20 +47,17 @@
     <div class="space-y-3 text-sm">
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Penyewa</span>
-            <span
-                class=" text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
+            <span class=" text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">No. Telepon</span>
-            <span
-                class="text-xs text-gray-900 dark:text-white ">{{ $record->customer->no_telp ?? 'N/A' }}</span>
+            <span class="text-xs text-gray-900 dark:text-white ">{{ $record->customer->no_telp ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Drop Point</span>
-            <span
-                class="text-xs text-gray-900 dark:text-white ">{{ $record->lokasi_pengantaran ?? 'N/A' }}</span>
+            <span class="text-xs text-gray-900 dark:text-white ">{{ $record->lokasi_pengantaran ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
@@ -93,10 +90,18 @@
             </div>
         </div>
     </div>
-
-    {{-- Tombol Aksi --}}
     @if ($canPerformActions)
-        <div class="mt-6 flex items-center justify-end">
+        <div class="mt-6 flex items-center justify-between">
+
+            {{-- Tombol Edit --}}
+            <x-filament::button tag="a"
+                href="{{ \App\Filament\Resources\BookingResource::getUrl('edit', ['record' => $record->id]) }}"
+                icon="heroicon-o-pencil-square" color="gray" style="background-color:#374151;"
+                onmouseover="this.style.backgroundColor='#4b5563';" onmouseout="this.style.backgroundColor='#374151';">
+                Edit
+            </x-filament::button>
+
+            {{-- Tombol Pick Up --}}
             <x-filament::button wire:click="pickupBooking({{ $record->id }})" wire:loading.attr="disabled"
                 icon="heroicon-o-arrow-top-right-on-square" style="background-color: {{ $buttonColor }};"
                 onmouseover="this.style.backgroundColor='{{ $buttonHover }}';"
@@ -105,4 +110,17 @@
             </x-filament::button>
         </div>
     @endif
+
+
+    {{-- Tombol Aksi --}}
+    {{-- @if ($canPerformActions)
+        <div class="mt-6 flex items-center justify-end">
+            <x-filament::button wire:click="pickupBooking({{ $record->id }})" wire:loading.attr="disabled"
+                icon="heroicon-o-arrow-top-right-on-square" style="background-color: {{ $buttonColor }};"
+                onmouseover="this.style.backgroundColor='{{ $buttonHover }}';"
+                onmouseout="this.style.backgroundColor='{{ $buttonColor }}';">
+                Pick Up
+            </x-filament::button>
+        </div>
+    @endif --}}
 </div>

@@ -18,9 +18,11 @@ class MobilKeluar extends Widget
     protected static ?int $sort = 3;
     protected int|string|array $columnSpan = 'full';
 
+
+
     public function pickupBooking(int $bookingId): void
     {
-        if (! Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor'])) {
+        if (!Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor'])) {
             return;
         }
         $booking = Booking::with('car')->find($bookingId);
@@ -40,6 +42,10 @@ class MobilKeluar extends Widget
                 ->success()
                 ->send();
         }
+    }
+    public function editBooking(int $bookingId)
+    {
+        return redirect()->to(\App\Filament\Resources\BookingResource::getUrl('edit', ['record' => $bookingId]));
     }
     // Pindahkan query ke getViewData()
     protected function getViewData(): array
