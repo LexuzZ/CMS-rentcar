@@ -132,12 +132,20 @@ class PaymentResource extends Resource
                 // Tables\Columns\TextColumn::make('invoice.id')->label('Faktur'),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')->label('Penyewa')->searchable()->alignCenter()->wrap() // <-- Tambahkan wrap agar teks turun
                     ->width(150),
+                Tables\Columns\TextColumn::make('invoice.booking.car.nopol')
+                    ->label('No. Polisi')
+                    ->searchable()
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('invoice.booking.car.carModel.name')
+                    ->label('Mobil')
+                    ->searchable()
+                    ->alignCenter(),
                 TextColumn::make('tanggal_pembayaran')
-                    ->label('Tgl Pembayaran')
+                    ->label('Tgl Payment')
                     ->searchable()
                     ->date('d M Y')->alignCenter(),
                 Tables\Columns\TextColumn::make('total_bayar')
-                    ->label('Sisa Pembayaran')
+                    ->label('Sisa Payment')
                     ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
