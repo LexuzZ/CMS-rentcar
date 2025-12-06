@@ -139,6 +139,7 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('invoice.booking.car.carModel.name')
                     ->label('Mobil')
                     ->searchable()
+                    ->wrap()->width(150)
                     ->alignCenter(),
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tgl Payment')
