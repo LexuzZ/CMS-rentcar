@@ -175,6 +175,8 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
+                    ->wrap()
+                    ->width(150)
                     ->alignCenter()
                     ->colors([
                         'success' => 'tunai',
