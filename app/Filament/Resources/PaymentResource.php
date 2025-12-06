@@ -288,11 +288,13 @@ class PaymentResource extends Resource
                                 \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.carModel.name')
                                     ->label('Mobil'),
                                 \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_keluar')
-                                    ->label('Tanggal Mulai'),
+                                    ->label('Tanggal Mulai')
+                                    ->date('d M Y'),
                                 \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_kembali')
-                                    ->label('Tanggal Masuk'),
+                                    ->label('Tanggal Masuk')
+                                    ->date('d M Y'),
                             ])
-                            ->columns(2),
+                            ->columns(3),
 
                         \Filament\Infolists\Components\Section::make('Rincian Biaya')
                             ->schema([
@@ -335,7 +337,7 @@ class PaymentResource extends Resource
                                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                                     ->weight(\Filament\Support\Enums\FontWeight::Bold),
                             ])
-                            ->columns(2),
+                            ->columns(3),
 
                         \Filament\Infolists\Components\Section::make('Pembayaran')
                             ->schema([
