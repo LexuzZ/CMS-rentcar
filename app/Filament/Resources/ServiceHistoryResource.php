@@ -133,7 +133,7 @@ class ServiceHistoryResource extends Resource
                     ->wrap()
                     ->width(150),
                 Tables\Columns\TextColumn::make('next_service_date')
-                    ->label('Jadwal Berikutnya')
+                    ->label('Next Service')
                     ->date('d M Y')
                     ->sortable()
                     ->wrap()
