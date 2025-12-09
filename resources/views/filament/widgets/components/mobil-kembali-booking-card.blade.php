@@ -50,13 +50,11 @@
     <div class="space-y-3 text-sm">
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Penyewa</span>
-            <span
-                class="text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
+            <span class="text-gray-900 dark:text-white text-xs">{{ $record->customer->nama ?? 'N/A' }}</span>
         </div>
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">No. Telepon</span>
-            <span
-                class="text-xs text-gray-900 dark:text-white">{{ $record->customer->no_telp ?? 'N/A' }}</span>
+            <span class="text-xs text-gray-900 dark:text-white">{{ $record->customer->no_telp ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between">
@@ -73,8 +71,7 @@
 
         <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400 text-xs">Drop Point</span>
-            <span
-                class="text-xs text-gray-900 dark:text-white">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
+            <span class="text-xs text-gray-900 dark:text-white">{{ $record->lokasi_pengembalian ?? 'N/A' }}</span>
         </div>
 
         <div class="flex justify-between items-center">
@@ -99,7 +96,15 @@
     {{-- Tombol Aksi --}}
 
     @if ($canPerformActions)
-        <div class="mt-6 flex items-center justify-end">
+        <div class="mt-6 flex items-center justify-between">
+
+            {{-- Tombol Edit --}}
+            <x-filament::button tag="a"
+                href="{{ \App\Filament\Resources\BookingResource::getUrl('edit', ['record' => $record->id]) }}"
+                icon="heroicon-o-pencil-square" color="gray" style="background-color:#fff;"
+                onmouseover="this.style.backgroundColor='#6b7280';" onmouseout="this.style.backgroundColor='#fff';">
+                Edit
+            </x-filament::button>
             <x-filament::button wire:click="selesaikanBooking({{ $record->id }})" wire:loading.attr="disabled"
                 icon="heroicon-o-check-circle" style="background-color: {{ $buttonColor }}; "
                 onmouseover="this.style.backgroundColor='{{ $buttonHover }}';"
