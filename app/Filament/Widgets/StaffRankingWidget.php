@@ -3,65 +3,79 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Driver;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Widgets\Widget;
+use Illuminate\Support\Carbon;
 
-class StaffRankingWidget extends BaseWidget
+class StaffRankingWidget extends Widget implements HasForms
 {
-    // Mengatur lebar widget agar full atau separuh
-    protected int | string | array $columnSpan = 'full';
+    use InteractsWithForms;
 
-    // Judul Widget
-    protected static ?string $heading = 'Ranking Staff Harian (Hari Ini)';
+    protected static string $view = 'filament.widgets.staff-ranking-widget';
+    protected int|string|array $columnSpan = 'full';
+    protected static ?int $sort = 2;
 
-    // Urutan widget di dashboard
-    protected static ?int $sort = 6;
+    public ?string $dateFilter = null;
 
-    public function table(Table $table): Table
+    public function mount(): void
     {
-        return $table
-            ->query(
-                Driver::query()
-                    ->withCount([
-                        'pengantaran as antar_count' => function (Builder $query) {
-                            $query->whereDate('tanggal_keluar', Carbon::today());
-                        },
-                        'pengembalian as jemput_count' => function (Builder $query) {
-                            $query->whereDate('tanggal_kembali', Carbon::today());
-                        },
-                    ])
-                    // Filter agar hanya menampilkan driver yang ada kerjaan hari ini (Opsional, hapus jika ingin semua driver tampil)
-                    ->havingRaw('(antar_count + jemput_count) > 0')
-                    ->orderByRaw('(antar_count + jemput_count) DESC') // Ranking berdasarkan total tertinggi
-            )
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama Staff')
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('total_job')
-                    ->label('Total Job')
-                    ->state(function (Driver $record): int {
-                        return $record->antar_count + $record->jemput_count;
-                    })
-                    ->badge()
-                    ->color('success')
-                    ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query->orderByRaw('(antar_count + jemput_count) ' . $direction);
-                    }),
-
-                Tables\Columns\TextColumn::make('antar_count')
-                    ->label('Antar')
-                    ->alignCenter(),
-
-                Tables\Columns\TextColumn::make('jemput_count')
-                    ->label('Jemput')
-                    ->alignCenter(),
-            ])
-            ->paginated(false); // Matikan pagination jika list staff tidak terlalu banyak
+        $this->dateFilter = now()->format('Y-m-d');
+        $this->form->fill(['dateFilter' => $this->dateFilter]);
     }
+
+    public function form(Form $form): Form
+    {
+        return $form->schema([
+            DatePicker::make('dateFilter')
+                ->label('Filter Tanggal')
+                ->native(false)
+                ->displayFormat('d F Y')
+                ->closeOnDateSelection()
+                ->live()
+                ->afterStateUpdated(fn ($state) => $this->dateFilter = $state),
+        ]);
+    }
+
+    protected function getViewData(): array
+{
+    $date = $this->dateFilter;
+
+    $drivers = Driver::withCount([
+        // Hitung ANTAR hanya jika status = 'disewa'
+        'antar as antar_count' => fn ($q) =>
+            $q->whereDate('tanggal_keluar', $date)
+              ->where('status', 'disewa'),
+
+        // Hitung JEMPUT hanya jika status = 'selesai'
+        'jemput as jemput_count' => fn ($q) =>
+            $q->whereDate('tanggal_kembali', $date)
+              ->where('status', 'selesai'),
+    ])->get();
+
+    $stats = $drivers->map(function ($driver) {
+        $antar = $driver->antar_count ?? 0;
+        $jemput = $driver->jemput_count ?? 0;
+
+        return [
+            'staff_name' => $driver->nama ?? 'Tanpa Nama',
+            'penyerahan' => $antar,
+            'pengembalian' => $jemput,
+            'total' => $antar + $jemput,
+        ];
+    })
+    ->filter(fn ($stat) => $stat['total'] > 0)
+    ->sortByDesc('total')
+    ->take(10);
+
+    return [
+        'stats' => $stats,
+        'dateForHumans' => Carbon::parse($date)
+            ->locale('id')
+            ->translatedFormat('d F Y'),
+    ];
+}
+
 }

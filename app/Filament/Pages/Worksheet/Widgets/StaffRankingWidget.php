@@ -15,67 +15,83 @@ class StaffRankingWidget extends Widget implements HasForms
     use InteractsWithForms;
 
     protected static string $view = 'filament.widgets.staff-ranking-widget';
-    protected int|string|array $columnSpan = 'full';
+
+    // Mengatur lebar widget agar full width (opsional)
+    protected int | string | array $columnSpan = 'full';
+
+    // Urutan widget di dashboard
     protected static ?int $sort = 2;
 
+    // Property untuk menampung filter tanggal
     public ?string $dateFilter = null;
 
     public function mount(): void
     {
+        // Default filter ke hari ini
         $this->dateFilter = now()->format('Y-m-d');
+
+        // Inisialisasi form
         $this->form->fill(['dateFilter' => $this->dateFilter]);
     }
 
     public function form(Form $form): Form
     {
-        return $form->schema([
-            DatePicker::make('dateFilter')
-                ->label('Filter Tanggal')
-                ->native(false)
-                ->displayFormat('d F Y')
-                ->closeOnDateSelection()
-                ->live()
-                ->afterStateUpdated(fn ($state) => $this->dateFilter = $state),
-        ]);
+        return $form
+            ->schema([
+                DatePicker::make('dateFilter')
+                    ->label('Filter Tanggal')
+                    ->native(false)
+                    ->displayFormat('d F Y')
+                    ->closeOnDateSelection()
+                    ->live() // Agar data langsung update saat tanggal dipilih
+                    ->afterStateUpdated(function ($state) {
+                        $this->dateFilter = $state;
+                    }),
+            ]);
     }
 
     protected function getViewData(): array
-{
-    $date = $this->dateFilter;
+    {
+        $date = $this->dateFilter;
 
-    $drivers = Driver::withCount([
-        // Hitung ANTAR hanya jika status = 'disewa'
-        'antar as antar_count' => fn ($q) =>
-            $q->whereDate('tanggal_keluar', $date)
-              ->where('status', 'disewa'),
+        // Ambil semua driver beserta hitungan tugasnya pada tanggal yang dipilih
+        $drivers = Driver::withCount([
+            // Hitung tugas Antar berdasarkan 'tanggal_keluar'
+            'bookingsAntar' => function ($query) use ($date) {
+                if ($date) {
+                    $query->whereDate('tanggal_keluar', $date);
+                }
+            },
+            // Hitung tugas Jemput berdasarkan 'tanggal_kembali'
+            'bookingsJemput' => function ($query) use ($date) {
+                if ($date) {
+                    $query->whereDate('tanggal_kembali', $date);
+                }
+            }
+        ])->get();
 
-        // Hitung JEMPUT hanya jika status = 'selesai'
-        'jemput as jemput_count' => fn ($q) =>
-            $q->whereDate('tanggal_kembali', $date)
-              ->where('status', 'selesai'),
-    ])->get();
+        // Transformasi data untuk menghitung total dan format array
+        $stats = $drivers->map(function ($driver) {
+            $antar = $driver->bookings_antar_count ?? 0;
+            $jemput = $driver->bookings_jemput_count ?? 0;
 
-    $stats = $drivers->map(function ($driver) {
-        $antar = $driver->antar_count ?? 0;
-        $jemput = $driver->jemput_count ?? 0;
+            return [
+                'staff_name' => $driver->name, // Pastikan kolom 'name' ada di tabel drivers
+                'penyerahan' => $antar,
+                'pengembalian' => $jemput,
+                'total' => $antar + $jemput,
+            ];
+        })
+        // Filter: hanya ambil yang punya aktivitas (total > 0)
+        ->filter(fn ($stat) => $stat['total'] > 0)
+        // Urutkan dari total terbanyak (Descending)
+        ->sortByDesc('total')
+        // Ambil top 10 saja
+        ->take(10);
 
         return [
-            'staff_name' => $driver->nama ?? 'Tanpa Nama',
-            'penyerahan' => $antar,
-            'pengembalian' => $jemput,
-            'total' => $antar + $jemput,
+            'stats' => $stats,
+            'dateForHumans' => $date ? Carbon::parse($date)->translatedFormat('d F Y') : 'Semua Waktu',
         ];
-    })
-    ->filter(fn ($stat) => $stat['total'] > 0)
-    ->sortByDesc('total')
-    ->take(10);
-
-    return [
-        'stats' => $stats,
-        'dateForHumans' => Carbon::parse($date)
-            ->locale('id')
-            ->translatedFormat('d F Y'),
-    ];
-}
-
+    }
 }
