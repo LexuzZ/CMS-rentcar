@@ -54,21 +54,18 @@ class StaffRankingWidget extends Widget implements HasForms
             $date = now();
         }
 
-        // ============
-        // PENYERAHAN
-        // ============
-        $penyerahan = Booking::whereDate('tanggal_keluar', $date)
+        $penyerahan = Booking::with('driverPengantaran')
+            ->whereDate('tanggal_keluar', $date)
             ->whereNotNull('driver_pengantaran_id')
             ->get()
             ->groupBy('driver_pengantaran_id');
 
-        // =============
-        // PENGEMBALIAN
-        // =============
-        $pengembalian = Booking::whereDate('tanggal_kembali', $date)
+        $pengembalian = Booking::with('driverPengembalian')
+            ->whereDate('tanggal_kembali', $date)
             ->whereNotNull('driver_pengembalian_id')
             ->get()
             ->groupBy('driver_pengembalian_id');
+
 
         // Gabungkan semua driver yang terlibat
         $involvedDriverIds = $penyerahan->keys()
