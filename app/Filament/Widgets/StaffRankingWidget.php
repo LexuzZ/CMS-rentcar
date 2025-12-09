@@ -18,7 +18,7 @@ class StaffRankingWidget extends BaseWidget
     protected static ?string $heading = 'Ranking Staff Harian (Hari Ini)';
 
     // Urutan widget di dashboard
-    protected static ?int $sort = 7;
+    protected static ?int $sort = 6;
 
     public function table(Table $table): Table
     {
