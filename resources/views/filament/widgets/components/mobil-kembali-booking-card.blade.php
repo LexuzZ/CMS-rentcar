@@ -101,7 +101,7 @@
             {{-- Tombol Edit --}}
             <x-filament::button tag="a"
                 href="{{ \App\Filament\Resources\BookingResource::getUrl('edit', ['record' => $record->id]) }}"
-                icon="heroicon-o-pencil-square" color="gray" style="background-color:#fff;"
+                icon="heroicon-o-pencil-square" color="gray" style="background-color:#fff;" class="dark:text-black"
                 onmouseover="this.style.backgroundColor='#6b7280';" onmouseout="this.style.backgroundColor='#fff';">
                 Edit
             </x-filament::button>
