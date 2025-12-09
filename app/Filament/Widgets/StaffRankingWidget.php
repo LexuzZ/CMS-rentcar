@@ -43,26 +43,34 @@ class StaffRankingWidget extends Widget implements HasForms
     {
         $date = $this->dateFilter;
 
-        // Menggunakan relasi CORRECT: antar() & jemput()
         $drivers = Driver::withCount([
-            'antar' => fn ($q) => $q->whereDate('tanggal_keluar', $date),
-            'jemput' => fn ($q) => $q->whereDate('tanggal_kembali', $date),
-        ])->get();
+            // Hitung PENYERAHAN hanya jika status == disewa
+            'antar as antar_count' => fn ($q) =>
+                $q->whereDate('tanggal_keluar', $date)
+                  ->where('status', 'disewa'),
 
-        $stats = $drivers->map(function ($driver) {
-            $antar = $driver->antar_count ?? 0;
-            $jemput = $driver->jemput_count ?? 0;
+            // Hitung PENGEMBALIAN hanya jika status == selesai
+            'jemput as jemput_count' => fn ($q) =>
+                $q->whereDate('tanggal_kembali', $date)
+                  ->where('status', 'selesai'),
+        ])
+        ->get();
 
-            return [
-                'staff_name' => $driver->name ?? $driver->nama ?? 'Tanpa Nama',
-                'penyerahan' => $antar,
-                'pengembalian' => $jemput,
-                'total' => $antar + $jemput,
-            ];
-        })
-        ->filter(fn ($stat) => $stat['total'] > 0)
-        ->sortByDesc('total')
-        ->take(10);
+        $stats = $drivers
+            ->map(function ($driver) {
+                $antar = $driver->antar_count ?? 0;
+                $jemput = $driver->jemput_count ?? 0;
+
+                return [
+                    'staff_name' => $driver->name ?? $driver->nama ?? 'Tanpa Nama',
+                    'penyerahan' => $antar,
+                    'pengembalian' => $jemput,
+                    'total' => $antar + $jemput,
+                ];
+            })
+            ->filter(fn ($stat) => $stat['total'] > 0)
+            ->sortByDesc('total')
+            ->take(10);
 
         return [
             'stats' => $stats,
