@@ -48,7 +48,7 @@ class StaffRankingWidget extends Widget implements HasForms
 
     protected function getStats(): Collection
     {
-        $date = Carbon::parse($this->form->getState()['selectedDate'] ?? now());
+        $date = Carbon::parse($this->form->getState()['selectedDate'] ?? now()->format('Y-m-d'));
 
         // Query penyerahan
         $penyerahan = Booking::query()
@@ -100,7 +100,7 @@ class StaffRankingWidget extends Widget implements HasForms
             'stats' => $this->getStats(),
             'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])
                 ->locale('id')
-                ->isoFormat('YYYY MMMM DD'),
+                ->isoFormat('D MMMM YYYY'),
         ];
     }
 }
