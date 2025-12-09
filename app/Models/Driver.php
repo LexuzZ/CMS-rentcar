@@ -18,16 +18,11 @@ class Driver extends Model
     {
         static::observe(ActivityObserver::class);
     }
-    public function bookingsAntar(): HasMany
+    public function antar()
     {
         return $this->hasMany(Booking::class, 'driver_pengantaran_id');
     }
-
-    /**
-     * Relasi ke Booking sebagai Penjemput
-     * (Menggunakan foreign key 'driver_pengembalian_id' sesuai model Booking)
-     */
-    public function bookingsJemput(): HasMany
+    public function jemput()
     {
         return $this->hasMany(Booking::class, 'driver_pengembalian_id');
     }
