@@ -21,7 +21,7 @@
         </div>
 
         {{-- TABEL RANKING --}}
-        <div class="overflow-x-auto rounded-xl ring-1 ring-gray-950/5 dark:ring-white/10">
+        <div class="overflow-x-auto rounded-xl ring-1 ring-gray-950/5 dark:ring-white/10 mt-6">
             <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300">
                 <thead class="bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-200 uppercase text-xs font-medium">
                     <tr>
