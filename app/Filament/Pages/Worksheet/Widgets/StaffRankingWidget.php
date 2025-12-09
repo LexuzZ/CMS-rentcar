@@ -2,13 +2,15 @@
 
 namespace App\Filament\Pages\Worksheet\Widgets;
 
+use App\Models\Booking;
 use App\Models\Driver;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class StaffRankingWidget extends Widget implements HasForms
 {
@@ -16,69 +18,93 @@ class StaffRankingWidget extends Widget implements HasForms
 
     protected static string $view = 'filament.widgets.staff-ranking-widget';
     protected int|string|array $columnSpan = 'full';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 6;
 
-    public ?string $dateFilter = null;
+    public ?array $data = [];
 
     public function mount(): void
     {
-        $this->dateFilter = now()->format('Y-m-d');
-        $this->form->fill(['dateFilter' => $this->dateFilter]);
+        $this->form->fill([
+            'selectedDate' => now()->format('Y-m-d'),
+        ]);
     }
 
     public function form(Form $form): Form
     {
-        return $form->schema([
-            DatePicker::make('dateFilter')
-                ->label('Filter Tanggal')
-                ->native(false)
-                ->displayFormat('d F Y')
-                ->closeOnDateSelection()
-                ->live()
-                ->afterStateUpdated(fn ($state) => $this->dateFilter = $state),
-        ]);
+        return $form
+            ->schema($this->getFormSchema())
+            ->statePath('data');
     }
 
-    protected function getViewData(): array
+    protected function getFormSchema(): array
     {
-        $date = $this->dateFilter;
+        return [
+            DatePicker::make('selectedDate')
+                ->label('Pilih Tanggal')
+                ->maxDate(now())
+                ->live(),
+        ];
+    }
 
-        $drivers = Driver::withCount([
+    protected function getStats(): Collection
+    {
+        try {
+            $date = Carbon::parse($this->form->getState()['selectedDate']);
+        } catch (\Exception $e) {
+            $date = now();
+        }
 
-            // Hitung driver pengantaran HANYA jika status = disewa
-            'antar as antar_count' => function ($q) use ($date) {
-                $q->whereDate('tanggal_keluar', $date)
-                  ->where('status', 'disewa');
-            },
+        // ============
+        // PENYERAHAN
+        // ============
+        $penyerahan = Booking::whereDate('tanggal_keluar', $date)
+            ->whereNotNull('driver_pengantaran_id')
+            ->get()
+            ->groupBy('driver_pengantaran_id');
 
-            // Hitung driver pengembalian HANYA jika status = selesai
-            'jemput as jemput_count' => function ($q) use ($date) {
-                $q->whereDate('tanggal_kembali', $date)
-                  ->where('status', 'selesai');
-            },
+        // =============
+        // PENGEMBALIAN
+        // =============
+        $pengembalian = Booking::whereDate('tanggal_kembali', $date)
+            ->whereNotNull('driver_pengembalian_id')
+            ->get()
+            ->groupBy('driver_pengembalian_id');
 
-        ])->get();
+        // Gabungkan semua driver yang terlibat
+        $involvedDriverIds = $penyerahan->keys()
+            ->merge($pengembalian->keys())
+            ->unique();
 
-        $stats = $drivers->map(function ($driver) {
-            $antar = $driver->antar_count;
-            $jemput = $driver->jemput_count;
+        if ($involvedDriverIds->isEmpty()) {
+            return collect();
+        }
+
+        $drivers = Driver::whereIn('id', $involvedDriverIds)->get();
+
+        // Hitung total masing-masing driver
+        $stats = $drivers->map(function ($driver) use ($penyerahan, $pengembalian) {
+            $penyerahanCount = $penyerahan->get($driver->id, collect())->count();
+            $pengembalianCount = $pengembalian->get($driver->id, collect())->count();
 
             return [
-                'staff_name' => $driver->nama ?? 'Tanpa Nama',
-                'penyerahan' => $antar,
-                'pengembalian' => $jemput,
-                'total' => $antar + $jemput,
+                'staff_name' => $driver->nama,
+                'penyerahan' => $penyerahanCount,
+                'pengembalian' => $pengembalianCount,
+                'total' => $penyerahanCount + $pengembalianCount,
             ];
-        })
-        ->filter(fn ($stat) => $stat['total'] > 0)
-        ->sortByDesc('total')
-        ->take(10);
+        });
 
+        // Urutkan
+        return $stats->sortByDesc('total')->values();
+    }
+
+    public function getViewData(): array
+    {
         return [
-            'stats' => $stats,
-            'dateForHumans' => Carbon::parse($date)
+            'stats' => $this->getStats(),
+            'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])
                 ->locale('id')
-                ->translatedFormat('d F Y'),
+                ->isoFormat('D MMMM YYYY'),
         ];
     }
 }
