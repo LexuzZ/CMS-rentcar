@@ -1,7 +1,6 @@
 <x-filament-widgets::widget>
     <x-filament::section>
 
-        {{-- Judul Widget --}}
         <x-slot name="heading">
             Peringkat Staff Bulanan – {{ $dateForHumans }}
         </x-slot>
@@ -11,10 +10,10 @@
             {{ $this->form }}
         </div>
 
-        {{-- Tabel Peringkat Staff --}}
+        {{-- Tabel --}}
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs uppercase bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+            <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300">
+                <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                     <tr>
                         <th class="px-4 py-3">Rank</th>
                         <th class="px-4 py-3">Staff</th>
@@ -26,11 +25,11 @@
 
                 <tbody>
                     @forelse ($stats as $stat)
-                        <tr
-                            class="border-b dark:border-gray-700
-                            @if ($loop->first) bg-yellow-50 dark:bg-yellow-900/20 @endif"
-                        >
-                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                        <tr class="border-b dark:border-gray-700
+                            @if ($loop->first) bg-yellow-50 dark:bg-yellow-900/20 @endif">
+
+                            {{-- Rank --}}
+                            <td class="px-4 py-3 whitespace-nowrap font-medium">
                                 @if ($loop->first)
                                     🏆
                                 @else
@@ -38,18 +37,22 @@
                                 @endif
                             </td>
 
-                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                            {{-- Nama --}}
+                            <td class="px-4 py-3 font-medium">
                                 {{ $stat['staff_name'] }}
                             </td>
 
+                            {{-- Total --}}
                             <td class="px-4 py-3 text-center font-bold">
                                 {{ $stat['total'] }}
                             </td>
 
+                            {{-- Penyerahan --}}
                             <td class="px-4 py-3 text-center">
                                 {{ $stat['penyerahan'] }} 🚗
                             </td>
 
+                            {{-- Pengembalian --}}
                             <td class="px-4 py-3 text-center">
                                 {{ $stat['pengembalian'] }} ↩️
                             </td>
