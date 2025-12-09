@@ -2,125 +2,94 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Booking;
 use App\Models\Driver;
-use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 
 class StaffRankingWidget extends Widget implements HasForms
 {
     use InteractsWithForms;
 
     protected static string $view = 'filament.widgets.staff-ranking-widget';
-    protected int | string | array $columnSpan = 'full';
-    protected static ?int $sort = 6;
 
-    // Variabel ini menampung state form
-    public ?array $data = [];
+    // Mengatur lebar widget agar full width (opsional)
+    protected int | string | array $columnSpan = 'full';
+
+    // Urutan widget di dashboard
+    protected static ?int $sort = 2;
+
+    // Property untuk menampung filter tanggal
+    public ?string $dateFilter = null;
 
     public function mount(): void
     {
-        $this->form->fill([
-            'selectedDate' => now()->format('Y-m-d'),
-        ]);
+        // Default filter ke hari ini
+        $this->dateFilter = now()->format('Y-m-d');
+
+        // Inisialisasi form
+        $this->form->fill(['dateFilter' => $this->dateFilter]);
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                DatePicker::make('selectedDate')
+                DatePicker::make('dateFilter')
                     ->label('Filter Tanggal')
-                    ->default(now())
-                    ->maxDate(now())
-                    // live() penting agar saat tanggal diganti, widget refresh
-                    ->live()
-                    ->afterStateUpdated(function () {
-                        // Memaksa refresh widget saat tanggal berubah
-                        $this->dispatch('refresh-widget');
+                    ->native(false)
+                    ->displayFormat('d F Y')
+                    ->closeOnDateSelection()
+                    ->live() // Agar data langsung update saat tanggal dipilih
+                    ->afterStateUpdated(function ($state) {
+                        $this->dateFilter = $state;
                     }),
-            ])
-            ->statePath('data');
+            ]);
     }
 
-    protected function getStats(): Collection
+    protected function getViewData(): array
     {
-        // PERBAIKAN: Mengambil data langsung dari properti $data, bukan getState()
-        $dateString = $this->data['selectedDate'] ?? now()->format('Y-m-d');
-        $date = Carbon::parse($dateString);
+        $date = $this->dateFilter;
 
-        // Debugging: Jika ingin cek tanggal yang terpilih (bisa dihapus nanti)
-        // dump($date->format('Y-m-d'));
+        // Ambil semua driver beserta hitungan tugasnya pada tanggal yang dipilih
+        $drivers = Driver::withCount([
+            'bookingsAntar' => function ($query) use ($date) {
+                if ($date) {
+                    $query->whereDate('created_at', $date);
+                }
+            },
+            'bookingsJemput' => function ($query) use ($date) {
+                if ($date) {
+                    $query->whereDate('created_at', $date);
+                }
+            }
+        ])->get();
 
-        // 1. Query Penyerahan (Pengantaran)
-        $penyerahan = Booking::query()
-            ->select('id', 'driver_pengantaran_id', 'tanggal_keluar')
-            ->whereNotNull('driver_pengantaran_id')
-            ->whereDate('tanggal_keluar', $date)
-            ->get();
-
-        // 2. Query Pengembalian
-        $pengembalian = Booking::query()
-            ->select('id', 'driver_pengembalian_id', 'tanggal_kembali')
-            ->whereNotNull('driver_pengembalian_id')
-            ->whereDate('tanggal_kembali', $date)
-            ->get();
-
-        // Jika tidak ada data sama sekali di kedua query
-        if ($penyerahan->isEmpty() && $pengembalian->isEmpty()) {
-            return collect([]);
-        }
-
-        // Grouping manual collection agar lebih mudah dihitung
-        $groupedPenyerahan = $penyerahan->groupBy('driver_pengantaran_id');
-        $groupedPengembalian = $pengembalian->groupBy('driver_pengembalian_id');
-
-        // Gabung semua ID driver yang terlibat
-        $involvedDriverIds = $groupedPenyerahan->keys()
-            ->merge($groupedPengembalian->keys())
-            ->unique()
-            ->filter();
-
-        if ($involvedDriverIds->isEmpty()) {
-            return collect([]);
-        }
-
-        // Ambil nama driver
-        $drivers = Driver::whereIn('id', $involvedDriverIds)->get()->keyBy('id');
-
-        // Mapping Data untuk Tampilan
-        $stats = $involvedDriverIds->map(function ($driverId) use ($drivers, $groupedPenyerahan, $groupedPengembalian) {
-            $driver = $drivers->get($driverId);
-
-            // Skip jika driver sudah dihapus tapi ID masih ada di booking
-            if (!$driver) return null;
-
-            $countPenyerahan = isset($groupedPenyerahan[$driverId]) ? $groupedPenyerahan[$driverId]->count() : 0;
-            $countPengembalian = isset($groupedPengembalian[$driverId]) ? $groupedPengembalian[$driverId]->count() : 0;
+        // Transformasi data untuk menghitung total dan format array
+        $stats = $drivers->map(function ($driver) {
+            $antar = $driver->bookings_antar_count ?? 0;
+            $jemput = $driver->bookings_jemput_count ?? 0;
 
             return [
-                'staff_name' => $driver->nama, // Pastikan kolom di tabel drivers adalah 'nama'
-                'penyerahan' => $countPenyerahan,
-                'pengembalian' => $countPengembalian,
-                'total' => $countPenyerahan + $countPengembalian,
+                'staff_name' => $driver->name, // Sesuaikan dengan nama kolom di tabel driver
+                'penyerahan' => $antar,
+                'pengembalian' => $jemput,
+                'total' => $antar + $jemput,
             ];
-        })->filter(); // Hapus yang null
+        })
+        // Filter: hanya ambil yang punya aktivitas (total > 0)
+        ->filter(fn ($stat) => $stat['total'] > 0)
+        // Urutkan dari total terbanyak (Descending)
+        ->sortByDesc('total')
+        // Ambil top 10 saja
+        ->take(10);
 
-        return $stats->sortByDesc('total')->values();
-    }
-
-    public function getViewData(): array
-    {
         return [
-            'stats' => $this->getStats(),
-            'dateForHumans' => Carbon::parse($this->data['selectedDate'] ?? now())
-                ->locale('id')
-                ->isoFormat('dddd, D MMMM YYYY'),
+            'stats' => $stats,
+            'dateForHumans' => $date ? Carbon::parse($date)->translatedFormat('d F Y') : 'Semua Waktu',
         ];
     }
 }
