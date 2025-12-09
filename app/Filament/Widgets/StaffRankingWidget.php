@@ -17,9 +17,10 @@ class StaffRankingWidget extends Widget implements HasForms
     use InteractsWithForms;
 
     protected static string $view = 'filament.widgets.staff-ranking-widget';
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 6;
 
+    // Variabel ini menampung state form
     public ?array $data = [];
 
     public function mount(): void
@@ -32,75 +33,94 @@ class StaffRankingWidget extends Widget implements HasForms
     public function form(Form $form): Form
     {
         return $form
-            ->schema($this->getFormSchema())
+            ->schema([
+                DatePicker::make('selectedDate')
+                    ->label('Filter Tanggal')
+                    ->default(now())
+                    ->maxDate(now())
+                    // live() penting agar saat tanggal diganti, widget refresh
+                    ->live()
+                    ->afterStateUpdated(function () {
+                        // Memaksa refresh widget saat tanggal berubah
+                        $this->dispatch('refresh-widget');
+                    }),
+            ])
             ->statePath('data');
-    }
-
-    protected function getFormSchema(): array
-    {
-        return [
-            DatePicker::make('selectedDate')
-                ->label('Pilih Tanggal')
-                ->maxDate(now())
-                ->live(),
-        ];
     }
 
     protected function getStats(): Collection
     {
-        $date = Carbon::parse($this->form->getState()['selectedDate'] ?? now()->format('Y-m-d'));
+        // PERBAIKAN: Mengambil data langsung dari properti $data, bukan getState()
+        $dateString = $this->data['selectedDate'] ?? now()->format('Y-m-d');
+        $date = Carbon::parse($dateString);
 
-        // Query penyerahan
+        // Debugging: Jika ingin cek tanggal yang terpilih (bisa dihapus nanti)
+        // dump($date->format('Y-m-d'));
+
+        // 1. Query Penyerahan (Pengantaran)
         $penyerahan = Booking::query()
+            ->select('id', 'driver_pengantaran_id', 'tanggal_keluar')
             ->whereNotNull('driver_pengantaran_id')
             ->whereDate('tanggal_keluar', $date)
-            ->get()
-            ->groupBy('driver_pengantaran_id');
+            ->get();
 
-        // Query pengembalian
+        // 2. Query Pengembalian
         $pengembalian = Booking::query()
+            ->select('id', 'driver_pengembalian_id', 'tanggal_kembali')
             ->whereNotNull('driver_pengembalian_id')
             ->whereDate('tanggal_kembali', $date)
-            ->get()
-            ->groupBy('driver_pengembalian_id');
+            ->get();
 
-        // Gabung semua ID driver yang terlibat
-        $involvedDriverIds = $penyerahan->keys()
-            ->merge($pengembalian->keys())
-            ->unique()
-            ->filter(); // hilangkan null kalau ada
-
-        if ($involvedDriverIds->isEmpty()) {
-            return collect();
+        // Jika tidak ada data sama sekali di kedua query
+        if ($penyerahan->isEmpty() && $pengembalian->isEmpty()) {
+            return collect([]);
         }
 
-        // Ambil data driver
-        $drivers = Driver::whereIn('id', $involvedDriverIds)->get();
+        // Grouping manual collection agar lebih mudah dihitung
+        $groupedPenyerahan = $penyerahan->groupBy('driver_pengantaran_id');
+        $groupedPengembalian = $pengembalian->groupBy('driver_pengembalian_id');
 
-        // Hitung total masing-masing driver
-        $stats = $drivers->map(function ($driver) use ($penyerahan, $pengembalian) {
-            $penyerahanCount = ($penyerahan[$driver->id] ?? collect())->count();
-            $pengembalianCount = ($pengembalian[$driver->id] ?? collect())->count();
+        // Gabung semua ID driver yang terlibat
+        $involvedDriverIds = $groupedPenyerahan->keys()
+            ->merge($groupedPengembalian->keys())
+            ->unique()
+            ->filter();
+
+        if ($involvedDriverIds->isEmpty()) {
+            return collect([]);
+        }
+
+        // Ambil nama driver
+        $drivers = Driver::whereIn('id', $involvedDriverIds)->get()->keyBy('id');
+
+        // Mapping Data untuk Tampilan
+        $stats = $involvedDriverIds->map(function ($driverId) use ($drivers, $groupedPenyerahan, $groupedPengembalian) {
+            $driver = $drivers->get($driverId);
+
+            // Skip jika driver sudah dihapus tapi ID masih ada di booking
+            if (!$driver) return null;
+
+            $countPenyerahan = isset($groupedPenyerahan[$driverId]) ? $groupedPenyerahan[$driverId]->count() : 0;
+            $countPengembalian = isset($groupedPengembalian[$driverId]) ? $groupedPengembalian[$driverId]->count() : 0;
 
             return [
-                'staff_name' => $driver->nama,
-                'penyerahan' => $penyerahanCount,
-                'pengembalian' => $pengembalianCount,
-                'total' => $penyerahanCount + $pengembalianCount,
+                'staff_name' => $driver->nama, // Pastikan kolom di tabel drivers adalah 'nama'
+                'penyerahan' => $countPenyerahan,
+                'pengembalian' => $countPengembalian,
+                'total' => $countPenyerahan + $countPengembalian,
             ];
-        });
+        })->filter(); // Hapus yang null
 
         return $stats->sortByDesc('total')->values();
     }
-
 
     public function getViewData(): array
     {
         return [
             'stats' => $this->getStats(),
-            'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])
+            'dateForHumans' => Carbon::parse($this->data['selectedDate'] ?? now())
                 ->locale('id')
-                ->isoFormat('D MMMM YYYY'),
+                ->isoFormat('dddd, D MMMM YYYY'),
         ];
     }
 }
