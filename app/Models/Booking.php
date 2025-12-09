@@ -24,6 +24,8 @@ class Booking extends Model
         'status',
         'lokasi_pengantaran',
         'lokasi_pengembalian',
+        'driver_pengantaran_id',
+        'driver_pengembalian_id',
         'ttd',
     ];
     public function driverPengantaran()
