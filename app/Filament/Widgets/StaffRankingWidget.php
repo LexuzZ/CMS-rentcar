@@ -56,14 +56,16 @@ class StaffRankingWidget extends Widget implements HasForms
 
         // Ambil semua driver beserta hitungan tugasnya pada tanggal yang dipilih
         $drivers = Driver::withCount([
-            'bookingsAntar' => function ($query) use ($date) {
+            // Hitung tugas Antar berdasarkan 'tanggal_keluar'
+            'driverPengantaran' => function ($query) use ($date) {
                 if ($date) {
-                    $query->whereDate('created_at', $date);
+                    $query->whereDate('tanggal_keluar', $date);
                 }
             },
-            'bookingsJemput' => function ($query) use ($date) {
+            // Hitung tugas Jemput berdasarkan 'tanggal_kembali'
+            'driverPengembalian' => function ($query) use ($date) {
                 if ($date) {
-                    $query->whereDate('created_at', $date);
+                    $query->whereDate('tanggal_kembali', $date);
                 }
             }
         ])->get();
@@ -74,7 +76,7 @@ class StaffRankingWidget extends Widget implements HasForms
             $jemput = $driver->bookings_jemput_count ?? 0;
 
             return [
-                'staff_name' => $driver->name, // Sesuaikan dengan nama kolom di tabel driver
+                'staff_name' => $driver->name, // Pastikan kolom 'name' ada di tabel drivers
                 'penyerahan' => $antar,
                 'pengembalian' => $jemput,
                 'total' => $antar + $jemput,

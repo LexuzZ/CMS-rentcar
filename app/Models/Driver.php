@@ -17,5 +17,14 @@ class Driver extends Model
     {
         static::observe(ActivityObserver::class);
     }
+    public function driverPengantaran()
+    {
+        return $this->hasMany(Booking::class, 'driver_pengantaran_id');
+    }
+
+    public function driverPengembalian()
+    {
+        return $this->hasMany(Booking::class, 'driver_pengembalian_id');
+    }
 
 }
