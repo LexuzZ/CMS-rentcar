@@ -100,7 +100,7 @@ class StaffRankingWidget extends Widget implements HasForms
             'stats' => $this->getStats(),
             'dateForHumans' => Carbon::parse($this->form->getState()['selectedDate'])
                 ->locale('id')
-                ->isoFormat('D MMMM YYYY'),
+                ->isoFormat('YYYY MMMM DD'),
         ];
     }
 }
