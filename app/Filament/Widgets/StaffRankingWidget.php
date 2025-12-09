@@ -40,45 +40,42 @@ class StaffRankingWidget extends Widget implements HasForms
     }
 
     protected function getViewData(): array
-    {
-        $date = $this->dateFilter;
+{
+    $date = $this->dateFilter;
 
-        $drivers = Driver::withCount([
+    $drivers = Driver::withCount([
+        // Hitung ANTAR hanya jika status = 'disewa'
+        'antar as antar_count' => fn ($q) =>
+            $q->whereDate('tanggal_keluar', $date)
+              ->where('status', 'disewa'),
 
-            // Hitung driver pengantaran HANYA jika status = disewa
-            'antar as antar_count' => function ($q) use ($date) {
-                $q->whereDate('tanggal_keluar', $date)
-                  ->where('status', 'disewa');
-            },
+        // Hitung JEMPUT hanya jika status = 'selesai'
+        'jemput as jemput_count' => fn ($q) =>
+            $q->whereDate('tanggal_kembali', $date)
+              ->where('status', 'selesai'),
+    ])->get();
 
-            // Hitung driver pengembalian HANYA jika status = selesai
-            'jemput as jemput_count' => function ($q) use ($date) {
-                $q->whereDate('tanggal_kembali', $date)
-                  ->where('status', 'selesai');
-            },
-
-        ])->get();
-
-        $stats = $drivers->map(function ($driver) {
-            $antar = $driver->antar_count;
-            $jemput = $driver->jemput_count;
-
-            return [
-                'staff_name' => $driver->nama ?? 'Tanpa Nama',
-                'penyerahan' => $antar,
-                'pengembalian' => $jemput,
-                'total' => $antar + $jemput,
-            ];
-        })
-        ->filter(fn ($stat) => $stat['total'] > 0)
-        ->sortByDesc('total')
-        ->take(10);
+    $stats = $drivers->map(function ($driver) {
+        $antar = $driver->antar_count ?? 0;
+        $jemput = $driver->jemput_count ?? 0;
 
         return [
-            'stats' => $stats,
-            'dateForHumans' => Carbon::parse($date)
-                ->locale('id')
-                ->translatedFormat('d F Y'),
+            'staff_name' => $driver->nama ?? 'Tanpa Nama',
+            'penyerahan' => $antar,
+            'pengembalian' => $jemput,
+            'total' => $antar + $jemput,
         ];
-    }
+    })
+    ->filter(fn ($stat) => $stat['total'] > 0)
+    ->sortByDesc('total')
+    ->take(10);
+
+    return [
+        'stats' => $stats,
+        'dateForHumans' => Carbon::parse($date)
+            ->locale('id')
+            ->translatedFormat('d F Y'),
+    ];
+}
+
 }
