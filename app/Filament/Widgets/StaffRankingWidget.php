@@ -48,40 +48,39 @@ class StaffRankingWidget extends Widget implements HasForms
 
     protected function getStats(): Collection
     {
-        try {
-            $date = Carbon::parse($this->form->getState()['selectedDate']);
-        } catch (\Exception $e) {
-            $date = now();
-        }
+        $date = Carbon::parse($this->form->getState()['selectedDate'] ?? now());
 
-        $penyerahan = Booking::with('driverPengantaran')
-            ->whereDate('tanggal_keluar', $date)
+        // Query penyerahan
+        $penyerahan = Booking::query()
             ->whereNotNull('driver_pengantaran_id')
+            ->whereDate('tanggal_keluar', $date)
             ->get()
             ->groupBy('driver_pengantaran_id');
 
-        $pengembalian = Booking::with('driverPengembalian')
-            ->whereDate('tanggal_kembali', $date)
+        // Query pengembalian
+        $pengembalian = Booking::query()
             ->whereNotNull('driver_pengembalian_id')
+            ->whereDate('tanggal_kembali', $date)
             ->get()
             ->groupBy('driver_pengembalian_id');
 
-
-        // Gabungkan semua driver yang terlibat
+        // Gabung semua ID driver yang terlibat
         $involvedDriverIds = $penyerahan->keys()
             ->merge($pengembalian->keys())
-            ->unique();
+            ->unique()
+            ->filter(); // hilangkan null kalau ada
 
         if ($involvedDriverIds->isEmpty()) {
             return collect();
         }
 
+        // Ambil data driver
         $drivers = Driver::whereIn('id', $involvedDriverIds)->get();
 
         // Hitung total masing-masing driver
         $stats = $drivers->map(function ($driver) use ($penyerahan, $pengembalian) {
-            $penyerahanCount = $penyerahan->get($driver->id, collect())->count();
-            $pengembalianCount = $pengembalian->get($driver->id, collect())->count();
+            $penyerahanCount = ($penyerahan[$driver->id] ?? collect())->count();
+            $pengembalianCount = ($pengembalian[$driver->id] ?? collect())->count();
 
             return [
                 'staff_name' => $driver->nama,
@@ -91,9 +90,9 @@ class StaffRankingWidget extends Widget implements HasForms
             ];
         });
 
-        // Urutkan
         return $stats->sortByDesc('total')->values();
     }
+
 
     public function getViewData(): array
     {
