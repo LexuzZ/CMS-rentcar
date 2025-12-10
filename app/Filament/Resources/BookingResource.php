@@ -201,6 +201,7 @@ class BookingResource extends Resource
                     ->nullable(),
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options([
                     'lepas_kunci' => 'Lepas Kunci',
+                    'rr' => 'Rent to Rent',
                     'dengan_driver' => 'Dengan Driver',
                     'tour' => 'Paket Tour',
                     'kontrak' => 'Kontrak',
@@ -325,6 +326,7 @@ class BookingResource extends Resource
                                 ->badge()
                                 ->formatStateUsing(fn($state) => match ($state) {
                                     'lepas_kunci' => 'Lepas Kunci',
+                                    'rr' => 'Rent to Rent',
                                     'dengan_driver' => 'Dengan Driver',
                                     'tour' => 'Paket Tour',
                                     'kontrak' => 'Kontrak',
