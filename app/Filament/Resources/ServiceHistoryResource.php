@@ -5,10 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServiceHistoryResource\Pages;
 use App\Models\Car;
 use App\Models\ServiceHistory;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -141,6 +143,14 @@ class ServiceHistoryResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query
+                        ->whereMonth('service_date', Carbon::now()->month)
+                        ->whereYear('service_date', Carbon::now()->year)
+                    ),
                 //
             ])
             ->actions([
