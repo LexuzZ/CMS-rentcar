@@ -148,8 +148,8 @@ class ServiceHistoryResource extends Resource
                     ->toggle() // Menjadikannya tombol on/off
                     ->default(true)
                     ->query(fn (Builder $query) => $query
-                        ->whereMonth('service_date', Carbon::now()->month)
-                        ->whereYear('service_date', Carbon::now()->year)
+                        ->whereMonth('next_service_date', Carbon::now()->month)
+                        ->whereYear('next_service_date', Carbon::now()->year)
                     ),
                 //
             ])
