@@ -473,13 +473,38 @@ class BookingResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                Filter::make('bulan_ini')
-                    ->label('Hanya Bulan Ini')
-                    ->toggle() // Menjadikannya tombol on/off
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
-                        ->whereYear('tanggal_keluar', Carbon::now()->year)
-                    ),
+                 Filter::make('periode')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('month')
+                                    ->label('Bulan')
+                                    ->options(array_reduce(range(1, 12), function ($carry, $month) {
+                                        $carry[$month] = Carbon::create(null, $month)->locale('id')->isoFormat('MMMM');
+                                        return $carry;
+                                    }, []))
+                                    ->default(now()->month), // ✅ Default bulan ini
+                                Forms\Components\Select::make('year')
+                                    ->label('Tahun')
+                                    ->options(function () {
+                                        $years = range(now()->year, now()->year - 5);
+                                        return array_combine($years, $years);
+                                    })
+                                    ->default(now()->year), // ✅ Default tahun ini
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['month'], fn(Builder $query, $month): Builder => $query->whereMonth('tanggal_keluar', $month))
+                            ->when($data['year'], fn(Builder $query, $year): Builder => $query->whereYear('tanggal_keluar', $year));
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['month'] && !$data['year']) {
+                            return null;
+                        }
+                        $monthName = $data['month'] ? Carbon::create()->month((int) $data['month'])->locale('id')->isoFormat('MMMM') : '';
+                        return 'Periode: ' . $monthName . ' ' . ($data['year'] ?? '');
+                    }),
                 SelectFilter::make('status')
                     ->options([
                         'booking' => 'Booking',
