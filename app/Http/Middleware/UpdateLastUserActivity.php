@@ -19,10 +19,18 @@ class UpdateLastUserActivity
         $response = $next($request);
 
         if (Auth::check()) {
-            Auth::user()->forceFill([
-                'last_seen_at' => now(),
-            ])->save();
+            $user = Auth::user();
+
+            if (
+                !$user->last_seen_at ||
+                $user->last_seen_at->lt(now()->subMinutes(2))
+            ) {
+                $user->forceFill([
+                    'last_seen_at' => now(),
+                ])->save();
+            }
         }
+
 
         return $response;
     }

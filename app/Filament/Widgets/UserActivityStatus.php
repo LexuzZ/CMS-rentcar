@@ -21,7 +21,11 @@ class UserActivityStatus extends BaseWidget
     {
         return $table
             ->query(
-                User::query()->orderBy('last_seen_at', 'desc')
+                User::query()
+                    ->select(['id', 'name', 'last_seen_at'])
+                    ->orderBy('last_seen_at', 'desc')
+                    ->limit(10)
+
             )
             ->columns([
 
