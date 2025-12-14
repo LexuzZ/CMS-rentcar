@@ -10,7 +10,10 @@ class EditCar extends EditRecord
 {
     protected static string $resource = CarResource::class;
     protected static ?string $title = 'Edit Data Mobil';
-
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected function getHeaderActions(): array
     {
         return [
