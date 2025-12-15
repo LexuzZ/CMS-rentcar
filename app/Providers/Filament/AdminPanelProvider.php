@@ -89,8 +89,8 @@ class AdminPanelProvider extends PanelProvider
                 // MobilKembali::class,
                 // TempoDueToday::class,
                 DashboardActionsWidget::class,
-                // \App\Filament\Widgets\UserActivityStatus::class,
-                // \App\Filament\Widgets\UserActivityLog::class,
+                \App\Filament\Widgets\UserActivityStatus::class,
+                \App\Filament\Widgets\UserActivityLog::class,
 
                 // StaffRankingWidget::class,
                 // MonthlyStaffRankingWidget::class,
