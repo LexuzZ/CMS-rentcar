@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Support\Facades\Cache;
 
 class UserActivityStatus extends BaseWidget
 {
@@ -53,7 +54,7 @@ class UserActivityStatus extends BaseWidget
                             return 'Offline';
                         }
 
-                        $isOnline = $record->last_seen_at->gt(now()->subMinutes(5));
+                        $isOnline = Cache::has('user_last_seen_' . $record->id);
 
                         return $isOnline ? 'Online' : 'Offline';
                     })
