@@ -25,25 +25,22 @@ class RecentTransactions extends BaseWidget
     protected int|string|array $perPage = 2;
 
     protected function getTableQuery(): Builder
-    {
-        return Cache::remember('recent_transactions_today', 60, function () {
-            return Payment::query()
-                ->select([
-                    'id',
-                    'invoice_id',
-                    'pembayaran',
-                    'metode_pembayaran',
-                    'status',
-                    'tanggal_pembayaran',
-                    'created_at',
-                ])
-                ->with([
-                    'invoice.booking.customer:id,nama',
-                ])
-                ->where('tanggal_pembayaran', today())
-                ->latest('created_at');
-        });
-    }
+{
+    return Payment::query()
+        ->select([
+            'id',
+            'invoice_id',
+            'pembayaran',
+            'metode_pembayaran',
+            'status',
+            'tanggal_pembayaran',
+            'created_at',
+        ])
+        ->with('invoice.booking.customer:id,nama')
+        ->where('tanggal_pembayaran', today())
+        ->latest('created_at');
+}
+
 
     protected function getTableColumns(): array
     {
