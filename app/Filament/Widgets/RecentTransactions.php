@@ -6,27 +6,43 @@ use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
     protected static ?int $sort = 2;
 
-    // Untuk column span widget di dashboard
+    protected static bool $isLazy = true;
+    protected static ?int $pollingInterval = null;
+
     protected int|string|array $columnSpan = [
         'sm' => 'full',
         'md' => '4',
         'lg' => '4',
     ];
 
-    // Untuk pagination table di dalam widget
-    protected int|string|array $perPage = 2; // Ubah dari 10 menjadi 3
+    protected int|string|array $perPage = 2;
 
     protected function getTableQuery(): Builder
     {
-        return Payment::query()
-            ->whereDate('tanggal_pembayaran', today())
-            ->latest('created_at');
+        return Cache::remember('recent_transactions_today', 60, function () {
+            return Payment::query()
+                ->select([
+                    'id',
+                    'invoice_id',
+                    'pembayaran',
+                    'metode_pembayaran',
+                    'status',
+                    'tanggal_pembayaran',
+                    'created_at',
+                ])
+                ->with([
+                    'invoice.booking.customer:id,nama',
+                ])
+                ->where('tanggal_pembayaran', today())
+                ->latest('created_at');
+        });
     }
 
     protected function getTableColumns(): array
@@ -35,15 +51,16 @@ class RecentTransactions extends BaseWidget
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->alignCenter()
-                ->wrap()
-                ->width('33%'), // Atau ->width('1/3')
+                ->wrap(),
 
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger')
-                ->width('33%'), // Atau ->width('1/3')
+                ->color(
+                    fn(Payment $record): string =>
+                    $record->status === 'lunas' ? 'success' : 'danger'
+                ),
 
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
@@ -65,14 +82,12 @@ class RecentTransactions extends BaseWidget
                     'tunai_qris' => 'Tunai & QRIS',
                     'transfer_qris' => 'Transfer & QRIS',
                     default => ucfirst($state),
-                })
-                ->width('33%'), // Atau ->width('1/3')
+                }),
         ];
     }
 
-    // Opsional: Jika ingin custom pagination options
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [2,5]; // 3 sebagai default
+        return [2, 5];
     }
 }
