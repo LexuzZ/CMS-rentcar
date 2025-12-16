@@ -13,7 +13,7 @@ class UpdateLastUserActivity
     /**
      * Interval update ke database (dalam menit)
      */
-    protected int $dbUpdateInterval = 5;
+    protected int $dbUpdateInterval = 10;
 
     public function handle(Request $request, Closure $next): Response
     {
