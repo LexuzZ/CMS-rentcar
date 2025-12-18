@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 
 class Revenue extends BaseWidget
@@ -34,6 +35,14 @@ class Revenue extends BaseWidget
                 ->color('success')->alignCenter(),
             ])
             ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query
+                        ->whereMonth('tanggal_pembayaran', Carbon::now()->month)
+                        ->whereYear('tanggal_pembayaran', Carbon::now()->year)
+                    ),
                 SelectFilter::make('bulan')
                     ->label('Bulan')
                     ->options([
