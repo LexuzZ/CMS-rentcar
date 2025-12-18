@@ -26,8 +26,7 @@ class Revenue extends BaseWidget
             ->columns([
                 // Tables\Columns\TextColumn::make('id')->label('ID'),
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')->label('Tanggal')
-                ->alignCenter()
-                ->sortable(),
+                ->alignCenter(),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')->wrap()->width(100)
                 ->alignCenter()->searchable(),
