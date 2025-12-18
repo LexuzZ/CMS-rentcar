@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Actions\Action;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\Filter;
 
@@ -42,6 +43,14 @@ class Piutang extends BaseWidget
                     ->alignCenter(),
             ])
             ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query
+                        ->whereMonth('tanggal_pembayaran', Carbon::now()->month)
+                        ->whereYear('tanggal_pembayaran', Carbon::now()->year)
+                    ),
                 SelectFilter::make('bulan')
                     ->label('Bulan')
                     ->options([
