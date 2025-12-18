@@ -4,10 +4,12 @@ namespace App\Filament\Pages\Analytic\Widgets;
 
 use App\Models\Invoice;
 use App\Models\Payment;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 
@@ -79,6 +81,24 @@ class Revenue extends BaseWidget
                             $query->whereYear('tanggal_pembayaran', $data['value']);
                         }
                         return $query;
+                    }),
+
+            ])
+            ->headerActions([
+                Action::make('exportPdf')
+                    ->label('Export PDF')
+                    ->action(function ($livewire) {
+                        // Ambil query hasil filter aktif
+                        $piutang = $livewire->getFilteredTableQuery()->get();
+
+                        $pdf = Pdf::loadView('exports.piutang', [
+                            'piutang' => $piutang,
+                        ]);
+
+                        return response()->streamDownload(
+                            fn() => print ($pdf->output()),
+                            'piutang.pdf'
+                        );
                     }),
             ])->paginated([5]);
     }
