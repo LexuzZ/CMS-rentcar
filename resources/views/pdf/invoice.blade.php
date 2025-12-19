@@ -262,8 +262,10 @@
                     @endif
                     @foreach ($invoice->booking->penalty as $penalty)
                         <tr>
-                            <td>Klaim Garasi: {{ ucfirst($penalty->klaim) }}</td>
-                            <td>Deskripsi : {{ ucfirst($penalty->description) }}</td>
+                            <td>Klaim Garasi: {{ ucfirst($penalty->klaim) }} <br>
+                                <small>{{ $penalty->description }}</small>
+
+                            </td>
                             <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
