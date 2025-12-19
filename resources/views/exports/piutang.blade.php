@@ -243,11 +243,11 @@
                             })
                             ->sum();
                     @endphp
-                    <tr>
+                    {{-- <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
                         <td colspan="2" class="text-right"><strong>Rp
                                 {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN SISA PEMBAYARAN</strong></td>
                         <td colspan="2" class="text-left"><strong>Rp
