@@ -262,7 +262,7 @@
                     @endif
                     @foreach ($invoice->booking->penalty as $penalty)
                         <tr>
-                            <td>Klaim Garasi: {{ ucfirst($penalty->klaim) }} <br>
+                            <td><strong>{{ ucfirst($penalty->klaim) }}</strong> <br>
                                 <small>{{ $penalty->description }}</small>
 
                             </td>
