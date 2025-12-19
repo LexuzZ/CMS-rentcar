@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Piutang - {{ now()->isoFormat('MMMM YYYY') }}</title>
+    <title>Laporan Invoice - {{ now()->isoFormat('MMMM YYYY') }}</title>
     <style>
         body {
             font-family: 'Helvetica', sans-serif;
@@ -151,7 +151,7 @@
                 <img src="{{ $src }}" alt="Logo" class="logo" />
             @endif
             <div class="company-details">
-                <h1>LAPORAN PIUTANG</h1>
+                <h1>LAPORAN INVOICE</h1>
                 <p><strong>Semeton Pesiar Lombok</strong></p>
                 <p>Jl. Batu Ringgit No.218, Kota Mataram</p>
             </div>
