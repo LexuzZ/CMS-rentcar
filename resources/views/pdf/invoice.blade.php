@@ -192,8 +192,8 @@
 
             <div class="company-details">
                 <h1>FAKTUR SEWA</h1>
-                <p>Semeton Pesiar Lombok</p>
-                <p>Jl. Batu Ringgit No.218, Kota Mataram, NTB | Telp: 0819-0736-7197</p>
+                <p>Semeton Pesiar Trans</p>
+                <p>Jl. Batu Ringgit No.218, Kota Mataram, NTB | Telp: 0811-2894-8884</p>
             </div>
             <div class="clear"></div>
         </div>

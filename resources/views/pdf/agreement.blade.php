@@ -117,7 +117,7 @@
                 <h1>PERJANJIAN SEWA KENDARAAN</h1>
                 <p>PT. Semeton Pesiar Trans</p>
                 <p>Jl. Panji Tilaar Negara No.202, Kota Mataram, NTB</p>
-                <p>Telp: 0819-0736-7197 / 0877-6559-9662</p>
+                <p>Telp: 0811-2894-8884</p>
             </div>
             <div class="clear"></div>
         </div>
