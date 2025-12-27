@@ -91,10 +91,10 @@
                 </div>
             </x-slot>
 
-            <div class="space-y-6">
+            <div class="space-y-2">
                 {{-- Pendapatan Table --}}
                 <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
-                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 px-6 py-3">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 px-2 py-2">
                         <h3 class="font-semibold text-gray-800 dark:text-white">
                             Rincian Pendapatan
                         </h3>
