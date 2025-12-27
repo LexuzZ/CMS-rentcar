@@ -233,7 +233,7 @@ class OperationalSummary extends Page implements HasForms
         $profitThisMonth = $RevenueMonth - $expenseThisMonth;
         $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
- $this->statistics = [
+        $this->statistics = [
             [
                 'label' => 'Kas Saldo',
                 'value' => $profitThisMonth,
@@ -333,7 +333,7 @@ class OperationalSummary extends Page implements HasForms
     public function getFooterWidgets(): array
     {
         return [
-            // RecentTransactions::class,
+                // RecentTransactions::class,
             Piutang::class,
             Revenue::class,
             ArusKasTable::class
