@@ -6,7 +6,7 @@
             {{ $this->form }}
 
         </x-filament::section>
-        <div class="grid grid-cols-4 gap-4 mt-6">
+        <div class="grid grid-cols-4 lg:grid-cols-4 gap-4 mt-6">
             @foreach ($statistics as $stat)
                 <x-filament::section class="relative">
                     {{-- Accent bar --}}
