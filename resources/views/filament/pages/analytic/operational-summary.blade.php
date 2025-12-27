@@ -26,7 +26,7 @@
                                 {{ $stat['label'] }}
                             </p>
 
-                            <p class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">
+                            <p class="text-xl font-bold text-gray-900 dark:text-white tabular-nums">
                                 Rp {{ number_format($stat['value'], 0, ',', '.') }}
                             </p>
 
