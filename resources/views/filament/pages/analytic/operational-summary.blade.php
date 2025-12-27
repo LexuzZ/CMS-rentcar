@@ -6,7 +6,7 @@
             {{ $this->form }}
 
         </x-filament::section>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 mb-6">
             @foreach ($statistics as $stat)
                 <x-filament::section
                     class="relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
