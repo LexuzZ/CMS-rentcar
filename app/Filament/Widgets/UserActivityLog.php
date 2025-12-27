@@ -46,10 +46,10 @@ class UserActivityLog extends BaseWidget
                     ->alignCenter()
                     ->color('primary'),
 
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Perubahan Terakhir')
-                    ->limit(40)
-                    ->alignCenter(),
+                // Tables\Columns\TextColumn::make('description')
+                //     ->label('Perubahan Terakhir')
+                //     ->limit(40)
+                //     ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('')
