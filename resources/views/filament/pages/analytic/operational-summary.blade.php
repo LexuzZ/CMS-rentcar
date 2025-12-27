@@ -6,10 +6,9 @@
             {{ $this->form }}
 
         </x-filament::section>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mt-6 pb-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
             @foreach ($statistics as $stat)
-                <x-filament::section
-                    class="relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <x-filament::section class="relative">
                     {{-- Accent bar --}}
                     <div
                         class="absolute inset-x-0 top-0 h-1
@@ -20,17 +19,17 @@
                         : 'bg-red-500') }}">
                     </div>
 
-                    <div class="flex items-start justify-between mt-2">
+                    <div class="flex items-center justify-between mt-2">
                         <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
                                 {{ $stat['label'] }}
                             </p>
 
-                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                            <p class="text-xl font-semibold text-gray-900 dark:text-white">
                                 Rp {{ number_format($stat['value'], 0, ',', '.') }}
-                            </h2>
+                            </p>
 
-                            <div class="flex items-center gap-2 mt-3">
+                            <div class="mt-2">
                                 @php
                                     $isPositive = $stat['change'] >= 0;
                                     $icon = $isPositive
@@ -39,24 +38,18 @@
                                 @endphp
 
                                 <x-filament::badge :color="$stat['color']" size="sm">
-                                    <x-filament::icon :icon="$icon" class="w-4 h-4 mr-1" />
+                                    <x-filament::icon :icon="$icon" class="w-3 h-3 mr-1" />
                                     {{ number_format($stat['change'], 1) }}%
                                 </x-filament::badge>
-
-                                <span class="text-xs text-gray-400">
-                                    {{ $stat['description'] }}
-                                </span>
                             </div>
                         </div>
 
-                        {{-- Icon bubble --}}
-                        <div class="p-3 rounded-xl bg-gray-100 dark:bg-gray-800">
-                            <x-filament::icon :icon="$stat['icon']" class="w-6 h-6 text-gray-500" />
-                        </div>
+                        <x-filament::icon :icon="$stat['icon']" class="w-6 h-6 text-gray-400" />
                     </div>
                 </x-filament::section>
             @endforeach
         </div>
+
 
 
         {{-- Ringkasan --}}
