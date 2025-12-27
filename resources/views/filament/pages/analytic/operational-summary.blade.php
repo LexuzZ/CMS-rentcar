@@ -60,15 +60,24 @@
 
 
         {{-- Ringkasan --}}
-        <x-filament::section class="mt-6">
+        <x-filament::section class="mt-8">
             <x-slot name="heading">
                 <div class="flex items-center justify-between w-full">
-                    <span>Ringkasan Operasional {{ $reportTitle }}</span>
-                    <x-filament::button color="success" wire:click="downloadPdf" icon="heroicon-o-printer">
-                        Cetak PDF
+                    <div>
+                        <h2 class="text-lg font-bold">
+                            Ringkasan Operasional
+                        </h2>
+                        <p class="text-sm text-gray-500">
+                            Periode {{ $reportTitle }}
+                        </p>
+                    </div>
+
+                    <x-filament::button color="gray" icon="heroicon-o-printer" wire:click="downloadPdf">
+                        Export PDF
                     </x-filament::button>
                 </div>
             </x-slot>
+
 
 
             <div class="overflow-x-auto">
