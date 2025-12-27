@@ -39,7 +39,7 @@
                                 @endphp
 
                                 <x-filament::badge :color="$stat['color']" size="sm"
-                                    class="inline-flex items-center gap-1.5 font-medium">
+                                    class="inline-flex items-center gap-1.5 font-normal">
                                     <x-filament::icon :icon="$icon" class="w-3.5 h-3.5" />
                                     {{ number_format($stat['change'], 1) }}%
                                 </x-filament::badge>
