@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PaymentResource\Pages;
 
+use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\PaymentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -16,6 +17,15 @@ class EditPayment extends EditRecord
         return [
             Actions\DeleteAction::make()->label('Hapus Pembayaran'),
         ];
+    }
+     protected function getRedirectUrl(): string
+    {
+        // Ambil data pembayaran yang baru saja dibuat
+        $payment = $this->getRecord();
+
+        // Arahkan kembali ke halaman 'view' dari booking yang berelasi
+        // melalui relasi invoice
+        return BookingResource::getUrl('view', ['record' => $payment->invoice->booking_id]);
     }
 
 }

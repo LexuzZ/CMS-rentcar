@@ -18,12 +18,12 @@ class EditInvoice extends EditRecord
             Actions\DeleteAction::make()->label('Hapus Faktur')->color('danger'),
         ];
     }
-    // protected function getRedirectUrl(): string
-    // {
-    //     // Ambil data invoice yang baru saja dibuat
-    //     $invoice = $this->getRecord();
+    protected function getRedirectUrl(): string
+    {
+        // Ambil data invoice yang baru saja dibuat
+        $invoice = $this->getRecord();
 
-    //     // Arahkan kembali ke halaman 'view' dari booking yang berelasi
-    //     return BookingResource::getUrl('view', ['record' => $invoice->id]);
-    // }
+        // Arahkan kembali ke halaman 'view' dari booking yang berelasi
+        return BookingResource::getUrl('view', ['record' => $invoice->booking_id]);
+    }
 }
