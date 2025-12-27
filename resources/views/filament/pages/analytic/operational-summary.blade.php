@@ -60,7 +60,7 @@
 
 
         {{-- Ringkasan --}}
-        <x-filament::section class="mt-8">
+        <x-filament::section class="mt-8 pt-8">
             <x-slot name="heading">
                 <div class="flex items-center justify-between w-full">
                     <div>
