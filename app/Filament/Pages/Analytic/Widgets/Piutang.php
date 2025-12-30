@@ -32,7 +32,7 @@ class Piutang extends BaseWidget
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                     ->label('Penyewa')
                     ->wrap()
-                    ->width(100)
+                    ->width(150)
                     ->alignCenter()
                     ->searchable(),
 

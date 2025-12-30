@@ -28,11 +28,12 @@ class Revenue extends BaseWidget
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')->label('Tanggal')
                 ->alignCenter(),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
-                ->label('Penyewa')->wrap()->width(100)
+                ->label('Penyewa')->wrap()->width(150)
                 ->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color('success')->alignCenter(),
             ])
+            ->defaultSort('tanggal_pembayaran', 'desc')
             ->filters([
                 Filter::make('bulan_ini')
                     ->label('Hanya Bulan Ini')
