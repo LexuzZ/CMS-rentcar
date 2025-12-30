@@ -7,7 +7,7 @@
         </x-filament::section>
 
         {{-- ================= STATISTICS ================= --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-3">
             @foreach ($statistics as $stat)
                 <x-filament::section class="relative overflow-hidden transition hover:shadow-md">
                     {{-- Accent --}}
