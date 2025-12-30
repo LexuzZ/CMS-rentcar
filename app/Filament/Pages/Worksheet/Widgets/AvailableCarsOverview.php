@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\Worksheet\Widgets;
 
 use App\Models\Car;
-use Carbon\Carbon;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 
@@ -13,32 +12,19 @@ class AvailableCarsOverview extends Widget
     protected int|string|array $columnSpan = 'full';
 
     public function getViewData(): array
-{
-    $today = Carbon::today();
-    $tomorrow = Carbon::tomorrow();
-
-    $availableCars = Car::with(['carModel', 'bookings'])
+    {
+         $availableCars = Car::with(['carModel']) // <-- Eager load relasi
+        ->where('status', 'ready')
         ->where('garasi', 'SPT')
-        ->where(function ($query) use ($today) {
-            $query
-                // Mobil tanpa booking aktif
-                ->whereDoesntHave('bookings', function ($q) use ($today) {
-                    $q->whereDate('tanggal_keluar', '<=', $today);
-                })
-                // ATAU booking tapi keluarnya BESOK ke atas
-                ->orWhereHas('bookings', function ($q) use ($today) {
-                    $q->whereDate('tanggal_keluar', '>', $today);
-                });
-        })
         ->get();
 
+    // Grouping sekarang dilakukan berdasarkan nama merek dari relasi
     $groupedCars = $availableCars->groupBy('carModel.name');
 
     return [
         'cars' => $groupedCars,
     ];
-}
-
+    }
 }
 
 
