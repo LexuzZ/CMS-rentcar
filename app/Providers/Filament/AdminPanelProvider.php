@@ -55,13 +55,14 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('4rem')
             // ->domain('');
             ->colors([
-    'primary' => Color::Slate,     // tombol utama
-    'success' => Color::Emerald,   // income
-    'danger' => Color::Red,        // expense
-    'warning' => Color::Yellow,    // alert
-    'info' => Color::Blue,         // info
-    'gray' => Color::Gray,         // teks netral
-])
+                'primary' => Color::Sky,       // tombol, highlights
+                'success' => Color::Teal,      // income
+                'danger' => Color::Rose,       // expense
+                'warning' => Color::Amber,     // overdue
+                'info' => Color::Indigo,       // notice
+                'gray' => Color::Zinc,         // teks netral
+            ])
+
 
 
             ->sidebarCollapsibleOnDesktop()
@@ -80,15 +81,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // WidgetsAvailableCarsOverview::class,
+                    // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
                 RecentTransactions::class,
                 TransactionChart::class,
 
-                // OverdueTasksWidget::class,
-                // MobilKeluar::class,
-                // MobilKembali::class,
-                // TempoDueToday::class,
+                    // OverdueTasksWidget::class,
+                    // MobilKeluar::class,
+                    // MobilKembali::class,
+                    // TempoDueToday::class,
                 DashboardActionsWidget::class,
                 \App\Filament\Widgets\UserActivityStatus::class,
                 \App\Filament\Widgets\UserActivityLog::class,
