@@ -205,7 +205,7 @@
                 </div>
 
                 {{-- Total Table --}}
-                <div class="rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 shadow-lg">
+                <div class="rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 shadow-sm">
                     <div
                         class="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 px-6 py-3">
                         <h3 class="font-semibold text-gray-800 dark:text-white">
@@ -217,7 +217,7 @@
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($costTableData as $row)
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white hover:text-bg-gray-900 dark:hover:text-white">
                                             {{ $row['label'] }}
                                         </td>
                                         <td class="px-6 py-4 text-right font-medium tabular-nums dark:text-white">
