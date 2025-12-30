@@ -120,7 +120,7 @@
                 </div>
 
                 {{-- ================= TOTAL / SUMMARY ================= --}}
-                <div class="rounded-xl overflow-hidden border-2 border-primary-500">
+                <div class="rounded-xl overflow-hidden border-2 ">
                     <div
                         class="px-6 py-3 bg-primary-50 dark:bg-primary-900/30 font-bold text-primary-700 dark:text-primary-300">
                         Total
