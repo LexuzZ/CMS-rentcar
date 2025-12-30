@@ -254,7 +254,7 @@
                                             {{ $row['label'] }}
                                         </td>
                                         <td
-                                            class="px-6 py-4 text-right font-bold text-primary-600 dark:text-primary-400 tabular-nums">
+                                            class="px-6 py-4 text-right font-bold text-success-600 dark:text-success-400 tabular-nums">
                                             @if (is_numeric($row['value']))
                                                 Rp {{ number_format($row['value'], 0, ',', '.') }}
                                             @else
