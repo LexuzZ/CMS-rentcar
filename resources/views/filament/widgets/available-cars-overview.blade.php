@@ -1,12 +1,11 @@
 <x-filament-widgets::widget>
-    <x-filament::section
-        class="bg-gray-50 dark:bg-gray-900
+    <x-filament::section class="bg-gray-50 dark:bg-gray-900
                text-gray-900 dark:text-gray-100">
 
         {{-- Heading --}}
         <x-slot name="heading">
             <span class="flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                🚗 Mobil Tersedia Saat Ini
+                Mobil Tersedia Saat Ini
             </span>
         </x-slot>
 
@@ -17,7 +16,7 @@
                 <div
                     class="rounded-xl border
                            border-gray-200 dark:border-gray-700
-                           bg-gray-100 dark:bg-gray-800
+                           bg-gray-100 dark:bg-gray-800 dark:text-gray-800
                            transition hover:shadow-md">
 
                     {{-- Header --}}
