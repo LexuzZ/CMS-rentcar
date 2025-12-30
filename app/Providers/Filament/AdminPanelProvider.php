@@ -55,13 +55,14 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('4rem')
             // ->domain('');
             ->colors([
-                'primary' => Color::Indigo,   // untuk tombol utama, link
-                'success' => Color::Emerald,  // status mobil ready / transaksi sukses
-                'danger' => Color::Rose,     // mobil rusak / gagal transaksi
-                'warning' => Color::Amber,    // overdue, jatuh tempo
-                'info' => Color::Sky,      // informasi umum
-                'gray' => Color::Zinc,     // background / teks netral
-            ])
+    'primary' => Color::Slate,     // tombol utama
+    'success' => Color::Emerald,   // income
+    'danger' => Color::Red,        // expense
+    'warning' => Color::Yellow,    // alert
+    'info' => Color::Blue,         // info
+    'gray' => Color::Gray,         // teks netral
+])
+
 
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
