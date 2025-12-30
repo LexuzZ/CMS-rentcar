@@ -11,7 +11,8 @@
             @foreach ($statistics as $stat)
                 <x-filament::section class="relative overflow-hidden transition hover:shadow-md">
                     {{-- Accent --}}
-                    <div class="absolute inset-x-0 top-0 h-1
+                    <div
+                        class="absolute inset-x-0 top-0 h-1
                         {{ $stat['color'] === 'success'
                             ? 'bg-emerald-500'
                             : ($stat['color'] === 'warning'
@@ -30,9 +31,7 @@
 
                         @php
                             $isPositive = $stat['change'] >= 0;
-                            $icon = $isPositive
-                                ? 'heroicon-m-arrow-trending-up'
-                                : 'heroicon-m-arrow-trending-down';
+                            $icon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
                         @endphp
 
                         <x-filament::badge :color="$stat['color']" size="sm" class="inline-flex gap-1">
@@ -45,7 +44,7 @@
         </div>
 
         {{-- ================= RINGKASAN ================= --}}
-        <x-filament::section class="border-t-4 border-primary-500">
+        <x-filament::section class="border-t-4 border-primary-500 mt-3">
             <x-slot name="heading">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
@@ -57,10 +56,7 @@
                         </p>
                     </div>
 
-                    <x-filament::button
-                        color="gray"
-                        size="sm"
-                        icon="heroicon-o-printer"
+                    <x-filament::button color="gray" size="sm" icon="heroicon-o-printer"
                         wire:click="downloadPdf">
                         Export PDF
                     </x-filament::button>
@@ -71,7 +67,8 @@
 
                 {{-- ================= INCOME ================= --}}
                 <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                    <div class="px-6 py-3 bg-emerald-50 dark:bg-emerald-900/30 font-semibold text-emerald-700 dark:text-emerald-300">
+                    <div
+                        class="px-6 py-3 bg-emerald-50 dark:bg-emerald-900/30 font-semibold text-emerald-700 dark:text-emerald-300">
                         Rincian Pendapatan
                     </div>
 
@@ -81,7 +78,8 @@
                                 <td class="px-6 py-4 font-medium text-emerald-700 dark:text-emerald-400">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-6 py-4 text-right font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
+                                <td
+                                    class="px-6 py-4 text-right font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
                                     Rp {{ number_format($row['value'], 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
@@ -96,7 +94,8 @@
 
                 {{-- ================= EXPENSE ================= --}}
                 <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                    <div class="px-6 py-3 bg-rose-50 dark:bg-rose-900/30 font-semibold text-rose-700 dark:text-rose-300">
+                    <div
+                        class="px-6 py-3 bg-rose-50 dark:bg-rose-900/30 font-semibold text-rose-700 dark:text-rose-300">
                         Rincian Pengeluaran
                     </div>
 
@@ -106,7 +105,8 @@
                                 <td class="px-6 py-4 font-medium text-rose-700 dark:text-rose-400">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-6 py-4 text-right font-semibold tabular-nums text-rose-700 dark:text-rose-400">
+                                <td
+                                    class="px-6 py-4 text-right font-semibold tabular-nums text-rose-700 dark:text-rose-400">
                                     Rp {{ number_format($row['value'], 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
@@ -121,7 +121,8 @@
 
                 {{-- ================= TOTAL / SUMMARY ================= --}}
                 <div class="rounded-xl overflow-hidden border-2 border-primary-500">
-                    <div class="px-6 py-3 bg-primary-50 dark:bg-primary-900/30 font-bold text-primary-700 dark:text-primary-300">
+                    <div
+                        class="px-6 py-3 bg-primary-50 dark:bg-primary-900/30 font-bold text-primary-700 dark:text-primary-300">
                         Total
                     </div>
 
@@ -131,14 +132,12 @@
                                 <td class="px-6 py-4 font-bold text-primary-700 dark:text-primary-300">
                                     {{ $row['label'] }}
                                 </td>
-                                <td class="px-6 py-4 text-right font-bold tabular-nums text-primary-700 dark:text-primary-300">
+                                <td
+                                    class="px-6 py-4 text-right font-bold tabular-nums text-primary-700 dark:text-primary-300">
                                     Rp {{ number_format($row['value'], 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <x-filament::badge
-                                        :color="$row['change'] >= 0 ? 'success' : 'danger'"
-                                        size="sm"
-                                        class="font-bold">
+                                    <x-filament::badge :color="$row['change'] >= 0 ? 'success' : 'danger'" size="sm" class="font-bold">
                                         {{ number_format($row['change'], 1) }}%
                                     </x-filament::badge>
                                 </td>
