@@ -250,7 +250,7 @@
                                 @foreach ($summaryTableData as $row)
                                     <tr
                                         class="bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                        <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">
+                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white hover:text-bg-gray-900 dark:hover:text-bg-gray-900">
                                             {{ $row['label'] }}
                                         </td>
                                         <td
