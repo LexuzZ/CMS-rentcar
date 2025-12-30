@@ -41,6 +41,7 @@ class Piutang extends BaseWidget
                     ->color('danger')
                     ->alignCenter(),
             ])
+            ->defaultSort('tanggal_pembayaran', 'desc')
             ->filters([
                 Filter::make('bulan_ini')
                     ->label('Hanya Bulan Ini')
