@@ -261,7 +261,7 @@
                                                 {{ $row['value'] }}
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 text-center">
+                                        <td class="px-6 py-4 text-right font-medium tabular-nums dark:text-white">
                                             @if (!is_null($row['change']))
                                                 @php
                                                     $isPositive = $row['change'] >= 0;
