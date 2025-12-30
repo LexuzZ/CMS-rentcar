@@ -217,7 +217,7 @@
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($costTableData as $row)
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white hover:text-bg-gray-900 dark:hover:text-white">
+                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white hover:text-bg-gray-900 dark:hover:text-bg-gray-900">
                                             {{ $row['label'] }}
                                         </td>
                                         <td class="px-6 py-4 text-right font-medium tabular-nums dark:text-white">
