@@ -150,20 +150,15 @@ class PaymentResource extends Resource
                     ->alignCenter()
                     ->getStateUsing(function ($record) {
                         $invoice = $record->invoice;
-
                         $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                        $biayaAntar = $invoice?->pickup_dropOff ?? 0;
+                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
                         $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
 
-                        $totalTagihan = $biayaSewa + $biayaAntar + $totalDenda;
-
-                        $totalPaid = $invoice->payment()->sum('pembayaran');
-
-                        return max($totalTagihan - $totalPaid, 0);
+                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                        return $totalTagihan - ($invoice->dp ?? 0);
                     })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ->color(fn($state) => $state == 0 ? 'success' : 'danger'),
-
+                ,
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
