@@ -157,7 +157,7 @@ class PaymentResource extends Resource
 
                         $totalTagihan = $biayaSewa + $biayaAntar + $totalDenda;
 
-                        $totalPaid = $invoice->payments()->sum('pembayaran');
+                        $totalPaid = $invoice->payment()->sum('pembayaran');
 
                         return max($totalTagihan - $totalPaid, 0);
                     })
