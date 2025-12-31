@@ -68,6 +68,7 @@ class InvoiceResource extends Resource
                     ->label('Uang Muka')
                     ->prefix('Rp')
                     ->numeric()
+                    ->required()
                     ->default(0)
                     ->live()
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
