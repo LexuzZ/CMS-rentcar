@@ -30,7 +30,7 @@ class CreatePayment extends CreateRecord
             }
         }
     }
-     protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         // Ambil data pembayaran yang baru saja dibuat
         $payment = $this->getRecord();
@@ -39,4 +39,31 @@ class CreatePayment extends CreateRecord
         // melalui relasi invoice
         return BookingResource::getUrl('view', ['record' => $payment->invoice->booking_id]);
     }
+    protected function afterCreate(): void
+    {
+        $payment = $this->record;
+        $invoice = $payment->invoice()->with('booking.penalty')->first();
+
+        if (!$invoice) {
+            return;
+        }
+
+        $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
+        $biayaAntar = $invoice->pickup_dropOff ?? 0;
+        $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
+
+        $totalTagihan = $biayaSewa + $biayaAntar + $totalDenda;
+
+        // Simpan DP & sisa
+        $invoice->dp = ($invoice->dp ?? 0) + $payment->pembayaran;
+        $invoice->sisa_pembayaran = max($totalTagihan - $invoice->dp, 0);
+
+        // Auto status
+        if ($invoice->sisa_pembayaran == 0) {
+            $payment->updateQuietly(['status' => 'lunas']);
+        }
+
+        $invoice->save();
+    }
+
 }
