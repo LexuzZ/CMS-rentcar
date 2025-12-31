@@ -8,6 +8,24 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Invoice extends Model
 {
+    protected $appends = [
+        'total_tagihan',
+        'sisa_pembayaran_hitung',
+    ];
+
+    public function getTotalTagihanAttribute(): float
+    {
+        $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+        $pickup = $this->pickup_dropOff ?? 0;
+        $denda = $this->booking?->penalty->sum('amount') ?? 0;
+
+        return $biayaSewa + $pickup + $denda;
+    }
+
+    public function getSisaPembayaranHitungAttribute(): float
+    {
+        return max($this->total_tagihan - ($this->dp ?? 0), 0);
+    }
     protected $fillable = [
         'booking_id',
         'total',

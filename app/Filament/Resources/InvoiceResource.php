@@ -82,20 +82,29 @@ class InvoiceResource extends Resource
                     ->prefix('Rp')
                     ->numeric()
                     ->default(0),
+                TextInput::make('total_tagihan')
+                    ->label('Total Tagihan')
+                    ->money('IDR'),
 
-                Forms\Components\TextInput::make('sisa_pembayaran')
-                    ->label('Sisa Pembayaran')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->readOnly()
-                    ->default(0),
+                TextInput::make('sisa_pembayaran_hitung')
+                    ->label('Sisa Bayar')
+                    ->money('IDR')
+                    ->color('danger'),
 
-                Forms\Components\TextInput::make('total')
-                    ->label('Total Biaya')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->readOnly()
-                    ->required(),
+
+                // Forms\Components\TextInput::make('sisa_pembayaran')
+                //     ->label('Sisa Pembayaran')
+                //     ->prefix('Rp')
+                //     ->numeric()
+                //     ->readOnly()
+                //     ->default(0),
+
+                // Forms\Components\TextInput::make('total')
+                //     ->label('Total Biaya')
+                //     ->prefix('Rp')
+                //     ->numeric()
+                //     ->readOnly()
+                //     ->required(),
             ]),
         ]);
     }
