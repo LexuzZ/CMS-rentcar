@@ -84,12 +84,28 @@ class InvoiceResource extends Resource
                     ->default(0),
                 TextInput::make('total_tagihan')
                     ->label('Total Tagihan')
-                    ->money('IDR'),
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->formatStateUsing(
+                        fn($state) =>
+                        number_format($state ?? 0, 0, ',', '.')
+                    ),
 
                 TextInput::make('sisa_pembayaran_hitung')
                     ->label('Sisa Bayar')
-                    ->money('IDR')
-                    ->color('danger'),
+                    ->prefix('Rp')
+                    ->numeric()
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->formatStateUsing(
+                        fn($state) =>
+                        number_format($state ?? 0, 0, ',', '.')
+                    )
+                    ->extraAttributes([
+                        'class' => 'text-red-600 dark:text-red-400 font-semibold',
+                    ]),
 
 
                 // Forms\Components\TextInput::make('sisa_pembayaran')
