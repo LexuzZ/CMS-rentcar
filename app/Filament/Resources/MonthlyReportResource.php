@@ -26,41 +26,18 @@ class MonthlyReportResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-           ->query(
-    Payment::query()
-        ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-        ->select(
-            DB::raw('YEAR(payments.tanggal_pembayaran) as year'),
-            DB::raw('MONTH(payments.tanggal_pembayaran) as month'),
-
-            DB::raw("
-                SUM(
-                    CASE
-                        WHEN payments.status = 'lunas'
-                        THEN invoices.total
-                        ELSE 0
-                    END
-                ) as net_revenue
-            "),
-
-            DB::raw("
-                SUM(
-                    CASE
-                        WHEN payments.status = 'belum_lunas'
-                        THEN invoices.sisa
-                        ELSE 0
-                    END
-                ) as pending_revenue
-            "),
-
-            DB::raw('COUNT(DISTINCT invoices.id) as transaction_count'),
-
-            DB::raw('SUM(invoices.total) as total_revenue')
-        )
-        ->groupBy('year', 'month')
-)
-
-
+            ->query(
+                Payment::query()->select(
+                    DB::raw('YEAR(tanggal_pembayaran) as year'),
+                    DB::raw('MONTH(tanggal_pembayaran) as month'),
+                    DB::raw("SUM(CASE WHEN status = 'lunas' THEN pembayaran ELSE 0 END) as net_revenue"), // Menjumlahkan tagihan dari yang belum lunas
+                    DB::raw("SUM(CASE WHEN status = 'belum_lunas' THEN pembayaran ELSE 0 END) as pending_revenue"),
+                    DB::raw('COUNT(*) as transaction_count'),
+                    DB::raw('SUM(pembayaran) as total_revenue')
+                )
+                    // ->where('status', 'lunas')
+                    ->groupBy('year', 'month')
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('month')
                     ->label('Bulan')
