@@ -27,37 +27,41 @@ class MonthlyReportResource extends Resource
     {
         return $table
             ->query(
-                Payment::query()->select(
-                    DB::raw('YEAR(tanggal_pembayaran) as year'),
-                    DB::raw('MONTH(tanggal_pembayaran) as month'),
+                Payment::query()
+                    ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+                    ->select(
+                        DB::raw('YEAR(payments.tanggal_pembayaran) as year'),
+                        DB::raw('MONTH(payments.tanggal_pembayaran) as month'),
 
-                    DB::raw("
-        SUM(
-            CASE
-                WHEN status = 'lunas' THEN pembayaran
-                ELSE 0
-            END
-        ) as net_revenue
-    "),
+                        // LUNAS → ambil total tagihan invoice
+                        DB::raw("
+                SUM(
+                    CASE
+                        WHEN payments.status = 'lunas'
+                        THEN invoices.total_tagihan
+                        ELSE 0
+                    END
+                ) as net_revenue
+            "),
 
-                    DB::raw("
-        SUM(
-            CASE
-                WHEN status = 'belum_lunas' THEN sisa_pembayaran_hitung
-                ELSE 0
-            END
-        ) as pending_revenue
-    "),
+                        // BELUM LUNAS → ambil sisa pembayaran invoice
+                        DB::raw("
+                SUM(
+                    CASE
+                        WHEN payments.status = 'belum_lunas'
+                        THEN invoices.sisa_pembayaran
+                        ELSE 0
+                    END
+                ) as pending_revenue
+            "),
 
-                    DB::raw('COUNT(*) as transaction_count'),
+                        DB::raw('COUNT(DISTINCT invoices.id) as transaction_count'),
 
-                    DB::raw("
-        SUM(pembayaran + sisa_pembayaran_hitung) as total_revenue
-    ")
-                )
+                        DB::raw('SUM(invoices.total_tagihan) as total_revenue')
+                    )
                     ->groupBy('year', 'month')
-
             )
+
             ->columns([
                 Tables\Columns\TextColumn::make('month')
                     ->label('Bulan')
