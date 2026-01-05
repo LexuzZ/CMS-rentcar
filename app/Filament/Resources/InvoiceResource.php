@@ -199,6 +199,7 @@ class InvoiceResource extends Resource
                                 ->color('info')
                                 ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
                                 ->openUrlInNewTab(),
+
                             Infolists\Components\Actions\Action::make('sendWhatsapp')
                                 ->label('Kirim Tagihan via WA')
                                 ->icon('heroicon-o-chat-bubble-left-right')
@@ -309,7 +310,8 @@ class InvoiceResource extends Resource
             TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),
             textColumn::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->color('success'),
-            TextColumn::make('total_tagihan') ->label('Total Tagihan') ->money('IDR'), TextColumn::make('sisa_pembayaran_hitung') ->label('Sisa Bayar') ->money('IDR') ->color('danger'),
+            TextColumn::make('total_tagihan')->label('Total Tagihan')->money('IDR'),
+            TextColumn::make('sisa_pembayaran_hitung')->label('Sisa Bayar')->money('IDR')->color('danger'),
             // TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
         ])
             ->defaultSort('created_at', 'desc')

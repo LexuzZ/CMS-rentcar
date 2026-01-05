@@ -12,10 +12,14 @@ class CreateBooking extends CreateRecord
     protected static ?string $title = 'Tambah Pesanan';
     protected function afterCreate(): void
     {
-        if ($this->record->status === 'booking' || $this->record->status === 'disewa') {
-            $this->record->car->update([
+        if (
+            $this->record->status === 'disewa'
+            && $this->record->car?->status !== 'disewa'
+        ) {
+            $this->record->car()->update([
                 'status' => 'disewa',
             ]);
         }
     }
+
 }

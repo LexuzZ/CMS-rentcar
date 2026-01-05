@@ -11,18 +11,23 @@ class EditBooking extends EditRecord
     protected static string $resource = BookingResource::class;
     protected function afterSave(): void
     {
-        if (in_array($this->record->status, ['selesai', 'batal'])) {
-            $this->record->car->update([
-                'status' => 'ready',
-            ]);
+        $status = $this->record->status;
+        $car = $this->record->car;
+
+        if (!$car) {
+            return;
         }
 
-        if ($this->record->status === 'disewa' || $this->record->status === 'booking') {
-            $this->record->car->update([
-                'status' => 'disewa',
-            ]);
+        if (in_array($status, ['selesai', 'batal']) && $car->status !== 'ready') {
+            $car->update(['status' => 'ready']);
+            return;
+        }
+
+        if ($status === 'disewa' && $car->status !== 'disewa') {
+            $car->update(['status' => 'disewa']);
         }
     }
+
 
 
     protected function getHeaderActions(): array
