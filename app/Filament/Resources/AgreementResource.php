@@ -91,6 +91,9 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('total_hari')
                         ->label('Total Hari')
                         ->content(fn(?Booking $record): string => $record?->total_hari ? "{$record->total_hari} Hari" : '-'),
+                    Forms\Components\Placeholder::make('harga_harian')
+                        ->label('Harga Mobil Harian')
+                        ->content(fn(?Booking $record): string => $record?->harga_harian ? "{$record->harga_harian}/Hari" : '-'),
 
                     Forms\Components\Placeholder::make('invoice.dp')
                         ->label('Uang Muka (DP)')
