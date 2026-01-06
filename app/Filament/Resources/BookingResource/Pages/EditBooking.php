@@ -30,7 +30,7 @@ class EditBooking extends EditRecord
 
 
         if ($invoice) {
-            $invoice->payments()->update([
+            $invoice->payment()->update([
                 'pembayaran' => $invoice->getTotalTagihan(),
             ]);
         }
