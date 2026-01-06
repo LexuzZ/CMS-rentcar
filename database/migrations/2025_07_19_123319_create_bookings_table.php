@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('total_hari')->default(1);
             $table->decimal('estimasi_biaya', 12, 2)->default(0);
             $table->decimal('harga_harian', 12, 2)->default(0)->nullable();
-           
             $table->enum('status', ['booking', 'aktif', 'selesai', 'batal'])->default('booking');
             $table->timestamps();
         });

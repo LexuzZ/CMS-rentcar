@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
            $table->id();
             $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->decimal('total', 12, 2)->default(0);
             $table->decimal('dp', 12, 2)->default(0);
             $table->decimal('sisa_pembayaran', 12, 2)->default(0)->nullable();
             $table->decimal('pickup_dropOff', 12, 2)->default(0);
             $table->date('tanggal_invoice');
+            $table->decimal('total', 12, 2)->default(0);
             $table->timestamps();
         });
     }
