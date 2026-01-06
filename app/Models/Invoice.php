@@ -37,7 +37,7 @@ class Invoice extends Model
     }
     public function recalculatePaymentStatus(): void
     {
-        $sisa = $this->getSisaPembayaran();
+        $sisa = $this->getSisaPembayaranHitungAttribute();
 
         if ($sisa <= 0) {
             $this->payment()
