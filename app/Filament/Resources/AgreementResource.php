@@ -41,8 +41,11 @@ class AgreementResource extends Resource
                         ->content(fn(?Booking $record): string => $record?->id ?? '-'),
 
                     Forms\Components\Placeholder::make('customer.nama')
-                        ->label('Nama Customer')
+                        ->label('Nama Penyewa')
                         ->content(fn(?Booking $record): string => $record?->customer?->nama ?? '-'),
+                    Forms\Components\Placeholder::make('customer.ktp')
+                        ->label('No. KTP')
+                        ->content(fn(?Booking $record): string => $record?->customer?->ktp ?? '-'),
 
                     Forms\Components\Placeholder::make('car.carModel.name')
                         ->label('Nama Mobil')
