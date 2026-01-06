@@ -19,11 +19,11 @@ class EditPenalty extends EditRecord
     }
     protected function afterSave(): void
     {
-        $invoice = $this->record->invoice;
+        $invoice = $this->record->booking?->invoice;
+
         if ($invoice) {
-            $invoice->payment()->update([
-                'pembayaran' => $invoice->getTotalTagihan(),
-            ]);
+            $invoice->recalculateStatus();
         }
     }
+
 }
