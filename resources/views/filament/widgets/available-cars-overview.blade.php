@@ -6,7 +6,7 @@
         {{-- Heading --}}
         <x-slot name="heading">
             <span class="flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                🚗 Mobil Tersedia Saat Ini
+                🚗 Mobil Ready Hari Ini
             </span>
         </x-slot>
 
