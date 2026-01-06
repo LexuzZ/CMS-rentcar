@@ -33,7 +33,23 @@ class PaymentResource extends Resource
     /**
      * Memodifikasi data sebelum form edit diisi.
      */
+    public static function mutateFormDataBeforeFill(array $data): array
+    {
+        $invoiceId = $data['invoice_id'] ?? null;
 
+        if ($invoiceId) {
+            $invoice = Invoice::with('booking.penalty')->find($invoiceId);
+            if ($invoice) {
+                $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
+                $biayaAntarJemput = $invoice->pickup_dropOff ?? 0;
+                $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
+
+                $data['pembayaran'] = $biayaSewa + $biayaAntarJemput + $totalDenda;
+            }
+        }
+
+        return $data;
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -47,18 +63,29 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->live()
                     ->afterStateHydrated(function ($state, Forms\Set $set) {
+                        // ✅ jalan otomatis waktu form dibuka (edit)
                         if ($state) {
-                            $invoice = Invoice::with('booking.penalty')->find($state);
-                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
+                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
+
+                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
                         }
                     })
                     ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        // ✅ jalan otomatis waktu invoice dipilih ulang
                         if ($state) {
-                            $invoice = Invoice::with('booking.penalty')->find($state);
-                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
+                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
+
+                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
                         }
                     }),
-
 
                 Forms\Components\DatePicker::make('tanggal_pembayaran')
                     ->required()
@@ -71,12 +98,16 @@ class PaymentResource extends Resource
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
-                    ->dehydrated(false)
                     ->readOnly()
-                    ->afterStateHydrated(function ($state, Forms\Set $set) {
-                        if ($state) {
-                            $invoice = Invoice::with('booking.penalty')->find($state);
-                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
+                    ->afterStateHydrated(function (Forms\Set $set, $state, $record) {
+                        if ($record && $record->invoice) {
+                            $invoice = $record->invoice->load('booking.penalty');
+
+                            $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
+                            $biayaAntar = $invoice->pickup_dropOff ?? 0;
+                            $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
+
+                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
                         }
                     }),
 
@@ -117,7 +148,15 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('total_bayar')
                     ->label('Sisa Payment')
                     ->alignCenter()
-                    ->state(fn($record) => $record->invoice->getSisaPembayaranHitungAttribute())
+                    ->getStateUsing(function ($record) {
+                        $invoice = $record->invoice;
+                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
+                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
+                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
+
+                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
+                        return $totalTagihan - ($invoice->dp ?? 0);
+                    })
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
                 Tables\Columns\TextColumn::make('status')
