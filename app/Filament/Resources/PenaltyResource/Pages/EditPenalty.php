@@ -22,7 +22,7 @@ class EditPenalty extends EditRecord
         $invoice = $this->record->booking?->invoice;
 
         if ($invoice) {
-            $invoice->recalculateStatus();
+            $invoice->getTotalTagihan();
         }
     }
 
