@@ -50,7 +50,7 @@ class Invoice extends Model
 
     public function getTotalDibayarAttribute(): int
     {
-        return $this->payments()->sum('pembayaran');
+        return $this->payment()->sum('pembayaran');
     }
 
     public function getSisaPembayaranAttribute(): int
