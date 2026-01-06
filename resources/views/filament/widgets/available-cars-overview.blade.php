@@ -24,7 +24,7 @@
                     <div
                         class="px-4 py-3 border-b
                                border-gray-200 dark:border-gray-700
-                               bg-gray-200 dark:bg-gray-700/60
+                               bg-gray-200 dark:bg-gray-700/60 dark:text-gray-200
                                rounded-t-xl">
 
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
