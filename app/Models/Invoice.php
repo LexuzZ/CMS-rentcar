@@ -35,6 +35,21 @@ class Invoice extends Model
 
         return $biayaSewa + $biayaAntar + $totalDenda;
     }
+    public function recalculatePaymentStatus(): void
+    {
+        $sisa = $this->getSisaPembayaran();
+
+        if ($sisa <= 0) {
+            $this->payment()
+                ->where('status', 'belum_lunas')
+                ->update(['status' => 'lunas']);
+        } else {
+            $this->payment()
+                ->where('status', 'lunas')
+                ->update(['status' => 'belum_lunas']);
+        }
+    }
+
 
     protected $fillable = [
         'booking_id',
