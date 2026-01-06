@@ -227,6 +227,14 @@ class AgreementResource extends Resource
                     ->falseColor('danger'),
             ])
             ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query
+                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                        ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ),
                 Filter::make('tanggal_keluar')
                     ->form([
                         DatePicker::make('date')
