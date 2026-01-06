@@ -114,12 +114,11 @@ class PaymentResource extends Resource
                 //     ->label('Tgl Payment')
                 //     ->searchable()
                 //     ->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('total_bayar')
+                TextColumn::make('invoice.sisa_pembayaran_hitung')
                     ->label('Sisa Payment')
                     ->alignCenter()
-                    ->state(fn($record) => $record->invoice->getSisaPembayaranHitungAttribute())
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ,
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
