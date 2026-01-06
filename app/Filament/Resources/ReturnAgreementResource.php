@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -172,7 +173,16 @@ class ReturnAgreementResource extends Resource
                 // Tables\Columns\TextColumn::make('tanggal_keluar')->date('d M Y')->label('Tanggal Keluar'),
                 Tables\Columns\TextColumn::make('tanggal_kembali')->date('d M Y')->label('Tanggal Kembali '),
             ])
-            ->filters([])
+            ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query
+                        ->whereMonth('tanggal_kembali', Carbon::now()->month)
+                        ->whereYear('tanggal_kembali', Carbon::now()->year)
+                    ),
+            ])
             ->actions([
                 // Tables\Actions\EditAction::make()->label('Form Kembali')->icon('heroicon-o-pencil')->color('success'),
                 Tables\Actions\EditAction::make()
