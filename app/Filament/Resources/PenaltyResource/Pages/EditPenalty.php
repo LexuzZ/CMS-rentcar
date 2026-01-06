@@ -21,12 +21,16 @@ class EditPenalty extends EditRecord
     {
         $invoice = $this->record->booking?->invoice;
 
-        if ($invoice) {
-            // 🔥 INI KUNCI UTAMANYA
-            $invoice->refreshPaymentStatus();
+        if (!$invoice) {
+            return;
         }
-    }
 
+        // Paksa reload relasi penalty terbaru
+        $invoice->load('booking.penalty');
+
+        // Recalculate status payment
+        $invoice->recalculatePaymentStatus();
+    }
 
 
 }
