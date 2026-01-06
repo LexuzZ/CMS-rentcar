@@ -63,29 +63,18 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->live()
                     ->afterStateHydrated(function ($state, Forms\Set $set) {
-                        // ✅ jalan otomatis waktu form dibuka (edit)
                         if ($state) {
-                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
-
-                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                            $invoice = Invoice::with('booking.penalty')->find($state);
+                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
                         }
                     })
                     ->afterStateUpdated(function ($state, Forms\Set $set) {
-                        // ✅ jalan otomatis waktu invoice dipilih ulang
                         if ($state) {
-                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
-
-                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                            $invoice = Invoice::with('booking.penalty')->find($state);
+                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
                         }
                     }),
+
 
                 Forms\Components\DatePicker::make('tanggal_pembayaran')
                     ->required()

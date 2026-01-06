@@ -13,6 +13,7 @@ class EditBooking extends EditRecord
     {
         $status = $this->record->status;
         $car = $this->record->car;
+        $invoice = $this->record->invoice;
 
         if (!$car) {
             return;
@@ -25,6 +26,13 @@ class EditBooking extends EditRecord
 
         if ($status === 'disewa' && $car->status !== 'disewa') {
             $car->update(['status' => 'disewa']);
+        }
+
+
+        if ($invoice) {
+            $invoice->payments()->update([
+                'pembayaran' => $invoice->getTotalTagihan(),
+            ]);
         }
     }
 

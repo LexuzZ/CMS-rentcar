@@ -26,6 +26,16 @@ class Invoice extends Model
     {
         return max($this->total_tagihan - ($this->dp ?? 0), 0);
     }
+    // App\Models\Invoice.php
+    public function getTotalTagihan(): int
+    {
+        $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+        $biayaAntar = $this->pickup_dropOff ?? 0;
+        $totalDenda = $this->booking?->penalty->sum('amount') ?? 0;
+
+        return $biayaSewa + $biayaAntar + $totalDenda;
+    }
+
     protected $fillable = [
         'booking_id',
         'total',
@@ -39,7 +49,7 @@ class Invoice extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-     public function payment(): HasOne
+    public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
     }
