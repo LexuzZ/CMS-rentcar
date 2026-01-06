@@ -65,10 +65,13 @@ class Invoice extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-    public function payment(): HasMany
+    public function payment(): HasOne
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasOne(Payment::class);
     }
+    // {
+    //     return $this->hasMany(Payment::class);
+    // }
     protected static function booted()
     {
         static::observe(ActivityObserver::class);
