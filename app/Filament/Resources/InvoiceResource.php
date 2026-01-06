@@ -380,3 +380,4 @@ class InvoiceResource extends Resource
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
+
