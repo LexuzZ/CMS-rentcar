@@ -33,23 +33,7 @@ class PaymentResource extends Resource
     /**
      * Memodifikasi data sebelum form edit diisi.
      */
-    public static function mutateFormDataBeforeFill(array $data): array
-    {
-        $invoiceId = $data['invoice_id'] ?? null;
 
-        if ($invoiceId) {
-            $invoice = Invoice::with('booking.penalty')->find($invoiceId);
-            if ($invoice) {
-                $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
-                $biayaAntarJemput = $invoice->pickup_dropOff ?? 0;
-                $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
-
-                $data['pembayaran'] = $biayaSewa + $biayaAntarJemput + $totalDenda;
-            }
-        }
-
-        return $data;
-    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -133,15 +117,7 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('total_bayar')
                     ->label('Sisa Payment')
                     ->alignCenter()
-                    ->getStateUsing(function ($record) {
-                        $invoice = $record->invoice;
-                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
-                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                        return $totalTagihan - ($invoice->dp ?? 0);
-                    })
+                    ->state(fn($record) => $record->invoice->getSisaPembayaranHitungAttribute())
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ,
                 Tables\Columns\TextColumn::make('status')
