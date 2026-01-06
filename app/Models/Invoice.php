@@ -13,7 +13,7 @@ class Invoice extends Model
         'sisa_pembayaran_hitung',
     ];
 
-    public function getTotalTagihanAttribute(): float
+    public function getTotalTagihanAttribute(): int
     {
         $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
         $pickup = $this->pickup_dropOff ?? 0;
@@ -22,9 +22,9 @@ class Invoice extends Model
         return $biayaSewa + $pickup + $denda;
     }
 
-    public function getSisaPembayaranHitungAttribute(): float
+    public function getSisaPembayaranHitungAttribute(): int
     {
-        return max($this->total_tagihan - ($this->dp ?? 0), 0);
+        return $this->total_tagihan - ($this->dp ?? 0);
     }
     // App\Models\Invoice.php
     public function getTotalTagihan(): int

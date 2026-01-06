@@ -87,16 +87,12 @@ class PaymentResource extends Resource
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
+                    ->dehydrated(false)
                     ->readOnly()
-                    ->afterStateHydrated(function (Forms\Set $set, $state, $record) {
-                        if ($record && $record->invoice) {
-                            $invoice = $record->invoice->load('booking.penalty');
-
-                            $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
+                    ->afterStateHydrated(function ($state, Forms\Set $set) {
+                        if ($state) {
+                            $invoice = Invoice::with('booking.penalty')->find($state);
+                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
                         }
                     }),
 
