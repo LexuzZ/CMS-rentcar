@@ -13,18 +13,30 @@ class EditBooking extends EditRecord
     {
         $status = $this->record->status;
         $car = $this->record->car;
+        $invoice = $this->record->invoice;
 
-        if (!$car)
+        if (!$car) {
             return;
-
-        if (in_array($status, ['selesai', 'batal'])) {
-            $car->update(['status' => 'ready']);
         }
 
-        if ($status === 'disewa') {
+        if (in_array($status, ['selesai', 'batal']) && $car->status !== 'ready') {
+            $car->update(['status' => 'ready']);
+            return;
+        }
+
+        if ($status === 'disewa' && $car->status !== 'disewa') {
             $car->update(['status' => 'disewa']);
         }
+
+
+        if ($invoice) {
+            $invoice->payment()->update([
+                'pembayaran' => $invoice->getTotalTagihan(),
+            ]);
+        }
     }
+
+
 
     protected function getHeaderActions(): array
     {

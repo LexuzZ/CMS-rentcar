@@ -9,14 +9,47 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Invoice extends Model
 {
-
     protected $appends = [
         'total_tagihan',
-        'total_dibayar',
-        'sisa_pembayaran',
-        'status_pembayaran',
+        'sisa_pembayaran_hitung',
     ];
 
+    public function getTotalTagihanAttribute(): int
+    {
+        $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+        $pickup = $this->pickup_dropOff ?? 0;
+        $denda = $this->booking?->penalty->sum('amount') ?? 0;
+
+        return $biayaSewa + $pickup + $denda;
+    }
+
+    public function getSisaPembayaranHitungAttribute(): int
+    {
+        return $this->total_tagihan - ($this->dp ?? 0);
+    }
+    // App\Models\Invoice.php
+    public function getTotalTagihan(): int
+    {
+        $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+        $biayaAntar = $this->pickup_dropOff ?? 0;
+        $totalDenda = $this->booking?->penalty->sum('amount') ?? 0;
+
+        return $biayaSewa + $biayaAntar + $totalDenda;
+    }
+    public function recalculatePaymentStatus(): void
+    {
+        $sisa = $this->getSisaPembayaranHitungAttribute();
+
+        if ($sisa <= 0) {
+            $this->payment()
+                ->where('status', 'belum_lunas')
+                ->update(['status' => 'lunas']);
+        } else {
+            $this->payment()
+                ->where('status', 'lunas')
+                ->update(['status' => 'belum_lunas']);
+        }
+    }
 
 
     protected $fillable = [
@@ -39,54 +72,6 @@ class Invoice extends Model
     protected static function booted()
     {
         static::observe(ActivityObserver::class);
-    }
-    public function getTotalTagihanAttribute(): int
-    {
-        return
-            ($this->booking?->estimasi_biaya ?? 0)
-            + ($this->pickup_dropOff ?? 0)
-            + ($this->booking?->penalty->sum('amount') ?? 0);
-    }
-
-    public function getTotalDibayarAttribute(): int
-    {
-        return $this->payment()->sum('pembayaran');
-    }
-
-    public function getSisaPembayaranAttribute(): int
-    {
-        return max($this->total_tagihan - $this->total_dibayar, 0);
-    }
-
-    public function getStatusPembayaranAttribute(): string
-    {
-        return $this->sisa_pembayaran <= 0 ? 'lunas' : 'belum_lunas';
-    }
-    public function getTotalTagihan(): float
-    {
-        return (float) (
-            $this->booking->total_harga +
-            $this->booking->penalties()->sum('nominal')
-        );
-    }
-
-    public function getTotalDibayar(): float
-    {
-        return (float) $this->payments()->sum('pembayaran');
-    }
-
-    public function refreshPaymentStatus(): void
-    {
-        $totalTagihan = $this->getTotalTagihan();
-        $totalDibayar = $this->getTotalDibayar();
-
-        $status = $totalDibayar >= $totalTagihan
-            ? 'lunas'
-            : 'belum_lunas';
-
-        $this->payments()->update([
-            'status' => $status,
-        ]);
     }
 
 
