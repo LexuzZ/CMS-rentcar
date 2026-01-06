@@ -17,4 +17,13 @@ class EditPenalty extends EditRecord
             Actions\DeleteAction::make()->label('Hapus Klaim Garasi'),
         ];
     }
+    protected function afterSave(): void
+    {
+        $invoice = $this->record->invoice;
+        if ($invoice) {
+            $invoice->payment()->update([
+                'pembayaran' => $invoice->getTotalTagihan(),
+            ]);
+        }
+    }
 }
