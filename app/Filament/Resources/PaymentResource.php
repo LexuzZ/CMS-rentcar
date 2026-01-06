@@ -41,17 +41,21 @@ class PaymentResource extends Resource
             Forms\Components\Grid::make(2)->schema([
                 Forms\Components\Select::make('invoice_id')
                     ->label('Faktur')
-                    ->relationship('invoice', 'id')
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama
-                    )
+                    ->relationship('invoice', 'id', fn($query) => $query->with(['booking.customer', 'booking.penalty']))
+                    ->getOptionLabelFromRecordUsing(fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama)
                     ->required()
                     ->searchable()
                     ->live()
+                    ->afterStateHydrated(function ($state, Forms\Set $set) {
+                        if ($state) {
+                            $invoice = Invoice::with('booking.penalty')->find($state);
+                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
+                        }
+                    })
                     ->afterStateUpdated(function ($state, Forms\Set $set) {
                         if ($state) {
                             $invoice = Invoice::with('booking.penalty')->find($state);
-                            $set('pembayaran', $invoice?->getSisaPembayaranHitungAttribute() ?? 0);
+                            $set('pembayaran', $invoice?->getTotalTagihan() ?? 0);
                         }
                     }),
 
