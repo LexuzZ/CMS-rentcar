@@ -94,6 +94,9 @@ class AgreementResource extends Resource
                     Forms\Components\Placeholder::make('harga_harian')
                         ->label('Harga Mobil Harian')
                         ->content(fn(?Booking $record): string => $record?->harga_harian ? 'Rp ' . number_format($record->harga_harian, 0, ',', '.') : '-'),
+                    Forms\Components\Placeholder::make('Estimasi Biaya')
+                        ->label('Estimasi Biaya Sewa')
+                        ->content(fn(?Booking $record): string => $record?->estimasi_biaya ? 'Rp ' . number_format($record->estimasi_biaya, 0, ',', '.') : '-'),
 
                     Forms\Components\Placeholder::make('invoice.dp')
                         ->label('Uang Muka (DP)')
