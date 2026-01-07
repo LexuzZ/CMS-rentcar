@@ -89,42 +89,29 @@ class VehicleSchedule extends Page implements HasForms
         $endDate = $startDate->copy()->endOfMonth();
         $daysInMonth = $startDate->daysInMonth;
 
-        $cars = Car::query()
-            ->select('cars.id', 'cars.nopol', 'cars.garasi', 'cars.car_model_id')
+        $carsQuery = Car::query()
+            ->with([
+                'carModel.brand',
+                'bookings' => function ($query) use ($startDate, $endDate) {
+                    $query->with(['customer', 'invoice'])->where(function ($q) use ($startDate, $endDate) {
+                        $q->where('tanggal_keluar', '<=', $endDate)
+                            ->where('tanggal_kembali', '>=', $startDate);
+                    });
+                }
+            ])
             ->join('car_models', 'cars.car_model_id', '=', 'car_models.id')
             ->where('cars.garasi', 'SPT')
-            ->when(
-                $nopolSearch,
-                fn($q) =>
-                $q->where('cars.nopol', 'like', "%{$nopolSearch}%")
-            )
-            ->when(
-                $carNameSearch,
-                fn($q) =>
-                $q->where('car_models.name', 'like', "%{$carNameSearch}%")
-            )
-            ->with([
-                'carModel:id,name',
-                'bookings' => fn($q) =>
-                    $q->select(
-                        'id',
-                        'car_id',
-                        'customer_id',
-                        'invoice_id',
-                        'tanggal_keluar',
-                        'tanggal_kembali',
-                        'status'
-                    )
-                        ->whereDate('tanggal_keluar', '<=', $endDate)
-                        ->whereDate('tanggal_kembali', '>=', $startDate)
-                        ->with([
-                            'customer:id,nama',
-                            'invoice:id',
-                        ]),
-            ])
-            ->orderBy('car_models.name')
-            ->get();
+            // 3. Menambahkan kondisi pencarian nopol ke query
+            ->when($nopolSearch, function ($query) use ($nopolSearch) {
+                $query->where('cars.nopol', 'like', "%{$nopolSearch}%");
+            })
+            ->when($carNameSearch, function ($query) use ($carNameSearch) {
+                $query->where('car_models.name', 'like', "%{$carNameSearch}%");
+            })
+            ->orderBy('car_models.name', 'asc')
+            ->select('cars.*');
 
+        $cars = $carsQuery->get();
 
         $data = [
             'cars' => [],
@@ -136,19 +123,19 @@ class VehicleSchedule extends Page implements HasForms
             $dailySchedule = array_fill(1, $daysInMonth, null);
 
             foreach ($car->bookings as $booking) {
-                $startDay = Carbon::parse($booking->tanggal_keluar)->day;
-                $endDay = Carbon::parse($booking->tanggal_kembali)->day;
+                $bookingStart = Carbon::parse($booking->tanggal_keluar);
+                $bookingEnd = Carbon::parse($booking->tanggal_kembali);
 
-                for ($day = max(1, $startDay); $day <= min($daysInMonth, $endDay); $day++) {
-                    $dailySchedule[$day] = [
-                        'display_text' => $booking->invoice
-                            ? 'INV #' . $booking->invoice->id
-                            : $booking->customer->nama,
-                        'status' => $booking->status,
-                        'booking_id' => $booking->id,
-                    ];
+                for ($day = 1; $day <= $daysInMonth; $day++) {
+                    $currentDay = Carbon::create($year, $month, $day);
+                    if ($currentDay->between($bookingStart, $bookingEnd)) {
+                        $dailySchedule[$day] = [
+                            'display_text' => $booking->invoice ? 'INV #' . $booking->invoice->id : $booking->customer->nama,
+                            'status' => $booking->status,
+                            'booking_id' => $booking->id,
+                        ];
+                    }
                 }
-
             }
 
             $data['cars'][] = [
