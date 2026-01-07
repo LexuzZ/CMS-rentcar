@@ -21,28 +21,46 @@ class Revenue extends BaseWidget
     {
         return $table
             ->query(function () {
-                return Payment::query()->where('status', 'lunas');
+                return Payment::query()
+                    ->select([
+                        'id',
+                        'invoice_id',
+                        'tanggal_pembayaran',
+                        'pembayaran',
+                        'status',
+                    ])
+                    ->where('status', 'lunas')
+                    ->with([
+                        'invoice:id,booking_id',
+                        'invoice.booking:id,customer_id',
+                        'invoice.booking.customer:id,nama',
+                    ]);
             })
+
             ->columns([
                 // Tables\Columns\TextColumn::make('id')->label('ID'),
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date('d M Y')->label('Tanggal')
-                ->alignCenter(),
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
-                ->label('Penyewa')->wrap()->width(150)
-                ->alignCenter()->searchable(),
+                    ->label('Penyewa')->wrap()->width(150)
+                    ->alignCenter()->searchable(),
                 Tables\Columns\TextColumn::make('pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color('success')->alignCenter(),
+                    ->color('success')->alignCenter(),
             ])
             ->defaultSort('tanggal_pembayaran', 'desc')
             ->filters([
                 Filter::make('bulan_ini')
-                    ->label('Hanya Bulan Ini')
-                    ->toggle() // Menjadikannya tombol on/off
+                    ->label('Bulan Ini')
+                    ->toggle()
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_pembayaran', Carbon::now()->month)
-                        ->whereYear('tanggal_pembayaran', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) =>
+                        $query->whereBetween('tanggal_pembayaran', [
+                            now()->startOfMonth(),
+                            now()->endOfMonth(),
+                        ])
                     ),
+
                 SelectFilter::make('bulan')
                     ->label('Bulan')
                     ->options([
@@ -68,19 +86,19 @@ class Revenue extends BaseWidget
 
                 SelectFilter::make('tahun')
                     ->label('Tahun')
-                    ->options(function () {
-                        return Payment::selectRaw('YEAR(tanggal_pembayaran) as tahun')
-                            ->distinct()
-                            ->orderBy('tahun', 'desc')
-                            ->pluck('tahun', 'tahun')
-                            ->toArray();
-                    })
-                    ->query(function (Builder $query, array $data): Builder {
-                        if ($data['value'] ?? null) {
-                            $query->whereYear('tanggal_pembayaran', $data['value']);
-                        }
-                        return $query;
-                    }),
+                    ->options(
+                        collect(range(now()->year, now()->year - 5))
+                            ->mapWithKeys(fn($y) => [$y => $y])
+                            ->toArray()
+                    )
+                    ->query(
+                        fn(Builder $query, array $data) =>
+                        $query->when(
+                            $data['value'] ?? null,
+                            fn($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
+                        )
+                    ),
+
 
             ])->paginated([5]);
     }
