@@ -22,7 +22,23 @@ class Piutang extends BaseWidget
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
-            ->query(fn() => Payment::query()->where('status', 'belum_lunas'))
+            ->query(
+                fn() =>
+                Payment::query()
+                    ->select([
+                        'id',
+                        'invoice_id',
+                        'tanggal_pembayaran',
+                        'pembayaran',
+                        'status',
+                    ])
+                    ->where('status', 'belum_lunas')
+                    ->with([
+                        'invoice:id,booking_id',
+                        'invoice.booking:id,customer_id',
+                        'invoice.booking.customer:id,nama',
+                    ])
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')
                     ->date('d M Y')
@@ -45,12 +61,16 @@ class Piutang extends BaseWidget
             ->filters([
                 Filter::make('bulan_ini')
                     ->label('Hanya Bulan Ini')
-                    ->toggle() // Menjadikannya tombol on/off
+                    ->toggle()
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_pembayaran', Carbon::now()->month)
-                        ->whereYear('tanggal_pembayaran', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) =>
+                        $query->whereBetween('tanggal_pembayaran', [
+                            now()->startOfMonth(),
+                            now()->endOfMonth(),
+                        ])
                     ),
+
                 SelectFilter::make('bulan')
                     ->label('Bulan')
                     ->options([
@@ -76,19 +96,19 @@ class Piutang extends BaseWidget
 
                 SelectFilter::make('tahun')
                     ->label('Tahun')
-                    ->options(function () {
-                        return Payment::selectRaw('YEAR(tanggal_pembayaran) as tahun')
-                            ->distinct()
-                            ->orderBy('tahun', 'desc')
-                            ->pluck('tahun', 'tahun')
-                            ->toArray();
-                    })
-                    ->query(function (Builder $query, array $data): Builder {
-                        if ($data['value'] ?? null) {
-                            $query->whereYear('tanggal_pembayaran', $data['value']);
-                        }
-                        return $query;
-                    }),
+                    ->options(
+                        collect(range(now()->year, now()->year - 5))
+                            ->mapWithKeys(fn($y) => [$y => $y])
+                            ->toArray()
+                    )
+                    ->query(
+                        fn(Builder $query, array $data) =>
+                        $query->when(
+                            $data['value'] ?? null,
+                            fn($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
+                        )
+                    ),
+
                 SelectFilter::make('customer')
                     ->label('Filter Pelanggan')
                     ->relationship('invoice.booking.customer', 'nama')
