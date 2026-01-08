@@ -32,16 +32,15 @@ class EditAgreement extends EditRecord
 
                     $pdf = Pdf::loadView('pdf.agreement', [
                         'booking' => $this->getRecord(),
-                        // 'foto_serah_terima' => $data['foto_serah_terima'] ?? null,
-                        'foto_pelunasan' => $data['foto_pelunasan'] ?? null,
                         'foto_bbm' => $data['foto_bbm'] ?? null,
                         'foto_dongkrak' => $data['foto_dongkrak'] ?? null,
+                        'foto_pelunasan' => $data['foto_pelunasan'] ?? null,
                         'foto_ban_serep' => $data['foto_ban_serep'] ?? null,
                     ]);
 
                     return response()->streamDownload(
                         fn() => print ($pdf->output()),
-                        "form-unit-keluar-{$this->getRecord()->customer->nama}.pdf"
+                        "form-keluar-{$this->getRecord()->customer->nama}.pdf"
                     );
                 }),
             Actions\Action::make('simpan')
