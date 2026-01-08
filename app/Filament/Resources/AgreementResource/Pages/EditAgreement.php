@@ -32,7 +32,7 @@ class EditAgreement extends EditRecord
 
                     $pdf = Pdf::loadView('pdf.agreement', [
                         'booking' => $this->getRecord(),
-                        'foto_serah_terima' => $data['foto_serah_terima'] ?? null,
+                        // 'foto_serah_terima' => $data['foto_serah_terima'] ?? null,
                         'foto_pelunasan' => $data['foto_pelunasan'] ?? null,
                         'foto_bbm' => $data['foto_bbm'] ?? null,
                         'foto_dongkrak' => $data['foto_dongkrak'] ?? null,
