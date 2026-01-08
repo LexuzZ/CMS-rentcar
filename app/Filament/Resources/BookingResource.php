@@ -22,6 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class BookingResource extends Resource
 {
@@ -122,19 +123,19 @@ class BookingResource extends Resource
                             $query->whereNotIn('status', ['perawatan', 'nonaktif']);
 
                             // Filter mobils yang BERTABRAKAN dengan booking lain
-                            $query->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $record) {
-                                $bookingQuery
-                                    ->whereIn('status', ['booking', 'disewa'])
-                                    ->where(function (Builder $q) use ($startDate, $endDate) {
-                                        $q->where('tanggal_keluar', '<', $endDate)
-                                            ->where('tanggal_kembali', '>', $startDate);
-                                    });
+                            $query->whereNotExists(function ($sub) use ($startDate, $endDate, $record) {
+                                $sub->selectRaw(1)
+                                    ->from('bookings')
+                                    ->whereColumn('bookings.car_id', 'cars.id')
+                                    ->whereIn('bookings.status', ['booking', 'disewa'])
+                                    ->where('bookings.tanggal_keluar', '<', $endDate)
+                                    ->where('bookings.tanggal_kembali', '>', $startDate);
 
-                                // Abaikan bentrok dengan booking miliknya sendiri saat EDIT
                                 if ($record) {
-                                    $bookingQuery->where('id', '!=', $record->id);
+                                    $sub->where('bookings.id', '!=', $record->id);
                                 }
                             });
+
 
                             // Saat edit → masukkan juga mobil yang dipakai saat ini
                             if ($record) {
@@ -149,7 +150,7 @@ class BookingResource extends Resource
                         }
                         return $label;
                     })
-                    ->preload()
+                    ->preload(false)
                     ->live()
                     ->searchable()
                     ->required()
@@ -165,7 +166,7 @@ class BookingResource extends Resource
                 Forms\Components\Select::make('customer_id')
                     ->label('Penyewa')
                     ->relationship('customer', 'nama')
-                    ->searchable()->preload()
+                    ->searchable()->preload(false)
                     ->createOptionForm([
                         Forms\Components\TextInput::make('nama')->label('Nama Penyewa')->required(),
                         Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
@@ -190,14 +191,14 @@ class BookingResource extends Resource
                     ->label('Petugas Pengantaran')
                     ->relationship('driverPengantaran', 'nama')
                     ->searchable()
-                    ->preload()
+                    ->preload(false)
                     ->nullable(),
 
                 Forms\Components\Select::make('driver_pengembalian_id')
                     ->label('Petugas Pengembalian')
                     ->relationship('driverPengembalian', 'nama')
                     ->searchable()
-                    ->preload()
+                    ->preload(false)
                     ->nullable(),
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options([
                     'lepas_kunci' => 'Lepas Kunci',
@@ -477,9 +478,10 @@ class BookingResource extends Resource
                     ->label('Hanya Bulan Ini')
                     ->toggle() // Menjadikannya tombol on/off
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
-                        ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) => $query
+                            ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                            ->whereYear('tanggal_keluar', Carbon::now()->year)
                     ),
                 SelectFilter::make('status')
                     ->options([
@@ -576,10 +578,18 @@ class BookingResource extends Resource
         ];
     }
 
+    // use Illuminate\Support\Facades\Cache;
+
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query()->where('status', 'booking')->count();
+        return Cache::remember(
+            'booking_badge',
+            60,
+            fn() =>
+            static::getModel()::where('status', 'booking')->count()
+        );
     }
+
 
     public static function getNavigationBadgeTooltip(): ?string
     {

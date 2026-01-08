@@ -77,4 +77,8 @@ class Booking extends Model
     {
         static::observe(ActivityObserver::class);
     }
+    protected $with = [
+        'invoice',
+    ];
+
 }
