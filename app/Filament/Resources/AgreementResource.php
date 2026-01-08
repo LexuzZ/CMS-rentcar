@@ -173,6 +173,18 @@ class AgreementResource extends Resource
 
             Forms\Components\Section::make('Checklist Form Keluar')
                 ->schema([
+                    Forms\Components\Section::make('Foto Serah Terima')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_serah_terima'), // State ini akan berisi data base64 dari foto
+                        ]),
+                    Forms\Components\Section::make('Foto Pelunasan')
+                        ->schema([
+                            // Menggunakan View kustom untuk input kamera
+                            Forms\Components\View::make('filament.forms.camera-capture')
+                                ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
+                        ]),
                     Forms\Components\Section::make('Foto Indikator BBM')
                         ->schema([
                             // Menggunakan View kustom untuk input kamera
@@ -185,12 +197,7 @@ class AgreementResource extends Resource
                             Forms\Components\View::make('filament.forms.camera-capture')
                                 ->statePath('foto_dongkrak'), // State ini akan berisi data base64 dari foto
                         ]),
-                    Forms\Components\Section::make('Foto Pelunasan')
-                        ->schema([
-                            // Menggunakan View kustom untuk input kamera
-                            Forms\Components\View::make('filament.forms.camera-capture')
-                                ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
-                        ]),
+
                     Forms\Components\Section::make('Foto Ban Serep')
                         ->schema([
                             // Menggunakan View kustom untuk input kamera
@@ -240,9 +247,10 @@ class AgreementResource extends Resource
                     ->label('Hanya Bulan Ini')
                     ->toggle() // Menjadikannya tombol on/off
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
-                        ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) => $query
+                            ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                            ->whereYear('tanggal_keluar', Carbon::now()->year)
                     ),
                 Filter::make('tanggal_keluar')
                     ->form([
