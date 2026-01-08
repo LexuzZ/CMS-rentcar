@@ -31,6 +31,34 @@ class AgreementResource extends Resource
 
 
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->select([
+                'bookings.id',
+                'bookings.customer_id',
+                'bookings.car_id',
+                'bookings.tanggal_keluar',
+                'bookings.tanggal_kembali',
+                'bookings.waktu_keluar',
+                'bookings.waktu_kembali',
+                'bookings.total_hari',
+                'bookings.harga_harian',
+                'bookings.estimasi_biaya',
+                'bookings.ttd',
+            ])
+            ->with([
+                'customer:id,nama,ktp',
+                'car:id,nopol,car_model_id',
+                'car.carModel:id,name',
+                'invoice:id,booking_id,dp,pickup_dropOff',
+            ])
+            ->withSum('penalty', 'amount');
+    }
+
+
+
+
     public static function form(Form $form): Form
     {
         return $form->schema([
