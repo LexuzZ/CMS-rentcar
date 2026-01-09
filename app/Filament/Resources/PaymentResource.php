@@ -44,6 +44,7 @@ class PaymentResource extends Resource
                 $biayaAntarJemput = $invoice->pickup_dropOff ?? 0;
                 $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
 
+                // hitung ulang setiap kali buka form edit
                 $data['pembayaran'] = $biayaSewa + $biayaAntarJemput + $totalDenda;
             }
         }
@@ -87,38 +88,30 @@ class PaymentResource extends Resource
                         }
                     }),
 
-                Forms\Components\DatePicker::make('tanggal_pembayaran')
+                DatePicker::make('tanggal_pembayaran')
                     ->required()
                     ->default(now()),
                 Forms\Components\Select::make('metode_pembayaran')
-                    ->options(['tunai' => 'Tunai', 'transfer' => 'Transfer', 'qris' => 'QRIS', 'tunai_transfer' => 'Tunai & Transfer', 'tunai_qris' => 'Tunai & QRIS', 'transfer_qris' => 'Transfer & QRIS'])
+                    ->options([
+                        'tunai' => 'Tunai',
+                        'transfer' => 'Transfer',
+                        'qris' => 'QRIS'
+                    ])
                     ->required(),
                 Forms\Components\TextInput::make('pembayaran')
                     ->label('Jumlah Pembayaran')
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
-                    ->readOnly()
-                    ->afterStateHydrated(function (Forms\Set $set, $state, $record) {
-                        if ($record && $record->invoice) {
-                            $invoice = $record->invoice->load('booking.penalty');
-
-                            $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
-                        }
-                    }),
-
+                    ->readOnly(), // ✅ tidak bisa diubah manual, selalu sinkron dengan invoice
                 Forms\Components\Select::make('status')
-                    ->options(['lunas' => 'Lunas', 'belum_lunas' => 'Belum Lunas'])
+                    ->options([
+                        'lunas' => 'Lunas',
+                        'belum_lunas' => 'Belum Lunas'
+                    ])
                     ->default('belum_lunas')
                     ->required()
-                    // -- PERBAIKAN DI SINI --
-                    // Sembunyikan di halaman 'create'
                     ->hidden(fn(string $operation): bool => $operation === 'create')
-                    // Di halaman 'edit', nonaktifkan jika bukan superadmin
                     ->disabled(fn(string $operation): bool => $operation === 'edit' && !Auth::user()->isSuperAdmin()),
             ])
         ]);
