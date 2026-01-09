@@ -150,7 +150,7 @@ class BookingResource extends Resource
                         }
                         return $label;
                     })
-                    ->preload(false)
+                    ->preload()
                     ->live()
                     ->searchable()
                     ->required()
