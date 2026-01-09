@@ -22,6 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class BookingResource extends Resource
 {
@@ -62,7 +63,7 @@ class BookingResource extends Resource
     public static function form(Form $form): Form
     {
         // PERBAIKAN: Mengembalikan skema form yang lengkap
-        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
 
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
@@ -122,26 +123,25 @@ class BookingResource extends Resource
                             $query->whereNotIn('status', ['perawatan', 'nonaktif']);
 
                             // Filter mobils yang BERTABRAKAN dengan booking lain
-                            $query->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate, $record) {
-                                $bookingQuery
-                                    ->whereIn('status', ['booking', 'disewa'])
-                                    ->where(function (Builder $q) use ($startDate, $endDate) {
-                                        $q->where('tanggal_keluar', '<', $endDate)
-                                            ->where('tanggal_kembali', '>', $startDate);
-                                    });
+                            $query->whereNotExists(function ($sub) use ($startDate, $endDate, $record) {
+                                $sub->selectRaw(1)
+                                    ->from('bookings')
+                                    ->whereColumn('bookings.car_id', 'cars.id')
+                                    ->whereIn('bookings.status', ['booking', 'disewa'])
+                                    ->where('bookings.tanggal_keluar', '<', $endDate)
+                                    ->where('bookings.tanggal_kembali', '>', $startDate);
 
-                                // Abaikan bentrok dengan booking miliknya sendiri saat EDIT
                                 if ($record) {
-                                    $bookingQuery->where('id', '!=', $record->id);
+                                    $sub->where('bookings.id', '!=', $record->id);
                                 }
                             });
+
 
                             // Saat edit → masukkan juga mobil yang dipakai saat ini
                             if ($record) {
                                 $query->orWhere('id', $record->car_id);
                             }
                         }
-
                     )
                     ->getOptionLabelFromRecordUsing(function (Car $record) {
                         $label = "{$record->carModel->name} ({$record->nopol})";
@@ -176,7 +176,17 @@ class BookingResource extends Resource
                     ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                     ->required()
                     ->disabled($isNotAdmin),
-
+                Forms\Components\Select::make('source')->label('Sumber Orderan')->options([
+                    'website' => 'Website',
+                    'ro' => 'Repeat Order',
+                    'instagram' => 'Instagram',
+                    'facebook' => 'Facebook',
+                    'cust_garasi' => 'Customer Garasi',
+                    'agent' => 'Agent Garasi',
+                    'tiket' => 'Tiket.com',
+                    'traveloka' => 'Traveloka',
+                    'tiktok' => 'Tiktok',
+                ])->disabled($isNotAdmin)->required(),
                 Forms\Components\Select::make('driver_pengantaran_id')
                     ->label('Petugas Pengantaran')
                     ->relationship('driverPengantaran', 'nama')
@@ -192,22 +202,13 @@ class BookingResource extends Resource
                     ->nullable(),
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options([
                     'lepas_kunci' => 'Lepas Kunci',
+                    'rr' => 'Rent to Rent',
                     'dengan_driver' => 'Dengan Driver',
                     'tour' => 'Paket Tour',
                     'kontrak' => 'Kontrak',
                     'perdua_belas_jam' => 'Per 12 Jam'
                 ])->nullable()->disabled($isNotAdmin),
-                Forms\Components\Select::make('source')->label('Sumber Orderan')->options([
-                    'website' => 'Website',
-                    'ro' => 'Repeat Order',
-                    'instagram' => 'Instagram',
-                    'facebook' => 'Facebook',
-                    'cust_garasi' => 'Customer Garasi',
-                    'agent' => 'Agent Garasi',
-                    'tiket' => 'Tiket.com',
-                    'traveloka' => 'Traveloka',
-                    'tiktok' => 'Tiktok',
-                ])->disabled($isNotAdmin)->required(),
+
                 Forms\Components\Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Forms\Components\TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
@@ -311,7 +312,7 @@ class BookingResource extends Resource
 
                 Infolists\Components\Section::make('Informasi Booking')
                     ->schema([
-                        Infolists\Components\Grid::make(4)->schema([
+                        Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('status')
                                 ->badge()
                                 ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
@@ -326,6 +327,7 @@ class BookingResource extends Resource
                                 ->badge()
                                 ->formatStateUsing(fn($state) => match ($state) {
                                     'lepas_kunci' => 'Lepas Kunci',
+                                    'rr' => 'Rent to Rent',
                                     'dengan_driver' => 'Dengan Driver',
                                     'tour' => 'Paket Tour',
                                     'kontrak' => 'Kontrak',
@@ -346,7 +348,12 @@ class BookingResource extends Resource
                                     'tiktok' => 'Tiktok',
                                     default => '-'
                                 }),
-                            Infolists\Components\TextEntry::make('driver.nama')->label('Staff Bertugas'),
+                            Infolists\Components\TextEntry::make('driverPengantaran.nama')
+                                ->label('Petugas Pengantaran')->badge(),
+
+                            Infolists\Components\TextEntry::make('driverPengembalian.nama')
+                                ->label('Petugas Pengembalian')->badge(),
+
                         ]),
                     ]),
 
@@ -365,7 +372,7 @@ class BookingResource extends Resource
                     ]),
                 Infolists\Components\Section::make('Rincian Biaya')
                     ->schema([
-                        Infolists\Components\Grid::make(2)->schema([
+                        Infolists\Components\Grid::make(3)->schema([
                             Infolists\Components\TextEntry::make('estimasi_biaya')
                                 ->label('Biaya Sewa')
                                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
@@ -467,6 +474,15 @@ class BookingResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Filter::make('bulan_ini')
+                    ->label('Hanya Bulan Ini')
+                    ->toggle() // Menjadikannya tombol on/off
+                    ->default(true)
+                    ->query(
+                        fn(Builder $query) => $query
+                            ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                            ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ),
                 SelectFilter::make('status')
                     ->options([
                         'booking' => 'Booking',
@@ -562,10 +578,18 @@ class BookingResource extends Resource
         ];
     }
 
+    // use Illuminate\Support\Facades\Cache;
+
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::query()->where('status', 'booking')->count();
+        return Cache::remember(
+            'booking_badge',
+            60,
+            fn() =>
+            static::getModel()::where('status', 'booking')->count()
+        );
     }
+
 
     public static function getNavigationBadgeTooltip(): ?string
     {
@@ -576,12 +600,12 @@ class BookingResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
     }
 
     public static function canEdit(Model $record): bool
@@ -592,7 +616,7 @@ class BookingResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user()->isSuperAdmin(); // Hanya superadmin
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']); // Hanya superadmin
     }
 
     public static function canDeleteAny(): bool
