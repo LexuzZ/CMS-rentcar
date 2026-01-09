@@ -72,10 +72,7 @@ class Invoice extends Model
     // {
     //     return $this->hasMany(Payment::class);
     // }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 
 
 }

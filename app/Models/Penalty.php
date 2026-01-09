@@ -21,8 +21,5 @@ class Penalty extends Model
     {
         return $this->belongsTo(Booking::class);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

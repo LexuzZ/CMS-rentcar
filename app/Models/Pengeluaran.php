@@ -16,8 +16,5 @@ class Pengeluaran extends Model
         'tanggal_pengeluaran',
         'pembayaran',
     ];
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

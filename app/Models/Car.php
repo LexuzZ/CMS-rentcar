@@ -31,8 +31,5 @@ class Car extends Model
     {
         return $this->hasMany(ServiceHistory::class);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

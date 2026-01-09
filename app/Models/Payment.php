@@ -20,8 +20,5 @@ class Payment extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

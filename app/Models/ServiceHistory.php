@@ -27,8 +27,5 @@ class ServiceHistory extends Model
     {
         return $this->belongsTo(Car::class);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

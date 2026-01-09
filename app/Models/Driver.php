@@ -14,10 +14,7 @@ class Driver extends Model
         'status',
         'harga',
     ];
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
     public function antar()
     {
         return $this->hasMany(Booking::class, 'driver_pengantaran_id');

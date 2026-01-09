@@ -24,8 +24,5 @@ class Customer extends Model
     {
         return $this->hasMany(Booking::class);
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
 }

@@ -73,10 +73,7 @@ class Booking extends Model
 
         return $record;
     }
-    protected static function booted()
-    {
-        static::observe(ActivityObserver::class);
-    }
+
     protected $with = [
         'invoice',
     ];
