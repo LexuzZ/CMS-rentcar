@@ -421,12 +421,12 @@ class BookingResource extends Resource
                 Infolists\Components\Section::make('Informasi Mobil')
                     ->schema([
                         Infolists\Components\Grid::make(3)->schema([
-                            Infolists\Components\TextEntry::make('car.carModel.brand.name')->label('Merek')->badge('success'),
+                            Infolists\Components\TextEntry::make('car.carModel.brand.name')->label('Merek'),
                             Infolists\Components\TextEntry::make('car.carModel.name')
                                 ->label('Model')
-                                ->badge('success')
+                                // ->badge('success')
                                 ->formatStateUsing(fn(string $state): string => Str::upper($state)),
-                            Infolists\Components\TextEntry::make('car.nopol')->label('No. Polisi')->badge('success'),
+                            Infolists\Components\TextEntry::make('car.nopol')->label('No. Polisi'),
                         ])
                     ]),
 
