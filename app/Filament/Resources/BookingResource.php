@@ -166,7 +166,7 @@ class BookingResource extends Resource
                 Forms\Components\Select::make('customer_id')
                     ->label('Penyewa')
                     ->relationship('customer', 'nama')
-                    ->searchable()->preload(false)
+                    ->searchable()->preload()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('nama')->label('Nama Penyewa')->required(),
                         Forms\Components\TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
@@ -191,14 +191,14 @@ class BookingResource extends Resource
                     ->label('Petugas Pengantaran')
                     ->relationship('driverPengantaran', 'nama')
                     ->searchable()
-                    ->preload(false)
+                    ->preload()
                     ->nullable(),
 
                 Forms\Components\Select::make('driver_pengembalian_id')
                     ->label('Petugas Pengembalian')
                     ->relationship('driverPengembalian', 'nama')
                     ->searchable()
-                    ->preload(false)
+                    ->preload()
                     ->nullable(),
                 Forms\Components\Select::make('paket')->label('Paket Sewa')->options([
                     'lepas_kunci' => 'Lepas Kunci',
@@ -580,21 +580,21 @@ class BookingResource extends Resource
 
     // use Illuminate\Support\Facades\Cache;
 
-    public static function getNavigationBadge(): ?string
-    {
-        return Cache::remember(
-            'booking_badge',
-            60,
-            fn() =>
-            static::getModel()::where('status', 'booking')->count()
-        );
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return Cache::remember(
+    //         'booking_badge',
+    //         60,
+    //         fn() =>
+    //         static::getModel()::where('status', 'booking')->count()
+    //     );
+    // }
 
 
-    public static function getNavigationBadgeTooltip(): ?string
-    {
-        return 'Booking yang belum diproses';
-    }
+    // public static function getNavigationBadgeTooltip(): ?string
+    // {
+    //     return 'Booking yang belum diproses';
+    // }
 
     // -- KONTROL AKSES (superadmin, admin, staff) --
 
