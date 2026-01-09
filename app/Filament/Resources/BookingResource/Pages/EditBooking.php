@@ -27,13 +27,6 @@ class EditBooking extends EditRecord
         if ($status === 'disewa' && $car->status !== 'disewa') {
             $car->update(['status' => 'disewa']);
         }
-
-
-        if ($invoice) {
-            $invoice->payment()->update([
-                'pembayaran' => $invoice->getTotalTagihan(),
-            ]);
-        }
     }
 
 
