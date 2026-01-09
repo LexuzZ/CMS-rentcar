@@ -19,35 +19,27 @@ class UpdateLastUserActivity
     {
         $response = $next($request);
 
-        // Hanya untuk user login
         if (!Auth::check()) {
             return $response;
         }
 
-        // ❌ Abaikan request Livewire / AJAX / polling
-        if ($request->ajax() || $request->is('livewire/*')) {
+        // ✅ BENAR: aman untuk Livewire
+        if (
+            $request->routeIs('livewire.*') ||
+            $request->expectsJson() ||
+            $request->wantsJson()
+        ) {
             return $response;
         }
 
         $user = Auth::user();
 
-        /**
-         * ===============================
-         * 1️⃣ Simpan aktivitas ke CACHE
-         * ===============================
-         * Cache jauh lebih murah daripada DB
-         */
         Cache::put(
             'user_last_seen_' . $user->id,
             now(),
             now()->addMinutes(10)
         );
 
-        /**
-         * ===============================
-         * 2️⃣ Update DB hanya jika perlu
-         * ===============================
-         */
         if (
             !$user->last_seen_at ||
             $user->last_seen_at->lt(now()->subMinutes($this->dbUpdateInterval))
@@ -59,4 +51,5 @@ class UpdateLastUserActivity
 
         return $response;
     }
+
 }
