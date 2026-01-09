@@ -28,18 +28,7 @@ class EditPayment extends EditRecord
         // melalui relasi invoice
         return BookingResource::getUrl('view', ['record' => $payment->invoice->booking_id]);
     }
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        if (!empty($data['invoice_id'])) {
-            $invoice = Invoice::with('booking.penalty')->find($data['invoice_id']);
 
-            if ($invoice) {
-                $data['pembayaran'] = $invoice->getTotalTagihan();
-            }
-        }
-
-        return $data;
-    }
 
 
 
