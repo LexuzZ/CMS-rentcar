@@ -62,6 +62,9 @@ class PaymentResource extends Resource
                         'tunai' => 'Tunai',
                         'transfer' => 'Transfer',
                         'qris' => 'QRIS',
+                        'tunai_transfer' => 'Tunai & Transfer',
+                        'tunai_qris' => 'Tunai & QRIS',
+                        'transfer_qris' => 'Transfer & QRIS',
                     ])
                     ->required(),
 
