@@ -60,7 +60,7 @@ class AdminPanelProvider extends PanelProvider
             // ->brandLogo(asset('public/spt.png'))
             ->font('Poppins')
             ->databaseNotifications()
-            ->spa()
+            // ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -69,12 +69,12 @@ class AdminPanelProvider extends PanelProvider
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                     // WidgetsAvailableCarsOverview::class,
-                DashboardMonthlySummary::class,
-                RecentTransactions::class,
-                TransactionChart::class,
+                // DashboardMonthlySummary::class,
+                // RecentTransactions::class,
+                // TransactionChart::class,
 
 
-                DashboardActionsWidget::class,
+                // DashboardActionsWidget::class,
 
             ])
             ->middleware([
