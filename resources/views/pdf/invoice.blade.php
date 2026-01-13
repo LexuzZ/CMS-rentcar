@@ -275,27 +275,38 @@
 
         <div class="totals-table">
             <table class="totals-table">
-                @php
-                    $totalDenda = $invoice->booking->penalty->sum('amount');
-                    $totalTagihan = $invoice->booking->estimasi_biaya + $invoice->pickup_dropOff + $totalDenda;
-                    // $sisaPembayaran = $totalTagihan - $invoice->dp;
-                    $sisaPembayaran = $totalTagihan - $invoice->dp;
-                @endphp
                 <tr>
                     <td>Subtotal</td>
-                    <td class="text-right">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
+                    <td class="text-right">
+                        Rp {{ number_format($invoice->total_tagihan, 0, ',', '.') }}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td>Uang Muka (DP)</td>
-                    <td class="text-right">- Rp {{ number_format($invoice->dp, 0, ',', '.') }}</td>
+                    <td>Total Dibayar</td>
+                    <td class="text-right">
+                        - Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
+                    </td>
                 </tr>
+
                 <tr>
                     <td><strong>Sisa Pembayaran</strong></td>
-                    <td class="text-right"><strong>Rp
-                            {{ number_format($sisaPembayaran, 0, ',', '.') }}</strong></td>
+                    <td class="text-right">
+                        <strong>
+                            Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}
+                        </strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Status</td>
+                    <td class="text-right">
+                        <strong>{{ strtoupper($invoice->status) }}</strong>
+                    </td>
                 </tr>
             </table>
         </div>
+
 
         <div class="clear"></div>
 
