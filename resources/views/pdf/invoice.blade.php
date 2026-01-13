@@ -285,7 +285,7 @@
                 <tr>
                     <td>Total Dibayar</td>
                     <td class="text-right">
-                        - Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
+                         Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
                     </td>
                 </tr>
 
