@@ -24,79 +24,85 @@ class MonthlyReportResource extends Resource
     protected static ?string $slug = 'laporan-bulanan';
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->query(
-                Payment::query()->select(
-                    DB::raw('YEAR(tanggal_pembayaran) as year'),
-                    DB::raw('MONTH(tanggal_pembayaran) as month'),
-                    DB::raw("SUM(CASE WHEN status = 'lunas' THEN pembayaran ELSE 0 END) as net_revenue"), // Menjumlahkan tagihan dari yang belum lunas
-                    DB::raw("SUM(CASE WHEN status = 'belum_lunas' THEN pembayaran ELSE 0 END) as pending_revenue"),
-                    DB::raw('COUNT(*) as transaction_count'),
-                    DB::raw('SUM(pembayaran) as total_revenue')
+{
+    return $table
+        ->query(
+            Payment::query()
+                ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+                ->select(
+                    DB::raw('YEAR(payments.tanggal_pembayaran) as year'),
+                    DB::raw('MONTH(payments.tanggal_pembayaran) as month'),
+                    DB::raw("SUM(CASE WHEN invoices.status = 'lunas' THEN payments.pembayaran ELSE 0 END) as net_revenue"),
+                    DB::raw("SUM(CASE WHEN invoices.status = 'belum_lunas' THEN payments.pembayaran ELSE 0 END) as pending_revenue"),
+                    DB::raw('COUNT(payments.id) as transaction_count'),
+                    DB::raw('SUM(payments.pembayaran) as total_revenue')
                 )
-                    // ->where('status', 'lunas')
-                    ->groupBy('year', 'month')
-            )
-            ->columns([
-                Tables\Columns\TextColumn::make('month')
-                    ->label('Bulan')
-                    ->formatStateUsing(fn(string $state): string => \Carbon\Carbon::create()->month((int) $state)->locale('id')->isoFormat('MMMM'))
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('year')
-                    ->label('Tahun')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('transaction_count')
-                    ->label('Transaksi')
-                    ->numeric()
-                ,
-                Tables\Columns\TextColumn::make('net_revenue')
-                    ->label('Lunas')
-                    ->color('success')
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ,
-                // Kolom baru untuk menampilkan tagihan yang belum lunas
-                Tables\Columns\TextColumn::make('pending_revenue')
-                    ->label('Belum Lunas')
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ->color('danger') // Memberi warna merah untuk menandakan tagihan
-                ,
-                Tables\Columns\TextColumn::make('total_revenue')
-                    ->label('Total ')
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ,
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('year')
-                    ->label('Filter Tahun')
-                    ->options(function () {
-                        $years = Payment::selectRaw('YEAR(tanggal_pembayaran) as year')
-                            ->distinct()
-                            ->orderBy('year', 'desc')
-                            ->pluck('year')
-                            ->toArray();
-                        return array_combine($years, $years);
-                    })
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['value'],
-                            fn(Builder $query, $value) => $query->whereYear('tanggal_pembayaran', $value)
-                        );
-                    }),
-            ])
-            ->actions([
-                Tables\Actions\Action::make('viewDetails')
-                    ->label('') // kosongkan label
-                    ->tooltip('Lihat Detail')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->hiddenLabel()
-                    ->button()
-                    ->url(fn(Model $record): string => static::getUrl('details', ['record' => $record->year . '-' . $record->month])),
+                ->groupBy('year', 'month')
+        )
+        ->columns([
+            Tables\Columns\TextColumn::make('month')
+                ->label('Bulan')
+                ->formatStateUsing(fn(string $state): string =>
+                    \Carbon\Carbon::create()->month((int) $state)->locale('id')->isoFormat('MMMM')
+                )
+                ->sortable(),
 
-            ])
-            ->bulkActions([]);
-    }
+            Tables\Columns\TextColumn::make('year')
+                ->label('Tahun')
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('transaction_count')
+                ->label('Transaksi')
+                ->numeric(),
+
+            Tables\Columns\TextColumn::make('net_revenue')
+                ->label('Lunas')
+                ->color('success')
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+            Tables\Columns\TextColumn::make('pending_revenue')
+                ->label('Belum Lunas')
+                ->color('danger')
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+            Tables\Columns\TextColumn::make('total_revenue')
+                ->label('Total')
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+        ])
+        ->filters([
+            Tables\Filters\SelectFilter::make('year')
+                ->label('Filter Tahun')
+                ->options(function () {
+                    $years = Payment::selectRaw('YEAR(tanggal_pembayaran) as year')
+                        ->distinct()
+                        ->orderBy('year', 'desc')
+                        ->pluck('year')
+                        ->toArray();
+
+                    return array_combine($years, $years);
+                })
+                ->query(fn (Builder $query, array $data) =>
+                    $query->when(
+                        $data['value'],
+                        fn (Builder $query, $value) =>
+                            $query->whereYear('payments.tanggal_pembayaran', $value)
+                    )
+                ),
+        ])
+        ->actions([
+            Tables\Actions\Action::make('viewDetails')
+                ->tooltip('Lihat Detail')
+                ->icon('heroicon-o-eye')
+                ->color('info')
+                ->hiddenLabel()
+                ->button()
+                ->url(fn (Model $record): string =>
+                    static::getUrl('details', ['record' => $record->year . '-' . $record->month])
+                ),
+        ])
+        ->bulkActions([]);
+}
+
 
     public static function getPages(): array
     {
