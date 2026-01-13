@@ -20,13 +20,7 @@ class EditInvoice extends EditRecord
     }
     protected function getRedirectUrl(): string
     {
-        try {
-            return BookingResource::getUrl('view', [
-                'record' => $this->getRecord()->booking_id
-            ]);
-        } catch (\Throwable $e) {
-            return InvoiceResource::getUrl();
-        }
+        return $this->getResource()::getUrl('index');
     }
 
 }
