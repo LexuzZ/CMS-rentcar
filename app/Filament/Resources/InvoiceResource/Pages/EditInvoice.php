@@ -20,10 +20,13 @@ class EditInvoice extends EditRecord
     }
     protected function getRedirectUrl(): string
     {
-        // Ambil data invoice yang baru saja dibuat
-        $invoice = $this->getRecord();
-
-        // Arahkan kembali ke halaman 'view' dari booking yang berelasi
-        return BookingResource::getUrl('view', ['record' => $invoice->booking_id]);
+        try {
+            return BookingResource::getUrl('view', [
+                'record' => $this->getRecord()->booking_id
+            ]);
+        } catch (\Throwable $e) {
+            return InvoiceResource::getUrl();
+        }
     }
+
 }
