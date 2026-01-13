@@ -1,24 +1,11 @@
 <?php
 
 namespace App\Providers\Filament;
-
-use App\Filament\Resources\CarResource\Widgets\AvailableCarsOverview;
-use App\Filament\Resources\CarResource\Widgets\MobilReadyStats;
-use App\Filament\Widgets\AnnouncementWidget;
-use App\Filament\Widgets\AvailableCarsOverview as WidgetsAvailableCarsOverview;
-use App\Filament\Widgets\DaftarTungguTable;
 use App\Filament\Widgets\DashboardActionsWidget;
 use App\Filament\Widgets\DashboardMonthlySummary;
-use App\Filament\Widgets\InvoiceTable;
-use App\Filament\Widgets\MobilKeluar;
-use App\Filament\Widgets\MobilKembali;
-use App\Filament\Widgets\MonthlyStaffRankingWidget;
-use App\Filament\Widgets\OverdueTasksWidget;
+
 use App\Filament\Widgets\RecentTransactions;
-use App\Filament\Widgets\StaffRankingWidget;
-use App\Filament\Widgets\TempoDueToday;
 use App\Filament\Widgets\TransactionChart;
-use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -108,7 +95,8 @@ class AdminPanelProvider extends PanelProvider
 
     public static function canAccess(): bool
     {
-        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return auth()->check()
+            && auth()->user()->hasAnyRole(['superadmin', 'admin']);
     }
+
 }
