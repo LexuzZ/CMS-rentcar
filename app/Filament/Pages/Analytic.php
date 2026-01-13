@@ -29,15 +29,15 @@ class Analytic extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            DashboardOverview::class,
-            ExpanseCategoryChart::class,
-            RevenueCategoryChart::class,
-            MetodePembayaranChart::class,
-            SumberOrderanChart::class,
-            \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
-            MobilTerlarisChart::class,
-            MobilPalingSepiChart::class,
-            BiayaInvestorPerGarasiChart::class,
+            // DashboardOverview::class,
+            // ExpanseCategoryChart::class,
+            // RevenueCategoryChart::class,
+            // MetodePembayaranChart::class,
+            // SumberOrderanChart::class,
+            // \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
+            // MobilTerlarisChart::class,
+            // MobilPalingSepiChart::class,
+            // BiayaInvestorPerGarasiChart::class,
 
         ];
     }
