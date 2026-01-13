@@ -243,10 +243,16 @@
             </tr>
             <tr>
                 @php
-                    $method = ucfirst(strtolower($booking->invoice?->payment?->metode_pembayaran ?? '-'));
+                    $methods =
+                        $booking->invoice?->payments
+                            ?->pluck('metode_pembayaran')
+                            ->unique()
+                            ->map(fn($m) => ucfirst(strtolower($m)))
+                            ->implode(', ') ?? '-';
                 @endphp
-                <td><strong>Metode Pembayaran</strong></td>
-                <td>{{ $method }}</td>
+
+                <td>{{ $methods }}</td>
+
 
             </tr>
             <tr>
@@ -269,17 +275,20 @@
                     <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
-            <tr>
-                <td><strong>Uang Muka (DP)</strong></td>
-                <td class="text-right">Rp {{ number_format($booking->invoice->dp ?? 0, 0, ',', '.') }}</td>
-            </tr>
+
             <tr>
                 <td><strong>Total Tagihan</strong></td>
-                <td>Rp {{ number_format($booking->invoice->total ?? 0, 0, ',', '.') }}</td>
+                <td>
+                    Rp {{ number_format($booking->invoice->total_tagihan ?? 0, 0, ',', '.') }}
+                </td>
             </tr>
             <tr>
                 <td><strong>Sisa Pembayaran</strong></td>
                 <td>Rp {{ number_format($booking->invoice->sisa_pembayaran ?? 0, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td><strong>Status Pembayaran</strong></td>
+                <td>{{ strtoupper($booking->invoice->status) }}</td>
             </tr>
         </table>
 
