@@ -98,46 +98,26 @@ class AgreementResource extends Resource
                         ->label('Estimasi Biaya Sewa')
                         ->content(fn(?Booking $record): string => $record?->estimasi_biaya ? 'Rp ' . number_format($record->estimasi_biaya, 0, ',', '.') : '-'),
 
-                    Forms\Components\Placeholder::make('invoice.dp')
-                        ->label('Uang Muka (DP)')
+                    Forms\Components\Placeholder::make('invoice.sisa_pembayaran')
+                        ->label('Sisa Pembayaran')
                         ->content(
                             fn(?Booking $record): string =>
-                            $record?->invoice?->dp ? 'Rp ' . number_format($record->invoice->dp, 0, ',', '.') : '-'
+                            $record?->invoice
+                            ? 'Rp ' . number_format($record->invoice->sisa_pembayaran, 0, ',', '.')
+                            : '-'
                         ),
 
-                    Forms\Components\Placeholder::make('sisa_pembayaran')
-                        ->label('Sisa Pembayaran')
-                        ->content(function (?Booking $record): string {
-                            if (!$record) {
-                                return '-';
-                            }
-
-                            $biayaSewa = $record->estimasi_biaya ?? 0;
-                            $biayaAntarJemput = $record->invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $record->penalty?->sum('amount') ?? 0;
-                            $dp = $record->invoice?->dp ?? 0;
-
-                            $sisa = ($biayaSewa + $biayaAntarJemput + $totalDenda) - $dp;
-
-                            return 'Rp ' . number_format($sisa, 0, ',', '.');
-                        }),
 
 
-                    Forms\Components\Placeholder::make('total_tagihan')
+                    Forms\Components\Placeholder::make('invoice.total_tagihan')
                         ->label('Total Tagihan')
-                        ->content(function (?Booking $record): string {
-                            if (!$record) {
-                                return '-';
-                            }
+                        ->content(
+                            fn(?Booking $record): string =>
+                            $record?->invoice
+                            ? 'Rp ' . number_format($record->invoice->total_tagihan, 0, ',', '.')
+                            : '-'
+                        ),
 
-                            $biayaSewa = $record->estimasi_biaya ?? 0;
-                            $biayaAntarJemput = $record->invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $record->penalty?->sum('amount') ?? 0;
-
-                            $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-
-                            return 'Rp ' . number_format($totalTagihan, 0, ',', '.');
-                        }),
 
                 ])
                 ->columns(3),
@@ -240,9 +220,10 @@ class AgreementResource extends Resource
                     ->label('Hanya Bulan Ini')
                     ->toggle() // Menjadikannya tombol on/off
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
-                        ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) => $query
+                            ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                            ->whereYear('tanggal_keluar', Carbon::now()->year)
                     ),
                 Filter::make('tanggal_keluar')
                     ->form([
