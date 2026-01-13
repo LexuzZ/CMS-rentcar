@@ -69,12 +69,12 @@ class AdminPanelProvider extends PanelProvider
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                     // WidgetsAvailableCarsOverview::class,
-                // DashboardMonthlySummary::class,
-                // RecentTransactions::class,
-                // TransactionChart::class,
+                DashboardMonthlySummary::class,
+                RecentTransactions::class,
+                TransactionChart::class,
 
 
-                // DashboardActionsWidget::class,
+                DashboardActionsWidget::class,
 
             ])
             ->middleware([
