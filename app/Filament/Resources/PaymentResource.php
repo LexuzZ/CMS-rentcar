@@ -30,85 +30,46 @@ class PaymentResource extends Resource
     protected static ?string $label = 'Pembayaran';
     protected static ?string $pluralLabel = 'Riwayat Pembayaran';
 
-    /**
-     * Memodifikasi data sebelum form edit diisi.
-     */
-    public static function mutateFormDataBeforeFill(array $data): array
-    {
-        $invoiceId = $data['invoice_id'] ?? null;
-
-        if ($invoiceId) {
-            $invoice = Invoice::with('booking.penalty')->find($invoiceId);
-            if ($invoice) {
-                $biayaSewa = $invoice->booking?->estimasi_biaya ?? 0;
-                $biayaAntarJemput = $invoice->pickup_dropOff ?? 0;
-                $totalDenda = $invoice->booking?->penalty->sum('amount') ?? 0;
-
-                // hitung ulang setiap kali buka form edit
-                $data['pembayaran'] = $biayaSewa + $biayaAntarJemput + $totalDenda;
-            }
-        }
-
-        return $data;
-    }
-
-    public static function form(Forms\Form $form): Forms\Form
+    public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
+
                 Forms\Components\Select::make('invoice_id')
                     ->label('Faktur')
-                    ->relationship('invoice', 'id', fn($query) => $query->with(['booking.customer', 'booking.penalty']))
-                    ->getOptionLabelFromRecordUsing(fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama)
+                    ->relationship('invoice', 'id')
+                    ->getOptionLabelFromRecordUsing(
+                        fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama
+                    )
                     ->required()
                     ->searchable()
-                    ->live()
-                    ->afterStateHydrated(function ($state, Forms\Set $set) {
-                        // ✅ jalan otomatis waktu form dibuka (edit)
-                        if ($state) {
-                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
-
-                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
-                        }
-                    })
-                    ->afterStateUpdated(function ($state, Forms\Set $set) {
-                        // ✅ jalan otomatis waktu invoice dipilih ulang
-                        if ($state) {
-                            $invoice = \App\Models\Invoice::with('booking.penalty')->find($state);
-
-                            $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                            $biayaAntar = $invoice?->pickup_dropOff ?? 0;
-                            $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                            $set('pembayaran', $biayaSewa + $biayaAntar + $totalDenda);
-                        }
-                    }),
+                    ->disabled(fn(string $operation) => $operation === 'edit'),
 
                 DatePicker::make('tanggal_pembayaran')
+                    ->label('Tanggal Pembayaran')
                     ->required()
                     ->default(now()),
-                Forms\Components\Select::make('metode_pembayaran')
-                    ->options(['tunai' => 'Tunai', 'transfer' => 'Transfer', 'qris' => 'QRIS', 'tunai_transfer' => 'Tunai & Transfer', 'tunai_qris' => 'Tunai & QRIS', 'transfer_qris' => 'Transfer & QRIS'])
-                    ->required(),
+
                 Forms\Components\TextInput::make('pembayaran')
-                    ->label('Jumlah Pembayaran')
+                    ->label('Jumlah Dibayar')
                     ->numeric()
                     ->prefix('Rp')
-                    ->required()
-                    ->readOnly(), // ✅ tidak bisa diubah manual, selalu sinkron dengan invoice
-                Forms\Components\Select::make('status')
+                    ->required(),
+
+                Forms\Components\Select::make('metode_pembayaran')
+                    ->label('Metode Pembayaran')
                     ->options([
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas'
+                        'tunai' => 'Tunai',
+                        'transfer' => 'Transfer',
+                        'qris' => 'QRIS',
                     ])
-                    ->default('belum_lunas')
-                    ->required()
-                    ->hidden(fn(string $operation): bool => $operation === 'create')
-                    ->disabled(fn(string $operation): bool => $operation === 'edit' && !Auth::user()->isSuperAdmin()),
+                    ->required(),
+
+                Forms\Components\FileUpload::make('proof')
+                    ->label('Bukti Pembayaran')
+                    ->directory('payment-proofs')
+                    ->image()
+                    ->maxSize(2048),
             ])
         ]);
     }
@@ -130,25 +91,13 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->wrap()->width(150)
                     ->alignCenter(),
-                // TextColumn::make('tanggal_pembayaran')
-                //     ->label('Tgl Payment')
-                //     ->searchable()
-                //     ->date('d M Y')->alignCenter(),
-                Tables\Columns\TextColumn::make('total_bayar')
-                    ->label('Sisa Payment')
-                    ->alignCenter()
-                    ->getStateUsing(function ($record) {
-                        $invoice = $record->invoice;
-                        $biayaSewa = $invoice?->booking?->estimasi_biaya ?? 0;
-                        $biayaAntarJemput = $invoice?->pickup_dropOff ?? 0;
-                        $totalDenda = $invoice?->booking?->penalty->sum('amount') ?? 0;
-
-                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                        return $totalTagihan - ($invoice->dp ?? 0);
-                    })
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ,
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('pembayaran')
+                    ->label('Dibayar')
+                    ->money('IDR', true),
+                TextColumn::make('tanggal_pembayaran')
+                    ->label('Tanggal')
+                    ->date('d M Y'),
+                TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->alignCenter()
@@ -161,7 +110,7 @@ class PaymentResource extends Resource
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
                     }),
-                Tables\Columns\TextColumn::make('metode_pembayaran')
+                TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
                     ->wrap()
@@ -182,6 +131,7 @@ class PaymentResource extends Resource
                         'transfer_qris' => 'Transfer & QRIS',
                         default => ucfirst($state),
                     }),
+
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -254,134 +204,6 @@ class PaymentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\Action::make('detailPembayaran')
-                    ->label('')
-                    ->tooltip('Detail Pembayaran')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->hiddenLabel()
-                    ->button()
-                    ->infolist([
-                        \Filament\Infolists\Components\Section::make('Detail Faktur')
-                            ->schema([
-                                \Filament\Infolists\Components\TextEntry::make('invoice.id')
-                                    ->label('No. Faktur')
-                                    ->formatStateUsing(fn($state) => 'INV #' . $state),
-
-                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.customer.nama')
-                                    ->label('Penyewa'),
-
-                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.nopol')
-                                    ->label('No. Polisi'),
-
-                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.car.carModel.name')
-                                    ->label('Mobil'),
-                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_keluar')
-                                    ->label('Tanggal Mulai')
-                                    ->date('d M Y'),
-                                \Filament\Infolists\Components\TextEntry::make('invoice.booking.tanggal_kembali')
-                                    ->label('Tanggal Masuk')
-                                    ->date('d M Y'),
-                            ])
-                            ->columns(3),
-
-                        \Filament\Infolists\Components\Section::make('Rincian Biaya')
-                            ->schema([
-                                \Filament\Infolists\Components\TextEntry::make('biaya_sewa')
-                                    ->label('Biaya Sewa')
-                                    ->state(function ($record) {
-                                        return $record->invoice->booking?->estimasi_biaya ?? 0;
-                                    })
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
-                                \Filament\Infolists\Components\TextEntry::make('biaya_antar')
-                                    ->label('Biaya Antar/Jemput')
-                                    ->state(fn($record) => $record->invoice->pickup_dropOff ?? 0)
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
-                                \Filament\Infolists\Components\TextEntry::make('total_denda')
-                                    ->label('Total Denda')
-                                    ->state(fn($record) => $record->invoice->booking?->penalty->sum('amount') ?? 0)
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                \Filament\Infolists\Components\TextEntry::make('invoice.dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                \Filament\Infolists\Components\TextEntry::make('sisa_pembayaran')
-                                    ->label('Sisa Pembayaran')
-                                    ->state(function ($record) {
-                                        $biayaSewa = $record->invoice->booking?->estimasi_biaya ?? 0;
-                                        $biayaAntar = $record->invoice->pickup_dropOff ?? 0;
-                                        $totalDenda = $record->invoice->booking?->penalty->sum('amount') ?? 0;
-                                        $totalTagihan = $biayaSewa + $biayaAntar + $totalDenda;
-                                        return $totalTagihan - ($record->invoice->dp ?? 0);
-
-                                    })
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                \Filament\Infolists\Components\TextEntry::make('total')
-                                    ->label('Total Tagihan')
-                                    ->state(function ($record) {
-                                        $biayaSewa = $record->invoice->booking?->estimasi_biaya ?? 0;
-                                        $biayaAntar = $record->invoice->pickup_dropOff ?? 0;
-                                        $totalDenda = $record->invoice->booking?->penalty->sum('amount') ?? 0;
-                                        return $biayaSewa + $biayaAntar + $totalDenda;
-                                    })
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
-                            ])
-                            ->columns(3),
-
-                        \Filament\Infolists\Components\Section::make('Pembayaran')
-                            ->schema([
-                                \Filament\Infolists\Components\TextEntry::make('status')
-                                    ->badge()
-                                    ->colors([
-                                        'success' => 'lunas',
-                                        'danger' => 'belum_lunas',
-                                    ])
-                                    ->formatStateUsing(fn($state) => $state === 'lunas' ? 'Lunas' : 'Belum Lunas'),
-
-                                \Filament\Infolists\Components\TextEntry::make('metode_pembayaran')
-                                    ->label('Metode')
-                                    ->badge()
-                                    ->colors([
-                                        'success' => 'tunai',
-                                        'info' => 'transfer',
-                                        'gray' => 'qris',
-                                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
-                                    ])
-                                    ->formatStateUsing(fn($state) => match ($state) {
-                                        'tunai' => 'Tunai',
-                                        'transfer' => 'Transfer',
-                                        'qris' => 'QRIS',
-                                        'tunai_transfer' => 'Tunai & Transfer',
-                                        'tunai_qris' => 'Tunai & QRIS',
-                                        'transfer_qris' => 'Transfer & QRIS',
-                                        default => ucfirst($state),
-                                    }),
-
-                                \Filament\Infolists\Components\TextEntry::make('tanggal_pembayaran')
-                                    ->label('Tanggal Pembayaran')
-                                    ->date('d M Y'),
-                            ])
-                            ->columns(3),
-                    ])->modalCancelActionLabel('Tutup'), // ✅ tombol cancel di bawah,
-                Tables\Actions\Action::make('markAsPaid')
-                    ->label('') // biar icon aja
-                    ->tooltip('Tandai Lunas')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->button()
-                    ->hiddenLabel()
-                    ->modalHeading('Konfirmasi Pembayaran')
-                    ->modalSubheading('Apakah kamu yakin ingin menandai pembayaran ini sebagai **Lunas**?')
-                    ->modalIcon('heroicon-o-currency-dollar') // bisa ganti sesuai icon
-                    ->requiresConfirmation()
-                    ->action(function (Payment $record) {
-                        $record->update(['status' => 'lunas']);
-                    })
-                    ->visible(
-                        fn(Payment $record): bool =>
-                        $record->status === 'belum_lunas'
-                        && Auth::user()?->role === 'superadmin'
-                    ),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
                     ->tooltip('Hapus Pembayaran')
@@ -404,17 +226,17 @@ class PaymentResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::query()
-            ->where('status', 'belum_lunas')
-            ->count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::query()
+    //         ->where('status', 'belum_lunas')
+    //         ->count();
+    // }
 
-    public static function getNavigationBadgeTooltip(): ?string
-    {
-        return 'Pembayaran yang belum lunas';
-    }
+    // public static function getNavigationBadgeTooltip(): ?string
+    // {
+    //     return 'Pembayaran yang belum lunas';
+    // }
 
     // -- KONTROL AKSES BARU (superadmin, admin, staff) --
 

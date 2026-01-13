@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -49,46 +50,29 @@ class InvoiceResource extends Resource
                     ->required()
                     ->searchable()
                     ->live()
-                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
                         $booking = \App\Models\Booking::find($state);
                         $estimasi = $booking?->estimasi_biaya ?? 0;
-                        $pickup = $get('pickup_dropOff') ?? 0;
-                        $totalDenda = $booking?->penalty->sum('amount') ?? 0;
-                        $total = $estimasi + $pickup + $totalDenda;
-                        $set('total', $total);
-                        $set('dp', 0);
-                        $set('sisa_pembayaran', $total);
+                        $set('total', $estimasi);
                     }),
+
 
                 Forms\Components\DatePicker::make('tanggal_invoice')
                     ->label('Tanggal Invoice')
                     ->required(),
 
-                Forms\Components\TextInput::make('dp')
-                    ->label('Uang Muka')
-                    ->prefix('Rp')
+
+
+                TextInput::make('pickup_dropOff')
                     ->numeric()
                     ->default(0)
                     ->live()
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        $total = $get('total') ?? 0;
-                        $set('sisa_pembayaran', max($total - $state, 0));
+                        $booking = \App\Models\Booking::find($get('booking_id'));
+                        $estimasi = $booking?->estimasi_biaya ?? 0;
+                        $set('total', $estimasi + ($state ?? 0));
                     }),
 
-                Forms\Components\TextInput::make('pickup_dropOff')
-                    ->label('Biaya Pengantaran')
-                    ->live()
-                    ->required()
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->default(0),
-
-                Forms\Components\TextInput::make('sisa_pembayaran')
-                    ->label('Sisa Pembayaran')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->readOnly()
-                    ->default(0),
 
                 Forms\Components\TextInput::make('total')
                     ->label('Total Biaya')
@@ -111,7 +95,7 @@ class InvoiceResource extends Resource
                                 ->label('Catat Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
-                                ->visible(fn(Invoice $record) => $record && !$record->payment)
+                                ->visible(fn(Invoice $record) => $record->sisa_pembayaran > 0)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('create', ['invoice_id' => $record->id])),
                             Infolists\Components\Actions\Action::make('viewPayment')
                                 ->label('Kelola Pembayaran')
@@ -233,32 +217,29 @@ class InvoiceResource extends Resource
                             Infolists\Components\Grid::make(3)->schema([
                                 Infolists\Components\TextEntry::make('booking.estimasi_biaya')->label('Biaya Sewa')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                                 Infolists\Components\TextEntry::make('pickup_dropOff')->label('Biaya Antar/Jemput')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                Infolists\Components\TextEntry::make('total_denda')
-                                    ->label('Total Denda')
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                                    ->state(fn(Invoice $record) => $record->booking?->penalty->sum('amount') ?? 0),
-                                Infolists\Components\TextEntry::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                                Infolists\Components\TextEntry::make('sisa_pembayaran')
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                                    ->state(function (Invoice $record): float {
-                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                        $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                                        $dp = $record->dp ?? 0;
-                                        return $totalTagihan - $dp;
-                                    }),
-                                Infolists\Components\TextEntry::make('total')
+                                TextEntry::make('total_tagihan')
                                     ->label('Total Tagihan')
-                                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                                    ->size('lg')
-                                    ->weight('bold')
-                                    ->state(function (Invoice $record): float {
-                                        $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                                        $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                                        $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                        return $biayaSewa + $biayaAntarJemput + $totalDenda;
-                                    }),
+                                    ->money('IDR', true),
+
+                                TextEntry::make('total_denda')
+                                    ->label('Total Denda')
+                                    ->money('IDR', true),
+
+                                TextEntry::make('total_paid')
+                                    ->label('Total Dibayar')
+                                    ->money('IDR', true),
+
+                                TextEntry::make('sisa_pembayaran')
+                                    ->label('Sisa Pembayaran')
+                                    ->money('IDR', true),
+
+                                TextEntry::make('status')
+                                    ->badge()
+                                    ->colors([
+                                        'success' => 'lunas',
+                                        'danger' => 'belum_lunas',
+                                    ]),
+
                             ]),
                         ]),
                         Infolists\Components\Section::make('Informasi Terkait')
@@ -282,17 +263,18 @@ class InvoiceResource extends Resource
             // TextColumn::make('id')->label('ID Faktur')->searchable(),
             TextColumn::make('booking.customer.nama')->label('Penyewa')->searchable()->wrap()->width(150),
             TextColumn::make('booking.car.nopol')->label('Mobil')->searchable(),
-            textColumn::make('dp')->label('Uang Muka (DP)')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->color('success'),
-            TextColumn::make('sisa_pembayaran')->label('Sisa Bayar')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->state(function (Invoice $record): float {
-                    $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                    $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                    $totalTagihan = $biayaSewa + $biayaAntarJemput + $totalDenda;
-                    $dp = $record->dp ?? 0;
-                    return $totalTagihan - $dp;
-                })->color('danger'),
-            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->state(function (Invoice $record): float {
+            TextColumn::make('sisa_pembayaran')
+                ->label('Sisa Bayar')
+                ->money('IDR', true),
+
+            TextColumn::make('status')
+                ->badge()
+                ->colors([
+                    'success' => 'lunas',
+                    'danger' => 'belum_lunas',
+                ]),
+
+            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable()->state(function (Invoice $record): float {
                 $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
                 $biayaAntarJemput = $record->pickup_dropOff ?? 0;
                 $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
