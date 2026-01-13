@@ -104,52 +104,52 @@ class InvoiceResource extends Resource
                                 ->color('success')
                                 ->visible(fn(Invoice $record) => $record->payment)
                                 ->url(fn(Invoice $record) => PaymentResource::getUrl('edit', ['record' => $record->payment->id])),
-                            Infolists\Components\Actions\Action::make('copyInvoice')
-                                ->label('Copy Tagihan')
-                                ->icon('heroicon-o-clipboard-document')
-                                ->color('gray')
-                                ->modalHeading('Salin Detail Faktur')
-                                ->modalContent(function (Invoice $record): View {
-                                    // Hitung total & denda
-                                    $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                                    $totalTagihan = ($record->booking?->estimasi_biaya ?? 0) + ($record->pickup_dropOff ?? 0) + $totalDenda;
-                                    $sisaPembayaran = $totalTagihan - ($record->dp ?? 0);
+                            // Infolists\Components\Actions\Action::make('copyInvoice')
+                            //     ->label('Copy Tagihan')
+                            //     ->icon('heroicon-o-clipboard-document')
+                            //     ->color('gray')
+                            //     ->modalHeading('Salin Detail Faktur')
+                            //     ->modalContent(function (Invoice $record): View {
+                            //         // Hitung total & denda
+                            //         $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
+                            //         $totalTagihan = ($record->booking?->estimasi_biaya ?? 0) + ($record->pickup_dropOff ?? 0) + $totalDenda;
+                            //         $sisaPembayaran = $totalTagihan - ($record->dp ?? 0);
 
-                                    // Detail mobil & tanggal
-                                    $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
-                                    $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->isoFormat('D MMMM Y');
-                                    $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->isoFormat('D MMMM Y');
+                            //         // Detail mobil & tanggal
+                            //         $carDetails = "{$record->booking->car->carModel->brand->name} {$record->booking->car->carModel->name} ({$record->booking->car->nopol})";
+                            //         $tglKeluar = \Carbon\Carbon::parse($record->booking->tanggal_keluar)->isoFormat('D MMMM Y');
+                            //         $tglKembali = \Carbon\Carbon::parse($record->booking->tanggal_kembali)->isoFormat('D MMMM Y');
 
-                                    // Text yang akan dicopy
-                                    $textToCopy = "Halo *{$record->booking->customer->nama}* 👋😊\n\n";
-                                    $textToCopy .= "Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
-                                    $textToCopy .= "🧾 *No. Faktur:* #{$record->id}\n";
-                                    $textToCopy .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y') . "\n";
-                                    $textToCopy .= "-----------------------------------\n";
-                                    $textToCopy .= "🚗 *Mobil:* {$carDetails}\n";
-                                    $textToCopy .= "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$record->booking->total_hari} hari)\n";
-                                    $textToCopy .= "💰 *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
-                                    if ($record->pickup_dropOff > 0) {
-                                        $textToCopy .= "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
-                                    }
-                                    if ($totalDenda > 0) {
-                                        $textToCopy .= "⚖️ *Denda/Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
-                                    }
-                                    $textToCopy .= "-----------------------------------\n";
-                                    $textToCopy .= "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
-                                    $textToCopy .= "🔐 *Uang Muka (DP):* Rp " . number_format($record->dp, 0, ',', '.') . "\n";
-                                    $textToCopy .= "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
-                                    $textToCopy .= "Mohon lakukan pembayaran ke salah satu rekening berikut:\n";
-                                    $textToCopy .= "🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL\n";
-                                    $textToCopy .= "🏦 BCA: 2320418758 a.n. SRI NOVYANA\n\n";
-                                    $textToCopy .= "🙏 Terima kasih.";
+                            //         // Text yang akan dicopy
+                            //         $textToCopy = "Halo *{$record->booking->customer->nama}* 👋😊\n\n";
+                            //         $textToCopy .= "Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:\n\n";
+                            //         $textToCopy .= "🧾 *No. Faktur:* #{$record->id}\n";
+                            //         $textToCopy .= "📅 *Tanggal:* " . \Carbon\Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y') . "\n";
+                            //         $textToCopy .= "-----------------------------------\n";
+                            //         $textToCopy .= "🚗 *Mobil:* {$carDetails}\n";
+                            //         $textToCopy .= "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$record->booking->total_hari} hari)\n";
+                            //         $textToCopy .= "💰 *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
+                            //         if ($record->pickup_dropOff > 0) {
+                            //             $textToCopy .= "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
+                            //         }
+                            //         if ($totalDenda > 0) {
+                            //             $textToCopy .= "⚖️ *Denda/Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
+                            //         }
+                            //         $textToCopy .= "-----------------------------------\n";
+                            //         $textToCopy .= "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
+                            //         $textToCopy .= "🔐 *Uang Muka (DP):* Rp " . number_format($record->dp, 0, ',', '.') . "\n";
+                            //         $textToCopy .= "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
+                            //         $textToCopy .= "Mohon lakukan pembayaran ke salah satu rekening berikut:\n";
+                            //         $textToCopy .= "🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL\n";
+                            //         $textToCopy .= "🏦 BCA: 2320418758 a.n. SRI NOVYANA\n\n";
+                            //         $textToCopy .= "🙏 Terima kasih.";
 
-                                    return view('filament.actions.copy-invoice', [
-                                        'textToCopy' => $textToCopy,
-                                    ]);
-                                })
-                                ->modalSubmitAction(false)
-                                ->modalCancelAction(false),
+                            //         return view('filament.actions.copy-invoice', [
+                            //             'textToCopy' => $textToCopy,
+                            //         ]);
+                            //     })
+                            //     ->modalSubmitAction(false)
+                            //     ->modalCancelAction(false),
 
 
                             Infolists\Components\Actions\Action::make('download')
@@ -275,12 +275,9 @@ class InvoiceResource extends Resource
                     'danger' => 'belum_lunas',
                 ]),
 
-            TextColumn::make('total')->label('Total Tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable()->state(function (Invoice $record): float {
-                $biayaSewa = $record->booking?->estimasi_biaya ?? 0;
-                $biayaAntarJemput = $record->pickup_dropOff ?? 0;
-                $totalDenda = $record->booking?->penalty->sum('amount') ?? 0;
-                return $biayaSewa + $biayaAntarJemput + $totalDenda;
-            }),
+            TextColumn::make('total_tagihan')
+                ->label('Total Tagihan')
+                ->money('IDR', true),
             // TextColumn::make('tanggal_invoice')->label('Tanggal')->date('d M Y'),
         ])
             ->defaultSort('created_at', 'desc')
