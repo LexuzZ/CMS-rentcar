@@ -25,14 +25,14 @@ class Worksheet extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            AvailableCarsOverview::class,
-            // DashboardMonthlySummary::class,
-            TempoDueToday::class,
-            OverdueTasksWidget::class,
-            MobilKeluar::class,
-            MobilKembali::class,
-            StaffRankingWidget::class,
-            MonthlyStaffRankingWidget::class,
+            // AvailableCarsOverview::class,
+            // // DashboardMonthlySummary::class,
+            // TempoDueToday::class,
+            // OverdueTasksWidget::class,
+            // MobilKeluar::class,
+            // MobilKembali::class,
+            // StaffRankingWidget::class,
+            // MonthlyStaffRankingWidget::class,
 
 
 
