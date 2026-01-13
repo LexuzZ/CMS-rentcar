@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
+use App\Filament\Resources\InvoiceResource\RelationManagers\PaymentsRelationManager;
 use App\Models\Invoice;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -302,6 +303,12 @@ class InvoiceResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+    public static function getRelations(): array
+    {
+        return [
+            PaymentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
