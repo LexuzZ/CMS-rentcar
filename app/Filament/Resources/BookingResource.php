@@ -8,6 +8,7 @@ use App\Models\Car;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid as ComponentsGrid;
 // use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -75,7 +76,7 @@ class BookingResource extends Resource
         $isNotAdmin = ! Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
 
         return $form->schema([
-            Grid::make(2)->schema([
+            ComponentsGrid::make(2)->schema([
                 TextInput::make('id')->hidden()->dehydrated(),
 
                 DatePicker::make('tanggal_keluar')
