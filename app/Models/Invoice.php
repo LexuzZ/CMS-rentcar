@@ -68,6 +68,28 @@ class Invoice extends Model
     {
         return $this->sisa_pembayaran <= 0 ? 'lunas' : 'belum_lunas';
     }
+    public function recalculatePaymentStatus(): void
+    {
+        // pastikan relasi siap
+        $this->loadMissing([
+            'payments',
+            'booking.penalty',
+        ]);
+
+        $biayaSewa        = $this->booking->estimasi_biaya ?? 0;
+        $pickupDropOff    = $this->pickup_dropOff ?? 0;
+        $totalDenda       = $this->booking->penalty->sum('amount');
+        $totalPembayaran  = $this->payments->sum('pembayaran');
+
+        $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
+        $sisa         = max($totalTagihan - $totalPembayaran, 0);
+
+        $this->updateQuietly([
+            'total'            => $totalTagihan,
+            'sisa_pembayaran'  => $sisa,
+            'status'           => $sisa <= 0 ? 'lunas' : 'belum_lunas',
+        ]);
+    }
 
 
 
