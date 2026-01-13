@@ -21,12 +21,7 @@ class EditPayment extends EditRecord
     }
     protected function getRedirectUrl(): string
     {
-        // Ambil data pembayaran yang baru saja dibuat
-        $payment = $this->getRecord();
-
-        // Arahkan kembali ke halaman 'view' dari booking yang berelasi
-        // melalui relasi invoice
-        return BookingResource::getUrl('view', ['record' => $payment->invoice->booking_id]);
+        return $this->getResource()::getUrl('index');
     }
 
 
