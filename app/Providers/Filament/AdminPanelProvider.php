@@ -86,17 +86,9 @@ class AdminPanelProvider extends PanelProvider
                 RecentTransactions::class,
                 TransactionChart::class,
 
-                    // OverdueTasksWidget::class,
-                    // MobilKeluar::class,
-                    // MobilKembali::class,
-                    // TempoDueToday::class,
-                DashboardActionsWidget::class,
-                // \App\Filament\Widgets\UserActivityStatus::class,
-                // \App\Filament\Widgets\UserActivityLog::class,
 
-                // StaffRankingWidget::class,
-                // MonthlyStaffRankingWidget::class,
-                // DaftarTungguTable::class,
+                DashboardActionsWidget::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
