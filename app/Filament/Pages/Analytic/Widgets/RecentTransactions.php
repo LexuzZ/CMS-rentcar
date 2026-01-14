@@ -16,41 +16,36 @@ class RecentTransactions extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        // PERBAIKAN: Query diubah untuk hanya mengambil data hari ini
         return Payment::query()
-            ->whereDate('tanggal_pembayaran', today()) // Filter berdasarkan tanggal hari ini
-            ->latest('created_at'); // Urutkan berdasarkan waktu pembuatan terbaru
-
+            ->with(['invoice.booking.customer']) // WAJIB eager load
+            ->whereDate('tanggal_pembayaran', now()->toDateString())
+            ->latest('tanggal_pembayaran');
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('updated_at')
+            Tables\Columns\TextColumn::make('tanggal_pembayaran')
                 ->label('Tgl Pembayaran')
-                ->alignCenter()
-                ->date('d M Y'), // Tambahkan format waktu
+                ->date('d M Y')
+                ->alignCenter(),
+
             Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
                 ->alignCenter()
+                ->default('-')
                 ->wrap()
-                ->width(200)
                 ->searchable(),
+
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
-                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color(fn(Payment $record): string => $record->status === 'lunas' ? 'success' : 'danger'),
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             Tables\Columns\TextColumn::make('metode_pembayaran')
                 ->label('Metode')
                 ->badge()
                 ->alignCenter()
-                ->colors([
-                    'success' => 'tunai',
-                    'info' => 'transfer',
-                    'gray' => 'qris',
-                ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'tunai' => 'Tunai',
                     'transfer' => 'Transfer',
