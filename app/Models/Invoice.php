@@ -68,28 +68,28 @@ class Invoice extends Model
     {
         return $this->sisa_pembayaran <= 0 ? 'lunas' : 'belum_lunas';
     }
-    public function recalculatePaymentStatus(): void
-{
-    $this->loadMissing([
-        'payments',
-        'booking.penalty',
-    ]);
+    // public function recalculatePaymentStatus(): void
+    // {
+    //     $this->loadMissing([
+    //         'payments',
+    //         'booking.penalty',
+    //     ]);
 
-    $biayaSewa       = $this->booking?->estimasi_biaya ?? 0;
-    $pickupDropOff   = $this->pickup_dropOff ?? 0;
-    $totalDenda      = $this->booking?->penalty?->sum('amount') ?? 0;
-    $totalPembayaran = $this->payments->sum('pembayaran');
+    //     $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+    //     $pickupDropOff = $this->pickup_dropOff ?? 0;
+    //     $totalDenda = $this->booking?->penalty?->sum('amount') ?? 0;
+    //     $totalPembayaran = $this->payments->sum('pembayaran');
 
-    $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
-    $sisa         = max($totalTagihan - $totalPembayaran, 0);
+    //     $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
+    //     $sisa = max($totalTagihan - $totalPembayaran, 0);
 
-    // UPDATE SEKALI, TANPA LOOP
-    $this->forceFill([
-        'total'           => $totalTagihan,
-        'sisa_pembayaran' => $sisa,
-        'status'          => $sisa <= 0 ? 'lunas' : 'belum_lunas',
-    ])->saveQuietly();
-}
+    //     // UPDATE SEKALI, TANPA LOOP
+    //     $this->forceFill([
+    //         'total' => $totalTagihan,
+    //         'sisa_pembayaran' => $sisa,
+    //         'status' => $sisa <= 0 ? 'lunas' : 'belum_lunas',
+    //     ])->saveQuietly();
+    // }
 
 
 
