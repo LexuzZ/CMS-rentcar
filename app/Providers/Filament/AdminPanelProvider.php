@@ -70,7 +70,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                     // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
-                // RecentTransactions::class,
+                RecentTransactions::class,
                 TransactionChart::class,
 
 
