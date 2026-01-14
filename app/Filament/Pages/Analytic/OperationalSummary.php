@@ -167,10 +167,11 @@ class OperationalSummary extends Page implements HasForms
 
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')->get()
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->sum('pembayaran');
+
         $RevenueLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'lunas')->get()
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->sum('pembayaran');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
@@ -333,7 +334,7 @@ class OperationalSummary extends Page implements HasForms
     public function getFooterWidgets(): array
     {
         return [
-            // RecentTransactions::class,
+                // RecentTransactions::class,
             Piutang::class,
             Revenue::class,
             ArusKasTable::class
