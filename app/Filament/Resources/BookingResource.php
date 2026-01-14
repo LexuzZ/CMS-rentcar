@@ -54,7 +54,7 @@ class BookingResource extends Resource
         $tanggalKembali = $get('tanggal_kembali');
         $hargaHarian = (int) $get('harga_harian');
 
-        if (! $tanggalKeluar || ! $tanggalKembali || ! $hargaHarian) {
+        if (!$tanggalKeluar || !$tanggalKembali || !$hargaHarian) {
             $set('estimasi_biaya', 0);
             $set('total_hari', 0);
 
@@ -73,7 +73,7 @@ class BookingResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $isNotAdmin = ! Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
+        $isNotAdmin = !Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff']);
 
         return $form->schema([
             ComponentsGrid::make(2)->schema([
@@ -83,14 +83,14 @@ class BookingResource extends Resource
                     ->label('Tanggal Keluar')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 DatePicker::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->required()
                     ->live() // Penting untuk memicu refresh pada dropdown mobil
-                    ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                    ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                     ->disabled($isNotAdmin),
 
                 TimePicker::make('waktu_keluar')->label('Waktu Keluar')->seconds(false)->disabled($isNotAdmin),
@@ -103,7 +103,7 @@ class BookingResource extends Resource
                         'vendor' => 'Garasi Vendor',
                     ])
                     ->live()
-                    ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null)) // Kosongkan pilihan mobil
+                    ->afterStateUpdated(fn(Forms\Set $set) => $set('car_id', null)) // Kosongkan pilihan mobil
                     ->dehydrated(false), // Field ini virtual, tidak disimpan
 
                 Select::make('car_id')
@@ -117,7 +117,7 @@ class BookingResource extends Resource
                             $garasiType = $get('garasi_type');
 
                             // Jika tidak ada tanggal / garasi → kosongkan dropdown
-                            if (! $startDate || ! $endDate || ! $garasiType) {
+                            if (!$startDate || !$endDate || !$garasiType) {
                                 $query->whereRaw('1 = 0');
 
                                 return;
@@ -161,7 +161,7 @@ class BookingResource extends Resource
 
                         return $label;
                     })
-                    ->preload()
+                    ->preload(false)
                     ->live()
                     ->searchable()
                     ->required()
@@ -175,14 +175,14 @@ class BookingResource extends Resource
                 Select::make('customer_id')
                     ->label('Penyewa')
                     ->relationship('customer', 'nama')
-                    ->searchable()->preload()
+                    ->searchable()->preload(false)
                     ->createOptionForm([
                         TextInput::make('nama')->label('Nama Penyewa')->required(),
                         TextInput::make('no_telp')->label('No. HP')->tel()->required()->unique(ignoreRecord: true),
                         TextInput::make('alamat')->label('Alamat')->required(),
                         TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                     ])
-                    ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
+                    ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                     ->required()
                     ->disabled($isNotAdmin),
                 Select::make('source')->label('Sumber Orderan')->options([
@@ -220,7 +220,7 @@ class BookingResource extends Resource
 
                 Textarea::make('lokasi_pengantaran')->label('Lokasi Pengantaran')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
                 Textarea::make('lokasi_pengembalian')->label('Lokasi Pengembalian')->nullable()->rows(2)->columnSpanFull()->disabled($isNotAdmin),
-                TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
+                TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))->disabled($isNotAdmin),
                 TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->dehydrated(),
                 TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
 
@@ -245,14 +245,14 @@ class BookingResource extends Resource
                                 ->label('Terbitkan Tagihan')
                                 ->icon('heroicon-o-document-plus')
                                 ->color('primary')
-                                ->visible(fn (Booking $record) => ! $record->invoice)
-                                ->url(fn (Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
+                                ->visible(fn(Booking $record) => !$record->invoice)
+                                ->url(fn(Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
                             Action::make('addPayment')
                                 ->label('Catat Pembayaran')
                                 ->icon('heroicon-o-banknotes')
                                 ->color('success')
-                                ->visible(fn (Booking $record) => $record->invoice && ! $record->invoice->payment) // ✅ hanya muncul jika ada invoice, tapi belum ada payment
-                                ->url(fn (Booking $record) => PaymentResource::getUrl('create', [
+                                ->visible(fn(Booking $record) => $record->invoice && !$record->invoice->payment) // ✅ hanya muncul jika ada invoice, tapi belum ada payment
+                                ->url(fn(Booking $record) => PaymentResource::getUrl('create', [
                                     'invoice_id' => $record->invoice->id,
                                 ])),
                             Action::make('viewPayment')
@@ -260,13 +260,13 @@ class BookingResource extends Resource
                                 ->icon('heroicon-o-pencil-square')
                                 ->color('gray')
                                 // Hanya muncul jika pembayaran SUDAH ada
-                                ->visible(fn (Booking $record) => $record->invoice && $record->invoice->payment)
-                                ->url(fn (Booking $record) => PaymentResource::getUrl('edit', ['record' => $record->invoice->payment->id])),
+                                ->visible(fn(Booking $record) => $record->invoice && $record->invoice->payment)
+                                ->url(fn(Booking $record) => PaymentResource::getUrl('edit', ['record' => $record->invoice->payment->id])),
                             Action::make('addPenalty')
                                 ->label('Tambah Klaim')
                                 ->icon('heroicon-o-exclamation-triangle')
                                 ->color('danger')
-                                ->url(fn (Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
+                                ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
                         ]),
                     ]),
 
@@ -276,7 +276,7 @@ class BookingResource extends Resource
                             TextEntry::make('status')
                                 ->badge()
                                 ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
-                                ->formatStateUsing(fn ($state) => match ($state) {
+                                ->formatStateUsing(fn($state) => match ($state) {
                                     'disewa' => 'Disewa',
                                     'booking' => 'Booking',
                                     'selesai' => 'Selesai',
@@ -285,7 +285,7 @@ class BookingResource extends Resource
                                 }),
                             TextEntry::make('paket')
                                 ->badge()
-                                ->formatStateUsing(fn ($state) => match ($state) {
+                                ->formatStateUsing(fn($state) => match ($state) {
                                     'lepas_kunci' => 'Lepas Kunci',
                                     'rr' => 'Rent to Rent',
                                     'dengan_driver' => 'Dengan Driver',
@@ -296,7 +296,7 @@ class BookingResource extends Resource
                                 }),
                             TextEntry::make('source')
                                 ->badge()
-                                ->formatStateUsing(fn ($state) => match ($state) {
+                                ->formatStateUsing(fn($state) => match ($state) {
                                     'website' => 'Website',
                                     'ro' => 'Repeat Order',
                                     'instagram' => 'Instagram',
@@ -325,7 +325,7 @@ class BookingResource extends Resource
                             TextEntry::make('total_hari')->suffix(' Hari'),
                             TextEntry::make('waktu_keluar')->dateTime('H:i')->suffix(' WITA'),
                             TextEntry::make('waktu_kembali')->dateTime('H:i')->suffix(' WITA'),
-                            TextEntry::make('estimasi_biaya')->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
+                            TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                         ]),
                     ]),
                 // Infolists\Components\Section::make('Rincian Biaya')
@@ -371,7 +371,7 @@ class BookingResource extends Resource
                             TextEntry::make('car.carModel.name')
                                 ->label('Model')
                                 ->badge()
-                                ->formatStateUsing(fn (string $state): string => Str::upper($state)),
+                                ->formatStateUsing(fn(string $state): string => Str::upper($state)),
                             TextEntry::make('car.nopol')->label('No. Polisi')->badge(),
                         ]),
                     ]),
@@ -408,14 +408,14 @@ class BookingResource extends Resource
                 TextColumn::make('status')
                     ->badge()->alignCenter()
                     ->colors(['success' => 'disewa', 'info' => 'booking', 'gray' => 'selesai', 'danger' => 'batal'])
-                    ->formatStateUsing(fn ($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'disewa' => 'Disewa',
                         'booking' => 'Booking',
                         'selesai' => 'Selesai',
                         'batal' => 'Batal',
                         default => ucfirst($state)
                     }),
-                TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
+                TextColumn::make('estimasi_biaya')->label('Biaya')->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
             ->defaultSort('created_at', 'desc')
@@ -425,7 +425,7 @@ class BookingResource extends Resource
                     ->toggle() // Menjadikannya tombol on/off
                     ->default(true)
                     ->query(
-                        fn (Builder $query) => $query
+                        fn(Builder $query) => $query
                             ->whereMonth('tanggal_keluar', Carbon::now()->month)
                             ->whereYear('tanggal_keluar', Carbon::now()->year)
                     ),
@@ -447,13 +447,13 @@ class BookingResource extends Resource
                             ->toArray()
                     )
                     ->query(function (Builder $query, array $data) {
-                        if (! $data['value']) {
+                        if (!$data['value']) {
                             return $query;
                         }
 
                         return $query->whereHas(
                             'car',
-                            fn ($q) => $q->where('garasi', $data['value'])
+                            fn($q) => $q->where('garasi', $data['value'])
                         );
                     }),
                 Filter::make('tanggal_keluar')
@@ -464,11 +464,11 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_keluar'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_keluar', $date)
+                            fn(Builder $query, $date): Builder => $query->whereDate('tanggal_keluar', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (! $data['tanggal_keluar']) {
+                        if (!$data['tanggal_keluar']) {
                             return null;
                         }
                         $date = Carbon::parse($data['tanggal_keluar'])->isoFormat('D MMM Y');
@@ -485,11 +485,11 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_kembali'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('tanggal_kembali', $date)
+                            fn(Builder $query, $date): Builder => $query->whereDate('tanggal_kembali', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (! $data['tanggal_kembali']) {
+                        if (!$data['tanggal_kembali']) {
                             return null;
                         }
                         $date = Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
