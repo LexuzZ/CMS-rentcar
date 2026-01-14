@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Invoice;
+use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,7 +69,7 @@ class Piutang extends TableWidget
                 ->toggle()
                 ->default(true)
                 ->query(fn (Builder $query) =>
-                    $query->whereBetween('tanggal_invoice', [
+                    $query->whereBetween('tanggal_pembayaran', [
                         now()->startOfMonth(),
                         now()->endOfMonth(),
                     ])
@@ -94,8 +94,7 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $month) =>
-                            $q->whereMonth('tanggal_invoice', $month)
+                        fn ($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
                     )
                 ),
 
@@ -109,14 +108,13 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $year) =>
-                            $q->whereYear('tanggal_invoice', $year)
+                        fn ($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
                     )
                 ),
 
             SelectFilter::make('customer')
                 ->label('Pelanggan')
-                ->relationship('booking.customer', 'nama')
+                ->relationship('invoice.booking.customer', 'nama')
                 ->searchable()
                 ->preload(),
         ];
@@ -129,21 +127,11 @@ class Piutang extends TableWidget
                 ->label('Export PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function ($livewire) {
-
-                    $query = clone $livewire->getFilteredTableQuery();
-
-                    $invoices = $query
-                        ->with([
-                            'booking.customer',
-                            'booking.penalty',
-                            'booking.car.carModel',
-                            'payments',
-                        ])
-                        ->get();
+                    $piutang = $livewire->getFilteredTableQuery()->get();
 
                     $pdf = Pdf::loadView('exports.piutang', [
-                        'piutang' => $invoices,
-                    ])->setPaper('A4', 'landscape');
+                        'piutang' => $piutang,
+                    ]);
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),
@@ -152,4 +140,6 @@ class Piutang extends TableWidget
                 }),
         ];
     }
+
+
 }
