@@ -70,7 +70,7 @@ class Piutang extends TableWidget
                 ->toggle()
                 ->default(true)
                 ->query(fn (Builder $query) =>
-                    $query->whereBetween('tanggal_pembayaran', [
+                    $query->whereBetween('tanggal_invoice', [
                         now()->startOfMonth(),
                         now()->endOfMonth(),
                     ])
@@ -95,7 +95,8 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
+                        fn ($q, $month) =>
+                            $q->whereMonth('tanggal_invoice', $month)
                     )
                 ),
 
@@ -109,13 +110,14 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
+                        fn ($q, $year) =>
+                            $q->whereYear('tanggal_invoice', $year)
                     )
                 ),
 
             SelectFilter::make('customer')
                 ->label('Pelanggan')
-                ->relationship('invoice.booking.customer', 'nama')
+                ->relationship('booking.customer', 'nama')
                 ->searchable()
                 ->preload(),
         ];
