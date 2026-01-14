@@ -30,8 +30,8 @@ class Invoice extends Model
         $biayaSewa = $booking?->estimasi_biaya ?? 0;
         $pickup = $this->pickup_dropOff ?? 0;
 
-        $totalDenda = $booking?->penalty()->sum('amount') ?? 0;
-        $totalPaid = $this->payments()->sum('amount');
+        $totalDenda = $booking?->penalty()->sum('pembayaran') ?? 0;
+        $totalPaid = $this->payments()->sum('pembayaran');
 
         $totalTagihan = $biayaSewa + $pickup + $totalDenda;
         $sisa = max($totalTagihan - $totalPaid, 0);
