@@ -51,7 +51,7 @@ class Piutang extends TableWidget
                 ->alignCenter()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('pembayaran')
+            Tables\Columns\TextColumn::make('invoice.sisa_pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
                 ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
