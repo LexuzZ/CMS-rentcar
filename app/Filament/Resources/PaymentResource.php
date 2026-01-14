@@ -37,24 +37,40 @@ class PaymentResource extends Resource
 
                 Forms\Components\Select::make('invoice_id')
                     ->label('Faktur')
-                    ->relationship('invoice', 'id')
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) => 'INV #' . $record->id . ' - ' . $record->booking->customer->nama
+                    ->relationship(
+                        'invoice',
+                        'id',
+                        fn($query) =>
+                        $query->with(['booking.customer'])
+                            ->where('status', 'belum_lunas')
                     )
-                    ->required()
+                    ->getOptionLabelFromRecordUsing(
+                        fn(Invoice $record) =>
+                        "INV #{$record->id} - {$record->booking->customer->nama}"
+                    )
                     ->searchable()
+                    ->required()
                     ->disabled(fn(string $operation) => $operation === 'edit'),
 
                 DatePicker::make('tanggal_pembayaran')
                     ->label('Tanggal Pembayaran')
-                    ->required()
-                    ->default(now()),
+                    ->default(now())
+                    ->required(),
 
                 Forms\Components\TextInput::make('pembayaran')
                     ->label('Jumlah Dibayar')
-                    ->numeric()
                     ->prefix('Rp')
-                    ->required(),
+                    ->numeric()
+                    ->required()
+                    ->rules([
+                        fn(Forms\Get $get) => function ($attribute, $value, $fail) use ($get) {
+                            $invoice = Invoice::find($get('invoice_id'));
+
+                            if ($invoice && $value > $invoice->sisa_pembayaran) {
+                                $fail('Jumlah pembayaran melebihi sisa tagihan.');
+                            }
+                        },
+                    ]),
 
                 Forms\Components\Select::make('metode_pembayaran')
                     ->label('Metode Pembayaran')
@@ -67,15 +83,10 @@ class PaymentResource extends Resource
                         'transfer_qris' => 'Transfer & QRIS',
                     ])
                     ->required(),
-
-                // Forms\Components\FileUpload::make('proof')
-                //     ->label('Bukti Pembayaran')
-                //     ->directory('payment-proofs')
-                //     ->image()
-                //     ->maxSize(2048),
-            ])
+            ]),
         ]);
     }
+
 
     public static function table(Tables\Table $table): Tables\Table
     {
