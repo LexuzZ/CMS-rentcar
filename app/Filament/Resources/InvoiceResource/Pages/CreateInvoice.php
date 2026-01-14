@@ -15,7 +15,7 @@ class CreateInvoice extends CreateRecord
     {
         parent::mount();
 
-        if (! request()->filled('booking_id')) {
+        if (!request()->filled('booking_id')) {
             return;
         }
 
@@ -33,4 +33,21 @@ class CreateInvoice extends CreateRecord
             'pickup_dropOff' => 0,
         ]);
     }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['total_tagihan'] = 0;
+        $data['total_denda'] = 0;
+        $data['total_paid'] = 0;
+        $data['sisa_pembayaran'] = 0;
+        $data['status'] = 'belum_lunas';
+
+        return $data;
+    }
+    protected function afterCreate(): void
+    {
+        $this->record->refresh();
+        $this->record->recalculate();
+    }
+
+
 }
