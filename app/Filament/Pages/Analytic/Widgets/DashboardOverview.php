@@ -37,162 +37,147 @@ class DashboardOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        // --- RENTANG WAKTU ---
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
         $startOfLastMonth = now()->subMonth()->startOfMonth();
         $endOfLastMonth = now()->subMonth()->endOfMonth();
 
-        // --- PEMASUKAN (INCOME) ---
-        // Pemasukan Bulan Ini (hanya dari pembayaran yang sudah 'lunas')
+        /**
+         * ===============================
+         * PROFIT GARASI (LABA KOTOR)
+         * ===============================
+         */
         $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('invoice.booking.car')
             ->get()
             ->sum(function ($payment) {
-                $totalDays = $payment->invoice->booking->total_hari;
-                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-                $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
-                return $hargaHarianTotal - $hargaPokokTotal;
+                $days = $payment->invoice->booking->total_hari;
+                $car = $payment->invoice->booking->car;
+
+                return ($car->harga_harian - $car->harga_pokok) * $days;
             });
 
-
-        // Pemasukan Bulan Lalu
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'lunas')
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('invoice.booking.car')
             ->get()
             ->sum(function ($payment) {
-                $totalDays = $payment->invoice->booking->total_hari;
-                $hargaPokokTotal = $payment->invoice->booking->car->harga_pokok * $totalDays;
-                $hargaHarianTotal = $payment->invoice->booking->car->harga_harian * $totalDays;
-                return $hargaHarianTotal - $hargaPokokTotal;
+                $days = $payment->invoice->booking->total_hari;
+                $car = $payment->invoice->booking->car;
+
+                return ($car->harga_harian - $car->harga_pokok) * $days;
             });
 
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
-        //Pendapatan Kotor
-        $RevenueMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+
+        /**
+         * ===============================
+         * PENDAPATAN KOTOR
+         * ===============================
+         */
+        $RevenueMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->sum('pembayaran');
-        $RevenueLastMonth = Payment::where('status', 'lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+
+        $RevenueLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->sum('pembayaran');
+
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
-        // --- PENGELUARAN (EXPENSE) ---
-        // Pengeluaran Bulan Ini
+        /**
+         * ===============================
+         * PENGELUARAN
+         * ===============================
+         */
         $expenseThisMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfMonth, $endOfMonth])
             ->sum('pembayaran');
 
-        // Pengeluaran Bulan Lalu
         $expenseLastMonth = Pengeluaran::whereBetween('tanggal_pengeluaran', [$startOfLastMonth, $endOfLastMonth])
             ->sum('pembayaran');
 
         $expenseChange = $this->calculatePercentageChange($expenseThisMonth, $expenseLastMonth);
 
-        // --- PIUTANG (RECEIVABLES) ---
-        // Piutang Bulan Ini (total sisa pembayaran dari invoice yang 'belum_lunas')
-        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+        /**
+         * ===============================
+         * PIUTANG
+         * ===============================
+         */
+        $receivablesThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
             ->sum('pembayaran');
 
-        // Piutang Bulan Lalu
-        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            // ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+        $receivablesLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
             ->sum('pembayaran');
 
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
-
-        // --- LABA BERSIH (PROFIT) ---
-        // Laba Bersih Bulan Ini
+        /**
+         * ===============================
+         * LABA BERSIH
+         * ===============================
+         */
         $profitThisMonth = $RevenueMonth - $expenseThisMonth;
-
-        // Laba Bersih Bulan Lalu
         $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
-
         $profitChange = $this->calculatePercentageChange($profitThisMonth, $profitLastMonth);
-        // --- KALKULASI UTILISASI ARMADA (VERSI AKURAT) ---
 
-        // 1. Hitung SEMUA mobil aktif di garasi SPT (Denominator)
+        /**
+         * ===============================
+         * UTILISASI ARMADA
+         * ===============================
+         */
         $jumlahMobilSPT = \App\Models\Car::where('garasi', 'SPT')->count();
+        $daysInMonth = $startOfMonth->daysInMonth;
+        $totalHariTersedia = $jumlahMobilSPT * $daysInMonth;
 
-        // Tentukan periode bulan ini
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth = now()->endOfMonth();
-        $jumlahHariDalamBulan = $startOfMonth->daysInMonth;
+        $totalHariDisewa = \App\Models\Booking::whereHas('car', fn($q) => $q->where('garasi', 'SPT'))
+            ->where('tanggal_keluar', '<=', $endOfMonth)
+            ->where('tanggal_kembali', '>=', $startOfMonth)
+            ->get()
+            ->sum(function ($booking) use ($startOfMonth, $endOfMonth) {
+                $start = max(Carbon::parse($booking->tanggal_keluar), $startOfMonth);
+                $end = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
+                return $start->diffInDays($end);
+            });
 
-        // Total hari kapasitas armada SPT bulan ini
-        $totalHariTersedia = $jumlahMobilSPT * $jumlahHariDalamBulan;
+        $utilizationRate = $totalHariTersedia > 0
+            ? ($totalHariDisewa / $totalHariTersedia) * 100
+            : 0;
 
-
-        // 2. Hitung total hari disewa yang HANYA jatuh di bulan ini (Numerator)
-        $totalHariDisewa = 0;
-
-        // Ambil semua booking yang AKTIF (beririsan) di bulan ini
-        $bookingsBulanIni = \App\Models\Booking::whereHas('car', function ($query) {
-            $query->where('garasi', 'SPT');
-        })
-            ->where('tanggal_keluar', '<=', $endOfMonth) // Booking yg dimulai sebelum akhir bulan ini
-            ->where('tanggal_kembali', '>=', $startOfMonth) // dan berakhir setelah awal bulan ini
-            ->get();
-
-        foreach ($bookingsBulanIni as $booking) {
-            // Tentukan tanggal mulai dan selesai booking dalam rentang bulan ini
-            $actualStart = max(Carbon::parse($booking->tanggal_keluar), $startOfMonth);
-            $actualEnd = min(Carbon::parse($booking->tanggal_kembali), $endOfMonth);
-
-            // Hitung selisih hari dan tambahkan ke total (tambah 1 karena inklusif)
-            $totalHariDisewa += $actualStart->diffInDays($actualEnd);
-        }
-
-
-        // 3. Kalkulasi final
-        $rawUtilization = ($totalHariTersedia > 0) ? ($totalHariDisewa / $totalHariTersedia) * 100 : 0;
-        $utilizationRate = $rawUtilization; // Dibulatkan di sini
-
-        // --- TAMPILAN WIDGET ---
+        /**
+         * ===============================
+         * WIDGET OUTPUT
+         * ===============================
+         */
         return [
             Stat::make('Aktivitas Armada SPT', number_format($utilizationRate, 0) . '%')
                 ->icon('heroicon-o-key')
-                ->description(round($totalHariDisewa) . " dari {$totalHariTersedia} Total Hari Disewa")
-                ->color('success'),
+                ->description("$totalHariDisewa dari $totalHariTersedia hari"),
+
             Stat::make('Total Piutang', 'Rp ' . number_format($receivablesThisMonth, 0, ',', '.'))
-                ->icon('heroicon-o-clock') // IKON DITAMBAHKAN
                 ->description(number_format(abs($receivablesChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($receivablesChange <= 0 ? 'heroicon-m-arrow-trending-down' : 'heroicon-m-arrow-trending-up')
-                ->color($receivablesChange <= 0 ? 'success' : 'danger'), // Logika terbalik: piutang turun itu bagus
+                ->color($receivablesChange <= 0 ? 'success' : 'danger'),
+
             Stat::make('Pendapatan Kotor', 'Rp ' . number_format($RevenueMonth, 0, ',', '.'))
-                ->icon('heroicon-o-arrow-trending-up') // IKON DITAMBAHKAN
                 ->description(number_format(abs($RevenueChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($RevenueChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($RevenueChange >= 0 ? 'success' : 'danger'),
+
             Stat::make('Profit Garasi', 'Rp ' . number_format($incomeThisMonth, 0, ',', '.'))
-                ->icon('heroicon-o-chart-bar-square') // IKON DITAMBAHKAN
                 ->description(number_format(abs($incomeChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($incomeChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($incomeChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Total Pengeluaran', 'Rp ' . number_format($expenseThisMonth, 0, ',', '.'))
                 ->description(number_format(abs($expenseChange), 1) . '% vs bulan lalu')
-                // Logika terbalik: pengeluaran turun itu bagus (success), naik itu jelek (danger)
-                ->icon('heroicon-o-arrow-trending-down')
-                ->descriptionIcon($expenseChange <= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expenseChange <= 0 ? 'success' : 'danger'),
+
             Stat::make('Laba Bersih', 'Rp ' . number_format($profitThisMonth, 0, ',', '.'))
-                ->icon('heroicon-o-banknotes') // IKON DITAMBAHKAN
                 ->description(number_format(abs($profitChange), 1) . '% vs bulan lalu')
-                ->descriptionIcon($profitChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($profitChange >= 0 ? 'success' : 'danger'),
-
-
-            // Logika terbalik: piutang turun itu bagus
-
-
         ];
     }
+
 
     public static function canViewAny(): bool
     {
