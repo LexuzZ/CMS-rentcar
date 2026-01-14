@@ -14,7 +14,7 @@ class ViewInvoice extends ViewRecord
     {
         return [
             // Tombol Edit akan otomatis muncul di sini jika pengguna memiliki izin
-            Actions\EditAction::make()->label('Ubah')
+            Actions\EditAction::make()->label('Ubah + Catat Payment')
                     ->icon('heroicon-o-pencil')
                     ->color('warning')
 
