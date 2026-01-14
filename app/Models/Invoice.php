@@ -9,89 +9,40 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Invoice extends Model
 {
-
-
-
     protected $fillable = [
         'booking_id',
-        'total',
         'pickup_dropOff',
-        'tanggal_invoice',
+        'total_tagihan',
+        'total_denda',
+        'total_paid',
+        'sisa_pembayaran',
         'status',
+        'tanggal_invoice',
     ];
 
-    public function booking()
-    {
-        return $this->belongsTo(Booking::class);
-    }
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    public function getTotalDendaAttribute(): float
-    {
-        return $this->booking?->penalty->sum('amount') ?? 0;
-    }
-
     /**
-     * Total tagihan AKTUAL (REAL TIME)
+     * Hitung ulang semua nilai invoice
      */
-    public function getTotalTagihanAttribute(): float
+    public function recalculate(): void
     {
-        $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
+        $booking = $this->booking;
+
+        $biayaSewa = $booking?->estimasi_biaya ?? 0;
         $pickup = $this->pickup_dropOff ?? 0;
 
-        return $biayaSewa + $pickup + $this->total_denda;
+        $totalDenda = $booking?->penalty()->sum('amount') ?? 0;
+        $totalPaid = $this->payments()->sum('amount');
+
+        $totalTagihan = $biayaSewa + $pickup + $totalDenda;
+        $sisa = max($totalTagihan - $totalPaid, 0);
+
+        $this->updateQuietly([
+            'total_tagihan' => $totalTagihan,
+            'total_denda' => $totalDenda,
+            'total_paid' => $totalPaid,
+            'sisa_pembayaran' => $sisa,
+            'status' => $sisa === 0 ? 'lunas' : 'belum_lunas',
+        ]);
     }
-
-    /**
-     * Total sudah dibayar
-     */
-    public function getTotalPaidAttribute(): float
-    {
-        return $this->payments()->sum('pembayaran');
-    }
-
-    /**
-     * Sisa pembayaran REAL TIME
-     */
-    public function getSisaPembayaranAttribute(): float
-    {
-        return max($this->total_tagihan - $this->total_paid, 0);
-    }
-
-    /**
-     * Status invoice
-     */
-    public function getStatusAttribute(): string
-    {
-        return $this->sisa_pembayaran <= 0 ? 'lunas' : 'belum_lunas';
-    }
-    // public function recalculatePaymentStatus(): void
-    // {
-    //     $this->loadMissing([
-    //         'payments',
-    //         'booking.penalty',
-    //     ]);
-
-    //     $biayaSewa = $this->booking?->estimasi_biaya ?? 0;
-    //     $pickupDropOff = $this->pickup_dropOff ?? 0;
-    //     $totalDenda = $this->booking?->penalty?->sum('amount') ?? 0;
-    //     $totalPembayaran = $this->payments->sum('pembayaran');
-
-    //     $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
-    //     $sisa = max($totalTagihan - $totalPembayaran, 0);
-
-    //     // UPDATE SEKALI, TANPA LOOP
-    //     $this->forceFill([
-    //         'total' => $totalTagihan,
-    //         'sisa_pembayaran' => $sisa,
-    //         'status' => $sisa <= 0 ? 'lunas' : 'belum_lunas',
-    //     ])->saveQuietly();
-    // }
-
-
-
-
 }
+
