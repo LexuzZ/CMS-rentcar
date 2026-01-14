@@ -104,6 +104,7 @@ class CustomerResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
+                TextColumn::make('id')->label('ID')->searchable(),
                 TextColumn::make('nama')->label('Nama')->searchable()->wrap()
                     ->width(150),
                 TextColumn::make('ktp')->label('No KTP')->wrap()

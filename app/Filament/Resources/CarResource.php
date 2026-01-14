@@ -145,6 +145,7 @@ class CarResource extends Resource
                 //     ->label('Foto Mobil')
                 //     ->disk('public')
                 //     ->circular(),
+                TextColumn::make('id')->label('ID')->sortable()->searchable(),
                 TextColumn::make('nopol')->label('Nopol')->sortable()->searchable(),
                 TextColumn::make('carModel.name')->label('Nama Mobil')->sortable()->searchable()->alignCenter(),
                 TextColumn::make('garasi')->label('Garasi')->sortable()->searchable(),
