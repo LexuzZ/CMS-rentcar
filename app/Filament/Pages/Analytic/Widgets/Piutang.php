@@ -29,10 +29,15 @@ class Piutang extends TableWidget
                 $query->where('status', 'belum_lunas'); // 🔥 STATUS DI INVOICE
             })
             ->with([
-                'invoice:id,status,booking_id',
-                'invoice.booking:id,customer_id',
-                'invoice.booking.customer:id,nama',
+                'invoice',
+                'invoice.booking',
+                'invoice.booking.customer',
+                'invoice.booking.car',
+                'invoice.booking.car.carModel',
+                'invoice.booking.penalty',
+                'invoice.payments',
             ])
+
             ->latest('tanggal_pembayaran');
     }
 
@@ -54,7 +59,7 @@ class Piutang extends TableWidget
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
-                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color('danger'),
         ];
     }
@@ -66,7 +71,8 @@ class Piutang extends TableWidget
                 ->label('Hanya Bulan Ini')
                 ->toggle()
                 ->default(true)
-                ->query(fn (Builder $query) =>
+                ->query(
+                    fn(Builder $query) =>
                     $query->whereBetween('tanggal_pembayaran', [
                         now()->startOfMonth(),
                         now()->endOfMonth(),
@@ -89,10 +95,11 @@ class Piutang extends TableWidget
                     11 => 'November',
                     12 => 'Desember',
                 ])
-                ->query(fn (Builder $query, array $data) =>
+                ->query(
+                    fn(Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
+                        fn($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
                     )
                 ),
 
@@ -100,13 +107,14 @@ class Piutang extends TableWidget
                 ->label('Tahun')
                 ->options(
                     collect(range(now()->year, now()->year - 5))
-                        ->mapWithKeys(fn ($y) => [$y => $y])
+                        ->mapWithKeys(fn($y) => [$y => $y])
                         ->toArray()
                 )
-                ->query(fn (Builder $query, array $data) =>
+                ->query(
+                    fn(Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
+                        fn($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
                     )
                 ),
 
@@ -132,7 +140,7 @@ class Piutang extends TableWidget
                     ]);
 
                     return response()->streamDownload(
-                        fn () => print($pdf->output()),
+                        fn() => print ($pdf->output()),
                         'piutang.pdf'
                     );
                 }),
