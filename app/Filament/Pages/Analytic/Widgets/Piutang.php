@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Invoice;
 use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
@@ -19,46 +18,44 @@ class Piutang extends TableWidget
 
     protected function getTableQuery(): Builder
     {
-        return Invoice::query()
-            ->where('status', 'belum_lunas')
-            ->with([
-                'booking.customer',
-                'booking.penalty',
-                'payments',
+        return Payment::query()
+            ->select([
+                'id',
+                'invoice_id',
+                'tanggal_pembayaran',
+                'pembayaran',
             ])
-            ->latest('tanggal_invoice');
+            ->whereHas('invoice', function (Builder $query) {
+                $query->where('status', 'belum_lunas'); // 🔥 STATUS DI INVOICE
+            })
+            ->with([
+                'invoice:id,status,booking_id',
+                'invoice.booking:id,customer_id',
+                'invoice.booking.customer:id,nama',
+            ])
+            ->latest('tanggal_pembayaran');
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('tanggal_invoice')
+            Tables\Columns\TextColumn::make('tanggal_pembayaran')
                 ->label('Tanggal')
                 ->date('d M Y')
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('booking.customer.nama')
+            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
                 ->label('Penyewa')
+                ->default('-')
                 ->wrap()
                 ->alignCenter()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('total_tagihan')
-                ->label('Total Tagihan')
+            Tables\Columns\TextColumn::make('pembayaran')
+                ->label('Nominal')
                 ->alignCenter()
-                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
-            Tables\Columns\TextColumn::make('total_paid')
-                ->label('Sudah Dibayar')
-                ->alignCenter()
-                ->color('success')
-                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
-            Tables\Columns\TextColumn::make('sisa_pembayaran')
-                ->label('Sisa')
-                ->alignCenter()
-                ->color('danger')
-                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ->color('danger'),
         ];
     }
 
@@ -70,7 +67,7 @@ class Piutang extends TableWidget
                 ->toggle()
                 ->default(true)
                 ->query(fn (Builder $query) =>
-                    $query->whereBetween('tanggal_invoice', [
+                    $query->whereBetween('tanggal_pembayaran', [
                         now()->startOfMonth(),
                         now()->endOfMonth(),
                     ])
@@ -95,8 +92,7 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $month) =>
-                            $q->whereMonth('tanggal_invoice', $month)
+                        fn ($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
                     )
                 ),
 
@@ -110,14 +106,13 @@ class Piutang extends TableWidget
                 ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn ($q, $year) =>
-                            $q->whereYear('tanggal_invoice', $year)
+                        fn ($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
                     )
                 ),
 
             SelectFilter::make('customer')
                 ->label('Pelanggan')
-                ->relationship('booking.customer', 'nama')
+                ->relationship('invoice.booking.customer', 'nama')
                 ->searchable()
                 ->preload(),
         ];
