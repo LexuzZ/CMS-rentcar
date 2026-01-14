@@ -68,11 +68,11 @@ class PaymentResource extends Resource
                     ])
                     ->required(),
 
-                Forms\Components\FileUpload::make('proof')
-                    ->label('Bukti Pembayaran')
-                    ->directory('payment-proofs')
-                    ->image()
-                    ->maxSize(2048),
+                // Forms\Components\FileUpload::make('proof')
+                //     ->label('Bukti Pembayaran')
+                //     ->directory('payment-proofs')
+                //     ->image()
+                //     ->maxSize(2048),
             ])
         ]);
     }
@@ -100,19 +100,7 @@ class PaymentResource extends Resource
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tanggal')
                     ->date('d M Y'),
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->badge()
-                    ->alignCenter()
-                    ->colors([
-                        'success' => 'lunas',
-                        'danger' => 'belum_lunas',
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-                        default => ucfirst($state),
-                    }),
+
                 TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
@@ -137,12 +125,12 @@ class PaymentResource extends Resource
 
             ])
             ->filters([
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'lunas' => 'Lunas',
-                        'belum_lunas' => 'Belum Lunas',
-                    ]),
+                // SelectFilter::make('status')
+                //     ->label('Status')
+                //     ->options([
+                //         'lunas' => 'Lunas',
+                //         'belum_lunas' => 'Belum Lunas',
+                //     ]),
                 SelectFilter::make('metode_pembayaran')
                     ->label('Metode')
                     ->options([
