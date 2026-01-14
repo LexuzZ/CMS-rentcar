@@ -17,25 +17,24 @@ class Piutang extends TableWidget
     protected int|string|array $columnSpan = '300px';
 
     protected function getTableQuery(): Builder
-{
-    return Payment::query()
-        ->select([
-            'id',
-            'invoice_id',
-            'tanggal_pembayaran',
-            'pembayaran',
-        ])
-        ->whereHas('invoice', function (Builder $query) {
-            $query->where('sisa_pembayaran', '>', 0); // ✅ FIX
-        })
-        ->with([
-            'invoice:id,booking_id,sisa_pembayaran',
-            'invoice.booking:id,customer_id',
-            'invoice.booking.customer:id,nama',
-        ])
-        ->latest('tanggal_pembayaran');
-}
-
+    {
+        return Payment::query()
+            ->select([
+                'id',
+                'invoice_id',
+                'tanggal_pembayaran',
+                'pembayaran',
+            ])
+            ->whereHas('invoice', function (Builder $query) {
+                $query->where('status', 'belum_lunas'); // 🔥 STATUS DI INVOICE
+            })
+            ->with([
+                'invoice:id,status,booking_id',
+                'invoice.booking:id,customer_id',
+                'invoice.booking.customer:id,nama',
+            ])
+            ->latest('tanggal_pembayaran');
+    }
 
     protected function getTableColumns(): array
     {
@@ -52,7 +51,7 @@ class Piutang extends TableWidget
                 ->alignCenter()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('invoice.sisa_pembayaran')
+            Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
                 ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
