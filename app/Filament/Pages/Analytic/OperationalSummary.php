@@ -182,26 +182,41 @@ class OperationalSummary extends Page implements HasForms
 
         // --- Profit Garasi (Income Bersih dari harga harian - harga pokok)
         $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')->get()
-            ->sum(fn($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('invoice.booking.car')
+            ->get()
+            ->sum(
+                fn($p) =>
+                ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok)
+                * $p->invoice->booking->total_hari
+            );
         $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'lunas')->get()
-            ->sum(fn($p) => ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('invoice.booking.car')
+            ->get()
+            ->sum(
+                fn($p) =>
+                ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok)
+                * $p->invoice->booking->total_hari
+            );
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
-        $pokokThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'lunas')->get()
-            ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
-        $pokokLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'lunas')->get()
-            ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
-        $pokokChange = $this->calculatePercentageChange($pokokThisMonth, $pokokLastMonth);
+        // $pokokThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        //     ->where('status', 'lunas')->get()
+        //     ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        // $pokokLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+        //     ->where('status', 'lunas')->get()
+        //     ->sum(fn($p) => ($p->invoice->booking->car->harga_pokok) * $p->invoice->booking->total_hari);
+        // $pokokChange = $this->calculatePercentageChange($pokokThisMonth, $pokokLastMonth);
 
 
 
-        $receivablesThisMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])->sum('pembayaran');
-        $receivablesLastMonth = Payment::where('status', 'belum_lunas')
-            ->whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])->sum('pembayaran');
+        $receivablesThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
+            ->sum('pembayaran');
+
+        $receivablesLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
+            ->sum('pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
         $rentMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
