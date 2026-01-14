@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
-use App\Models\Payment;
+use App\Models\Invoice;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,44 +18,46 @@ class Piutang extends TableWidget
 
     protected function getTableQuery(): Builder
     {
-        return Payment::query()
-            ->select([
-                'id',
-                'invoice_id',
-                'tanggal_pembayaran',
-                'pembayaran',
-            ])
-            ->whereHas('invoice', function (Builder $query) {
-                $query->where('status', 'belum_lunas'); // 🔥 STATUS DI INVOICE
-            })
+        return Invoice::query()
+            ->where('status', 'belum_lunas')
             ->with([
-                'invoice:id,status,booking_id',
-                'invoice.booking:id,customer_id',
-                'invoice.booking.customer:id,nama',
+                'booking.customer',
+                'booking.penalty',
+                'payments',
             ])
-            ->latest('tanggal_pembayaran');
+            ->latest('tanggal_invoice');
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('tanggal_pembayaran')
+            Tables\Columns\TextColumn::make('tanggal_invoice')
                 ->label('Tanggal')
                 ->date('d M Y')
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('invoice.booking.customer.nama')
+            Tables\Columns\TextColumn::make('booking.customer.nama')
                 ->label('Penyewa')
-                ->default('-')
                 ->wrap()
                 ->alignCenter()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('pembayaran')
-                ->label('Nominal')
+            Tables\Columns\TextColumn::make('total_tagihan')
+                ->label('Total Tagihan')
                 ->alignCenter()
-                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color('danger'),
+                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+            Tables\Columns\TextColumn::make('total_paid')
+                ->label('Sudah Dibayar')
+                ->alignCenter()
+                ->color('success')
+                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+            Tables\Columns\TextColumn::make('sisa_pembayaran')
+                ->label('Sisa')
+                ->alignCenter()
+                ->color('danger')
+                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
         ];
     }
 
@@ -66,9 +68,8 @@ class Piutang extends TableWidget
                 ->label('Hanya Bulan Ini')
                 ->toggle()
                 ->default(true)
-                ->query(
-                    fn(Builder $query) =>
-                    $query->whereBetween('tanggal_pembayaran', [
+                ->query(fn (Builder $query) =>
+                    $query->whereBetween('tanggal_invoice', [
                         now()->startOfMonth(),
                         now()->endOfMonth(),
                     ])
@@ -90,11 +91,11 @@ class Piutang extends TableWidget
                     11 => 'November',
                     12 => 'Desember',
                 ])
-                ->query(
-                    fn(Builder $query, array $data) =>
+                ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn($q, $month) => $q->whereMonth('tanggal_pembayaran', $month)
+                        fn ($q, $month) =>
+                            $q->whereMonth('tanggal_invoice', $month)
                     )
                 ),
 
@@ -102,20 +103,20 @@ class Piutang extends TableWidget
                 ->label('Tahun')
                 ->options(
                     collect(range(now()->year, now()->year - 5))
-                        ->mapWithKeys(fn($y) => [$y => $y])
+                        ->mapWithKeys(fn ($y) => [$y => $y])
                         ->toArray()
                 )
-                ->query(
-                    fn(Builder $query, array $data) =>
+                ->query(fn (Builder $query, array $data) =>
                     $query->when(
                         $data['value'] ?? null,
-                        fn($q, $year) => $q->whereYear('tanggal_pembayaran', $year)
+                        fn ($q, $year) =>
+                            $q->whereYear('tanggal_invoice', $year)
                     )
                 ),
 
             SelectFilter::make('customer')
                 ->label('Pelanggan')
-                ->relationship('invoice.booking.customer', 'nama')
+                ->relationship('booking.customer', 'nama')
                 ->searchable()
                 ->preload(),
         ];
@@ -131,27 +132,24 @@ class Piutang extends TableWidget
 
                     $query = clone $livewire->getFilteredTableQuery();
 
-                    $piutang = $query
+                    $invoices = $query
                         ->with([
-                            'invoice.payments',
-                            'invoice.booking.penalty',
-                            'invoice.booking.customer',
-                            'invoice.booking.car.carModel',
+                            'booking.customer',
+                            'booking.penalty',
+                            'booking.car.carModel',
+                            'payments',
                         ])
                         ->get();
 
                     $pdf = Pdf::loadView('exports.piutang', [
-                        'piutang' => $piutang,
+                        'piutang' => $invoices,
                     ])->setPaper('A4', 'landscape');
 
                     return response()->streamDownload(
-                        fn() => print ($pdf->output()),
+                        fn () => print($pdf->output()),
                         'piutang.pdf'
                     );
-                })
-
+                }),
         ];
     }
-
-
 }
