@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
+use App\Models\Invoice;
 use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
