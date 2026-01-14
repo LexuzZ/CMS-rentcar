@@ -181,12 +181,17 @@
                 <tbody>
                     @forelse ($piutang as $item)
                         @php
-                            // $booking = $payment->invoice->booking;
-                            $totalDenda = $item->invoice->booking->penalty->sum('amount');
+                            $invoice = $item->invoice;
+                            $booking = $invoice->booking;
+
+                            $totalDenda = $booking->penalty->sum('amount');
                             $totalTagihan =
-                                $item->invoice->booking->estimasi_biaya + $item->invoice->pickup_dropOff + $totalDenda;
-                            $sisaPembayaran = $item->invoice->dp - $totalTagihan;
+                                ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
+
+                            $totalDibayar = $invoice->payments->sum('pembayaran');
+                            $sisaPembayaran = max($totalTagihan - $totalDibayar, 0);
                         @endphp
+
                         <tr>
                             <td>
                                 <strong>INV #{{ $item->invoice->id }} / BOOK
@@ -224,7 +229,9 @@
                             </td>
                             <td class="text-center">{{ $item->invoice->booking->customer->nama }}</td>
                             <td class="text-right">Rp {{ number_format($item->pembayaran, 0, ',', '.') }}</td>
-                            <td class="text-right">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</td>
+                            <td class="text-right">
+                                Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -232,27 +239,32 @@
                         </tr>
                     @endforelse
                     @php
-                        $grandTotal = $piutang->sum('pembayaran');
-                        $totalTagihan = $piutang
-                            ->filter(fn($item) => $item->status === 'belum_lunas')
-                            ->map(function ($item) {
-                                $booking = $item->invoice->booking;
-                                $totalDenda = $booking->penalty->sum('amount');
-                                $totalTagihan = $booking->estimasi_biaya + $item->invoice->pickup_dropOff + $totalDenda;
-                                return $totalTagihan - $item->invoice->dp; // sisa pembayaran
-                            })
-                            ->sum();
+                        $totalSisaPiutang = $piutang->sum(function ($item) {
+                            $invoice = $item->invoice;
+                            $booking = $invoice->booking;
+
+                            $totalDenda = $booking->penalty->sum('amount');
+                            $totalTagihan =
+                                ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
+
+                            $totalDibayar = $invoice->payments->sum('pembayaran');
+
+                            return max($totalTagihan - $totalDibayar, 0);
+                        });
                     @endphp
+
                     {{-- <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
                         <td colspan="2" class="text-right"><strong>Rp
                                 {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
                     </tr> --}}
                     <tr>
-                        <td colspan="4" class="text-right"><strong>TOTAL TAGIHAN SISA PEMBAYARAN</strong></td>
-                        <td colspan="2" class="text-left"><strong>Rp
-                                {{ number_format($totalTagihan, 0, ',', '.') }}</strong></td>
+                        <td colspan="4" class="text-right"><strong>TOTAL SISA PIUTANG</strong></td>
+                        <td colspan="2" class="text-right">
+                            <strong>Rp {{ number_format($totalSisaPiutang, 0, ',', '.') }}</strong>
+                        </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
