@@ -19,6 +19,10 @@ class Invoice extends Model
         'status',
         'tanggal_invoice',
     ];
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
 
     /**
      * Hitung ulang semua nilai invoice
