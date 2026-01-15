@@ -35,22 +35,30 @@ class Invoice extends Model
     {
         $booking = $this->booking;
 
-        $biayaSewa = $booking?->estimasi_biaya ?? 0;
-        $pickup = $this->pickup_dropOff ?? 0;
+        if (!$booking) {
+            return;
+        }
 
-        $totalDenda = $booking?->penalties()->sum('amount') ?? 0;
+        $totalDenda = $booking->penalties()->sum('amount');
         $totalPaid = $this->payments()->sum('pembayaran');
 
-        $totalTagihan = $biayaSewa + $pickup + $totalDenda;
-        $sisa = max($totalTagihan - $totalPaid, 0);
+        $this->total_denda = $totalDenda;
+        $this->total_paid = $totalPaid;
 
-        $this->updateQuietly([
-            'total_tagihan' => $totalTagihan,
-            'total_denda' => $totalDenda,
-            'total_paid' => $totalPaid,
-            'sisa_pembayaran' => $sisa,
-            'status' => $sisa === 0 ? 'lunas' : 'belum_lunas',
-        ]);
+        $this->total_tagihan =
+            $this->base_amount +
+            $this->pickup_dropOff +
+            $totalDenda;
+
+        $this->sisa_pembayaran =
+            $this->total_tagihan - $totalPaid;
+
+        $this->status = $this->sisa_pembayaran <= 0
+            ? 'lunas'
+            : 'belum_lunas';
+
+        $this->saveQuietly();
     }
+
 }
 
