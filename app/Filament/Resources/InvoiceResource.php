@@ -85,7 +85,7 @@ class InvoiceResource extends Resource
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
                     ->url(fn (Invoice $record) =>
-                        route('invoice.pdf', $record)
+                        route('invoices.pdf.download', $record)
                     )
                     ->openUrlInNewTab(),
 
