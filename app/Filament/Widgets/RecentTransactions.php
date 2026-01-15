@@ -42,7 +42,7 @@ class RecentTransactions extends BaseWidget
                 ->alignCenter()
                 ->wrap(),
 
-            Tables\Columns\TextColumn::make('amount')
+            Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
                 ->money('IDR')
