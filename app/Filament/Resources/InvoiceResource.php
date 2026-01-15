@@ -107,8 +107,10 @@ class InvoiceResource extends Resource
                             $textToCopy .= "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$record->booking->total_hari} hari)\n";
                             $textToCopy .= "💰 *Biaya Sewa:* Rp " . number_format($record->booking->estimasi_biaya, 0, ',', '.') . "\n";
                             if ($record->pickup_dropOff > 0) {
-                                $textToCopy .= "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n"; }if ($totalDenda > 0) {
-                                $textToCopy .= "⚖️ *Denda/Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n"; }$textToCopy .= "-----------------------------------\n";
+                                $textToCopy .= "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($record->pickup_dropOff, 0, ',', '.') . "\n";
+                            }if ($totalDenda > 0) {
+                                $textToCopy .= "⚖️ *Denda/Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.') . "\n";
+                            }$textToCopy .= "-----------------------------------\n";
                             $textToCopy .= "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.') . "\n";
                             $textToCopy .= "🔐 *Uang Muka (DP):* Rp " . number_format($record->dp, 0, ',', '.') . "\n";
                             $textToCopy .= "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*\n\n";
@@ -116,7 +118,8 @@ class InvoiceResource extends Resource
                             $textToCopy .= "🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL\n";
                             $textToCopy .= "🏦 BCA: 2320418758 a.n. SRI NOVYANA\n\n";
                             $textToCopy .= "🙏 Terima kasih.";
-                            return view('filament.actions.copy-invoice', ['textToCopy' => $textToCopy,]); })->modalSubmitAction(false)->modalCancelAction(false),
+                            return view('filament.actions.copy-invoice', ['textToCopy' => $textToCopy,]);
+                        })->modalSubmitAction(false)->modalCancelAction(false),
 
                         // Action::make('whatsapp')
                         //     ->label('Kirim via WhatsApp')
@@ -142,10 +145,15 @@ class InvoiceResource extends Resource
                             TextEntry::make('sisa_pembayaran')->money('IDR', true),
                             TextEntry::make('status')
                                 ->badge()
+                                ->state(
+                                    fn($record) =>
+                                    $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas'
+                                )
                                 ->colors([
                                         'success' => 'lunas',
                                         'danger' => 'belum_lunas',
-                                    ]),
+                                    ])
+
                         ]),
                     ]),
 
