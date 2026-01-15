@@ -25,19 +25,11 @@ class Piutang extends TableWidget
                 'tanggal_pembayaran',
                 'pembayaran',
             ])
-            ->whereHas('invoice', function (Builder $query) {
-                $query->where('status', 'belum_lunas'); // 🔥 STATUS DI INVOICE
-            })
             ->with([
-                'invoice',
-                'invoice.booking',
-                'invoice.booking.customer',
-                'invoice.booking.car',
-                'invoice.booking.car.carModel',
-                'invoice.booking.penalty',
-                'invoice.payments',
+                'invoice:id,booking_id',
+                'invoice.booking:id,customer_id',
+                'invoice.booking.customer:id,nama',
             ])
-
             ->latest('tanggal_pembayaran');
     }
 
@@ -57,12 +49,16 @@ class Piutang extends TableWidget
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('pembayaran')
-                ->label('Nominal')
+                ->label('Pembayaran Masuk')
                 ->alignCenter()
-                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                ->color('danger'),
+                ->formatStateUsing(fn ($state) =>
+                    'Rp ' . number_format($state, 0, ',', '.')
+                )
+                ->color('success'),
         ];
     }
+
+
 
     protected function getTableFilters(): array
     {

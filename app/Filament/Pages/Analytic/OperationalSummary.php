@@ -351,7 +351,7 @@ class OperationalSummary extends Page implements HasForms
         return [
                 // RecentTransactions::class,
             Piutang::class,
-            Revenue::class,
+            // Revenue::class,
             // ArusKasTable::class
         ];
     }
