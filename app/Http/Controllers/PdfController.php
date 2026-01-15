@@ -18,7 +18,7 @@ class PdfController extends Controller
         $invoice->load([
             'booking.customer',
             'booking.car.carModel.brand',
-            'booking.penalty'
+            'booking.penalties'
         ]);
 
         // Muat view Blade dengan data invoice
