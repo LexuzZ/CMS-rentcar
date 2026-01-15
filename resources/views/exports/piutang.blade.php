@@ -199,7 +199,8 @@
                             <td>
                                 <strong>INV #{{ $item->invoice->id }} / BOOK
                                     #{{ $item->invoice->booking->id }}</strong><br>
-                                {{ $item->invoice->booking->car->carModel->name }}
+                                {{ $item->invoice->booking->car?->carModel?->name ?? '-' }}
+
                                 ({{ $item->invoice->booking->car->nopol }})
                                 <br>
                                 <small>Harga Harian: Rp
