@@ -57,7 +57,7 @@ class Booking extends Model
         return $this->hasOne(Invoice::class);
     }
 
-    public function penalty()
+    public function penalties()
     {
         return $this->hasMany(Penalty::class);
     }
