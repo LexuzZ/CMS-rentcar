@@ -187,10 +187,12 @@ class InvoiceResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
-                    TextColumn::make('booking.customer.nama')
+                    Tables\Columns\TextColumn::make('booking.customer.nama')
                         ->label('Penyewa')
                         ->searchable()
-                        ->wrap(),
+                        ->alignCenter()
+                        ->wrap()
+                        ->width(150),
 
                     TextColumn::make('booking.car.nopol')
                         ->label('Mobil'),
