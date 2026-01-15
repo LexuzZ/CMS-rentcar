@@ -31,7 +31,7 @@ class Piutang extends TableWidget
             'invoice.payments:id,invoice_id,pembayaran',
             'invoice.booking:id,customer_id,estimasi_biaya',
             'invoice.booking.customer:id,nama',
-            'invoice.booking.penalty:id,booking_id,amount,klaim', // 🔥 WAJIB
+            'invoice.booking.penalties:id,booking_id,amount,klaim', // 🔥 WAJIB
             'invoice.booking.car:id,car_model_id,nopol',
             'invoice.booking.car.carModel:id,name',
         ])
