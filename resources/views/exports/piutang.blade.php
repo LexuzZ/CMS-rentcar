@@ -182,15 +182,18 @@
                     @forelse ($piutang as $item)
                         @php
                             $invoice = $item->invoice;
-                            $booking = $invoice->booking;
+                            $booking = $invoice?->booking;
 
-                            $totalDenda = $booking->penalty->sum('amount');
+                            $totalDenda = $booking?->penalty?->sum('amount') ?? 0;
+
                             $totalTagihan =
-                                ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
+                                ($booking?->estimasi_biaya ?? 0) + ($invoice?->pickup_dropOff ?? 0) + $totalDenda;
 
-                            $totalDibayar = $invoice->payments->sum('pembayaran');
+                            $totalDibayar = $invoice?->payments?->sum('pembayaran') ?? 0;
+
                             $sisaPembayaran = max($totalTagihan - $totalDibayar, 0);
                         @endphp
+
 
                         <tr>
                             <td>
@@ -241,17 +244,23 @@
                     @php
                         $totalSisaPiutang = $piutang->sum(function ($item) {
                             $invoice = $item->invoice;
-                            $booking = $invoice->booking;
+                            $booking = $invoice?->booking;
 
-                            $totalDenda = $booking->penalty->sum('amount');
+                            if (!$invoice || !$booking) {
+                                return 0;
+                            }
+
+                            $totalDenda = $booking->penalty?->sum('amount') ?? 0;
+
                             $totalTagihan =
                                 ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
 
-                            $totalDibayar = $invoice->payments->sum('pembayaran');
+                            $totalDibayar = $invoice->payments?->sum('pembayaran') ?? 0;
 
                             return max($totalTagihan - $totalDibayar, 0);
                         });
                     @endphp
+
 
                     {{-- <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
