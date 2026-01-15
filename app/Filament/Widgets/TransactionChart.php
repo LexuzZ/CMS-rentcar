@@ -48,7 +48,7 @@ class TransactionChart extends ChartWidget
                     'tension' => 0.3,
                 ],
             ],
-            'labels' => $data->pluck('day')->map(fn ($d) => 'Tgl ' . $d),
+            'labels' => $data->pluck('day')->map(fn ($d) =>  $d),
         ];
     }
 
