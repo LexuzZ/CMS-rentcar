@@ -313,41 +313,41 @@ class BookingResource extends Resource
                             TextEntry::make('estimasi_biaya')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                         ]),
                     ]),
-                // Infolists\Components\Section::make('Rincian Biaya')
-                //     ->schema([
-                //         Infolists\Components\Grid::make(3)->schema([
-                //             Infolists\Components\TextEntry::make('estimasi_biaya')
-                //                 ->label('Biaya Sewa')
-                //                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                Infolists\Components\Section::make('Rincian Biaya')
+                    ->schema([
+                        Infolists\Components\Grid::make(3)->schema([
+                            Infolists\Components\TextEntry::make('estimasi_biaya')
+                                ->label('Biaya Sewa')
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
-                //             Infolists\Components\TextEntry::make('invoice.pickup_dropOff')
-                //                 ->label('Biaya Antar/Jemput')
-                //                 ->formatStateUsing(fn($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
+                            Infolists\Components\TextEntry::make('invoice.pickup_dropOff')
+                                ->label('Biaya Antar/Jemput')
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
 
-                //             TextEntry::make('invoice.total_tagihan')
-                //                 ->label('Total Tagihan')
-                //                 ->money('IDR', true),
+                            TextEntry::make('invoice.total_tagihan')
+                                ->label('Total Tagihan')
+                                ->money('IDR', true),
 
-                //             TextEntry::make('invoice.total_denda')
-                //                 ->label('Total Denda')
-                //                 ->money('IDR', true),
+                            TextEntry::make('invoice.total_denda')
+                                ->label('Total Denda')
+                                ->money('IDR', true),
 
-                //             TextEntry::make('invoice.total_paid')
-                //                 ->label('Total Dibayar')
-                //                 ->money('IDR', true),
+                            TextEntry::make('invoice.total_paid')
+                                ->label('Total Dibayar')
+                                ->money('IDR', true),
 
-                //             TextEntry::make('invoice.sisa_pembayaran')
-                //                 ->label('Sisa Pembayaran')
-                //                 ->money('IDR', true),
+                            TextEntry::make('invoice.sisa_pembayaran')
+                                ->label('Sisa Pembayaran')
+                                ->money('IDR', true),
 
-                //             TextEntry::make('invoice.status')
-                //                 ->badge()
-                //                 ->colors([
-                //                     'success' => 'lunas',
-                //                     'danger' => 'belum_lunas',
-                //                 ]),
-                //         ]),
-                //     ]),
+                            TextEntry::make('invoice.status')
+                                ->badge()
+                                ->colors([
+                                    'success' => 'lunas',
+                                    'danger' => 'belum_lunas',
+                                ]),
+                        ]),
+                    ]),
 
                 Section::make('Informasi Mobil')
                     ->schema([
