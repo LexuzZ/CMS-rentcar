@@ -342,10 +342,20 @@ class BookingResource extends Resource
 
                             TextEntry::make('invoice.status')
                                 ->badge()
+                                ->state(
+                                    fn($record) =>
+                                    $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas'
+                                )
                                 ->colors([
-                                    'success' => 'lunas',
-                                    'danger' => 'belum_lunas',
-                                ]),
+                                        'success' => 'lunas',
+                                        'danger' => 'belum_lunas',
+                                    ])
+                                ->formatStateUsing(fn($state) => match ($state) {
+                                    'lunas' => 'Lunas',
+                                    'belum_lunas' => 'Belum Lunas',
+
+                                    default => ucfirst($state),
+                                }),
                         ]),
                     ]),
 
