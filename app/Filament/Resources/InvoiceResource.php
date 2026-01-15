@@ -207,6 +207,7 @@ class InvoiceResource extends Resource
 
                     TextColumn::make('status')
                         ->badge()
+                        ->alignCenter()
                         ->state(
                             fn($record) =>
                             $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas'
