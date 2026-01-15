@@ -223,10 +223,12 @@
                                         <li>Antar/Jemput: Rp
                                             {{ number_format($item->invoice->pickup_dropOff, 0, ',', '.') }}</li>
                                     @endif
-                                    @if ($item->invoice->booking->penalty->count() > 0)
-                                        @foreach ($item->invoice->booking->penalty as $penalty)
-                                            <li>{{ ucfirst($penalty->klaim) }}: Rp
-                                                {{ number_format($penalty->amount, 0, ',', '.') }}</li>
+                                    @if ($item->invoice->booking->penalties->count() > 0)
+                                        @foreach ($item->invoice->booking?->penalties ?? [] as $penalty)
+                                            <li>
+                                                {{ ucfirst($penalty->klaim) }}: Rp
+                                                {{ number_format($penalty->amount, 0, ',', '.') }}
+                                            </li>
                                         @endforeach
                                     @endif
                                 </ul>
