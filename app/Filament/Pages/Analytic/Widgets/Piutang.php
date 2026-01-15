@@ -17,21 +17,27 @@ class Piutang extends TableWidget
     protected int|string|array $columnSpan = '300px';
 
     protected function getTableQuery(): Builder
-    {
-        return Payment::query()
-            ->select([
-                'id',
-                'invoice_id',
-                'tanggal_pembayaran',
-                'pembayaran',
-            ])
-            ->with([
-                'invoice:id,booking_id',
-                'invoice.booking:id,customer_id',
-                'invoice.booking.customer:id,nama',
-            ])
-            ->latest('tanggal_pembayaran');
-    }
+{
+    return Payment::query()
+        ->select([
+            'id',
+            'invoice_id',
+            'tanggal_pembayaran',
+            'pembayaran',
+        ])
+        ->whereHas('invoice') // 🔒 pastikan invoice ada
+        ->with([
+            'invoice:id,booking_id,pickup_dropOff',
+            'invoice.payments:id,invoice_id,pembayaran',
+            'invoice.booking:id,customer_id,estimasi_biaya',
+            'invoice.booking.customer:id,nama',
+            'invoice.booking.penalty:id,booking_id,amount,klaim', // 🔥 WAJIB
+            'invoice.booking.car:id,car_model_id,nopol',
+            'invoice.booking.car.carModel:id,name',
+        ])
+        ->latest('tanggal_pembayaran');
+}
+
 
     protected function getTableColumns(): array
     {
