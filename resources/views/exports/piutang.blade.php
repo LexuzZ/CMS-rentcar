@@ -201,7 +201,7 @@
                                     #{{ $item->invoice->booking->id }}</strong><br>
                                 {{ $item->invoice->booking->car?->carModel?->name ?? '-' }}
 
-                                ({{ $item->invoice->booking->car->nopol }})
+                                ({{ $item->invoice->booking->car?->nopol ?? '-' }})
                                 <br>
                                 <small>Harga Harian: Rp
                                     {{ number_format($item->invoice->booking->harga_harian, 0, ',', '.') }}</small><br>
