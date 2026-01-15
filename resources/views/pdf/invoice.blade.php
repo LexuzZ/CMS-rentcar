@@ -260,7 +260,7 @@
                             <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
                         </tr>
                     @endif
-                    @foreach ($invoice->booking->penalty as $penalty)
+                    @foreach ($invoice->booking->penalties as $penalty)
                         <tr>
                             <td><strong>{{ ucfirst($penalty->klaim) }}</strong> <br>
                                 <small>{{ $penalty->description }}</small>
