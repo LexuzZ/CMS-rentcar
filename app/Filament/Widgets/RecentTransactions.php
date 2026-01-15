@@ -76,10 +76,14 @@ class RecentTransactions extends BaseWidget
 
             Tables\Columns\BadgeColumn::make('invoice.status')
                 ->label('Status Invoice')
+                ->alignCenter()
+                ->state(
+                    fn($record) =>
+                    $record->invoice?->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas'
+                )
                 ->colors([
                         'success' => 'lunas',
                         'danger' => 'belum_lunas',
-
                     ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'lunas' => 'Lunas',
