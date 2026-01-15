@@ -10,6 +10,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -38,11 +39,11 @@ class InvoiceResource extends Resource
                     ->relationship(
                         'booking',
                         'id',
-                        fn ($query) => $query->with(['car.carModel', 'customer'])
+                        fn($query) => $query->with(['car.carModel', 'customer'])
                     )
                     ->getOptionLabelFromRecordUsing(
-                        fn ($record) =>
-                            "#{$record->id} - {$record->car?->nopol} ({$record->customer?->nama})"
+                        fn($record) =>
+                        "#{$record->id} - {$record->car?->nopol} ({$record->customer?->nama})"
                     )
                     ->searchable()
                     ->required(),
@@ -71,35 +72,80 @@ class InvoiceResource extends Resource
     public static function infolist(Infolists\Infolist $infolist): Infolists\Infolist
     {
         return $infolist->schema([
+
+            Infolists\Components\Section::make('Aksi Invoice')
+                ->actions([
+                        Action::make('download_pdf')
+                            ->label('Unduh PDF')
+                            ->icon('heroicon-o-arrow-down-tray')
+                            ->color('primary')
+                            ->url(
+                                fn(Invoice $record) =>
+                                route('invoice.pdf', $record)
+                            )
+                            ->openUrlInNewTab(),
+
+                        Action::make('copy_invoice')
+                            ->label('Copy Teks Invoice')
+                            ->icon('heroicon-o-clipboard-document')
+                            ->color('gray')
+                            ->action(function (Invoice $record, $livewire) {
+                                $text = self::invoiceText($record);
+
+                                $livewire->dispatchBrowserEvent('copy-to-clipboard', [
+                                    'text' => $text,
+                                ]);
+                            }),
+
+                        Action::make('whatsapp')
+                            ->label('Kirim via WhatsApp')
+                            ->icon('heroicon-o-chat-bubble-left-right')
+                            ->color('success')
+                            ->url(
+                                fn(Invoice $record) =>
+                                'https://wa.me/' .
+                                preg_replace('/[^0-9]/', '', $record->booking->customer->no_hp) .
+                                '?text=' . urlencode(self::invoiceText($record))
+                            )
+                            ->openUrlInNewTab(),
+                    ]),
+
+            /* =======================
+             | RINGKASAN KEUANGAN
+             ======================= */
             Infolists\Components\Section::make('Ringkasan Keuangan')
                 ->schema([
-                    Infolists\Components\Grid::make(3)->schema([
-                        TextEntry::make('total_tagihan')->money('IDR', true),
-                        TextEntry::make('total_denda')->money('IDR', true),
-                        TextEntry::make('total_paid')->money('IDR', true),
-                        TextEntry::make('sisa_pembayaran')->money('IDR', true),
-                        TextEntry::make('status')
-                            ->badge()
-                            ->colors([
-                                'success' => 'lunas',
-                                'danger' => 'belum_lunas',
-                            ]),
+                        Infolists\Components\Grid::make(3)->schema([
+                            TextEntry::make('total_tagihan')->money('IDR', true),
+                            TextEntry::make('total_denda')->money('IDR', true),
+                            TextEntry::make('total_paid')->money('IDR', true),
+                            TextEntry::make('sisa_pembayaran')->money('IDR', true),
+                            TextEntry::make('status')
+                                ->badge()
+                                ->colors([
+                                        'success' => 'lunas',
+                                        'danger' => 'belum_lunas',
+                                    ]),
+                        ]),
                     ]),
-                ]),
 
+            /* =======================
+             | INFO BOOKING
+             ======================= */
             Infolists\Components\Section::make('Informasi Booking')
                 ->schema([
-                    Infolists\Components\Grid::make(3)->schema([
-                        TextEntry::make('id')->label('ID Faktur'),
-                        TextEntry::make('booking.id')->label('ID Booking'),
-                        TextEntry::make('tanggal_invoice')->date('d M Y'),
-                        TextEntry::make('booking.customer.nama')->label('Pelanggan'),
-                        TextEntry::make('booking.car.carModel.name')->label('Mobil'),
-                        TextEntry::make('booking.car.nopol')->label('No. Polisi'),
+                        Infolists\Components\Grid::make(3)->schema([
+                            TextEntry::make('id')->label('ID Faktur'),
+                            TextEntry::make('booking.id')->label('ID Booking'),
+                            TextEntry::make('tanggal_invoice')->date('d M Y'),
+                            TextEntry::make('booking.customer.nama')->label('Pelanggan'),
+                            TextEntry::make('booking.car.carModel.name')->label('Mobil'),
+                            TextEntry::make('booking.car.nopol')->label('No. Polisi'),
+                        ]),
                     ]),
-                ]),
         ]);
     }
+
 
     /* =======================
      | TABLE
@@ -109,43 +155,43 @@ class InvoiceResource extends Resource
         return $table
             ->recordUrl(null)
             ->columns([
-                TextColumn::make('booking.customer.nama')
-                    ->label('Penyewa')
-                    ->searchable()
-                    ->wrap(),
+                    TextColumn::make('booking.customer.nama')
+                        ->label('Penyewa')
+                        ->searchable()
+                        ->wrap(),
 
-                TextColumn::make('booking.car.nopol')
-                    ->label('Mobil'),
+                    TextColumn::make('booking.car.nopol')
+                        ->label('Mobil'),
 
-                TextColumn::make('total_tagihan')
-                    ->label('Total')
-                    ->money('IDR', true),
+                    TextColumn::make('total_tagihan')
+                        ->label('Total')
+                        ->money('IDR', true),
 
-                TextColumn::make('sisa_pembayaran')
-                    ->label('Sisa')
-                    ->money('IDR', true),
+                    TextColumn::make('sisa_pembayaran')
+                        ->label('Sisa')
+                        ->money('IDR', true),
 
-                TextColumn::make('status')
-                    ->badge()
-                    ->colors([
-                        'success' => 'lunas',
-                        'danger' => 'belum_lunas',
-                    ]),
-            ])
+                    TextColumn::make('status')
+                        ->badge()
+                        ->colors([
+                                'success' => 'lunas',
+                                'danger' => 'belum_lunas',
+                            ]),
+                ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->tooltip('Detail Faktur')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->hiddenLabel(),
+                    Tables\Actions\ViewAction::make()
+                        ->tooltip('Detail Faktur')
+                        ->icon('heroicon-o-eye')
+                        ->color('info')
+                        ->hiddenLabel(),
 
-                Tables\Actions\EditAction::make()
-                    ->tooltip('Ubah Faktur')
-                    ->icon('heroicon-o-pencil')
-                    ->color('warning')
-                    ->hiddenLabel(),
-            ]);
+                    Tables\Actions\EditAction::make()
+                        ->tooltip('Ubah Faktur')
+                        ->icon('heroicon-o-pencil')
+                        ->color('warning')
+                        ->hiddenLabel(),
+                ]);
     }
 
     /* =======================
