@@ -205,10 +205,20 @@ class InvoiceResource extends Resource
 
                     TextColumn::make('status')
                         ->badge()
+                        ->state(
+                            fn($record) =>
+                            $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas'
+                        )
                         ->colors([
                                 'success' => 'lunas',
                                 'danger' => 'belum_lunas',
-                            ]),
+                            ])
+                        ->formatStateUsing(fn($state) => match ($state) {
+                            'lunas' => 'Lunas',
+                            'belum_lunas' => 'Belum Lunas',
+
+                            default => ucfirst($state),
+                        }),
                 ])
             ->defaultSort('created_at', 'desc')
             ->actions([
