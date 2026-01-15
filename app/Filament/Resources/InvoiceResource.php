@@ -153,6 +153,12 @@ class InvoiceResource extends Resource
                                         'success' => 'lunas',
                                         'danger' => 'belum_lunas',
                                     ])
+                                ->formatStateUsing(fn($state) => match ($state) {
+                                    'lunas' => 'Lunas',
+                                    'belum_lunas' => 'Belum Lunas',
+
+                                    default => ucfirst($state),
+                                }),
 
                         ]),
                     ]),
