@@ -47,10 +47,7 @@ class RecentTransactions extends BaseWidget
                 ->alignCenter()
                 ->money('IDR')
                 ->color(
-                    fn(Payment $record) =>
-                    $record->invoice?->status === 'lunas'
-                    ? 'success'
-                    : 'danger'
+                    'success'
                 ),
 
             Tables\Columns\BadgeColumn::make('metode_pembayaran')
