@@ -12,23 +12,28 @@ class TransactionChart extends ChartWidget
     protected static ?int $sort = 3;
 
     protected static bool $isLazy = true;
-    // protected static ?int $pollingInterval = null;
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '6',
-        'lg' => '6',
+        'md' => 6,
+        'lg' => 6,
     ];
 
     protected function getData(): array
     {
-        $cacheKey = 'transaction_chart_' . now()->format('Y_m');
+        $year  = now()->year;
+        $month = now()->month;
 
-        $data = Cache::remember($cacheKey, 120, function () {
+        $cacheKey = "transaction_chart_{$year}_{$month}";
+
+        $data = Cache::remember($cacheKey, 300, function () use ($year, $month) {
             return Payment::query()
-                ->selectRaw('DAY(created_at) as day, SUM(pembayaran) as total')
-                ->whereYear('created_at', now()->year)
-                ->whereMonth('created_at', now()->month)
+                ->selectRaw('
+                    DAY(tanggal_pembayaran) as day,
+                    SUM(pembayaran) as total
+                ')
+                ->whereYear('tanggal_pembayaran', $year)
+                ->whereMonth('tanggal_pembayaran', $month)
                 ->groupBy('day')
                 ->orderBy('day')
                 ->get();
@@ -40,9 +45,10 @@ class TransactionChart extends ChartWidget
                     'label' => 'Total Pembayaran',
                     'data' => $data->pluck('total')->map(fn ($v) => (int) $v),
                     'fill' => true,
+                    'tension' => 0.3,
                 ],
             ],
-            'labels' => $data->pluck('day'),
+            'labels' => $data->pluck('day')->map(fn ($d) => 'Tgl ' . $d),
         ];
     }
 
