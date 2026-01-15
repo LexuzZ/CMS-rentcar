@@ -6,7 +6,6 @@ use App\Models\Payment;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Cache;
 
 class RecentTransactions extends BaseWidget
 {
@@ -18,29 +17,22 @@ class RecentTransactions extends BaseWidget
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
-        'md' => '4',
-        'lg' => '4',
+        'md' => 4,
+        'lg' => 4,
     ];
 
     protected int|string|array $perPage = 2;
 
     protected function getTableQuery(): Builder
-{
-    return Payment::query()
-        ->select([
-            'id',
-            'invoice_id',
-            'pembayaran',
-            'metode_pembayaran',
-            'status',
-            'tanggal_pembayaran',
-            'created_at',
-        ])
-        ->with('invoice.booking.customer:id,nama')
-        ->where('tanggal_pembayaran', today())
-        ->latest('created_at');
-}
-
+    {
+        return Payment::query()
+            ->with([
+                    'invoice:id,booking_id,status',
+                    'invoice.booking.customer:id,nama',
+                ])
+            ->whereDate('tanggal_pembayaran', today())
+            ->latest();
+    }
 
     protected function getTableColumns(): array
     {
@@ -50,27 +42,28 @@ class RecentTransactions extends BaseWidget
                 ->alignCenter()
                 ->wrap(),
 
-            Tables\Columns\TextColumn::make('pembayaran')
+            Tables\Columns\TextColumn::make('amount')
                 ->label('Nominal')
                 ->alignCenter()
-                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ->money('IDR')
                 ->color(
-                    fn(Payment $record): string =>
-                    $record->status === 'lunas' ? 'success' : 'danger'
+                    fn(Payment $record) =>
+                    $record->invoice?->status === 'lunas'
+                    ? 'success'
+                    : 'danger'
                 ),
 
-            Tables\Columns\TextColumn::make('metode_pembayaran')
+            Tables\Columns\BadgeColumn::make('metode_pembayaran')
                 ->label('Metode')
-                ->badge()
                 ->alignCenter()
                 ->colors([
-                    'success' => 'tunai',
-                    'info' => 'transfer',
-                    'gray' => 'qris',
-                    'primary' => 'tunai_transfer',
-                    'warning' => 'tunai_qris',
-                    'danger' => 'transfer_qris',
-                ])
+                        'success' => 'tunai',
+                        'info' => 'transfer',
+                        'gray' => 'qris',
+                        'primary' => 'tunai_transfer',
+                        'warning' => 'tunai_qris',
+                        'danger' => 'transfer_qris',
+                    ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'tunai' => 'Tunai',
                     'transfer' => 'Transfer',
@@ -78,6 +71,20 @@ class RecentTransactions extends BaseWidget
                     'tunai_transfer' => 'Tunai & Transfer',
                     'tunai_qris' => 'Tunai & QRIS',
                     'transfer_qris' => 'Transfer & QRIS',
+                    default => ucfirst($state),
+                }),
+
+            Tables\Columns\BadgeColumn::make('invoice.status')
+                ->label('Status Invoice')
+                ->colors([
+                        'success' => 'lunas',
+                        'danger' => 'belum_lunas',
+
+                    ])
+                ->formatStateUsing(fn($state) => match ($state) {
+                    'lunas' => 'Lunas',
+                    'belum_lunas' => 'Belum Lunas',
+
                     default => ucfirst($state),
                 }),
         ];
