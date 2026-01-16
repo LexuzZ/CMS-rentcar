@@ -182,102 +182,128 @@
                     @forelse ($piutang as $item)
                         @php
                             $invoice = $item->invoice;
-                            $booking = $invoice?->booking;
 
-                            $totalDenda = $booking?->penalty?->sum('amount') ?? 0;
+                            // Skip data rusak
+                            if (!$invoice || !$invoice->booking) {
+                                continue;
+                            }
 
+                            $booking = $invoice->booking;
+                            $car = $booking->car;
+
+                            // Perhitungan
+                            $totalDenda = $booking->penalties->sum('amount');
                             $totalTagihan =
-                                ($booking?->estimasi_biaya ?? 0) + ($invoice?->pickup_dropOff ?? 0) + $totalDenda;
+                                ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
 
-                            $totalDibayar = $invoice?->payments?->sum('pembayaran') ?? 0;
-
+                            $totalDibayar = $invoice->payments->sum('pembayaran');
                             $sisaPembayaran = max($totalTagihan - $totalDibayar, 0);
                         @endphp
 
-
                         <tr>
+                            {{-- DETAIL TRANSAKSI --}}
                             <td>
-                                <strong>INV #{{ $item->invoice->id }} / BOOK
-                                    #{{ $item->invoice->booking->id }}</strong><br>
-                                {{ $item->invoice->booking->car?->carModel?->name ?? '-' }}
+                                <strong>
+                                    INV #{{ $invoice->id }} / BOOK #{{ $booking->id }}
+                                </strong><br>
 
-                                ({{ $item->invoice->booking->car?->nopol ?? '-' }})
-                                <br>
-                                <small>Harga Harian: Rp
-                                    {{ number_format($item->invoice->booking->harga_harian, 0, ',', '.') }}</small><br>
-                                <small>{{ $item->invoice->booking->tanggal_keluar }} s/d
-                                    {{ $item->invoice->booking->tanggal_kembali }} </small>
-                                <br>
-                                <small>{{ $item->invoice->booking->waktu_keluar }} WITA s/d
-                                    {{ $item->invoice->booking->waktu_kembali }} WITA
+                                {{ $car?->carModel?->name ?? '-' }}
+                                ({{ $car?->nopol ?? '-' }})<br>
+
+                                <small>
+                                    Harga Harian: Rp {{ number_format($booking->harga_harian, 0, ',', '.') }}
+                                </small><br>
+
+                                <small>
+                                    {{ $booking->tanggal_keluar }} s/d {{ $booking->tanggal_kembali }}
+                                </small><br>
+
+                                <small>
+                                    {{ $booking->waktu_keluar }} WITA s/d {{ $booking->waktu_kembali }} WITA
                                 </small>
                             </td>
-                            <td class="text-center">{{ $item->invoice->booking->total_hari }} hari</td>
 
+                            {{-- DURASI --}}
+                            <td class="text-center">
+                                {{ $booking->total_hari }} hari
+                            </td>
 
+                            {{-- RINCIAN BIAYA --}}
                             <td>
                                 <ul>
-                                    <li>Sewa: Rp
-                                        {{ number_format($item->invoice->booking->estimasi_biaya, 0, ',', '.') }}</li>
-                                    @if ($item->invoice->pickup_dropOff > 0)
-                                        <li>Antar/Jemput: Rp
-                                            {{ number_format($item->invoice->pickup_dropOff, 0, ',', '.') }}</li>
+                                    <li>
+                                        Sewa: Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}
+                                    </li>
+
+                                    @if ($invoice->pickup_dropOff > 0)
+                                        <li>
+                                            Antar/Jemput: Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}
+                                        </li>
                                     @endif
-                                    @if ($item->invoice->booking->penalties->count() > 0)
-                                        @foreach ($item->invoice->booking?->penalties ?? [] as $penalty)
-                                            <li>
-                                                {{ ucfirst($penalty->klaim) }}: Rp
-                                                {{ number_format($penalty->amount, 0, ',', '.') }}
-                                            </li>
-                                        @endforeach
-                                    @endif
+
+                                    @foreach ($booking->penalties as $penalty)
+                                        <li>
+                                            {{ ucfirst($penalty->klaim) }}:
+                                            Rp {{ number_format($penalty->amount, 0, ',', '.') }}
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </td>
-                            <td class="text-center">{{ $item->invoice->booking->customer->nama }}</td>
-                            <td class="text-right">Rp {{ number_format($item->pembayaran, 0, ',', '.') }}</td>
+
+                            {{-- PENYEWA --}}
+                            <td class="text-center">
+                                {{ $booking->customer->nama ?? '-' }}
+                            </td>
+
+                            {{-- TOTAL DIBAYAR --}}
+                            <td class="text-right">
+                                Rp {{ number_format($totalDibayar, 0, ',', '.') }}
+                            </td>
+
+                            {{-- SISA PEMBAYARAN --}}
                             <td class="text-right">
                                 Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Tidak ada data piutang.</td>
+                            <td colspan="6" class="text-center">
+                                Tidak ada data piutang.
+                            </td>
                         </tr>
                     @endforelse
                     @php
                         $totalSisaPiutang = $piutang->sum(function ($item) {
                             $invoice = $item->invoice;
-                            $booking = $invoice?->booking;
 
-                            if (!$invoice || !$booking) {
+                            if (!$invoice || !$invoice->booking) {
                                 return 0;
                             }
 
-                            $totalDenda = $booking->penalty?->sum('amount') ?? 0;
+                            $booking = $invoice->booking;
+
+                            $totalDenda = $booking->penalties->sum('amount');
 
                             $totalTagihan =
                                 ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
 
-                            $totalDibayar = $invoice->payments?->sum('pembayaran') ?? 0;
+                            $totalDibayar = $invoice->payments->sum('pembayaran');
 
                             return max($totalTagihan - $totalDibayar, 0);
                         });
                     @endphp
-
-
-                    {{-- <tr>
-                        <td colspan="4" class="text-right"><strong>TOTAL PIUTANG</strong></td>
-                        <td colspan="2" class="text-right"><strong>Rp
-                                {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
-                    </tr> --}}
                     <tr>
-                        <td colspan="4" class="text-right"><strong>TOTAL SISA PIUTANG</strong></td>
+                        <td colspan="4" class="text-right">
+                            <strong>TOTAL SISA PIUTANG</strong>
+                        </td>
                         <td colspan="2" class="text-right">
                             <strong>Rp {{ number_format($totalSisaPiutang, 0, ',', '.') }}</strong>
                         </td>
                     </tr>
 
+
                 </tbody>
+
             </table>
         </div>
         <div class="payment-details">
