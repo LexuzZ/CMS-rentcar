@@ -17,19 +17,18 @@ class Piutang extends TableWidget
     protected int|string|array $columnSpan = 'full';
 
     protected function getTableQuery(): Builder
-    {
-        return Invoice::query()
-            ->where('status', 'belum_lunas') // 🔥 KUNCI
-            ->with([
-                'payments:id,invoice_id,pembayaran',
-                'booking:id,customer_id,estimasi_biaya',
-                'booking.customer:id,nama',
-                'booking.penalties:id,booking_id,amount,klaim',
-                'booking.car:id,car_model_id,nopol',
-                'booking.car.carModel:id,name',
-            ])
-            ->latest();
-    }
+{
+    return Invoice::query()
+        ->where('status', 'belum_lunas') // 🔥 KUNCI UTAMA
+        ->with([
+            'booking.customer',
+            'booking.penalties',
+            'booking.car.carModel',
+            'payments',
+        ])
+        ->latest();
+}
+
 
     protected function getTableColumns(): array
     {
