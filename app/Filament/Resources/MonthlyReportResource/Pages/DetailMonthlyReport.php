@@ -54,26 +54,26 @@ class DetailMonthlyReport extends Page implements HasTable
             //     ->exporter(PaymentExporter::class),
 
             // -- TOMBOL BARU UNTUK PDF --
-            Action::make('exportPdf')
-                ->label('Export Rekapan PDF')
-                ->color('gray')
-                ->icon('heroicon-o-document-arrow-down')
-                // -- PERBAIKAN DI SINI: URL sekarang menyertakan filter aktif --
-                ->url(function (): string {
-                    [$year, $month] = explode('-', $this->record);
+            // Action::make('exportPdf')
+            //     ->label('Export Rekapan PDF')
+            //     ->color('gray')
+            //     ->icon('heroicon-o-document-arrow-down')
+            //     // -- PERBAIKAN DI SINI: URL sekarang menyertakan filter aktif --
+            //     ->url(function (): string {
+            //         [$year, $month] = explode('-', $this->record);
 
-                    // Siapkan parameter dasar
-                    $routeParams = ['year' => $year, 'month' => $month];
+            //         // Siapkan parameter dasar
+            //         $routeParams = ['year' => $year, 'month' => $month];
 
-                    // Ambil nilai filter pelanggan yang aktif
-                    $customerFilter = $this->tableFilters['customer']['value'] ?? null;
-                    if ($customerFilter) {
-                        $routeParams['customer_id'] = $customerFilter;
-                    }
+            //         // Ambil nilai filter pelanggan yang aktif
+            //         $customerFilter = $this->tableFilters['customer']['value'] ?? null;
+            //         if ($customerFilter) {
+            //             $routeParams['customer_id'] = $customerFilter;
+            //         }
 
-                    return route('reports.monthly-recap.pdf', $routeParams);
-                })
-                ->openUrlInNewTab(),
+            //         return route('reports.monthly-recap.pdf', $routeParams);
+            //     })
+            //     ->openUrlInNewTab(),
         ];
     }
 
