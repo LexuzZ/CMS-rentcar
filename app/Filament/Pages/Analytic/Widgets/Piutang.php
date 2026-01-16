@@ -14,7 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class Piutang extends TableWidget
 {
     protected static ?string $heading = 'Piutang (Belum Lunas)';
-    protected int|string|array $columnSpan = '300px';
+    protected int|string|array $columnSpan = 'full';
 
     protected function getTableQuery(): Builder
     {
