@@ -22,4 +22,12 @@ class CreateBooking extends CreateRecord
         }
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return BookingResource::getUrl('view', [
+            'record' => $this->record,
+        ]);
+    }
+
+
 }

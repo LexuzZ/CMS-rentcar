@@ -13,7 +13,6 @@ class EditBooking extends EditRecord
     {
         $status = $this->record->status;
         $car = $this->record->car;
-        $invoice = $this->record->invoice;
 
         if (!$car) {
             return;
@@ -39,6 +38,8 @@ class EditBooking extends EditRecord
     }
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return BookingResource::getUrl('view', [
+            'record' => $this->record,
+        ]);
     }
 }
