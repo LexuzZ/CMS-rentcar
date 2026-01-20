@@ -77,5 +77,38 @@ class Booking extends Model
     protected $with = [
         'invoice',
     ];
+    protected static function booted()
+    {
+        static::updated(function (Booking $booking) {
+
+            // Jika belum ada invoice → stop
+            if (!$booking->invoice) {
+                return;
+            }
+
+            $invoice = $booking->invoice;
+
+            // Update nilai invoice dari booking
+            $invoice->update([
+                'estimasi_biaya' => $booking->estimasi_biaya,
+
+                // total_tagihan = sewa + pickup + denda
+                'total_tagihan' =>
+                    $booking->estimasi_biaya
+                    + ($invoice->pickup_dropOff ?? 0)
+                    + ($invoice->total_denda ?? 0),
+
+                // sisa = total - sudah dibayar
+                'sisa_pembayaran' =>
+                    (
+                        $booking->estimasi_biaya
+                        + ($invoice->pickup_dropOff ?? 0)
+                        + ($invoice->total_denda ?? 0)
+                    )
+                    - ($invoice->total_paid ?? 0),
+            ]);
+        });
+    }
+
 
 }
