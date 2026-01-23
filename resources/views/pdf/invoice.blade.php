@@ -285,7 +285,7 @@
                 <tr>
                     <td>Total Dibayar</td>
                     <td class="text-right">
-                         Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
+                        Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
                     </td>
                 </tr>
 
@@ -301,9 +301,12 @@
                 <tr>
                     <td>Status</td>
                     <td class="text-right">
-                        <strong>{{ strtoupper($invoice->status) }}</strong>
+                        <strong>
+                            {{ $invoice->sisa_pembayaran <= 0 ? 'LUNAS' : 'BELUM LUNAS' }}
+                        </strong>
                     </td>
                 </tr>
+
             </table>
         </div>
 
