@@ -289,7 +289,7 @@
             <tr>
                 <td><strong>Status Pembayaran</strong></td>
                 <strong>
-                    {{ $invoice->sisa_pembayaran <= 0 ? 'LUNAS' : 'BELUM LUNAS' }}
+                    {{ $booking->invoice->sisa_pembayaran <= 0 ? 'LUNAS' : 'BELUM LUNAS' }}
                 </strong>
             </tr>
         </table>
