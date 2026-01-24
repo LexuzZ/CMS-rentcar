@@ -269,7 +269,7 @@
                     <td class="text-right">Rp {{ number_format($booking->invoice->pickup_dropOff, 0, ',', '.') }}</td>
                 </tr>
             @endif
-            @foreach ($booking->penalty as $penalty)
+            @foreach ($booking->penalties as $penalty)
                 <tr>
                     <td><strong>Klaim Garasi: {{ ucfirst($penalty->klaim) }}</strong></td>
                     <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
