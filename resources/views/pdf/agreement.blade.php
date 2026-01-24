@@ -288,7 +288,9 @@
             </tr>
             <tr>
                 <td><strong>Status Pembayaran</strong></td>
-                <td>{{ strtoupper($booking->invoice->status) }}</td>
+                <strong>
+                    {{ $invoice->sisa_pembayaran <= 0 ? 'LUNAS' : 'BELUM LUNAS' }}
+                </strong>
             </tr>
         </table>
 
