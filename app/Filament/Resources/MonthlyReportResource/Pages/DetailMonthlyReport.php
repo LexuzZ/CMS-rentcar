@@ -93,7 +93,8 @@ class DetailMonthlyReport extends Page implements HasTable
                 TextColumn::make('invoice.booking.car.nopol')->label('No. Polisi')->searchable(),
                 TextColumn::make('invoice.booking.tanggal_keluar')->label('Tanggal Keluar')->date('d M Y')->sortable(),
                 TextColumn::make('invoice.booking.tanggal_kembali')->label('Tanggal Kembali')->date('d M Y')->sortable(),
-                TextColumn::make('invoice.sisa_pembayaran')->label('Sisa Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                TextColumn::make('invoice.sisa_pembayaran')->label('Sisa Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                TextColumn::make('invoice.total_paid')->label('Total Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
             ])
             ->filters([
