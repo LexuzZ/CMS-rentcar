@@ -169,7 +169,7 @@ class InvoiceResource extends Resource
 
                             $text[] = "-----------------------------------";
                             $text[] = "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.');
-                            $text[] = "🔐 *Uang Muka (DP):* Rp " . number_format($dp, 0, ',', '.');
+                            $text[] = "🔐 *Total Dibayar:* Rp " . number_format($dp, 0, ',', '.');
                             $text[] = "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*";
                             $text[] = "";
                             $text[] = "Mohon lakukan pembayaran ke salah satu rekening berikut:";
