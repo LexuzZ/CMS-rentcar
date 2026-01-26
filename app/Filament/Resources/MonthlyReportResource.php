@@ -38,7 +38,7 @@ class MonthlyReportResource extends Resource
                         DB::raw('COUNT(payments.id) as transaction_count'),
                         DB::raw('SUM(payments.pembayaran) as total_paid'),
 
-                        DB::raw('SUM(DISTINCT invoices.total_tagihan) as total_tagihan'),
+                        // DB::raw('SUM(DISTINCT invoices.total_tagihan) as total_tagihan'),
                         DB::raw('SUM(DISTINCT invoices.sisa_pembayaran) as total_sisa'),
                     ])
                     ->groupBy('year', 'month')
@@ -76,11 +76,11 @@ class MonthlyReportResource extends Resource
                         'Rp ' . number_format($state, 0, ',', '.')
                     ),
 
-                Tables\Columns\TextColumn::make('total_tagihan')
-                    ->label('Total Tagihan')
-                    ->formatStateUsing(fn ($state) =>
-                        'Rp ' . number_format($state, 0, ',', '.')
-                    ),
+                // Tables\Columns\TextColumn::make('total_tagihan')
+                //     ->label('Total Tagihan')
+                //     ->formatStateUsing(fn ($state) =>
+                //         'Rp ' . number_format($state, 0, ',', '.')
+                //     ),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('year')
