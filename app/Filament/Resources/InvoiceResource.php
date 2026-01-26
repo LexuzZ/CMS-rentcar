@@ -119,8 +119,8 @@ class InvoiceResource extends Resource
                             $pickupDropOff = $record->pickup_dropOff ?? 0;
 
                             $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
-                            $dp = $record->dp ?? 0;
-                            $sisaPembayaran = max(0, $totalTagihan - $dp);
+                            $dp = $record->total_paid ?? 0;
+                            $sisaPembayaran = $record->sisa_pembayaran ?? 0;
 
                             // ===============================
                             // DATA TAMBAHAN
