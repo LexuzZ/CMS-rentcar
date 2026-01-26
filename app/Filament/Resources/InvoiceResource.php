@@ -143,7 +143,7 @@ class InvoiceResource extends Resource
                             TextEntry::make('total_denda')->label('Klaim Garasi')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('pickup_dropOff')->label('Biaya Ongkir')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('total_paid')->label('Total Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                            TextEntry::make('sisa_pembayaran')->label('Sisa Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('sisa_pembayaran')->label('Sisa Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->color('success'),
                             TextEntry::make('status')
                                 ->badge()
                                 ->state(
