@@ -141,6 +141,7 @@ class InvoiceResource extends Resource
                         Infolists\Components\Grid::make(3)->schema([
                             TextEntry::make('total_tagihan')->label('Tagihan Sewa')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('total_denda')->label('Klaim Garasi')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('pickup_dropOff')->label('Biaya Ongkir')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('total_paid')->label('Total Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('sisa_pembayaran')->label('Sisa Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('status')
