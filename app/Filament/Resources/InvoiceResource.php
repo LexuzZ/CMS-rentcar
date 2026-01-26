@@ -139,10 +139,10 @@ class InvoiceResource extends Resource
             Section::make('Ringkasan Keuangan')
                 ->schema([
                         Infolists\Components\Grid::make(3)->schema([
-                            TextEntry::make('total_tagihan')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                            TextEntry::make('total_denda')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                            TextEntry::make('total_paid')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                            TextEntry::make('sisa_pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('total_tagihan')->label('Tagihan Sewa')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('total_denda')->label('Klaim Garasi')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('total_paid')->label('Total Pembayaran')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            TextEntry::make('sisa_pembayaran')->label('Sisa Payment')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('status')
                                 ->badge()
                                 ->state(
