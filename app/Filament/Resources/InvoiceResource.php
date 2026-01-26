@@ -141,7 +141,7 @@ class InvoiceResource extends Resource
                         Infolists\Components\Grid::make(3)->schema([
                             TextEntry::make('total_tagihan')->money('IDR', true),
                             TextEntry::make('total_denda')->money('IDR', true),
-                            TextEntry::make('total_paid')->money('IDR', true),
+                            TextEntry::make('total_paid')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                             TextEntry::make('sisa_pembayaran')->money('IDR', true),
                             TextEntry::make('status')
                                 ->badge()
