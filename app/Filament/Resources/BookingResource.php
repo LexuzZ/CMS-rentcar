@@ -326,19 +326,19 @@ class BookingResource extends Resource
 
                             TextEntry::make('invoice.total_tagihan')
                                 ->label('Total Tagihan')
-                                ->money('IDR', true),
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                             TextEntry::make('invoice.total_denda')
                                 ->label('Total Denda')
-                                ->money('IDR', true),
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                             TextEntry::make('invoice.total_paid')
                                 ->label('Total Dibayar')
-                                ->money('IDR', true),
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                             TextEntry::make('invoice.sisa_pembayaran')
                                 ->label('Sisa Pembayaran')
-                                ->money('IDR', true),
+                                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
 
                         ]),
