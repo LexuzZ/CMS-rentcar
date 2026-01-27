@@ -81,10 +81,10 @@ class InvoiceResource extends Resource
 
             Section::make('Aksi Invoice')
                 ->headerActions([
-                    Tables\Actions\CreateAction::make()
-                        ->label('Tambah Pembayaran')
-                        ->visible(fn() => true)
-                        ->after(fn() => $this->getOwnerRecord()->recalculate()),
+                    // Tables\Actions\CreateAction::make()
+                    //     ->label('Tambah Pembayaran')
+                    //     ->visible(fn() => true)
+                    //     ->after(fn() => $this->getOwnerRecord()->recalculate()),
 
                     Action::make('download_pdf')
                         ->label('Unduh PDF')
