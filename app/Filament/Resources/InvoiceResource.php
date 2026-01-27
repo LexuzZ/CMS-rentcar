@@ -85,6 +85,50 @@ class InvoiceResource extends Resource
                     //     ->label('Tambah Pembayaran')
                     //     ->visible(fn() => true)
                     //     ->after(fn() => $this->getOwnerRecord()->recalculate()),
+                    Action::make('addPayment')
+                        ->label('Tambah Pembayaran')
+                        ->icon('heroicon-o-plus-circle')
+                        ->color('success')
+                        ->visible(fn(Invoice $record) => $record->sisa_pembayaran > 0)
+                        ->form([
+                            DatePicker::make('tanggal_pembayaran')
+                                ->label('Tanggal Pembayaran')
+                                ->default(now())
+                                ->required(),
+
+                            TextInput::make('pembayaran')
+                                ->label('Jumlah Pembayaran')
+                                ->prefix('Rp')
+                                ->numeric()
+                                ->required()
+                                ->rules([
+                                    fn(Invoice $record) => function ($attribute, $value, $fail) use ($record) {
+                                        if ($value > $record->sisa_pembayaran) {
+                                            $fail('Jumlah pembayaran melebihi sisa tagihan.');
+                                        }
+                                    },
+                                ]),
+
+                            Select::make('metode_pembayaran')
+                                ->label('Metode Pembayaran')
+                                ->options([
+                                    'tunai' => 'Tunai',
+                                    'transfer' => 'Transfer',
+                                    'qris' => 'QRIS',
+                                    'tunai_transfer' => 'Tunai & Transfer',
+                                    'tunai_qris' => 'Tunai & QRIS',
+                                    'transfer_qris' => 'Transfer & QRIS',
+                                ])
+                                ->required(),
+                        ])
+                        ->action(function (Invoice $record, array $data) {
+                            $record->payments()->create($data);
+
+                            // Recalculate invoice
+                            $record->recalculate();
+                        })
+                        ->successNotificationTitle('Pembayaran berhasil ditambahkan'),
+
 
                     Action::make('download_pdf')
                         ->label('Unduh PDF')

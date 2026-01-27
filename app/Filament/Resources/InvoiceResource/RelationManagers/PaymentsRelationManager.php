@@ -17,10 +17,8 @@ class PaymentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payments';
     protected static ?string $title = 'Riwayat Pembayaran';
-    public static function canCreateForRecord(Model $ownerRecord): bool
-    {
-        return true;
-    }
+
+
 
     /* =======================
      | FORM
