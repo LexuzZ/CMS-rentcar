@@ -184,17 +184,6 @@ class InvoiceResource extends Resource
                         })
                         ->modalSubmitAction(false)
                         ->modalCancelAction(false),
-
-                    // Action::make('whatsapp')
-                    //     ->label('Kirim via WhatsApp')
-                    //     ->icon('heroicon-o-chat-bubble-left-right')
-                    //     ->color('success')
-                    //     ->url(fn (Invoice $record) =>
-                    //         'https://wa.me/' .
-                    //         preg_replace('/[^0-9]/', '', $record->booking->customer->no_hp) .
-                    //         '?text=' . urlencode(self::invoiceText($record))
-                    //     )
-                    //     ->openUrlInNewTab(),
                 ]),
 
             /* =======================
