@@ -34,25 +34,25 @@ class PaymentsRelationManager extends RelationManager
                 ->numeric()
                 ->required()
                 ->rules([
-                        fn() => function ($attribute, $value, $fail) {
-                            $invoice = $this->getOwnerRecord();
+                    fn() => function ($attribute, $value, $fail) {
+                        $invoice = $this->getOwnerRecord();
 
-                            if ($value > $invoice->sisa_pembayaran) {
-                                $fail('Jumlah pembayaran melebihi sisa tagihan.');
-                            }
-                        },
-                    ]),
+                        if ($value > $invoice->sisa_pembayaran) {
+                            $fail('Jumlah pembayaran melebihi sisa tagihan.');
+                        }
+                    },
+                ]),
 
             Select::make('metode_pembayaran')
                 ->label('Metode Pembayaran')
                 ->options([
-                        'tunai' => 'Tunai',
-                        'transfer' => 'Transfer',
-                        'qris' => 'QRIS',
-                        'tunai_transfer' => 'Tunai & Transfer',
-                        'tunai_qris' => 'Tunai & QRIS',
-                        'transfer_qris' => 'Transfer & QRIS',
-                    ])
+                    'tunai' => 'Tunai',
+                    'transfer' => 'Transfer',
+                    'qris' => 'QRIS',
+                    'tunai_transfer' => 'Tunai & Transfer',
+                    'tunai_qris' => 'Tunai & QRIS',
+                    'transfer_qris' => 'Transfer & QRIS',
+                ])
                 ->required(),
         ]);
     }
@@ -64,46 +64,46 @@ class PaymentsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                    TextColumn::make('tanggal_pembayaran')
-                        ->label('Tanggal')
-                        ->date('d M Y'),
+                TextColumn::make('tanggal_pembayaran')
+                    ->label('Tanggal')
+                    ->date('d M Y'),
 
-                    TextColumn::make('pembayaran')
-                        ->label('Jumlah')
-                        ->money('IDR', true),
+                TextColumn::make('pembayaran')
+                    ->label('Jumlah')
+                    ->money('IDR', true),
 
-                    TextColumn::make('metode_pembayaran')
-                        ->label('Metode')
-                        ->badge()
-                        ->wrap()
-                        ->width(150)
-                        ->alignCenter()
-                        ->colors([
-                                'success' => 'tunai',
-                                'info' => 'transfer',
-                                'gray' => 'qris',
-                                'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
-                            ])
-                        ->formatStateUsing(fn($state) => match ($state) {
-                            'tunai' => 'Tunai',
-                            'transfer' => 'Transfer',
-                            'qris' => 'QRIS',
-                            'tunai_transfer' => 'Tunai & Transfer',
-                            'tunai_qris' => 'Tunai & QRIS',
-                            'transfer_qris' => 'Transfer & QRIS',
-                            default => ucfirst($state),
-                        }),
-                ])
+                TextColumn::make('metode_pembayaran')
+                    ->label('Metode')
+                    ->badge()
+                    ->wrap()
+                    ->width(150)
+                    ->alignCenter()
+                    ->colors([
+                        'success' => 'tunai',
+                        'info' => 'transfer',
+                        'gray' => 'qris',
+                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'tunai' => 'Tunai',
+                        'transfer' => 'Transfer',
+                        'qris' => 'QRIS',
+                        'tunai_transfer' => 'Tunai & Transfer',
+                        'tunai_qris' => 'Tunai & QRIS',
+                        'transfer_qris' => 'Transfer & QRIS',
+                        default => ucfirst($state),
+                    }),
+            ])
             ->headerActions([
-                    Tables\Actions\CreateAction::make()
-                        ->after(fn() => $this->getOwnerRecord()->recalculate()),
-                ])
+                Tables\Actions\CreateAction::make()
+                    ->after(fn() => $this->getOwnerRecord()->recalculate()),
+            ])
             ->actions([
-                    Tables\Actions\EditAction::make()
-                        ->after(fn() => $this->getOwnerRecord()->recalculate()),
+                Tables\Actions\EditAction::make()
+                    ->after(fn() => $this->getOwnerRecord()->recalculate()),
 
-                    Tables\Actions\DeleteAction::make()
-                        ->after(fn() => $this->getOwnerRecord()->recalculate()),
-                ]);
+                Tables\Actions\DeleteAction::make()
+                    ->after(fn() => $this->getOwnerRecord()->recalculate()),
+            ]);
     }
 }

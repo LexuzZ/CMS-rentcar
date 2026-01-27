@@ -16,6 +16,22 @@ class EditInvoice extends EditRecord
     {
         return [
             Actions\DeleteAction::make()->label('Hapus Faktur')->color('danger'),
+            Actions\Action::make('view-booking')
+                ->label('Detail Invoice')
+                ->icon('heroicon-o-arrow-left')
+                ->url(function () {
+                    $invoice = $this->record;
+                    if ($invoice) {
+                        // redirect ke halaman view booking di Filament
+                        return \App\Filament\Resources\InvoiceResource::getUrl('view', [
+                            'record' => $invoice->id,
+                        ]);
+                    }
+
+                    // fallback kalau tidak ada booking
+                    return \App\Filament\Resources\InvoiceResource::getUrl();
+                })
+                ->color('gray'),
         ];
     }
     protected function getRedirectUrl(): string
