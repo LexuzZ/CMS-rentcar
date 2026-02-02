@@ -67,17 +67,49 @@ class Piutang extends TableWidget
     protected function getTableFilters(): array
     {
         return [
-            Filter::make('bulan_ini')
-                ->label('Bulan Ini')
-                ->toggle()
-                ->default(true)
-                ->query(
-                    fn(Builder $query) =>
-                    $query->whereBetween('created_at', [
-                        now()->startOfMonth(),
-                        now()->endOfMonth(),
-                    ])
-                ),
+            SelectFilter::make('bulan')
+            ->label('Bulan')
+            ->options([
+                1  => 'Januari',
+                2  => 'Februari',
+                3  => 'Maret',
+                4  => 'April',
+                5  => 'Mei',
+                6  => 'Juni',
+                7  => 'Juli',
+                8  => 'Agustus',
+                9  => 'September',
+                10 => 'Oktober',
+                11 => 'November',
+                12 => 'Desember',
+            ])
+            ->query(function (Builder $query, array $data) {
+                if (! $data['value']) {
+                    return;
+                }
+
+                $query->whereMonth('created_at', $data['value']);
+            }),
+
+        // 🔹 FILTER TAHUN
+        SelectFilter::make('tahun')
+            ->label('Tahun')
+            ->options(
+                Invoice::query()
+                    ->selectRaw('YEAR(created_at) as year')
+                    ->distinct()
+                    ->orderByDesc('year')
+                    ->pluck('year', 'year')
+                    ->toArray()
+            )
+            ->query(function (Builder $query, array $data) {
+                if (! $data['value']) {
+                    return;
+                }
+
+                $query->whereYear('created_at', $data['value']);
+            }),
+
 
             SelectFilter::make('customer')
                 ->label('Pelanggan')
