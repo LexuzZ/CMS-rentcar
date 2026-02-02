@@ -88,7 +88,7 @@ class Piutang extends TableWidget
                     return;
                 }
 
-                $query->whereMonth('created_at', $data['value']);
+                $query->whereMonth('tanggal_invoice', $data['value']);
             }),
 
         // 🔹 FILTER TAHUN
@@ -107,7 +107,7 @@ class Piutang extends TableWidget
                     return;
                 }
 
-                $query->whereYear('created_at', $data['value']);
+                $query->whereYear('tanggal_invoice', $data['value']);
             }),
 
 
