@@ -315,7 +315,7 @@ class OperationalSummary extends Page implements HasForms
             'summaryTableData' => $this->summaryTableData,
             'rincianTableData' => $this->rincianTableData,
             'rincianCostTableData' => $this->rincianCostTableData,
-            // 'costTableData' => $this->costTableData,
+            'costTableData' => $this->costTableData,
             'costRentTableData' => $this->costRentTableData,
         ]);
 
