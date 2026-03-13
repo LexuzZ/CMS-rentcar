@@ -324,13 +324,13 @@
                         </td>
                     @endif
 
-                    @if (!empty($foto_pelunasan))
+                    {{-- @if (!empty($foto_pelunasan))
                         <td style="width:25%; text-align:center; padding:5px;">
                             <h4 style="margin-bottom:5px;">Foto Pelunasan</h4>
                             <img src="{{ $foto_pelunasan }}" alt="Foto Pelunasan"
                                 style="max-width: 100%; height: auto;">
                         </td>
-                    @endif
+                    @endif --}}
 
 
                 </tr>
