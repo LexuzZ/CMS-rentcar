@@ -165,12 +165,12 @@ class AgreementResource extends Resource
                             Forms\Components\View::make('filament.forms.camera-capture')
                                 ->statePath('foto_dongkrak'), // State ini akan berisi data base64 dari foto
                         ]),
-                    Forms\Components\Section::make('Foto Pelunasan')
-                        ->schema([
-                            // Menggunakan View kustom untuk input kamera
-                            Forms\Components\View::make('filament.forms.camera-capture')
-                                ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
-                        ]),
+                    // Forms\Components\Section::make('Foto Pelunasan')
+                    //     ->schema([
+                    //         // Menggunakan View kustom untuk input kamera
+                    //         Forms\Components\View::make('filament.forms.camera-capture')
+                    //             ->statePath('foto_pelunasan'), // State ini akan berisi data base64 dari foto
+                    //     ]),
                     Forms\Components\Section::make('Foto Ban Serep')
                         ->schema([
                             // Menggunakan View kustom untuk input kamera
