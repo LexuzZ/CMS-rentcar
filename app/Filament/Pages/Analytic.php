@@ -37,7 +37,7 @@ class Analytic extends Page
             \App\Filament\Pages\Analytic\Widgets\MonthlyRevenueChart::class,
             MobilTerlarisChart::class,
             MobilPalingSepiChart::class,
-            BiayaInvestorPerGarasiChart::class,
+            // BiayaInvestorPerGarasiChart::class,
 
         ];
     }
