@@ -295,11 +295,11 @@ class OperationalSummary extends Page implements HasForms
 
 
         ];
-        $this->costTableData = [
-            ['label' => 'Total Kas Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
-            ['label' => 'Belum Lunas', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
+        // $this->costTableData = [
+        //     ['label' => 'Total Kas Pengeluaran', 'value' => $expenseThisMonth, 'change' => $expenseChange],
+        //     ['label' => 'Belum Lunas', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
 
-        ];
+        // ];
         // $this->costRentTableData = [
         //     ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
         // ];
@@ -315,7 +315,7 @@ class OperationalSummary extends Page implements HasForms
             'summaryTableData' => $this->summaryTableData,
             'rincianTableData' => $this->rincianTableData,
             'rincianCostTableData' => $this->rincianCostTableData,
-            'costTableData' => $this->costTableData,
+            // 'costTableData' => $this->costTableData,
             'costRentTableData' => $this->costRentTableData,
         ]);
 
