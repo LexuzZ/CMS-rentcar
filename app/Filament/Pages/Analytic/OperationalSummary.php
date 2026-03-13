@@ -229,19 +229,7 @@ class OperationalSummary extends Page implements HasForms
             ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
 
         $rentChange = $this->calculatePercentageChange($rentMonth, $rentLastMonth);
-        $rentPiutangMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->where('status', 'belum_lunas')
-            ->with('invoice.booking') // eager load supaya tidak N+1
-            ->get()
-            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
 
-        $rentPiutangLastMonth = \App\Models\Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'belum_lunas')
-            ->with('invoice.booking')
-            ->get()
-            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
-
-        $rentPiutangChange = $this->calculatePercentageChange($rentPiutangMonth, $rentPiutangLastMonth);
         // --- Profit Bersih (Income - Expense)
         $profitThisMonth = $RevenueMonth - $expenseThisMonth;
         $profitLastMonth = $RevenueLastMonth - $expenseLastMonth;
@@ -314,9 +302,9 @@ class OperationalSummary extends Page implements HasForms
             ['label' => 'Belum Lunas', 'value' => $receivablesThisMonth, 'change' => $receivablesChange],
 
         ];
-        $this->costRentTableData = [
-            ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
-        ];
+        // $this->costRentTableData = [
+        //     ['label' => 'Piutang Sewa', 'value' => $rentPiutangMonth, 'change' => $rentPiutangChange],
+        // ];
 
         $this->reportTitle = $startOfMonth->locale('id')->isoFormat('MMMM YYYY');
     }
