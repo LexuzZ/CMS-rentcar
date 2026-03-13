@@ -211,23 +211,19 @@ class OperationalSummary extends Page implements HasForms
 
 
         $receivablesThisMonth = Invoice::whereBetween('tanggal_invoice', [$startOfMonth, $endOfMonth])
-            ->where('status', 'belum_lunas')
+            // ->where('status', 'belum_lunas')
             ->sum('sisa_pembayaran');
 
         $receivablesLastMonth = Invoice::whereBetween('tanggal_invoice', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'belum_lunas')
+            // ->where('status', 'belum_lunas')
             ->sum('sisa_pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
         $rentMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            // ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->sum('estimasi_biaya');
         $rentLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
-            ->where('status', 'lunas')
-            ->with('invoice.booking')
-            ->get()
-            ->sum(fn($payment) => $payment->invoice?->booking?->estimasi_biaya ?? 0);
-
+          ->sum('estimasi_biaya');
         $rentChange = $this->calculatePercentageChange($rentMonth, $rentLastMonth);
 
         // --- Profit Bersih (Income - Expense)
