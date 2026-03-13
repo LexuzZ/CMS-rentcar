@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
+use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Pengeluaran;
 use Filament\Widgets\ChartWidget;
@@ -51,13 +52,13 @@ class MonthlyRevenueChart extends ChartWidget
          * PENDAPATAN (INVOICE LUNAS)
          * ===============================
          */
-        $pendapatanRaw = Payment::select(
-                DB::raw('MONTH(tanggal_pembayaran) as bulan'),
-                DB::raw('SUM(pembayaran) as total')
+        $pendapatanRaw = Invoice::select(
+                DB::raw('MONTH(tanggal_invoice) as bulan'),
+                DB::raw('SUM(total_tagihan) as total')
             )
-            ->whereYear('tanggal_pembayaran', $year)
-            ->whereHas('invoice', fn ($q) => $q->where('status', 'lunas'))
-            ->groupBy(DB::raw('MONTH(tanggal_pembayaran)'))
+            ->whereYear('tanggal_invoice', $year)
+            // ->where('status', 'lunas')
+            ->groupBy(DB::raw('MONTH(tanggal_invoice)'))
             ->pluck('total', 'bulan');
 
         $pendapatan = collect(range(1, 12))
