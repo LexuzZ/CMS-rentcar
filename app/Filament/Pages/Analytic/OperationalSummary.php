@@ -182,7 +182,7 @@ class OperationalSummary extends Page implements HasForms
 
         // --- Profit Garasi (Income Bersih dari harga harian - harga pokok)
         $incomeThisMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            // ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->with('car')
             ->get()
             ->sum(
@@ -191,7 +191,7 @@ class OperationalSummary extends Page implements HasForms
                 * $booking->total_hari
             );
         $incomeLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            // ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
             ->with('car')
             ->get()
             ->sum(
