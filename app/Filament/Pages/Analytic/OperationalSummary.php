@@ -181,23 +181,23 @@ class OperationalSummary extends Page implements HasForms
         $expenseChange = $this->calculatePercentageChange($expenseThisMonth, $expenseLastMonth);
 
         // --- Profit Garasi (Income Bersih dari harga harian - harga pokok)
-        $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
+        $incomeThisMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
             ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
-            ->with('invoice.booking.car')
+            ->with('car')
             ->get()
             ->sum(
-                fn($p) =>
-                ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok)
-                * $p->invoice->booking->total_hari
+                fn($booking) =>
+                ($booking->car->harga_harian - $booking->car->harga_pokok)
+                * $booking->total_hari
             );
-        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
+        $incomeLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
             ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
-            ->with('invoice.booking.car')
+            ->with('car')
             ->get()
             ->sum(
-                fn($p) =>
-                ($p->invoice->booking->car->harga_harian - $p->invoice->booking->car->harga_pokok)
-                * $p->invoice->booking->total_hari
+                fn($booking) =>
+                ($booking->car->harga_harian - $booking->car->harga_pokok)
+                * $booking->total_hari
             );
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
         // $pokokThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
