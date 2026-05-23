@@ -298,27 +298,21 @@
                             <img src="{{ $foto_bbm }}" alt="Foto BBM" style="max-width: 100%; height: auto;">
                         </td>
                     @endif
-                    @if (!empty($foto_ban_serep))
-                        <td style="width:25%; text-align:center; padding:5px;">
-                            <h4 style="margin-bottom:5px;">Foto Ban Serep</h4>
-                            <img src="{{ $foto_ban_serep }}" alt="Foto Ban Serep" style="max-width: 100%; height: auto;">
-                        </td>
-                    @endif
-
                     @if (!empty($foto_dongkrak))
                         <td style="width:25%; text-align:center; padding:5px;">
-                            <h4 style="margin-bottom:5px;">Foto Dongkrak</h4>
-                            <img src="{{ $foto_dongkrak }}" alt="Foto Dongkrak" style="max-width: 100%; height: auto;">
+                            <h4 style="margin-bottom:5px;">Foto Serah Terima</h4>
+                            <img src="{{ $foto_dongkrak }}" alt="Foto Serah Terima" style="max-width: 100%; height: auto;">
                         </td>
                     @endif
 
-                    @if (!empty($foto_pelunasan))
+                    @if (!empty($foto_ban_serep))
                         <td style="width:25%; text-align:center; padding:5px;">
-                            <h4 style="margin-bottom:5px;">Foto Pelunasan</h4>
-                            <img src="{{ $foto_pelunasan }}" alt="Foto Pelunasan"
-                                style="max-width: 100%; height: auto;">
+                            <h4 style="margin-bottom:5px;">Foto Ban Serep & Dongkrak</h4>
+                            <img src="{{ $foto_ban_serep }}" alt="Foto Ban Serep & Dongkrak" style="max-width: 100%; height: auto;">
                         </td>
                     @endif
+
+
                 </tr>
             </table>
         @endif
