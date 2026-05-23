@@ -298,7 +298,7 @@
 
         {{-- FOTO-FOTO --}}
         {{-- FOTO-FOTO --}}
-        @if (!empty($foto_bbm) || !empty($foto_ban_serep) || !empty($foto_dongkrak) || !empty($foto_pelunasan))
+        @if (!empty($foto_bbm) || !empty($foto_dongkrak) || !empty($foto_ban_serep))
             <h3 style="margin-top: 20px; margin-bottom: 10px;">Dokumentasi Foto</h3>
 
             <table style="width:100%; border-collapse: collapse;">
