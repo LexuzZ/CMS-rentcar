@@ -1,128 +1,190 @@
 <x-filament::widget>
     <x-filament::section>
         <x-slot name="heading">
-            🚀 Quick Menu
+            Quick Menu
         </x-slot>
-        <div class="quick-menu-grid">
-            {{-- TOMBOL 1: Form Sewa --}}
-            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('create') }}"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
 
-                <div
-                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center justify-center">
-                    <div class="text-4xl">🧾</div>
-                </div>
+        <div class="qm-grid">
 
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Form Sewa
+            {{-- Form Sewa --}}
+            <a href="{{ \App\Filament\Resources\BookingResource::getUrl('create') }}" class="qm-card qm-card--light">
+                <span class="qm-icon">🧾</span>
+                <span class="qm-label">Form Sewa</span>
+            </a>
+
+            {{-- Order Via Customer --}}
+            <a href="https://adminsemetonpesiarlombok.id/order" target="_blank" class="qm-card qm-card--dark">
+                <span class="qm-icon">🛒</span>
+                <span class="qm-label">Order Via Cust.</span>
+            </a>
+
+            {{-- WhatsApp --}}
+            <a href="https://web.whatsapp.com" target="_blank" class="qm-card qm-card--whatsapp">
+                <span class="qm-icon qm-icon--whatsapp">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="26" height="26">
+                        <path d="M20.52 3.48A11.8 11.8 0 0012.04 0C5.52 0 .24 5.28.24 11.76c0 2.04.48 4.08 1.44 5.88L0 24l6.6-1.68a11.8 11.8 0 005.4 1.32h.04c6.48 0 11.76-5.28 11.76-11.76 0-3.12-1.2-6.12-3.28-8.4z"/>
+                    </svg>
                 </span>
-            </a>
-            {{-- TOMBOL 6: Order Semeton --}}
-            <a href="https://adminsemetonpesiarlombok.id/order" target="_blank"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-
-                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <div class="text-5xl">🛒</div>
-                </div>
-
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Order Via Cust.
-                </span>
-            </a>
-            <a
-                href="https://web.whatsapp.com"
-                target="_blank"
-                class="
-                    inline-flex items-center gap-2
-                    rounded-xl
-                    bg-white/20
-                    px-5 py-3
-                    text-sm font-semibold
-                    backdrop-blur
-                    transition hover:bg-white/30
-                "
-            >
-
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24">
-                    <path d="M20.52 3.48A11.8 11.8 0 0012.04 0C5.52 0 .24 5.28.24 11.76c0 2.04.48 4.08 1.44 5.88L0 24l6.6-1.68a11.8 11.8 0 005.4 1.32h.04c6.48 0 11.76-5.28 11.76-11.76 0-3.12-1.2-6.12-3.28-8.4z"/>
-                </svg>
-
-                Open WhatsApp
+                <span class="qm-label">WhatsApp</span>
             </a>
 
-
-            {{-- TOMBOL 2: Transaksi --}}
-            <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm hover:bg-gray-50 dark:text-black dark:hover:text-gray-900 transition-colors">
-
-                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <div class="text-4xl">💳</div>
-                </div>
-
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Transaksi
-                </span>
+            {{-- Transaksi --}}
+            <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}" class="qm-card qm-card--light">
+                <span class="qm-icon">💳</span>
+                <span class="qm-label">Transaksi</span>
             </a>
 
-            {{-- TOMBOL 3: Kalender Unit --}}
-            <a href="{{ \App\Filament\Pages\VehicleSchedule::getUrl() }}"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-
-                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <div class="text-4xl">📅</div>
-                </div>
-
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Kalender Unit
-                </span>
+            {{-- Kalender Unit --}}
+            <a href="{{ \App\Filament\Pages\VehicleSchedule::getUrl() }}" class="qm-card qm-card--dark">
+                <span class="qm-icon">📅</span>
+                <span class="qm-label">Kalender Unit</span>
             </a>
 
-            {{-- TOMBOL 4: Checklist Keluar --}}
-            <a href="{{ \App\Filament\Resources\AgreementResource::getUrl('index') }}"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-
-                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <div class="text-4xl">✅</div>
-                </div>
-
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Checklist Keluar
-                </span>
+            {{-- Checklist Keluar --}}
+            <a href="{{ \App\Filament\Resources\AgreementResource::getUrl('index') }}" class="qm-card qm-card--light">
+                <span class="qm-icon">✅</span>
+                <span class="qm-label">Checklist Keluar</span>
             </a>
 
-            {{-- TOMBOL 5: Checklist Kembali --}}
-            <a href="{{ \App\Filament\Resources\ReturnAgreementResource::getUrl('index') }}"
-                class="min-w-[calc(50%-0.5rem)] flex flex-col items-center justify-center p-1 border rounded-lg shadow-sm bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-
-                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <div class="text-6xl">📦</div>
-                </div>
-
-                <span class="mt-1 text-xs md:text-sm lg:text-lg font-medium text-gray-800 dark:text-gray-100">
-                    Checklist Kembali
-                </span>
+            {{-- Checklist Kembali --}}
+            <a href="{{ \App\Filament\Resources\ReturnAgreementResource::getUrl('index') }}" class="qm-card qm-card--dark">
+                <span class="qm-icon">📦</span>
+                <span class="qm-label">Checklist Kembali</span>
             </a>
+
         </div>
+
         <style>
-            .quick-menu-grid {
+            .qm-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
+                gap: 10px;
             }
 
-            @media (min-width: 768px) {
-                .quick-menu-grid {
+            @media (min-width: 640px) {
+                .qm-grid {
                     grid-template-columns: repeat(3, 1fr);
                 }
             }
 
             @media (min-width: 1024px) {
-                .quick-menu-grid {
-                    grid-template-columns: repeat(3, 1fr);
+                .qm-grid {
+                    grid-template-columns: repeat(4, 1fr);
                 }
+            }
+
+            .qm-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 16px 8px;
+                border-radius: 12px;
+                text-decoration: none;
+                transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+                border: 1px solid transparent;
+            }
+
+            .qm-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+                opacity: 0.92;
+            }
+
+            .qm-card:active {
+                transform: translateY(0);
+                box-shadow: none;
+            }
+
+            /* Light variant */
+            .qm-card--light {
+                background-color: #f9fafb;
+                border-color: #e5e7eb;
+            }
+
+            .dark .qm-card--light {
+                background-color: #1f2937;
+                border-color: #374151;
+            }
+
+            /* Dark variant */
+            .qm-card--dark {
+                background-color: #111827;
+                border-color: #1f2937;
+            }
+
+            .dark .qm-card--dark {
+                background-color: #0f172a;
+                border-color: #1e293b;
+            }
+
+            /* WhatsApp variant */
+            .qm-card--whatsapp {
+                background-color: #dcfce7;
+                border-color: #bbf7d0;
+            }
+
+            .dark .qm-card--whatsapp {
+                background-color: #052e16;
+                border-color: #14532d;
+            }
+
+            .qm-icon {
+                font-size: 28px;
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                border-radius: 10px;
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+
+            .qm-card--light .qm-icon {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+
+            .qm-icon--whatsapp {
+                color: #16a34a;
+                font-size: unset;
+            }
+
+            .dark .qm-icon--whatsapp {
+                color: #4ade80;
+            }
+
+            .qm-label {
+                font-size: 12px;
+                font-weight: 500;
+                text-align: center;
+                line-height: 1.3;
+                letter-spacing: 0.01em;
+            }
+
+            .qm-card--light .qm-label {
+                color: #374151;
+            }
+
+            .dark .qm-card--light .qm-label {
+                color: #e5e7eb;
+            }
+
+            .qm-card--dark .qm-label {
+                color: #d1d5db;
+            }
+
+            .dark .qm-card--dark .qm-label {
+                color: #94a3b8;
+            }
+
+            .qm-card--whatsapp .qm-label {
+                color: #166534;
+            }
+
+            .dark .qm-card--whatsapp .qm-label {
+                color: #86efac;
             }
         </style>
     </x-filament::section>
