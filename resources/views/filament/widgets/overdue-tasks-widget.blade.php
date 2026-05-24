@@ -5,21 +5,21 @@
             <div style="display:flex; align-items:center; gap:12px;">
                 <div style="display:flex; align-items:center; justify-content:center;
                             width:36px; height:36px; border-radius:10px;
-                            background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25);">
-                    <x-heroicon-s-exclamation-triangle style="width:16px;height:16px;color:#ef4444;" />
+                            background:#fef2f2; border:1px solid #fecaca;">
+                    <x-heroicon-s-exclamation-triangle style="width:16px;height:16px;color:#dc2626;" />
                 </div>
                 <div style="line-height:1.3;">
                     <p style="margin:0; font-size:14px; font-weight:600; color:inherit;">Tugas Terlambat</p>
-                    <p style="margin:0; font-size:11px; color:#9ca3af; font-weight:400; margin-top:2px;">
+                    <p style="margin:0; font-size:11px; color:#a8a29e; font-weight:400; margin-top:2px;">
                         Booking melewati jadwal · perlu tindakan segera
                     </p>
                 </div>
                 <div style="margin-left:auto; display:flex; align-items:center; gap:6px;
                             padding:4px 10px; border-radius:8px;
-                            background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2);">
-                    <span style="width:6px;height:6px;border-radius:50%;background:#ef4444;
-                                 display:inline-block; animation:pulse 1.5s infinite;"></span>
-                    <span style="font-size:12px;font-weight:600;color:#ef4444;">
+                            background:#fef2f2; border:1px solid #fecaca;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#dc2626;
+                                 display:inline-block; animation:ow-pulse 1.5s infinite;"></span>
+                    <span style="font-size:12px;font-weight:600;color:#dc2626;">
                         {{ $overduePickups->count() + $overdueReturns->count() }} aktif
                     </span>
                 </div>
@@ -27,9 +27,9 @@
         </x-slot>
 
         <style>
-            @keyframes pulse {
+            @keyframes ow-pulse {
                 0%,100% { opacity:1; }
-                50%      { opacity:.35; }
+                50%      { opacity:.3; }
             }
             .ow-grid {
                 display: grid;
@@ -40,6 +40,8 @@
             @media (max-width: 768px) {
                 .ow-grid { grid-template-columns: 1fr; }
             }
+
+            /* ── Column header ── */
             .ow-col-header {
                 display: flex;
                 align-items: center;
@@ -51,26 +53,20 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 24px;
-                height: 24px;
+                width: 24px; height: 24px;
                 border-radius: 6px;
                 flex-shrink: 0;
             }
-            .ow-col-icon.warning {
-                background: rgba(245,158,11,.1);
-                border: 1px solid rgba(245,158,11,.25);
-            }
-            .ow-col-icon.danger {
-                background: rgba(239,68,68,.1);
-                border: 1px solid rgba(239,68,68,.25);
-            }
+            .ow-col-icon.warning { background:#fffbeb; border:1px solid #fde68a; }
+            .ow-col-icon.danger  { background:#fef2f2; border:1px solid #fecaca; }
+
             .ow-col-title {
+                margin: 0;
                 font-size: 11px;
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: .07em;
-                color: #9ca3af;
-                margin: 0;
+                color: #a8a29e;
             }
             .ow-badge {
                 margin-left: auto;
@@ -81,44 +77,36 @@
                 border-radius: 6px;
                 font-size: 11px;
             }
-            .ow-badge.warning {
-                background: rgba(245,158,11,.08);
-                border: 1px solid rgba(245,158,11,.2);
-                color: #d97706;
-            }
-            .ow-badge.danger {
-                background: rgba(239,68,68,.08);
-                border: 1px solid rgba(239,68,68,.2);
-                color: #ef4444;
-            }
+            .ow-badge.warning { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+            .ow-badge.danger  { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; }
             .ow-badge b { font-weight: 700; }
-            .ow-cards { display: flex; flex-direction: column; gap: 8px; }
+
+            /* ── Cards ── */
+            .ow-cards { display:flex; flex-direction:column; gap:8px; }
+
             .ow-card {
                 position: relative;
-                background: #fff;
-                border: 1px solid #f0f0f0;
+                background: #faf9f7;
                 border-radius: 12px;
                 overflow: hidden;
-                transition: border-color .15s, box-shadow .15s;
+                transition: box-shadow .15s;
             }
-            .ow-card:hover {
-                box-shadow: 0 2px 10px rgba(0,0,0,.06);
-            }
-            .ow-card.warning:hover { border-color: rgba(245,158,11,.35); }
-            .ow-card.danger:hover  { border-color: rgba(239,68,68,.35); }
+            .ow-card.warning { border:1px solid #fde68a; }
+            .ow-card.danger  { border:1px solid #fecaca; }
+            .ow-card.warning:hover { box-shadow: 0 2px 12px rgba(180,83,9,.1); }
+            .ow-card.danger:hover  { box-shadow: 0 2px 12px rgba(185,28,28,.1); }
 
             .ow-card-bar {
                 position: absolute;
-                left: 0; top: 0; bottom: 0;
+                left:0; top:0; bottom:0;
                 width: 3px;
                 border-radius: 12px 0 0 12px;
             }
-            .ow-card-bar.warning { background: #f59e0b; }
-            .ow-card-bar.danger  { background: #ef4444; }
+            .ow-card-bar.warning { background:#f59e0b; }
+            .ow-card-bar.danger  { background:#ef4444; }
 
-            .ow-card-body {
-                padding: 14px 16px 12px 18px;
-            }
+            .ow-card-body { padding:14px 16px 12px 18px; }
+
             .ow-card-row {
                 display: flex;
                 justify-content: space-between;
@@ -129,7 +117,7 @@
                 margin: 0;
                 font-size: 13.5px;
                 font-weight: 600;
-                color: inherit;
+                color: #1c1917;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -139,9 +127,9 @@
                 font-family: ui-monospace, monospace;
                 font-size: 10px;
                 font-weight: 500;
-                background: #f3f4f6;
-                color: #6b7280;
-                border: 1px solid #e5e7eb;
+                background: #f5f4f2;
+                color: #78716c;
+                border: 1px solid #e7e5e4;
                 border-radius: 4px;
                 padding: 1px 5px;
                 letter-spacing: .05em;
@@ -154,32 +142,25 @@
                 gap: 4px;
                 margin-top: 5px;
                 font-size: 12px;
-                color: #9ca3af;
+                color: #a8a29e;
             }
-            .ow-time-right { text-align: right; flex-shrink: 0; }
-            .ow-time-rel {
-                margin: 0;
-                font-size: 12px;
-                font-weight: 700;
-            }
-            .ow-time-rel.warning { color: #d97706; }
-            .ow-time-rel.danger  { color: #ef4444; }
+            .ow-time-right { text-align:right; flex-shrink:0; }
+            .ow-time-rel { margin:0; font-size:12px; font-weight:700; }
+            .ow-time-rel.warning { color:#92400e; }
+            .ow-time-rel.danger  { color:#991b1b; }
             .ow-time-abs {
-                margin: 0;
+                margin: 2px 0 0;
                 font-size: 11px;
-                color: #d1d5db;
-                margin-top: 2px;
+                color: #c4bfbb;
                 font-variant-numeric: tabular-nums;
             }
+
             .ow-divider {
                 border: none;
-                border-top: 1px solid #f3f4f6;
-                margin: 10px 0 10px;
+                border-top: 1px solid #ede9e5;
+                margin: 10px 0;
             }
-            .ow-action-row {
-                display: flex;
-                justify-content: flex-end;
-            }
+            .ow-action-row { display:flex; justify-content:flex-end; }
             .ow-btn {
                 display: inline-flex;
                 align-items: center;
@@ -190,49 +171,64 @@
                 font-size: 12px;
                 font-weight: 600;
                 cursor: pointer;
-                transition: background .15s, transform .1s;
                 color: #fff;
+                transition: filter .15s, transform .1s;
             }
             .ow-btn:active { transform: scale(.96); }
-            .ow-btn.warning { background: #f59e0b; }
-            .ow-btn.warning:hover { background: #d97706; }
-            .ow-btn.danger  { background: #ef4444; }
-            .ow-btn.danger:hover  { background: #dc2626; }
+            .ow-btn.warning { background:#d97706; }
+            .ow-btn.warning:hover { filter: brightness(.92); }
+            .ow-btn.danger  { background:#dc2626; }
+            .ow-btn.danger:hover  { filter: brightness(.92); }
 
+            /* ── Empty state ── */
             .ow-empty {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 padding: 36px 16px;
-                border: 1.5px dashed #e5e7eb;
+                border: 1.5px dashed #e7e5e4;
                 border-radius: 12px;
-                background: #fafafa;
+                background: #faf9f7;
                 text-align: center;
             }
             .ow-empty-icon {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 40px;
-                height: 40px;
+                width: 40px; height: 40px;
                 border-radius: 50%;
-                background: rgba(34,197,94,.1);
+                background: #f0fdf4;
+                border: 1px solid #bbf7d0;
                 margin-bottom: 10px;
             }
-            .ow-empty p { margin: 0; }
-            .ow-empty-title { font-size: 13px; font-weight: 500; color: #9ca3af; }
-            .ow-empty-sub   { font-size: 11px; color: #d1d5db; margin-top: 3px !important; }
+            .ow-empty p { margin:0; }
+            .ow-empty-title { font-size:13px; font-weight:500; color:#a8a29e; }
+            .ow-empty-sub   { font-size:11px; color:#d6d3d1; margin-top:3px !important; }
 
-            /* Dark mode */
+            /* ── Dark mode ── */
             @media (prefers-color-scheme: dark) {
-                .ow-card          { background: rgba(17,24,39,.8); border-color: #1f2937; }
-                .ow-card.warning:hover { border-color: rgba(245,158,11,.3); }
-                .ow-card.danger:hover  { border-color: rgba(239,68,68,.3); }
-                .ow-nopol         { background: #1f2937; color: #9ca3af; border-color: #374151; }
-                .ow-divider       { border-color: #1f2937; }
-                .ow-empty         { background: rgba(17,24,39,.3); border-color: #1f2937; }
-                .ow-time-abs      { color: #6b7280; }
+                .ow-card              { background:#1c1917; }
+                .ow-card.warning      { border-color:#44321a; }
+                .ow-card.danger       { border-color:#3f1d1d; }
+                .ow-card.warning:hover{ box-shadow:0 2px 12px rgba(180,83,9,.2); }
+                .ow-card.danger:hover { box-shadow:0 2px 12px rgba(185,28,28,.2); }
+                .ow-car-name          { color:#fafaf9; }
+                .ow-nopol             { background:#292524; color:#a8a29e; border-color:#44403c; }
+                .ow-customer          { color:#78716c; }
+                .ow-time-rel.warning  { color:#fbbf24; }
+                .ow-time-rel.danger   { color:#f87171; }
+                .ow-time-abs          { color:#57534e; }
+                .ow-divider           { border-color:#292524; }
+                .ow-col-title         { color:#78716c; }
+                .ow-badge.warning     { background:#1c1007; border-color:#44321a; color:#fbbf24; }
+                .ow-badge.danger      { background:#1a0a0a; border-color:#3f1d1d; color:#f87171; }
+                .ow-col-icon.warning  { background:#1c1007; border-color:#44321a; }
+                .ow-col-icon.danger   { background:#1a0a0a; border-color:#3f1d1d; }
+                .ow-empty             { background:#1c1917; border-color:#292524; }
+                .ow-empty-title       { color:#78716c; }
+                .ow-empty-sub         { color:#44403c; }
+                .ow-empty-icon        { background:#052e16; border-color:#14532d; }
             }
         </style>
 
@@ -242,7 +238,7 @@
             <div>
                 <div class="ow-col-header">
                     <div class="ow-col-icon warning">
-                        <x-heroicon-o-truck style="width:14px;height:14px;color:#f59e0b;" />
+                        <x-heroicon-o-truck style="width:14px;height:14px;color:#d97706;" />
                     </div>
                     <p class="ow-col-title">Pick Up</p>
                     <div class="ow-badge warning">
@@ -289,7 +285,7 @@
                     @empty
                         <div class="ow-empty">
                             <div class="ow-empty-icon">
-                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#22c55e;" />
+                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#16a34a;" />
                             </div>
                             <p class="ow-empty-title">Semua jadwal terpenuhi</p>
                             <p class="ow-empty-sub">Tidak ada pick up yang terlewat</p>
@@ -302,7 +298,7 @@
             <div>
                 <div class="ow-col-header">
                     <div class="ow-col-icon danger">
-                        <x-heroicon-o-arrow-path style="width:14px;height:14px;color:#ef4444;" />
+                        <x-heroicon-o-arrow-path style="width:14px;height:14px;color:#dc2626;" />
                     </div>
                     <p class="ow-col-title">Pengembalian</p>
                     <div class="ow-badge danger">
@@ -349,7 +345,7 @@
                     @empty
                         <div class="ow-empty">
                             <div class="ow-empty-icon">
-                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#22c55e;" />
+                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#16a34a;" />
                             </div>
                             <p class="ow-empty-title">Semua kendaraan kembali</p>
                             <p class="ow-empty-sub">Tidak ada pengembalian yang terlewat</p>
