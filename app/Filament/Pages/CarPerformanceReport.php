@@ -294,12 +294,13 @@ class CarPerformanceReport extends Page implements HasForms
         ];
 
         $sheet->fromArray($headers, null, 'A4');
-        $sheet->getStyle('A4:G4')->getFont()->setBold(true);
-        $sheet->getStyle('A4:G4')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A4:H4')->getFont()->setBold(true);
+        $sheet->getStyle('A4:H4')->getAlignment()->setHorizontal('center');
 
         // Isi data
         $row = 5;
         $totalRevenue = 0;
+        $totalCost = 0;
 
         foreach ($bookings as $booking) {
             $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
@@ -313,13 +314,23 @@ class CarPerformanceReport extends Page implements HasForms
                 $hariDalamBulan = $periodeMulai->diffInDays($periodeSelesai) + 1;
             }
 
-            $revenueInMonth = 0;
+            // $revenueInMonth = 0;
+            // if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
+            //     $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
+            //     $revenueInMonth = $dailyRate * $hariDalamBulan;
+            // }
+            $costInMonth = 0;
             if ($booking->total_hari > 0 && $booking->estimasi_biaya > 0) {
+
+                // Pendapatan prorata
                 $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
                 $revenueInMonth = $dailyRate * $hariDalamBulan;
-            }
 
+                // Harga pokok prorata
+                $costInMonth = ($car->harga_pokok ?? 0) * $hariDalamBulan;
+            }
             $totalRevenue += $revenueInMonth;
+            $totalCost += $costInMonth;
 
             $sheet->fromArray([
                 $booking->id,
@@ -329,7 +340,15 @@ class CarPerformanceReport extends Page implements HasForms
                 $booking->total_hari,
                 $hariDalamBulan,
                 round($revenueInMonth),
+                round($costInMonth),
             ], null, "A{$row}");
+            $sheet->getStyle("G{$row}")
+                ->getNumberFormat()
+                ->setFormatCode('"Rp"#,##0');
+
+            $sheet->getStyle("H{$row}")
+                ->getNumberFormat()
+                ->setFormatCode('"Rp"#,##0');
 
             $row++;
         }
@@ -337,10 +356,18 @@ class CarPerformanceReport extends Page implements HasForms
         // Tambahkan total
         $sheet->setCellValue("F{$row}", 'TOTAL');
         $sheet->setCellValue("G{$row}", round($totalRevenue));
-        $sheet->getStyle("F{$row}:G{$row}")->getFont()->setBold(true);
+        $sheet->setCellValue("H{$row}", round($totalCost));
+        $sheet->getStyle("F{$row}:H{$row}")->getFont()->setBold(true);
+        $sheet->getStyle("G{$row}")
+            ->getNumberFormat()
+            ->setFormatCode('"Rp"#,##0');
+
+        $sheet->getStyle("H{$row}")
+            ->getNumberFormat()
+            ->setFormatCode('"Rp"#,##0');
 
         // Auto-size semua kolom
-        foreach (range('A', 'G') as $col) {
+        foreach (range('A', 'H') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
