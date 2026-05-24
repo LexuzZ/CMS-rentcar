@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Booking;
-use App\Models\Car; // <-- Tambahkan model Car
+use App\Models\Car;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -32,14 +32,14 @@ class CarPerformanceReport extends Page implements HasForms
     public ?array $filterData = [];
     public array $reportTableData = [];
     public string $reportTitle = '';
-    public string $reportDateString = ''; // Properti baru untuk menyimpan Y-m
+    public string $reportDateString = '';
 
     public function mount(): void
     {
         $this->form->fill([
             'month' => now()->month,
-            'year' => now()->year,
-            'nopol_search' => '', // Inisialisasi field pencarian
+            'year'  => now()->year,
+            'nopol_search' => '',
         ]);
         $this->loadReportData();
     }
@@ -50,7 +50,6 @@ class CarPerformanceReport extends Page implements HasForms
 
         return $form
             ->schema([
-                // Mengubah grid menjadi 3 kolom
                 Grid::make(3)->schema([
                     Select::make('month')
                         ->label('Pilih Bulan')
@@ -59,15 +58,16 @@ class CarPerformanceReport extends Page implements HasForms
                             return $carry;
                         }, []))
                         ->live(),
+
                     Select::make('year')
                         ->label('Pilih Tahun')
                         ->options(array_combine($years, $years))
                         ->live(),
-                    // Menambahkan input pencarian nopol
+
                     TextInput::make('nopol_search')
                         ->label('Cari No. Polisi')
                         ->placeholder('Ketik nopol...')
-                        ->live(debounce: 500), // Debounce untuk efisiensi
+                        ->live(debounce: 500),
                 ]),
             ])
             ->statePath('filterData');
@@ -80,13 +80,13 @@ class CarPerformanceReport extends Page implements HasForms
 
     protected function loadReportData(): void
     {
-        $state = $this->form->getState();
-        $month = $state['month'];
-        $year = $state['year'];
-        $nopolSearch = $state['nopol_search'] ?? null; // Ambil nilai pencarian
+        $state       = $this->form->getState();
+        $month       = $state['month'];
+        $year        = $state['year'];
+        $nopolSearch = $state['nopol_search'] ?? null;
 
         $startDate = Carbon::create($year, $month, 1)->startOfDay();
-        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
+        $endDate   = $startDate->copy()->endOfMonth()->startOfDay();
 
         $carsQuery = Car::query()
             ->with([
@@ -96,18 +96,17 @@ class CarPerformanceReport extends Page implements HasForms
                         ->where('status', '!=', 'batal')
                         ->where(function ($q) use ($startDate, $endDate) {
                             $q->where('tanggal_keluar', '<=', $endDate)
-                                ->where('tanggal_kembali', '>=', $startDate);
+                              ->where('tanggal_kembali', '>=', $startDate);
                         });
-                }
+                },
             ])
             ->whereHas('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where('status', '!=', 'batal')
                     ->where(function ($q) use ($startDate, $endDate) {
                         $q->where('tanggal_keluar', '<=', $endDate)
-                            ->where('tanggal_kembali', '>=', $startDate);
+                          ->where('tanggal_kembali', '>=', $startDate);
                     });
             })
-            // Menambahkan kondisi pencarian nopol ke query
             ->when($nopolSearch, function ($query) use ($nopolSearch) {
                 $query->where('nopol', 'like', "%{$nopolSearch}%");
             });
@@ -117,78 +116,76 @@ class CarPerformanceReport extends Page implements HasForms
         $data = [];
 
         foreach ($cars as $car) {
-            $totalDaysInMonth = 0;
+            $totalDaysInMonth    = 0;
             $totalRevenueInMonth = 0;
-            $totalCostInMonth = 0;
-            $bookingsInMonth = [];
+            $totalCostInMonth    = 0;
+            $bookingsInMonth     = [];
 
             foreach ($car->bookings as $booking) {
                 $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
-                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->startOfDay();
+                $bookingEnd   = Carbon::parse($booking->tanggal_kembali)->startOfDay();
 
                 $effectiveStartDate = $bookingStart->copy()->max($startDate);
-                $effectiveEndDate = $bookingEnd->copy()->min($endDate);
+                $effectiveEndDate   = $bookingEnd->copy()->min($endDate);
 
-                // Logika perhitungan hari non-inklusif
-                $days = $effectiveStartDate->diffInDays($effectiveEndDate);
+                $days        = $effectiveStartDate->diffInDays($effectiveEndDate);
                 $daysInMonth = $days > 0 ? $days : 1;
 
                 $totalDaysInMonth += $daysInMonth;
 
-                // $revenueInMonth = 0;
-                // if ($booking->total_hari > 0) {
-                //     $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
-                //     $revenueInMonth = $dailyRate * $daysInMonth;
-                //     $totalRevenueInMonth += $revenueInMonth;
-                // }
-                $costInMonth = 0;
+                // ── Init di luar blok if agar selalu terdefinisi ──
+                $revenueInMonth = 0;
+                $costInMonth    = 0;
+
                 if ($booking->total_hari > 0) {
-
                     // Pendapatan prorata
-                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
+                    $dailyRate      = $booking->estimasi_biaya / $booking->total_hari;
                     $revenueInMonth = $dailyRate * $daysInMonth;
-
                     $totalRevenueInMonth += $revenueInMonth;
 
                     // Harga pokok prorata
                     $costInMonth = ($car->harga_pokok ?? 0) * $daysInMonth;
-
                     $totalCostInMonth += $costInMonth;
                 }
 
+                // ── days_in_month ikut disimpan agar exportCarDetail bisa membacanya ──
                 $bookingsInMonth[] = [
-                    'id' => $booking->id,
-                    'customer' => $booking->customer->nama,
-                    'start' => $booking->tanggal_keluar,
-                    'end' => $booking->tanggal_kembali,
-                    'revenue' => $revenueInMonth,
-                    'cost' => $costInMonth,
+                    'id'           => $booking->id,
+                    'customer'     => $booking->customer->nama,
+                    'start'        => $booking->tanggal_keluar,
+                    'end'          => $booking->tanggal_kembali,
+                    'days_in_month'=> $daysInMonth,
+                    'revenue'      => $revenueInMonth,
+                    'cost'         => $costInMonth,
                 ];
             }
 
             $data[] = [
-                'car_id' => $car->id,
-                'model' => $car->carModel->brand->name . ' ' . $car->carModel->name,
-                'nopol' => $car->nopol,
+                'car_id'   => $car->id,
+                'model'    => $car->carModel->brand->name . ' ' . $car->carModel->name,
+                'nopol'    => $car->nopol,
                 'days_rented' => $totalDaysInMonth,
-                'revenue' => $totalRevenueInMonth,
-                'cost' => $totalCostInMonth,
+                'revenue'  => $totalRevenueInMonth,
+                'cost'     => $totalCostInMonth,
                 'bookings' => $bookingsInMonth,
             ];
         }
 
-        $this->reportTitle = $startDate->locale('id')->isoFormat('MMMM YYYY');
+        $this->reportTitle      = $startDate->locale('id')->isoFormat('MMMM YYYY');
         $this->reportDateString = $startDate->format('Y-m');
-        $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
+        $this->reportTableData  = collect($data)->sortByDesc('revenue')->values()->all();
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    // EKSPOR RINGKASAN
+    // ──────────────────────────────────────────────────────────────────────────
     public function exportReport(): StreamedResponse
     {
-        $reportData = $this->reportTableData;
+        $reportData  = $this->reportTableData;
         $reportTitle = $this->reportTitle;
 
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet       = $spreadsheet->getActiveSheet();
 
         // Judul
         $sheet->setCellValue('A1', 'Laporan Kinerja Mobil');
@@ -208,25 +205,23 @@ class CarPerformanceReport extends Page implements HasForms
         ], null, 'A4');
         $sheet->getStyle('A4:E4')->getFont()->setBold(true);
 
-        $row = 5;
-        $totalDays = 0;
+        $row          = 5;
+        $totalDays    = 0;
         $totalRevenue = 0;
-        $totalCost = 0;
+        $totalCost    = 0;
 
-        foreach ($reportData as $data) {
-            $sheet->setCellValue("A{$row}", $data['model']);
-            $sheet->setCellValue("B{$row}", $data['nopol']);
-            $sheet->setCellValue("C{$row}", $data['days_rented']);
-            $sheet->setCellValue("D{$row}", $data['revenue']);
-            $sheet->setCellValue("E{$row}", $data['cost']);
+        foreach ($reportData as $item) {
+            $sheet->setCellValue("A{$row}", $item['model']);
+            $sheet->setCellValue("B{$row}", $item['nopol']);
+            $sheet->setCellValue("C{$row}", $item['days_rented']);
+            $sheet->setCellValue("D{$row}", $item['revenue']);
+            $sheet->setCellValue("E{$row}", $item['cost']);
             $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
-            $sheet->getStyle("E{$row}")
-                ->getNumberFormat()
-                ->setFormatCode('"Rp"#,##0');
+            $sheet->getStyle("E{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-            $totalDays += $data['days_rented'];
-            $totalRevenue += $data['revenue'];
-            $totalCost += $data['cost'];
+            $totalDays    += $item['days_rented'];
+            $totalRevenue += $item['revenue'];
+            $totalCost    += $item['cost'];
             $row++;
         }
 
@@ -244,7 +239,7 @@ class CarPerformanceReport extends Page implements HasForms
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        $writer = new Xlsx($spreadsheet);
+        $writer   = new Xlsx($spreadsheet);
         $filename = 'laporan_kinerja_mobil_' . str_replace(' ', '_', $reportTitle) . '.xlsx';
 
         return response()->streamDownload(
@@ -253,163 +248,103 @@ class CarPerformanceReport extends Page implements HasForms
         );
     }
 
-    // -- METHOD BARU UNTUK EKSPOR DETAIL --
+    // ──────────────────────────────────────────────────────────────────────────
+    // EKSPOR DETAIL PER MOBIL
+    // ──────────────────────────────────────────────────────────────────────────
     public function exportCarDetail(
-    int $carId,
-    int $year,
-    int $month
-): StreamedResponse {
+        int $carId,
+        int $year,
+        int $month
+    ): StreamedResponse {
 
-    /**
-     * =========================
-     * AMBIL DATA DARI REPORT
-     * =========================
-     */
-    $reportData = collect($this->reportTableData)
-        ->firstWhere('car_id', $carId);
+        // Ambil data dari reportTableData yang sudah di-load
+        $reportData = collect($this->reportTableData)
+            ->firstWhere('car_id', $carId);
 
-    if (!$reportData) {
-        abort(404, 'Data mobil tidak ditemukan');
-    }
+        if (!$reportData) {
+            abort(404, 'Data mobil tidak ditemukan');
+        }
 
-    /**
-     * =========================
-     * SPREADSHEET
-     * =========================
-     */
-    $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
 
-    $sheet = $spreadsheet->getActiveSheet();
+        // ── Judul ────────────────────────────────────────────────────────────
+        $sheet->setCellValue('A1', 'Detail Harga Pokok Mobil');
+        $sheet->setCellValue('A2', "Mobil: {$reportData['model']} ({$reportData['nopol']})");
+        $sheet->setCellValue('A3', "Periode: {$this->reportTitle}");
 
-    /**
-     * =========================
-     * JUDUL
-     * =========================
-     */
-    $sheet->setCellValue(
-        'A1',
-        "Detail Harga Pokok Mobil"
-    );
+        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A2:G2');
+        $sheet->mergeCells('A3:G3');
 
-    $sheet->setCellValue(
-        'A2',
-        "Mobil: {$reportData['model']} ({$reportData['nopol']})"
-    );
+        $sheet->getStyle('A1:A3')->getFont()->setBold(true);
+        $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal('center');
 
-    $sheet->setCellValue(
-        'A3',
-        "Periode: {$this->reportTitle}"
-    );
-
-    $sheet->mergeCells('A1:G1');
-    $sheet->mergeCells('A2:G2');
-    $sheet->mergeCells('A3:G3');
-
-    $sheet->getStyle('A1:A3')
-        ->getFont()
-        ->setBold(true);
-
-    $sheet->getStyle('A1:A3')
-        ->getAlignment()
-        ->setHorizontal('center');
-
-    /**
-     * =========================
-     * HEADER
-     * =========================
-     */
-    $headers = [
-        'Booking ID',
-        'Pelanggan',
-        'Tanggal Keluar',
-        'Tanggal Kembali',
-        'Hari Dalam Bulan',
-        'Harga Pokok',
-    ];
-
-    $sheet->fromArray($headers, null, 'A5');
-
-    $sheet->getStyle('A5:F5')
-        ->getFont()
-        ->setBold(true);
-
-    /**
-     * =========================
-     * DATA
-     * =========================
-     */
-    $row = 6;
-
-    $totalCost = 0;
-
-    foreach ($reportData['bookings'] as $booking) {
-
+        // ── Header ───────────────────────────────────────────────────────────
         $sheet->fromArray([
-            $booking['id'],
-            $booking['customer'],
-            $booking['start'],
-            $booking['end'],
-            $booking['days_in_month'] ?? '-',
-            $booking['cost'] ?? 0,
-        ], null, "A{$row}");
+            'Booking ID',
+            'Pelanggan',
+            'Tanggal Keluar',
+            'Tanggal Kembali',
+            'Hari Dalam Bulan',
+            'Pendapatan',
+            'Harga Pokok',
+        ], null, 'A5');
+        $sheet->getStyle('A5:G5')->getFont()->setBold(true);
 
-        $sheet->getStyle("F{$row}")
-            ->getNumberFormat()
-            ->setFormatCode('"Rp"#,##0');
+        // ── Data ─────────────────────────────────────────────────────────────
+        $row       = 6;
+        $totalRevenue = 0;
+        $totalCost = 0;
 
-        $totalCost += $booking['cost'] ?? 0;
+        foreach ($reportData['bookings'] as $booking) {
+            $sheet->fromArray([
+                $booking['id'],
+                $booking['customer'],
+                $booking['start'],
+                $booking['end'],
+                $booking['days_in_month'],   // ← sekarang selalu terisi
+                $booking['revenue'],
+                $booking['cost'],
+            ], null, "A{$row}");
 
-        $row++;
+            $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+            $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+
+            $totalRevenue += $booking['revenue'];
+            $totalCost    += $booking['cost'];
+
+            $row++;
+        }
+
+        // ── Total ────────────────────────────────────────────────────────────
+        $sheet->setCellValue("F{$row}", 'TOTAL');
+        $sheet->setCellValue("F{$row}", $totalRevenue);  // kolom F = pendapatan
+        $sheet->setCellValue("G{$row}", $totalCost);     // kolom G = harga pokok
+
+        // Tulis label TOTAL di kolom E agar tidak menimpa angka
+        $sheet->setCellValue("E{$row}", 'TOTAL');
+        $sheet->getStyle("E{$row}:G{$row}")->getFont()->setBold(true);
+        $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+        $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+
+        // ── Auto size ────────────────────────────────────────────────────────
+        foreach (range('A', 'G') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // ── Download ─────────────────────────────────────────────────────────
+        $writer   = new Xlsx($spreadsheet);
+        $filename = 'detail_harga_pokok_' . str_replace(' ', '_', $reportData['nopol']) . '.xlsx';
+
+        return response()->streamDownload(
+            fn() => $writer->save('php://output'),
+            $filename
+        );
     }
-
-    /**
-     * =========================
-     * TOTAL
-     * =========================
-     */
-    $sheet->setCellValue("E{$row}", 'TOTAL');
-
-    $sheet->setCellValue("F{$row}", $totalCost);
-
-    $sheet->getStyle("E{$row}:F{$row}")
-        ->getFont()
-        ->setBold(true);
-
-    $sheet->getStyle("F{$row}")
-        ->getNumberFormat()
-        ->setFormatCode('"Rp"#,##0');
-
-    /**
-     * =========================
-     * AUTO SIZE
-     * =========================
-     */
-    foreach (range('A', 'F') as $col) {
-        $sheet->getColumnDimension($col)
-            ->setAutoSize(true);
-    }
-
-    /**
-     * =========================
-     * DOWNLOAD
-     * =========================
-     */
-    $writer = new Xlsx($spreadsheet);
-
-    $filename = 'detail_harga_pokok_' .
-        str_replace(' ', '_', $reportData['nopol']) .
-        '.xlsx';
-
-    return response()->streamDownload(
-        fn() => $writer->save('php://output'),
-        $filename
-    );
-}
 
     public static function canAccess(): bool
     {
-        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
-
