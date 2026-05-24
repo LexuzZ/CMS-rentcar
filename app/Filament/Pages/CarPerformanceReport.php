@@ -202,10 +202,10 @@ class CarPerformanceReport extends Page implements HasForms
             'Mobil',
             'No. Polisi',
             'Total Hari Disewa',
-            'Pendapatan (Prorata)',
-            'Harga Pokok (Prorata)',
+            'Pendapatan',
+            'Harga Pokok',
         ], null, 'A4');
-        $sheet->getStyle('A4:E4')->getFont()->setBold(true);
+        $sheet->getStyle('A4:E4')->getFont()->setBold(true)->getAlignment()->setHorizontal('center');
 
         $row = 5;
         $totalDays = 0;
