@@ -29,6 +29,29 @@
                     Order Via Cust.
                 </span>
             </a>
+            <a
+                href="https://wa.me/"
+                target="_blank"
+                class="
+                    inline-flex items-center gap-2
+                    rounded-xl
+                    bg-white/20
+                    px-5 py-3
+                    text-sm font-semibold
+                    backdrop-blur
+                    transition hover:bg-white/30
+                "
+            >
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path d="M20.52 3.48A11.8 11.8 0 0012.04 0C5.52 0 .24 5.28.24 11.76c0 2.04.48 4.08 1.44 5.88L0 24l6.6-1.68a11.8 11.8 0 005.4 1.32h.04c6.48 0 11.76-5.28 11.76-11.76 0-3.12-1.2-6.12-3.28-8.4z"/>
+                </svg>
+
+                Open WhatsApp
+            </a>
 
 
             {{-- TOMBOL 2: Transaksi --}}
