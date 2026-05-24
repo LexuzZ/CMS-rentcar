@@ -2,27 +2,47 @@
 
 
 
-.fi-sidebar-nav::-webkit-scrollbar {
-    display: none;
+.fi-sidebar {
+    background-color: #1e293b !important;
 }
 
-.fi-sidebar-nav {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+.fi-sidebar-header {
+    background-color: #0f172a !important;
+    border-bottom: 1px solid #334155 !important;
 }
-.fi-stats-overview-stat.color-info {
+
+.fi-sidebar-nav .fi-nav-item a {
+    color: #94a3b8 !important;
+}
+
+.fi-sidebar-nav .fi-nav-item a:hover {
+    background-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+.fi-sidebar-nav .fi-nav-item a.fi-active {
     background-color: #3b82f6 !important;
-    color: white;
-}
-.fi-stats-overview-stat.color-success {
-    background-color: #22c55e !important;
-    color: white;
-}
-.fi-stats-overview-stat.color-warning {
-    background-color: #f97316 !important;
-    color: white;
+    color: #ffffff !important;
 }
 
+.fi-sidebar-nav .fi-nav-item a svg {
+    color: #64748b !important;
+}
 
+.fi-sidebar-nav .fi-nav-item a.fi-active svg {
+    color: #ffffff !important;
+}
 
+.fi-sidebar-group-label {
+    color: #475569 !important;
+}
 
+.fi-sidebar-footer {
+    background-color: #0f172a !important;
+    border-top: 1px solid #334155 !important;
+}
+
+.fi-topbar {
+    background-color: #0f172a !important;
+    border-bottom: 1px solid #1e293b !important;
+}
