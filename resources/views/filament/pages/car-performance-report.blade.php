@@ -84,6 +84,7 @@
                                     <th scope="col" class="px-4 py-3">Pelanggan</th>
                                     <th scope="col" class="px-4 py-3">Tanggal Sewa</th>
                                     <th scope="col" class="px-4 py-3 text-right">Pendapatan</th>
+                                    <th scope="col" class="px-4 py-3 text-right">Harga Pokok</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,6 +100,9 @@
                                         </td>
                                         <td class="px-4 py-3 text-right"
                                             x-text="`Rp ${Number(booking.revenue).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`">
+                                        </td>
+                                        <td class="px-4 py-3 text-right"
+                                            x-text="`Rp ${Number(booking.cost).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`">
                                         </td>
                                     </tr>
                                 </template>
