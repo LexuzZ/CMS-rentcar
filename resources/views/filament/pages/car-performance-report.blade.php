@@ -31,6 +31,7 @@
                             <th scope="col" class="px-4 py-3">No. Polisi</th>
                             <th scope="col" class="px-4 py-3 text-center">Total Hari</th>
                             <th scope="col" class="px-4 py-3 text-right">Pendapatan</th>
+                            <th scope="col" class="px-4 py-3 text-right">Harga Pokok</th>
                             <th scope="col" class="px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -44,6 +45,7 @@
                                 <td class="px-4 py-3 text-center">{{ $data['days_rented'] }} hari</td>
                                 <td class="px-4 py-3 text-right">Rp {{ number_format($data['revenue'], 0, ',', '.') }}
                                 </td>
+                                <td class="px-4 py-3 text-right">Rp {{ number_format($data['cost'], 0, ',', '.') }}</td>
                                 <td class="px-4 py-3 text-center">
                                     <button
                                         @click="isModalOpen = true; modalBookings = @js($data['bookings']); modalCarName = '{{ $data['model'] }} ({{ $data['nopol'] }})'; modalCarId = {{ $data['car_id'] }}"
