@@ -79,108 +79,147 @@ class CarPerformanceReport extends Page implements HasForms
     }
 
     protected function loadReportData(): void
-    {
-        $state = $this->form->getState();
-        $month = $state['month'];
-        $year = $state['year'];
-        $nopolSearch = $state['nopol_search'] ?? null; // Ambil nilai pencarian
+{
+    $state = $this->form->getState();
 
-        $startDate = Carbon::create($year, $month, 1)->startOfDay();
-        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
+    $month = $state['month'];
+    $year = $state['year'];
+    $nopolSearch = $state['nopol_search'] ?? null;
 
-        $carsQuery = Car::query()
-            ->with([
-                'carModel.brand',
-                'bookings' => function ($query) use ($startDate, $endDate) {
-                    $query->with('customer')
-                        ->where('status', '!=', 'batal')
-                        ->where(function ($q) use ($startDate, $endDate) {
-                            $q->where('tanggal_keluar', '<=', $endDate)
-                                ->where('tanggal_kembali', '>=', $startDate);
-                        });
-                }
-            ])
-            ->whereHas('bookings', function ($query) use ($startDate, $endDate) {
-                $query->where('status', '!=', 'batal')
+    $startDate = Carbon::create($year, $month, 1)->startOfDay();
+    $endDate = $startDate->copy()->endOfMonth()->endOfDay();
+
+    $carsQuery = Car::query()
+        ->with([
+            'carModel.brand',
+            'bookings' => function ($query) use ($startDate, $endDate) {
+                $query->with('customer')
+                    ->where('status', '!=', 'batal')
                     ->where(function ($q) use ($startDate, $endDate) {
                         $q->where('tanggal_keluar', '<=', $endDate)
                             ->where('tanggal_kembali', '>=', $startDate);
                     });
-            })
-            // Menambahkan kondisi pencarian nopol ke query
-            ->when($nopolSearch, function ($query) use ($nopolSearch) {
-                $query->where('nopol', 'like', "%{$nopolSearch}%");
-            });
+            }
+        ])
+        ->whereHas('bookings', function ($query) use ($startDate, $endDate) {
+            $query->where('status', '!=', 'batal')
+                ->where(function ($q) use ($startDate, $endDate) {
+                    $q->where('tanggal_keluar', '<=', $endDate)
+                        ->where('tanggal_kembali', '>=', $startDate);
+                });
+        })
+        ->when($nopolSearch, function ($query) use ($nopolSearch) {
+            $query->where('nopol', 'like', "%{$nopolSearch}%");
+        });
 
-        $cars = $carsQuery->get();
+    $cars = $carsQuery->get();
 
-        $data = [];
+    $data = [];
 
-        foreach ($cars as $car) {
-            $totalDaysInMonth = 0;
-            $totalRevenueInMonth = 0;
-            $totalCostInMonth = 0;
-            $bookingsInMonth = [];
+    foreach ($cars as $car) {
 
-            foreach ($car->bookings as $booking) {
-                $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
-                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->startOfDay();
+        $totalDaysInMonth = 0;
+        $totalRevenueInMonth = 0;
+        $totalCostInMonth = 0;
 
-                $effectiveStartDate = $bookingStart->copy()->max($startDate);
-                $effectiveEndDate = $bookingEnd->copy()->min($endDate);
+        $bookingsInMonth = [];
 
-                // Logika perhitungan hari non-inklusif
-                $days = $effectiveStartDate->diffInDays($effectiveEndDate);
-                $daysInMonth = $days > 0 ? $days : 1;
+        foreach ($car->bookings as $booking) {
 
-                $totalDaysInMonth += $daysInMonth;
+            $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
+            $bookingEnd = Carbon::parse($booking->tanggal_kembali)->endOfDay();
 
-                // $revenueInMonth = 0;
-                // if ($booking->total_hari > 0) {
-                //     $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
-                //     $revenueInMonth = $dailyRate * $daysInMonth;
-                //     $totalRevenueInMonth += $revenueInMonth;
-                // }
-                $costInMonth = 0;
-                if ($booking->total_hari > 0) {
+            $effectiveStartDate = $bookingStart->copy()->max($startDate);
+            $effectiveEndDate = $bookingEnd->copy()->min($endDate);
 
-                    // Pendapatan prorata
-                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
-                    $revenueInMonth = $dailyRate * $daysInMonth;
+            $daysInMonth = 0;
 
-                    $totalRevenueInMonth += $revenueInMonth;
-
-                    // Harga pokok prorata
-                    $costInMonth = ($car->harga_pokok ?? 0) * $daysInMonth;
-
-                    $totalCostInMonth += $costInMonth;
-                }
-
-                $bookingsInMonth[] = [
-                    'id' => $booking->id,
-                    'customer' => $booking->customer->nama,
-                    'start' => $booking->tanggal_keluar,
-                    'end' => $booking->tanggal_kembali,
-                    'revenue' => $revenueInMonth,
-                    'cost' => $costInMonth,
-                ];
+            if ($effectiveStartDate <= $effectiveEndDate) {
+                $daysInMonth = $effectiveStartDate->diffInDays($effectiveEndDate) + 1;
             }
 
-            $data[] = [
-                'car_id' => $car->id,
-                'model' => $car->carModel->brand->name . ' ' . $car->carModel->name,
-                'nopol' => $car->nopol,
-                'days_rented' => $totalDaysInMonth,
-                'revenue' => $totalRevenueInMonth,
-                'cost' => $totalCostInMonth,
-                'bookings' => $bookingsInMonth,
+            $totalDaysInMonth += $daysInMonth;
+
+            // Reset variable setiap loop
+            $revenueInMonth = 0;
+            $costInMonth = 0;
+
+            if ($booking->total_hari > 0) {
+
+                /**
+                 * =========================
+                 * PENDAPATAN PRORATA
+                 * =========================
+                 */
+                $dailyRate = ($booking->estimasi_biaya ?? 0) / $booking->total_hari;
+
+                $revenueInMonth = $dailyRate * $daysInMonth;
+
+                /**
+                 * =========================
+                 * HARGA POKOK PRORATA
+                 * =========================
+                 */
+
+                // Ganti jika nama field berbeda
+                $dailyCost = (float) ($car->harga_pokok ?? 0);
+
+                $costInMonth = $dailyCost * $daysInMonth;
+
+                /**
+                 * =========================
+                 * TOTAL
+                 * =========================
+                 */
+                $totalRevenueInMonth += $revenueInMonth;
+                $totalCostInMonth += $costInMonth;
+            }
+
+            $bookingsInMonth[] = [
+                'id' => $booking->id,
+                'customer' => $booking->customer->nama ?? '-',
+                'start' => $booking->tanggal_keluar,
+                'end' => $booking->tanggal_kembali,
+
+                'days_in_month' => $daysInMonth,
+
+                'revenue' => round($revenueInMonth),
+                'cost' => round($costInMonth),
+
+                'profit' => round($revenueInMonth - $costInMonth),
             ];
         }
 
-        $this->reportTitle = $startDate->locale('id')->isoFormat('MMMM YYYY');
-        $this->reportDateString = $startDate->format('Y-m');
-        $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
+        $data[] = [
+            'car_id' => $car->id,
+
+            'model' => $car->carModel->brand->name . ' ' . $car->carModel->name,
+
+            'nopol' => $car->nopol,
+
+            'days_rented' => $totalDaysInMonth,
+
+            'revenue' => round($totalRevenueInMonth),
+
+            'cost' => round($totalCostInMonth),
+
+            'profit' => round($totalRevenueInMonth - $totalCostInMonth),
+
+            'bookings' => $bookingsInMonth,
+        ];
     }
+
+    $this->reportTitle = $startDate
+        ->locale('id')
+        ->isoFormat('MMMM YYYY');
+
+    $this->reportDateString = $startDate->format('Y-m');
+
+    $this->reportTableData = collect($data)
+        ->sortByDesc('revenue')
+        ->values()
+        ->all();
+}
 
     public function exportReport(): StreamedResponse
     {
