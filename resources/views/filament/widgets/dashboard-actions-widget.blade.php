@@ -30,7 +30,7 @@
                 </span>
             </a>
             <a
-                href="https://wa.me/6281128948884"
+                href="https://web.whatsapp.com"
                 target="_blank"
                 class="
                     inline-flex items-center gap-2
