@@ -281,6 +281,11 @@ class CarPerformanceReport extends Page implements HasForms
             })
             ->get();
 
+        /**
+         * =========================
+         * SPREADSHEET
+         * =========================
+         */
         $spreadsheet = new Spreadsheet();
 
         $sheet = $spreadsheet->getActiveSheet();
@@ -292,7 +297,7 @@ class CarPerformanceReport extends Page implements HasForms
          */
         $sheet->setCellValue(
             'A1',
-            "Detail Booking Mobil: {$car->carModel->brand->name} {$car->carModel->name} ({$car->nopol})"
+            "Detail Harga Pokok Mobil: {$car->carModel->brand->name} {$car->carModel->name} ({$car->nopol})"
         );
 
         $sheet->setCellValue(
@@ -300,8 +305,8 @@ class CarPerformanceReport extends Page implements HasForms
             "Periode: " . $startOfMonth->locale('id')->isoFormat('MMMM YYYY')
         );
 
-        $sheet->mergeCells('A1:I1');
-        $sheet->mergeCells('A2:I2');
+        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A2:G2');
 
         $sheet->getStyle('A1:A2')
             ->getFont()
@@ -321,20 +326,18 @@ class CarPerformanceReport extends Page implements HasForms
             'Pelanggan',
             'Tgl Keluar',
             'Tgl Kembali',
-            'Total Hari',
+            'Total Hari Booking',
             'Hari Dalam Bulan',
-            'Pendapatan',
             'Harga Pokok',
-            'Profit Bersih',
         ];
 
         $sheet->fromArray($headers, null, 'A4');
 
-        $sheet->getStyle('A4:I4')
+        $sheet->getStyle('A4:G4')
             ->getFont()
             ->setBold(true);
 
-        $sheet->getStyle('A4:I4')
+        $sheet->getStyle('A4:G4')
             ->getAlignment()
             ->setHorizontal('center');
 
@@ -345,15 +348,15 @@ class CarPerformanceReport extends Page implements HasForms
          */
         $row = 5;
 
-        $totalRevenue = 0;
         $totalCost = 0;
-        $totalProfit = 0;
 
         foreach ($bookings as $booking) {
 
-            $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
+            $bookingStart = Carbon::parse($booking->tanggal_keluar)
+                ->startOfDay();
 
-            $bookingEnd = Carbon::parse($booking->tanggal_kembali)->endOfDay();
+            $bookingEnd = Carbon::parse($booking->tanggal_kembali)
+                ->endOfDay();
 
             $periodeMulai = $bookingStart->greaterThan($startOfMonth)
                 ? $bookingStart
@@ -366,43 +369,23 @@ class CarPerformanceReport extends Page implements HasForms
             $hariDalamBulan = 0;
 
             if ($periodeMulai <= $periodeSelesai) {
+
                 $hariDalamBulan = $periodeMulai
                     ->diffInDays($periodeSelesai) + 1;
             }
 
             /**
              * =========================
-             * RESET VARIABLE
+             * HARGA POKOK
              * =========================
              */
-            $revenueInMonth = 0;
-            $costInMonth = 0;
-            $profitInMonth = 0;
 
+            // Ganti field jika berbeda
             $dailyCost = (float) ($car->harga_pokok ?? 0);
 
             $costInMonth = $dailyCost * $hariDalamBulan;
 
-            // Revenue hanya jika total_hari valid
-            if ($booking->total_hari > 0) {
-
-                $dailyRate = ($booking->estimasi_biaya ?? 0)
-                    / $booking->total_hari;
-
-                $revenueInMonth = $dailyRate * $hariDalamBulan;
-            }
-
-            // Profit
-            $profitInMonth = $revenueInMonth - $costInMonth;
-
-            /**
-             * =========================
-             * TOTAL
-             * =========================
-             */
-            $totalRevenue += $revenueInMonth;
             $totalCost += $costInMonth;
-            $totalProfit += $profitInMonth;
 
             /**
              * =========================
@@ -416,52 +399,43 @@ class CarPerformanceReport extends Page implements HasForms
                 $booking->tanggal_kembali,
                 $booking->total_hari,
                 $hariDalamBulan,
-                round($revenueInMonth),
                 round($costInMonth),
-                round($profitInMonth),
             ], null, "A{$row}");
 
             /**
              * FORMAT RUPIAH
              */
-            foreach (['G', 'H', 'I'] as $col) {
-                $sheet->getStyle("{$col}{$row}")
-                    ->getNumberFormat()
-                    ->setFormatCode('"Rp"#,##0');
-            }
+            $sheet->getStyle("G{$row}")
+                ->getNumberFormat()
+                ->setFormatCode('"Rp"#,##0');
 
             $row++;
         }
 
         /**
          * =========================
-         * SUMMARY
+         * TOTAL
          * =========================
          */
         $sheet->setCellValue("F{$row}", 'TOTAL');
 
-        $sheet->setCellValue("G{$row}", round($totalRevenue));
+        $sheet->setCellValue("G{$row}", round($totalCost));
 
-        $sheet->setCellValue("H{$row}", round($totalCost));
-
-        $sheet->setCellValue("I{$row}", round($totalProfit));
-
-        $sheet->getStyle("F{$row}:I{$row}")
+        $sheet->getStyle("F{$row}:G{$row}")
             ->getFont()
             ->setBold(true);
 
-        foreach (['G', 'H', 'I'] as $col) {
-            $sheet->getStyle("{$col}{$row}")
-                ->getNumberFormat()
-                ->setFormatCode('"Rp"#,##0');
-        }
+        $sheet->getStyle("G{$row}")
+            ->getNumberFormat()
+            ->setFormatCode('"Rp"#,##0');
 
         /**
          * =========================
          * AUTO SIZE
          * =========================
          */
-        foreach (range('A', 'I') as $col) {
+        foreach (range('A', 'G') as $col) {
+
             $sheet->getColumnDimension($col)
                 ->setAutoSize(true);
         }
@@ -471,7 +445,7 @@ class CarPerformanceReport extends Page implements HasForms
          * DOWNLOAD
          * =========================
          */
-        $fileName = "detail_booking_{$car->nopol}_{$year}-{$month}.xlsx";
+        $fileName = "detail_harga_pokok_{$car->nopol}_{$year}-{$month}.xlsx";
 
         return new StreamedResponse(function () use ($spreadsheet) {
 
