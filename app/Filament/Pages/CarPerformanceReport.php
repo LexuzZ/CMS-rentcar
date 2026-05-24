@@ -38,7 +38,7 @@ class CarPerformanceReport extends Page implements HasForms
     {
         $this->form->fill([
             'month' => now()->month,
-            'year'  => now()->year,
+            'year' => now()->year,
             'nopol_search' => '',
         ]);
         $this->loadReportData();
@@ -80,13 +80,13 @@ class CarPerformanceReport extends Page implements HasForms
 
     protected function loadReportData(): void
     {
-        $state       = $this->form->getState();
-        $month       = $state['month'];
-        $year        = $state['year'];
+        $state = $this->form->getState();
+        $month = $state['month'];
+        $year = $state['year'];
         $nopolSearch = $state['nopol_search'] ?? null;
 
         $startDate = Carbon::create($year, $month, 1)->startOfDay();
-        $endDate   = $startDate->copy()->endOfMonth()->startOfDay();
+        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
 
         $carsQuery = Car::query()
             ->with([
@@ -96,7 +96,7 @@ class CarPerformanceReport extends Page implements HasForms
                         ->where('status', '!=', 'batal')
                         ->where(function ($q) use ($startDate, $endDate) {
                             $q->where('tanggal_keluar', '<=', $endDate)
-                              ->where('tanggal_kembali', '>=', $startDate);
+                                ->where('tanggal_kembali', '>=', $startDate);
                         });
                 },
             ])
@@ -104,7 +104,7 @@ class CarPerformanceReport extends Page implements HasForms
                 $query->where('status', '!=', 'batal')
                     ->where(function ($q) use ($startDate, $endDate) {
                         $q->where('tanggal_keluar', '<=', $endDate)
-                          ->where('tanggal_kembali', '>=', $startDate);
+                            ->where('tanggal_kembali', '>=', $startDate);
                     });
             })
             ->when($nopolSearch, function ($query) use ($nopolSearch) {
@@ -116,64 +116,62 @@ class CarPerformanceReport extends Page implements HasForms
         $data = [];
 
         foreach ($cars as $car) {
-            $totalDaysInMonth    = 0;
+            $totalDaysInMonth = 0;
             $totalRevenueInMonth = 0;
-            $totalCostInMonth    = 0;
-            $bookingsInMonth     = [];
+            $totalCostInMonth = 0;
+            $bookingsInMonth = [];
 
             foreach ($car->bookings as $booking) {
                 $bookingStart = Carbon::parse($booking->tanggal_keluar)->startOfDay();
-                $bookingEnd   = Carbon::parse($booking->tanggal_kembali)->startOfDay();
+                $bookingEnd = Carbon::parse($booking->tanggal_kembali)->startOfDay();
 
                 $effectiveStartDate = $bookingStart->copy()->max($startDate);
-                $effectiveEndDate   = $bookingEnd->copy()->min($endDate);
+                $effectiveEndDate = $bookingEnd->copy()->min($endDate);
 
-                $days        = $effectiveStartDate->diffInDays($effectiveEndDate);
+                $days = $effectiveStartDate->diffInDays($effectiveEndDate);
                 $daysInMonth = $days > 0 ? $days : 1;
 
                 $totalDaysInMonth += $daysInMonth;
 
-                // ── Init di luar blok if agar selalu terdefinisi ──
+                // ✅ Init di LUAR if agar tidak pernah undefined
                 $revenueInMonth = 0;
-                $costInMonth    = 0;
+                $costInMonth = 0;
 
                 if ($booking->total_hari > 0) {
-                    // Pendapatan prorata
-                    $dailyRate      = $booking->estimasi_biaya / $booking->total_hari;
+                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
                     $revenueInMonth = $dailyRate * $daysInMonth;
                     $totalRevenueInMonth += $revenueInMonth;
 
-                    // Harga pokok prorata
                     $costInMonth = ($car->harga_pokok ?? 0) * $daysInMonth;
                     $totalCostInMonth += $costInMonth;
                 }
 
-                // ── days_in_month ikut disimpan agar exportCarDetail bisa membacanya ──
+                // ✅ days_in_month ikut disimpan
                 $bookingsInMonth[] = [
-                    'id'           => $booking->id,
-                    'customer'     => $booking->customer->nama,
-                    'start'        => $booking->tanggal_keluar,
-                    'end'          => $booking->tanggal_kembali,
-                    'days_in_month'=> $daysInMonth,
-                    'revenue'      => $revenueInMonth,
-                    'cost'         => $costInMonth,
+                    'id' => $booking->id,
+                    'customer' => $booking->customer->nama,
+                    'start' => $booking->tanggal_keluar,
+                    'end' => $booking->tanggal_kembali,
+                    'days_in_month' => $daysInMonth,  // ← WAJIB ADA
+                    'revenue' => $revenueInMonth,
+                    'cost' => $costInMonth,  // ← sekarang pasti terisi
                 ];
             }
 
             $data[] = [
-                'car_id'   => $car->id,
-                'model'    => $car->carModel->brand->name . ' ' . $car->carModel->name,
-                'nopol'    => $car->nopol,
+                'car_id' => $car->id,
+                'model' => $car->carModel->brand->name . ' ' . $car->carModel->name,
+                'nopol' => $car->nopol,
                 'days_rented' => $totalDaysInMonth,
-                'revenue'  => $totalRevenueInMonth,
-                'cost'     => $totalCostInMonth,
+                'revenue' => $totalRevenueInMonth,
+                'cost' => $totalCostInMonth,
                 'bookings' => $bookingsInMonth,
             ];
         }
 
-        $this->reportTitle      = $startDate->locale('id')->isoFormat('MMMM YYYY');
+        $this->reportTitle = $startDate->locale('id')->isoFormat('MMMM YYYY');
         $this->reportDateString = $startDate->format('Y-m');
-        $this->reportTableData  = collect($data)->sortByDesc('revenue')->values()->all();
+        $this->reportTableData = collect($data)->sortByDesc('revenue')->values()->all();
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -181,11 +179,11 @@ class CarPerformanceReport extends Page implements HasForms
     // ──────────────────────────────────────────────────────────────────────────
     public function exportReport(): StreamedResponse
     {
-        $reportData  = $this->reportTableData;
+        $reportData = $this->reportTableData;
         $reportTitle = $this->reportTitle;
 
         $spreadsheet = new Spreadsheet();
-        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         // Judul
         $sheet->setCellValue('A1', 'Laporan Kinerja Mobil');
@@ -205,10 +203,10 @@ class CarPerformanceReport extends Page implements HasForms
         ], null, 'A4');
         $sheet->getStyle('A4:E4')->getFont()->setBold(true);
 
-        $row          = 5;
-        $totalDays    = 0;
+        $row = 5;
+        $totalDays = 0;
         $totalRevenue = 0;
-        $totalCost    = 0;
+        $totalCost = 0;
 
         foreach ($reportData as $item) {
             $sheet->setCellValue("A{$row}", $item['model']);
@@ -219,9 +217,9 @@ class CarPerformanceReport extends Page implements HasForms
             $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
             $sheet->getStyle("E{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-            $totalDays    += $item['days_rented'];
+            $totalDays += $item['days_rented'];
             $totalRevenue += $item['revenue'];
-            $totalCost    += $item['cost'];
+            $totalCost += $item['cost'];
             $row++;
         }
 
@@ -239,7 +237,7 @@ class CarPerformanceReport extends Page implements HasForms
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        $writer   = new Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
         $filename = 'laporan_kinerja_mobil_' . str_replace(' ', '_', $reportTitle) . '.xlsx';
 
         return response()->streamDownload(
@@ -266,7 +264,7 @@ class CarPerformanceReport extends Page implements HasForms
         }
 
         $spreadsheet = new Spreadsheet();
-        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         // ── Judul ────────────────────────────────────────────────────────────
         $sheet->setCellValue('A1', 'Detail Harga Pokok Mobil');
@@ -293,7 +291,7 @@ class CarPerformanceReport extends Page implements HasForms
         $sheet->getStyle('A5:G5')->getFont()->setBold(true);
 
         // ── Data ─────────────────────────────────────────────────────────────
-        $row       = 6;
+        $row = 6;
         $totalRevenue = 0;
         $totalCost = 0;
 
@@ -312,7 +310,7 @@ class CarPerformanceReport extends Page implements HasForms
             $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
             $totalRevenue += $booking['revenue'];
-            $totalCost    += $booking['cost'];
+            $totalCost += $booking['cost'];
 
             $row++;
         }
@@ -334,7 +332,7 @@ class CarPerformanceReport extends Page implements HasForms
         }
 
         // ── Download ─────────────────────────────────────────────────────────
-        $writer   = new Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
         $filename = 'detail_harga_pokok_' . str_replace(' ', '_', $reportData['nopol']) . '.xlsx';
 
         return response()->streamDownload(
