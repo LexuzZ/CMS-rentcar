@@ -290,6 +290,7 @@ class CarPerformanceReport extends Page implements HasForms
             'Total Hari',
             'Hari Dalam Bulan Ini',
             'Pendapatan Bulan Ini (Rp)',
+            'Harga Pokok Bulan Ini (Rp)',
         ];
 
         $sheet->fromArray($headers, null, 'A4');
