@@ -1,146 +1,358 @@
 <x-filament-widgets::widget>
     <x-filament::section>
+
         <x-slot name="heading">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-danger-50 dark:bg-danger-950 shrink-0">
-                    <x-heroicon-s-exclamation-triangle class="w-4 h-4 text-danger-500" />
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="display:flex; align-items:center; justify-content:center;
+                            width:36px; height:36px; border-radius:10px;
+                            background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25);">
+                    <x-heroicon-s-exclamation-triangle style="width:16px;height:16px;color:#ef4444;" />
                 </div>
-                <div>
-                    <span class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight">Tugas Terlambat</span>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 font-normal mt-0.5">Booking yang melewati jadwal dan perlu segera ditindaklanjuti</p>
+                <div style="line-height:1.3;">
+                    <p style="margin:0; font-size:14px; font-weight:600; color:inherit;">Tugas Terlambat</p>
+                    <p style="margin:0; font-size:11px; color:#9ca3af; font-weight:400; margin-top:2px;">
+                        Booking melewati jadwal · perlu tindakan segera
+                    </p>
+                </div>
+                <div style="margin-left:auto; display:flex; align-items:center; gap:6px;
+                            padding:4px 10px; border-radius:8px;
+                            background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2);">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#ef4444;
+                                 display:inline-block; animation:pulse 1.5s infinite;"></span>
+                    <span style="font-size:12px;font-weight:600;color:#ef4444;">
+                        {{ $overduePickups->count() + $overdueReturns->count() }} aktif
+                    </span>
                 </div>
             </div>
         </x-slot>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800 -mx-6 -mb-6">
+        <style>
+            @keyframes pulse {
+                0%,100% { opacity:1; }
+                50%      { opacity:.35; }
+            }
+            .ow-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+                margin-top: 4px;
+            }
+            @media (max-width: 768px) {
+                .ow-grid { grid-template-columns: 1fr; }
+            }
+            .ow-col-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 10px;
+                padding: 0 2px;
+            }
+            .ow-col-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                flex-shrink: 0;
+            }
+            .ow-col-icon.warning {
+                background: rgba(245,158,11,.1);
+                border: 1px solid rgba(245,158,11,.25);
+            }
+            .ow-col-icon.danger {
+                background: rgba(239,68,68,.1);
+                border: 1px solid rgba(239,68,68,.25);
+            }
+            .ow-col-title {
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: .07em;
+                color: #9ca3af;
+                margin: 0;
+            }
+            .ow-badge {
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 11px;
+            }
+            .ow-badge.warning {
+                background: rgba(245,158,11,.08);
+                border: 1px solid rgba(245,158,11,.2);
+                color: #d97706;
+            }
+            .ow-badge.danger {
+                background: rgba(239,68,68,.08);
+                border: 1px solid rgba(239,68,68,.2);
+                color: #ef4444;
+            }
+            .ow-badge b { font-weight: 700; }
+            .ow-cards { display: flex; flex-direction: column; gap: 8px; }
+            .ow-card {
+                position: relative;
+                background: #fff;
+                border: 1px solid #f0f0f0;
+                border-radius: 12px;
+                overflow: hidden;
+                transition: border-color .15s, box-shadow .15s;
+            }
+            .ow-card:hover {
+                box-shadow: 0 2px 10px rgba(0,0,0,.06);
+            }
+            .ow-card.warning:hover { border-color: rgba(245,158,11,.35); }
+            .ow-card.danger:hover  { border-color: rgba(239,68,68,.35); }
 
-            {{-- Kolom Terlambat Pick Up --}}
-            <div class="px-6 py-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <x-heroicon-o-truck class="w-4 h-4 text-warning-500 shrink-0" />
-                    <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Terlambat Pick Up</h3>
-                    <span class="ml-auto inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-warning-50 text-warning-700 dark:bg-warning-950 dark:text-warning-400 ring-1 ring-warning-200 dark:ring-warning-800">
-                        {{ $overduePickups->count() }}
-                    </span>
+            .ow-card-bar {
+                position: absolute;
+                left: 0; top: 0; bottom: 0;
+                width: 3px;
+                border-radius: 12px 0 0 12px;
+            }
+            .ow-card-bar.warning { background: #f59e0b; }
+            .ow-card-bar.danger  { background: #ef4444; }
+
+            .ow-card-body {
+                padding: 14px 16px 12px 18px;
+            }
+            .ow-card-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .ow-car-name {
+                margin: 0;
+                font-size: 13.5px;
+                font-weight: 600;
+                color: inherit;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .ow-nopol {
+                display: inline-block;
+                font-family: ui-monospace, monospace;
+                font-size: 10px;
+                font-weight: 500;
+                background: #f3f4f6;
+                color: #6b7280;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
+                padding: 1px 5px;
+                letter-spacing: .05em;
+                margin-left: 4px;
+                vertical-align: middle;
+            }
+            .ow-customer {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-top: 5px;
+                font-size: 12px;
+                color: #9ca3af;
+            }
+            .ow-time-right { text-align: right; flex-shrink: 0; }
+            .ow-time-rel {
+                margin: 0;
+                font-size: 12px;
+                font-weight: 700;
+            }
+            .ow-time-rel.warning { color: #d97706; }
+            .ow-time-rel.danger  { color: #ef4444; }
+            .ow-time-abs {
+                margin: 0;
+                font-size: 11px;
+                color: #d1d5db;
+                margin-top: 2px;
+                font-variant-numeric: tabular-nums;
+            }
+            .ow-divider {
+                border: none;
+                border-top: 1px solid #f3f4f6;
+                margin: 10px 0 10px;
+            }
+            .ow-action-row {
+                display: flex;
+                justify-content: flex-end;
+            }
+            .ow-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 5px 12px;
+                border: none;
+                border-radius: 7px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background .15s, transform .1s;
+                color: #fff;
+            }
+            .ow-btn:active { transform: scale(.96); }
+            .ow-btn.warning { background: #f59e0b; }
+            .ow-btn.warning:hover { background: #d97706; }
+            .ow-btn.danger  { background: #ef4444; }
+            .ow-btn.danger:hover  { background: #dc2626; }
+
+            .ow-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 36px 16px;
+                border: 1.5px dashed #e5e7eb;
+                border-radius: 12px;
+                background: #fafafa;
+                text-align: center;
+            }
+            .ow-empty-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(34,197,94,.1);
+                margin-bottom: 10px;
+            }
+            .ow-empty p { margin: 0; }
+            .ow-empty-title { font-size: 13px; font-weight: 500; color: #9ca3af; }
+            .ow-empty-sub   { font-size: 11px; color: #d1d5db; margin-top: 3px !important; }
+
+            /* Dark mode */
+            @media (prefers-color-scheme: dark) {
+                .ow-card          { background: rgba(17,24,39,.8); border-color: #1f2937; }
+                .ow-card.warning:hover { border-color: rgba(245,158,11,.3); }
+                .ow-card.danger:hover  { border-color: rgba(239,68,68,.3); }
+                .ow-nopol         { background: #1f2937; color: #9ca3af; border-color: #374151; }
+                .ow-divider       { border-color: #1f2937; }
+                .ow-empty         { background: rgba(17,24,39,.3); border-color: #1f2937; }
+                .ow-time-abs      { color: #6b7280; }
+            }
+        </style>
+
+        <div class="ow-grid">
+
+            {{-- ══ Terlambat Pick Up ══ --}}
+            <div>
+                <div class="ow-col-header">
+                    <div class="ow-col-icon warning">
+                        <x-heroicon-o-truck style="width:14px;height:14px;color:#f59e0b;" />
+                    </div>
+                    <p class="ow-col-title">Pick Up</p>
+                    <div class="ow-badge warning">
+                        <b>{{ $overduePickups->count() }}</b> booking
+                    </div>
                 </div>
 
-                <div class="space-y-2.5">
+                <div class="ow-cards">
                     @forelse ($overduePickups as $booking)
-                        <div class="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm transition-all duration-150">
-                            {{-- Left accent bar --}}
-                            <div class="absolute inset-y-0 left-0 w-[3px] bg-warning-400 dark:bg-warning-500 rounded-l-xl"></div>
-
-                            <div class="pl-4 pr-4 pt-3.5 pb-3">
-                                <div class="flex justify-between items-start gap-3">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 flex-wrap">
+                        <div class="ow-card warning">
+                            <div class="ow-card-bar warning"></div>
+                            <div class="ow-card-body">
+                                <div class="ow-card-row">
+                                    <div style="min-width:0;flex:1;">
+                                        <p class="ow-car-name">
                                             {{ $booking->car->carModel->name }}
-                                            <span class="font-mono text-[11px] bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-md px-1.5 py-px tracking-wide">
-                                                {{ $booking->car->nopol }}
-                                            </span>
+                                            <span class="ow-nopol">{{ $booking->car->nopol }}</span>
                                         </p>
-                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 flex items-center gap-1">
-                                            <x-heroicon-o-user class="w-3 h-3 shrink-0" />
+                                        <p class="ow-customer">
+                                            <x-heroicon-o-user style="width:11px;height:11px;flex-shrink:0;" />
                                             {{ $booking->customer->nama }}
                                         </p>
                                     </div>
-                                    <div class="text-right shrink-0">
-                                        <p class="text-xs font-semibold text-danger-600 dark:text-danger-400">
+                                    <div class="ow-time-right">
+                                        <p class="ow-time-rel warning">
                                             {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->locale('id')->diffForHumans() }}
                                         </p>
-                                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
-                                            {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('D MMM YYYY') }}
+                                        <p class="ow-time-abs">
+                                            {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->locale('id')->format('d M Y') }}
                                         </p>
                                     </div>
                                 </div>
-
                                 @if($canPerformActions)
-                                    <div class="border-t border-gray-100 dark:border-gray-800 mt-3 pt-2.5 flex justify-end">
-                                        <x-filament::button
-                                            wire:click="pickupOverdue({{ $booking->id }})"
-                                            color="warning"
-                                            size="xs"
-                                            icon="heroicon-o-check-circle"
-                                            outlined>
+                                    <hr class="ow-divider">
+                                    <div class="ow-action-row">
+                                        <button wire:click="pickupOverdue({{ $booking->id }})" class="ow-btn warning">
+                                            <x-heroicon-o-check style="width:13px;height:13px;" />
                                             Pick Up
-                                        </x-filament::button>
+                                        </button>
                                     </div>
                                 @endif
                             </div>
                         </div>
                     @empty
-                        <div class="flex flex-col items-center justify-center py-10 px-4 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/30">
-                            <div class="w-8 h-8 rounded-full bg-success-50 dark:bg-success-950 flex items-center justify-center mb-2">
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                        <div class="ow-empty">
+                            <div class="ow-empty-icon">
+                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#22c55e;" />
                             </div>
-                            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Semua jadwal pick up on time</p>
-                            <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Tidak ada yang terlewat</p>
+                            <p class="ow-empty-title">Semua jadwal terpenuhi</p>
+                            <p class="ow-empty-sub">Tidak ada pick up yang terlewat</p>
                         </div>
                     @endforelse
                 </div>
             </div>
 
-            {{-- Kolom Terlambat Selesaikan --}}
-            <div class="px-6 py-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <x-heroicon-o-arrow-path class="w-4 h-4 text-danger-500 shrink-0" />
-                    <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Terlambat Selesaikan</h3>
-                    <span class="ml-auto inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-danger-50 text-danger-700 dark:bg-danger-950 dark:text-danger-400 ring-1 ring-danger-200 dark:ring-danger-800">
-                        {{ $overdueReturns->count() }}
-                    </span>
+            {{-- ══ Terlambat Selesaikan ══ --}}
+            <div>
+                <div class="ow-col-header">
+                    <div class="ow-col-icon danger">
+                        <x-heroicon-o-arrow-path style="width:14px;height:14px;color:#ef4444;" />
+                    </div>
+                    <p class="ow-col-title">Pengembalian</p>
+                    <div class="ow-badge danger">
+                        <b>{{ $overdueReturns->count() }}</b> booking
+                    </div>
                 </div>
 
-                <div class="space-y-2.5">
+                <div class="ow-cards">
                     @forelse ($overdueReturns as $booking)
-                        <div class="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm transition-all duration-150">
-                            {{-- Left accent bar --}}
-                            <div class="absolute inset-y-0 left-0 w-[3px] bg-danger-500 rounded-l-xl"></div>
-
-                            <div class="pl-4 pr-4 pt-3.5 pb-3">
-                                <div class="flex justify-between items-start gap-3">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 flex-wrap">
+                        <div class="ow-card danger">
+                            <div class="ow-card-bar danger"></div>
+                            <div class="ow-card-body">
+                                <div class="ow-card-row">
+                                    <div style="min-width:0;flex:1;">
+                                        <p class="ow-car-name">
                                             {{ $booking->car->carModel->name }}
-                                            <span class="font-mono text-[11px] bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-md px-1.5 py-px tracking-wide">
-                                                {{ $booking->car->nopol }}
-                                            </span>
+                                            <span class="ow-nopol">{{ $booking->car->nopol }}</span>
                                         </p>
-                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 flex items-center gap-1">
-                                            <x-heroicon-o-user class="w-3 h-3 shrink-0" />
+                                        <p class="ow-customer">
+                                            <x-heroicon-o-user style="width:11px;height:11px;flex-shrink:0;" />
                                             {{ $booking->customer->nama }}
                                         </p>
                                     </div>
-                                    <div class="text-right shrink-0">
-                                        <p class="text-xs font-semibold text-danger-600 dark:text-danger-400">
+                                    <div class="ow-time-right">
+                                        <p class="ow-time-rel danger">
                                             {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->locale('id')->diffForHumans() }}
                                         </p>
-                                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
-                                            {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('D MMM YYYY') }}
+                                        <p class="ow-time-abs">
+                                            {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->locale('id')->format('d M Y') }}
                                         </p>
                                     </div>
                                 </div>
-
                                 @if($canPerformActions)
-                                    <div class="border-t border-gray-100 dark:border-gray-800 mt-3 pt-2.5 flex justify-end">
-                                        <x-filament::button
-                                            wire:click="returnOverdue({{ $booking->id }})"
-                                            color="danger"
-                                            size="xs"
-                                            icon="heroicon-o-check-circle"
-                                            outlined>
+                                    <hr class="ow-divider">
+                                    <div class="ow-action-row">
+                                        <button wire:click="returnOverdue({{ $booking->id }})" class="ow-btn danger">
+                                            <x-heroicon-o-check style="width:13px;height:13px;" />
                                             Selesaikan
-                                        </x-filament::button>
+                                        </button>
                                     </div>
                                 @endif
                             </div>
                         </div>
                     @empty
-                        <div class="flex flex-col items-center justify-center py-10 px-4 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/30">
-                            <div class="w-8 h-8 rounded-full bg-success-50 dark:bg-success-950 flex items-center justify-center mb-2">
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                        <div class="ow-empty">
+                            <div class="ow-empty-icon">
+                                <x-heroicon-o-check-circle style="width:20px;height:20px;color:#22c55e;" />
                             </div>
-                            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Semua pengembalian tepat waktu</p>
-                            <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Tidak ada yang terlewat</p>
+                            <p class="ow-empty-title">Semua kendaraan kembali</p>
+                            <p class="ow-empty-sub">Tidak ada pengembalian yang terlewat</p>
                         </div>
                     @endforelse
                 </div>
