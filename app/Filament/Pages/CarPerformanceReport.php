@@ -162,6 +162,7 @@ class CarPerformanceReport extends Page implements HasForms
                     'start' => $booking->tanggal_keluar,
                     'end' => $booking->tanggal_kembali,
                     'revenue' => $revenueInMonth,
+                    'cost' => $costInMonth,
                 ];
             }
 
