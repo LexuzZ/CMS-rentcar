@@ -237,6 +237,7 @@ class CarPerformanceReport extends Page implements HasForms
         $sheet->setCellValue("E{$summaryRow}", $totalCost);
         $sheet->getStyle("A{$summaryRow}:E{$summaryRow}")->getFont()->setBold(true);
         $sheet->getStyle("D{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+        $sheet->getStyle("E{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
         foreach (range('A', 'E') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
