@@ -133,7 +133,7 @@ class CarPerformanceReport extends Page implements HasForms
 
                 $revenueInMonth = 0;
                 if ($booking->total_hari > 0) {
-                    $dailyRate = $booking->car->harga_pokok / $booking->total_hari;
+                    $dailyRate = $booking->estimasi_biaya / $booking->total_hari;
                     $revenueInMonth = $dailyRate * $daysInMonth;
                     $totalRevenueInMonth += $revenueInMonth;
                 }
