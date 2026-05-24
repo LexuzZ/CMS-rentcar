@@ -255,214 +255,156 @@ class CarPerformanceReport extends Page implements HasForms
 
     // -- METHOD BARU UNTUK EKSPOR DETAIL --
     public function exportCarDetail(
-        int $carId,
-        int $year,
-        int $month
-    ): StreamedResponse {
+    int $carId,
+    int $year,
+    int $month
+): StreamedResponse {
 
-        $car = Car::with([
-            'bookings.customer',
-            'carModel.brand'
-        ])->findOrFail($carId);
+    /**
+     * =========================
+     * AMBIL DATA DARI REPORT
+     * =========================
+     */
+    $reportData = collect($this->reportTableData)
+        ->firstWhere('car_id', $carId);
 
-        $startOfMonth = Carbon::create($year, $month, 1)->startOfDay();
+    if (!$reportData) {
+        abort(404, 'Data mobil tidak ditemukan');
+    }
 
-        $endOfMonth = $startOfMonth
-            ->copy()
-            ->endOfMonth()
-            ->endOfDay();
+    /**
+     * =========================
+     * SPREADSHEET
+     * =========================
+     */
+    $spreadsheet = new Spreadsheet();
 
-        $bookings = $car->bookings()
-            ->with('customer')
-            ->where('status', '!=', 'batal')
-            ->where(function ($q) use ($startOfMonth, $endOfMonth) {
-                $q->where('tanggal_keluar', '<=', $endOfMonth)
-                    ->where('tanggal_kembali', '>=', $startOfMonth);
-            })
-            ->get();
+    $sheet = $spreadsheet->getActiveSheet();
 
-        /**
-         * =========================
-         * SPREADSHEET
-         * =========================
-         */
-        $spreadsheet = new Spreadsheet();
+    /**
+     * =========================
+     * JUDUL
+     * =========================
+     */
+    $sheet->setCellValue(
+        'A1',
+        "Detail Harga Pokok Mobil"
+    );
 
-        $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue(
+        'A2',
+        "Mobil: {$reportData['model']} ({$reportData['nopol']})"
+    );
 
-        /**
-         * =========================
-         * JUDUL
-         * =========================
-         */
-        $sheet->setCellValue(
-            'A1',
-            "Detail Harga Pokok Mobil: {$car->carModel->brand->name} {$car->carModel->name} ({$car->nopol})"
-        );
+    $sheet->setCellValue(
+        'A3',
+        "Periode: {$this->reportTitle}"
+    );
 
-        $sheet->setCellValue(
-            'A2',
-            "Periode: " . $startOfMonth->locale('id')->isoFormat('MMMM YYYY')
-        );
+    $sheet->mergeCells('A1:G1');
+    $sheet->mergeCells('A2:G2');
+    $sheet->mergeCells('A3:G3');
 
-        $sheet->mergeCells('A1:G1');
-        $sheet->mergeCells('A2:G2');
+    $sheet->getStyle('A1:A3')
+        ->getFont()
+        ->setBold(true);
 
-        $sheet->getStyle('A1:A2')
-            ->getFont()
-            ->setBold(true);
+    $sheet->getStyle('A1:A3')
+        ->getAlignment()
+        ->setHorizontal('center');
 
-        $sheet->getStyle('A1:A2')
-            ->getAlignment()
-            ->setHorizontal('center');
+    /**
+     * =========================
+     * HEADER
+     * =========================
+     */
+    $headers = [
+        'Booking ID',
+        'Pelanggan',
+        'Tanggal Keluar',
+        'Tanggal Kembali',
+        'Hari Dalam Bulan',
+        'Harga Pokok',
+    ];
 
-        /**
-         * =========================
-         * HEADER
-         * =========================
-         */
-        $headers = [
-            'Booking ID',
-            'Pelanggan',
-            'Tgl Keluar',
-            'Tgl Kembali',
-            'Total Hari Booking',
-            'Hari Dalam Bulan',
-            'Harga Pokok',
-        ];
+    $sheet->fromArray($headers, null, 'A5');
 
-        $sheet->fromArray($headers, null, 'A4');
+    $sheet->getStyle('A5:F5')
+        ->getFont()
+        ->setBold(true);
 
-        $sheet->getStyle('A4:G4')
-            ->getFont()
-            ->setBold(true);
+    /**
+     * =========================
+     * DATA
+     * =========================
+     */
+    $row = 6;
 
-        $sheet->getStyle('A4:G4')
-            ->getAlignment()
-            ->setHorizontal('center');
+    $totalCost = 0;
 
-        /**
-         * =========================
-         * DATA
-         * =========================
-         */
-        $row = 5;
+    foreach ($reportData['bookings'] as $booking) {
 
-        $totalCost = 0;
+        $sheet->fromArray([
+            $booking['id'],
+            $booking['customer'],
+            $booking['start'],
+            $booking['end'],
+            $booking['days_in_month'] ?? '-',
+            $booking['cost'] ?? 0,
+        ], null, "A{$row}");
 
-        foreach ($bookings as $booking) {
-
-            $bookingStart = Carbon::parse($booking->tanggal_keluar)
-                ->startOfDay();
-
-            $bookingEnd = Carbon::parse($booking->tanggal_kembali)
-                ->endOfDay();
-
-            $periodeMulai = $bookingStart->greaterThan($startOfMonth)
-                ? $bookingStart
-                : $startOfMonth;
-
-            $periodeSelesai = $bookingEnd->lessThan($endOfMonth)
-                ? $bookingEnd
-                : $endOfMonth;
-
-            $hariDalamBulan = 0;
-
-            if ($periodeMulai <= $periodeSelesai) {
-
-                $hariDalamBulan = $periodeMulai
-                    ->diffInDays($periodeSelesai) + 1;
-            }
-
-            /**
-             * =========================
-             * HARGA POKOK
-             * =========================
-             */
-
-            // Ganti field jika berbeda
-            $dailyCost = (float) ($car->harga_pokok ?? 0);
-
-            $costInMonth = $dailyCost * $hariDalamBulan;
-
-            $totalCost += $costInMonth;
-
-            /**
-             * =========================
-             * INSERT ROW
-             * =========================
-             */
-            $sheet->fromArray([
-                $booking->id,
-                $booking->customer->nama ?? '-',
-                $booking->tanggal_keluar,
-                $booking->tanggal_kembali,
-                $booking->total_hari,
-                $hariDalamBulan,
-                round($costInMonth),
-            ], null, "A{$row}");
-
-            /**
-             * FORMAT RUPIAH
-             */
-            $sheet->getStyle("G{$row}")
-                ->getNumberFormat()
-                ->setFormatCode('"Rp"#,##0');
-
-            $row++;
-        }
-
-        /**
-         * =========================
-         * TOTAL
-         * =========================
-         */
-        $sheet->setCellValue("F{$row}", 'TOTAL');
-
-        $sheet->setCellValue("G{$row}", round($totalCost));
-
-        $sheet->getStyle("F{$row}:G{$row}")
-            ->getFont()
-            ->setBold(true);
-
-        $sheet->getStyle("G{$row}")
+        $sheet->getStyle("F{$row}")
             ->getNumberFormat()
             ->setFormatCode('"Rp"#,##0');
 
-        /**
-         * =========================
-         * AUTO SIZE
-         * =========================
-         */
-        foreach (range('A', 'G') as $col) {
+        $totalCost += $booking['cost'] ?? 0;
 
-            $sheet->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        /**
-         * =========================
-         * DOWNLOAD
-         * =========================
-         */
-        $fileName = "detail_harga_pokok_{$car->nopol}_{$year}-{$month}.xlsx";
-
-        return new StreamedResponse(function () use ($spreadsheet) {
-
-            $writer = new Xlsx($spreadsheet);
-
-            $writer->save('php://output');
-
-        }, 200, [
-            'Content-Type' =>
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-
-            'Content-Disposition' =>
-                "attachment;filename=\"{$fileName}\"",
-
-            'Cache-Control' => 'max-age=0',
-        ]);
+        $row++;
     }
+
+    /**
+     * =========================
+     * TOTAL
+     * =========================
+     */
+    $sheet->setCellValue("E{$row}", 'TOTAL');
+
+    $sheet->setCellValue("F{$row}", $totalCost);
+
+    $sheet->getStyle("E{$row}:F{$row}")
+        ->getFont()
+        ->setBold(true);
+
+    $sheet->getStyle("F{$row}")
+        ->getNumberFormat()
+        ->setFormatCode('"Rp"#,##0');
+
+    /**
+     * =========================
+     * AUTO SIZE
+     * =========================
+     */
+    foreach (range('A', 'F') as $col) {
+        $sheet->getColumnDimension($col)
+            ->setAutoSize(true);
+    }
+
+    /**
+     * =========================
+     * DOWNLOAD
+     * =========================
+     */
+    $writer = new Xlsx($spreadsheet);
+
+    $filename = 'detail_harga_pokok_' .
+        str_replace(' ', '_', $reportData['nopol']) .
+        '.xlsx';
+
+    return response()->streamDownload(
+        fn() => $writer->save('php://output'),
+        $filename
+    );
+}
 
     public static function canAccess(): bool
     {
