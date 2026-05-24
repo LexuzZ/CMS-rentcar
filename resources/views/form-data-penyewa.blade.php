@@ -203,14 +203,9 @@
 
         .fp-body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background: #0f172a;
-            padding: 24px 16px;
+            padding: 40px 16px;
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-            position: relative;
-            overflow: hidden;
         }
 
         /* Decorative blobs */
@@ -218,17 +213,18 @@
             position: fixed; top: -160px; left: -100px;
             width: 500px; height: 500px; border-radius: 50%;
             background: radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%);
-            pointer-events: none;
+            pointer-events: none; z-index: 0;
         }
         .fp-bg-bottom {
             position: fixed; bottom: -120px; right: -80px;
             width: 420px; height: 420px; border-radius: 50%;
             background: radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%);
-            pointer-events: none;
+            pointer-events: none; z-index: 0;
         }
 
         .fp-wrapper {
             width: 100%; max-width: 520px;
+            margin: 0 auto;
             position: relative; z-index: 1;
             animation: fp-rise 0.45s cubic-bezier(.22,1,.36,1) both;
         }
