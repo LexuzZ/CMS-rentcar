@@ -379,34 +379,21 @@ class CarPerformanceReport extends Page implements HasForms
             $costInMonth = 0;
             $profitInMonth = 0;
 
+            $dailyCost = (float) ($car->harga_pokok ?? 0);
+
+            $costInMonth = $dailyCost * $hariDalamBulan;
+
+            // Revenue hanya jika total_hari valid
             if ($booking->total_hari > 0) {
 
-                /**
-                 * =========================
-                 * REVENUE
-                 * =========================
-                 */
                 $dailyRate = ($booking->estimasi_biaya ?? 0)
                     / $booking->total_hari;
 
                 $revenueInMonth = $dailyRate * $hariDalamBulan;
-
-                /**
-                 * =========================
-                 * COST
-                 * =========================
-                 */
-                $dailyCost = (float) ($car->harga_pokok ?? 0);
-
-                $costInMonth = $dailyCost * $hariDalamBulan;
-
-                /**
-                 * =========================
-                 * PROFIT
-                 * =========================
-                 */
-                $profitInMonth = $revenueInMonth - $costInMonth;
             }
+
+            // Profit
+            $profitInMonth = $revenueInMonth - $costInMonth;
 
             /**
              * =========================
