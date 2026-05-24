@@ -130,7 +130,9 @@ class VehicleSchedule extends Page implements HasForms
                     $currentDay = Carbon::create($year, $month, $day);
                     if ($currentDay->between($bookingStart, $bookingEnd)) {
                         $dailySchedule[$day] = [
-                            'display_text' => $booking->invoice ? 'INV #' . $booking->invoice->id : $booking->customer->nama,
+                            'display_text' => $booking->invoice
+                                ? $booking->customer->nama
+                                : 'BOOKING #' . $booking->id,
                             'status' => $booking->status,
                             'booking_id' => $booking->id,
                         ];
