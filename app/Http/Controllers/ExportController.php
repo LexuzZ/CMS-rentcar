@@ -216,10 +216,10 @@ class ExportController extends Controller
             'TOTAL'
         );
 
-        $sheet->setCellValue(
-            "D{$summaryRow}",
-            $totalDays
-        );
+        // $sheet->setCellValue(
+        //     "D{$summaryRow}",
+        //     $totalDays
+        // );
 
         $sheet->setCellValue(
             "E{$summaryRow}",
