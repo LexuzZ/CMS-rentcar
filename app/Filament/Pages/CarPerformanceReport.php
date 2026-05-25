@@ -217,7 +217,7 @@ class CarPerformanceReport extends Page implements HasForms
             $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
             $sheet->getStyle("E{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-            $totalDays += $item['days_rented'];
+            // $totalDays += $item['days_rented'];
             $totalRevenue += $item['revenue'];
             $totalCost += $item['cost'];
             $row++;
@@ -226,7 +226,7 @@ class CarPerformanceReport extends Page implements HasForms
         // Total
         $summaryRow = $row + 1;
         $sheet->setCellValue("A{$summaryRow}", 'TOTAL');
-        $sheet->setCellValue("C{$summaryRow}", $totalDays);
+        // $sheet->setCellValue("C{$summaryRow}", $totalDays);
         $sheet->setCellValue("D{$summaryRow}", $totalRevenue);
         $sheet->setCellValue("E{$summaryRow}", $totalCost);
         $sheet->getStyle("A{$summaryRow}:E{$summaryRow}")->getFont()->setBold(true);
