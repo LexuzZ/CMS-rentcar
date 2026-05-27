@@ -122,9 +122,13 @@ class CarInstallmentResource extends Resource
         return $table
             ->columns([
 
-                Tables\Columns\TextColumn::make('car.nopol')
+                Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Mobil')
-                    ->searchable(),
+                    ->description(fn(CarInstallment $record): string => $record->car->nopol)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
 
                 Tables\Columns\TextColumn::make('nama_leasing')
                     ->label('Leasing'),
