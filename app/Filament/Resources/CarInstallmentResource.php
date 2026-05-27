@@ -120,6 +120,7 @@ class CarInstallmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
 
                 Tables\Columns\TextColumn::make('car.carModel.name')
@@ -164,7 +165,7 @@ class CarInstallmentResource extends Resource
 
 
                 Tables\Actions\Action::make('tambah_pengeluaran')
-                ->label('')
+                    ->label('')
                     ->tooltip('Tambah Pengeluaran')
                     ->icon('heroicon-o-banknotes')
                     ->color('danger')
@@ -197,9 +198,15 @@ class CarInstallmentResource extends Resource
                             ->send();
                     }),
 
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
 
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Cicilan')
+                    ->icon('heroicon-o-pencil')
+                    ->color('warning')
+                    ->hiddenLabel()
+                    ->button(),
 
 
             ])
