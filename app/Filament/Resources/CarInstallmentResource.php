@@ -150,7 +150,7 @@ class CarInstallmentResource extends Resource
                     ->label('Tenor'),
 
                 Tables\Columns\TextColumn::make('sisa_hutang')
-                    ->center()
+                    // ->center()
                     ->money('IDR', true)
                     ->color('danger'),
 
