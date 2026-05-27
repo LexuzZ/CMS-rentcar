@@ -136,12 +136,11 @@ class CarInstallmentResource extends Resource
                     ->wrap()->width(25),
 
                 Tables\Columns\TextColumn::make('total_hutang')
-                    ->money('IDR', true),
+                    ->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                 Tables\Columns\TextColumn::make('nominal_cicilan')
                     ->label('Cicilan')
-                    // ->center()
-                    ->money('IDR', true),
+                    ->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
 
 
@@ -150,8 +149,7 @@ class CarInstallmentResource extends Resource
                     ->label('Tenor'),
 
                 Tables\Columns\TextColumn::make('sisa_hutang')
-                    // ->center()
-                    ->money('IDR', true)
+                    ->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color('danger'),
 
                 Tables\Columns\BadgeColumn::make('status')
