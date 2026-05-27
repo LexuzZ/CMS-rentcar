@@ -100,14 +100,13 @@ class DashboardOverview extends BaseWidget
          * PIUTANG
          * ===============================
          */
-        $receivablesThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
-            ->sum('pembayaran');
+        $receivablesThisMonth = Invoice::whereBetween('tanggal_invoice', [$startOfMonth, $endOfMonth])
+            // ->where('status', 'belum_lunas')
+            ->sum('sisa_pembayaran');
 
-        $receivablesLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'belum_lunas'))
-            ->sum('pembayaran');
-
+        $receivablesLastMonth = Invoice::whereBetween('tanggal_invoice', [$startOfLastMonth, $endOfLastMonth])
+            // ->where('status', 'belum_lunas')
+            ->sum('sisa_pembayaran');
         $receivablesChange = $this->calculatePercentageChange($receivablesThisMonth, $receivablesLastMonth);
 
         /**
