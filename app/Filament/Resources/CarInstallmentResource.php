@@ -167,7 +167,7 @@ class CarInstallmentResource extends Resource
 
 
                 Tables\Actions\Action::make('tambah_pengeluaran')
-                    ->label('')
+                    ->label('Tambah Pengeluaran')
                     ->tooltip('Tambah Pengeluaran')
                     ->icon('heroicon-o-banknotes')
                     ->color('danger')
