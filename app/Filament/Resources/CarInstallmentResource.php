@@ -164,9 +164,12 @@ class CarInstallmentResource extends Resource
 
 
                 Tables\Actions\Action::make('tambah_pengeluaran')
-                    ->label('Tambah Pengeluaran')
+                ->label('')
+                    ->tooltip('Tambah Pengeluaran')
                     ->icon('heroicon-o-banknotes')
                     ->color('danger')
+                    ->hiddenLabel()
+                    ->button()
                     ->requiresConfirmation()
                     ->visible(fn($record) => !$record->pengeluaran)
                     ->action(function ($record) {
