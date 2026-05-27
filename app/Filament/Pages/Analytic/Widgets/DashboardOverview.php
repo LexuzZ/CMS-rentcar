@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Analytic\Widgets;
 
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Penalty;
@@ -47,28 +48,24 @@ class DashboardOverview extends BaseWidget
          * PROFIT GARASI (LABA KOTOR)
          * ===============================
          */
-        $incomeThisMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfMonth, $endOfMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
-            ->with('invoice.booking.car')
+        $incomeThisMonth = Booking::whereBetween('tanggal_keluar', [$startOfMonth, $endOfMonth])
+            // ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('car')
             ->get()
-            ->sum(function ($payment) {
-                $days = $payment->invoice->booking->total_hari;
-                $car = $payment->invoice->booking->car;
-
-                return ($car->harga_harian - $car->harga_pokok) * $days;
-            });
-
-        $incomeLastMonth = Payment::whereBetween('tanggal_pembayaran', [$startOfLastMonth, $endOfLastMonth])
-            ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
-            ->with('invoice.booking.car')
+            ->sum(
+                fn($booking) =>
+                ($booking->car->harga_harian - $booking->car->harga_pokok)
+                * $booking->total_hari
+            );
+        $incomeLastMonth = Booking::whereBetween('tanggal_keluar', [$startOfLastMonth, $endOfLastMonth])
+            // ->whereHas('invoice', fn($q) => $q->where('status', 'lunas'))
+            ->with('car')
             ->get()
-            ->sum(function ($payment) {
-                $days = $payment->invoice->booking->total_hari;
-                $car = $payment->invoice->booking->car;
-
-                return ($car->harga_harian - $car->harga_pokok) * $days;
-            });
-
+            ->sum(
+                fn($booking) =>
+                ($booking->car->harga_harian - $booking->car->harga_pokok)
+                * $booking->total_hari
+            );
         $incomeChange = $this->calculatePercentageChange($incomeThisMonth, $incomeLastMonth);
 
         /**
