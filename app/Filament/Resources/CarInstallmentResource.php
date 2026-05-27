@@ -131,7 +131,8 @@ class CarInstallmentResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('nama_leasing')
-                    ->label('Leasing'),
+                    ->label('Leasing')
+                    ->wrap()->width(25),
 
                 Tables\Columns\TextColumn::make('total_hutang')
                     ->money('IDR', true),
