@@ -51,16 +51,14 @@ class MetodePembayaranChart extends ChartWidget
             'tunai'    => '#2ecc71', // hijau
             'transfer' => '#3498db', // biru
             'qris'     => '#f1c40f', // kuning
-            'tunai_transfer' => '#e67e22', // oranye
-            'tunai_qris' => '#9b59b6', // ungu
-            'transfer_qris' => '#34495e', // abu-abu gelap
+
         ];
 
         // Siapkan label dan data
-        $labels = ['Tunai', 'Transfer', 'QRIS', 'Tunai & Transfer', 'Tunai & QRIS', 'Transfer & QRIS'];
+        $labels = ['Tunai', 'Transfer', 'QRIS'];
         $values = [];
 
-        foreach (['tunai', 'transfer', 'qris', 'tunai_transfer', 'tunai_qris','transfer_qris'] as $method) {
+        foreach (['tunai', 'transfer', 'qris'] as $method) {
             $values[] = $data->firstWhere('metode_pembayaran', $method)->total ?? 0;
         }
 
