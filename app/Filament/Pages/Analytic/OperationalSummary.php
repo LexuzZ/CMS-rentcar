@@ -168,11 +168,11 @@ class OperationalSummary extends Page implements HasForms
         // --- Revenue (Pendapatan Kotor)
         $RevenueMonth = Invoice::whereBetween('tanggal_invoice', [$startOfMonth, $endOfMonth])
             // ->where('status', 'lunas')
-            ->sum('total_tagihan');
+            ->sum('total_paid');
 
         $RevenueLastMonth = Invoice::whereBetween('tanggal_invoice', [$startOfLastMonth, $endOfLastMonth])
             // ->where('status', 'lunas')
-            ->sum('total_tagihan');
+            ->sum('total_paid');
         $RevenueChange = $this->calculatePercentageChange($RevenueMonth, $RevenueLastMonth);
 
         // --- Expense (Pengeluaran)
