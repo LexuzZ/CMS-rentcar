@@ -17,6 +17,7 @@ use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\CarInstallmentResource\Pages;
 use App\Models\Pengeluaran;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 
 class CarInstallmentResource extends Resource
 {
@@ -24,11 +25,18 @@ class CarInstallmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $navigationGroup = 'Laporan & Accounting';
+    protected static ?string $navigationGroup = 'Manajemen Mobil';
 
     protected static ?string $label = 'Cicilan Mobil';
 
     protected static ?string $pluralLabel = 'Cicilan Mobil';
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('car', function (Builder $query) {
+                $query->where('garasi', 'SPT');
+            });
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,10 +46,31 @@ class CarInstallmentResource extends Resource
                 Grid::make(2)
                     ->schema([
 
-                        Select::make('car_id')
+                        Forms\Components\Select::make('car_id')
                             ->label('Mobil')
-                            ->relationship('car', 'nopol')
+                            ->relationship(
+                                name: 'car',
+                                titleAttribute: 'nopol',
+                                modifyQueryUsing: fn(Builder $query) => $query
+                                    ->where('garasi', 'SPT')
+                                    ->with('carModel')
+                            )
+                            ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
                             ->searchable()
+                            ->getSearchResultsUsing(function (string $search) {
+                                return Car::query()
+                                    ->where('garasi', 'SPT')
+                                    ->where(function ($query) use ($search) {
+                                        $query->where('nopol', 'like', "%{$search}%")
+                                            ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                                    })
+                                    ->with('carModel')
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn($car) => [
+                                        $car->id => "{$car->carModel->name} ({$car->nopol})"
+                                    ]);
+                            })
                             ->preload()
                             ->required(),
 
