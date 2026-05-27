@@ -137,10 +137,10 @@ class CarInstallmentResource extends Resource
                     ->money('IDR', true),
 
                 Tables\Columns\TextColumn::make('nominal_cicilan')
+                    ->label('Cicilan')
                     ->money('IDR', true),
 
-                Tables\Columns\TextColumn::make('cicilan_ke')
-                    ->label('Cicilan'),
+
 
                 Tables\Columns\TextColumn::make('tenor')
                     ->label('Tenor'),
