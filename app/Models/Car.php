@@ -31,5 +31,9 @@ class Car extends Model
     {
         return $this->hasMany(ServiceHistory::class);
     }
+    public function installments()
+    {
+        return $this->hasMany(CarInstallment::class);
+    }
 
 }
