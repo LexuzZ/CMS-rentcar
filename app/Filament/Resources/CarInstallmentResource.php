@@ -171,7 +171,7 @@ class CarInstallmentResource extends Resource
                     ->tooltip('Tambah Pengeluaran')
                     ->icon('heroicon-o-banknotes')
                     ->color('danger')
-                    ->hiddenLabel()
+                    // ->hiddenLabel()
                     ->button()
                     ->requiresConfirmation()
                     ->visible(fn($record) => !$record->pengeluaran)
