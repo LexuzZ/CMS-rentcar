@@ -132,7 +132,7 @@ class CarInstallmentResource extends Resource
 
                 Tables\Columns\TextColumn::make('nama_leasing')
                     ->label('Leasing')
-                    ->center()
+                    // ->center()
                     ->wrap()->width(25),
 
                 Tables\Columns\TextColumn::make('total_hutang')
@@ -140,13 +140,13 @@ class CarInstallmentResource extends Resource
 
                 Tables\Columns\TextColumn::make('nominal_cicilan')
                     ->label('Cicilan')
-                    ->center()
+                    // ->center()
                     ->money('IDR', true),
 
 
 
                 Tables\Columns\TextColumn::make('tenor')
-                    ->center()
+                    // ->center()
                     ->label('Tenor'),
 
                 Tables\Columns\TextColumn::make('sisa_hutang')
@@ -155,7 +155,7 @@ class CarInstallmentResource extends Resource
                     ->color('danger'),
 
                 Tables\Columns\BadgeColumn::make('status')
-                    ->center()
+                    // ->center()
                     ->colors([
                         'success' => 'lunas',
                         'warning' => 'berjalan',
