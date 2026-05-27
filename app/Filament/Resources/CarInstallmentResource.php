@@ -132,7 +132,7 @@ class CarInstallmentResource extends Resource
 
                 Tables\Columns\TextColumn::make('nama_leasing')
                     ->label('Leasing')
-                    ->center()
+                    // ->center()
                     ->wrap()->width(25),
 
                 Tables\Columns\TextColumn::make('total_hutang')
@@ -140,17 +140,17 @@ class CarInstallmentResource extends Resource
 
                 Tables\Columns\TextColumn::make('nominal_cicilan')
                     ->label('Cicilan')
-                    ->center()
+                    // ->center()
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
 
 
                 Tables\Columns\TextColumn::make('tenor')
-                    ->center()
+                    // ->center()
                     ->label('Tenor'),
 
                 Tables\Columns\TextColumn::make('sisa_hutang')
-                    ->center()
+                    // ->center()
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color('danger'),
 
