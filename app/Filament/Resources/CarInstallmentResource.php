@@ -142,7 +142,9 @@ class CarInstallmentResource extends Resource
                 Tables\Columns\TextColumn::make('nominal_cicilan')
                     ->label('Cicilan')
                     ->alignCenter()->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
+                Tables\Columns\TextColumn::make('cicilan_ke')
+                    ->alignCenter()
+                    ->label('Cicilan Ke'),
 
 
                 Tables\Columns\TextColumn::make('tenor')
