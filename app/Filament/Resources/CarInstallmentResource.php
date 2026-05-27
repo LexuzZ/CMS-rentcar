@@ -174,6 +174,9 @@ class CarInstallmentResource extends Resource
                     // ->hiddenLabel()
                     ->button()
                     ->requiresConfirmation()
+                    ->modalHeading('Tambah ke Pengeluaran?')
+                    ->modalDescription('Data cicilan ini akan dimasukkan ke pengeluaran.')
+                    ->modalSubmitActionLabel('Ya, Tambahkan')
                     ->visible(fn($record) => !$record->pengeluaran)
                     ->action(function ($record) {
 
