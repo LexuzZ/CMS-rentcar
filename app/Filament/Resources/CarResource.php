@@ -25,11 +25,11 @@ class CarResource extends Resource
 {
     protected static ?string $model = Car::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationIcon  = 'heroicon-o-truck';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
-    protected static ?int $navigationSort = 3;
-    protected static ?string $label = 'Mobil';
-    protected static ?string $pluralLabel = 'Data Mobil';
+    protected static ?int    $navigationSort  = 3;
+    protected static ?string $label           = 'Mobil';
+    protected static ?string $pluralLabel     = 'Data Mobil';
 
     // ─────────────────────────────────────────
     //  FORM
@@ -86,10 +86,10 @@ class CarResource extends Resource
                     Select::make('status')
                         ->label('Status')
                         ->options([
-                            'ready' => 'Ready',
-                            'disewa' => 'Disewa',
-                            'perawatan' => 'Perawatan',
-                            'nonaktif' => 'Nonaktif',
+                            'ready'      => 'Ready',
+                            'disewa'     => 'Disewa',
+                            'perawatan'  => 'Perawatan',
+                            'nonaktif'   => 'Nonaktif',
                         ])
                         ->default('ready')
                         ->required(),
@@ -97,7 +97,7 @@ class CarResource extends Resource
                     Select::make('transmisi')
                         ->label('Transmisi')
                         ->options([
-                            'matic' => 'Matic',
+                            'matic'  => 'Matic',
                             'manual' => 'Manual',
                         ])
                         ->default('matic')
@@ -157,8 +157,7 @@ class CarResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                    ->description(
-                        fn(Car $record): string =>
+                    ->description(fn(Car $record): string =>
                         ($record->carModel?->brand?->name ?? '') . ' ' . ($record->carModel?->name ?? '—')
                     ),
 
@@ -176,9 +175,9 @@ class CarResource extends Resource
                     ->badge()
                     ->alignCenter()
                     ->color(fn(string $state): string => match ($state) {
-                        'matic' => 'info',
+                        'matic'  => 'info',
                         'manual' => 'warning',
-                        default => 'gray',
+                        default  => 'gray',
                     })
                     ->formatStateUsing(fn($state) => ucfirst($state)),
 
@@ -188,25 +187,25 @@ class CarResource extends Resource
                     ->badge()
                     ->alignCenter()
                     ->color(fn(string $state): string => match ($state) {
-                        'ready' => 'success',
-                        'disewa' => 'info',
+                        'ready'     => 'success',
+                        'disewa'    => 'info',
                         'perawatan' => 'danger',
-                        'nonaktif' => 'gray',
-                        default => 'gray',
+                        'nonaktif'  => 'gray',
+                        default     => 'gray',
                     })
                     ->icon(fn(string $state): string => match ($state) {
-                        'ready' => 'heroicon-m-check-circle',
-                        'disewa' => 'heroicon-m-key',
+                        'ready'     => 'heroicon-m-check-circle',
+                        'disewa'    => 'heroicon-m-key',
                         'perawatan' => 'heroicon-m-wrench-screwdriver',
-                        'nonaktif' => 'heroicon-m-x-circle',
-                        default => 'heroicon-m-question-mark-circle',
+                        'nonaktif'  => 'heroicon-m-x-circle',
+                        default     => 'heroicon-m-question-mark-circle',
                     })
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'ready' => 'Ready',
-                        'disewa' => 'Disewa',
+                        'ready'     => 'Ready',
+                        'disewa'    => 'Disewa',
                         'perawatan' => 'Maintenance',
-                        'nonaktif' => 'Nonaktif',
-                        default => ucfirst($state),
+                        'nonaktif'  => 'Nonaktif',
+                        default     => ucfirst($state),
                     }),
 
                 // Harga harian
@@ -237,106 +236,60 @@ class CarResource extends Resource
                         Grid::make(2)->schema([
                             DatePicker::make('start_date')
                                 ->label('Dari Tanggal')
-                                ->native(false)
-                                ->minDate(today())
-                                ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
-                                    // Reset end_date jika lebih awal dari start_date
-                                    $set('end_date', null);
-                                }),
-
-                            DatePicker::make('end_date')
-                                ->label('Sampai Tanggal')
-                                ->native(false)
-                                ->minDate(fn(Forms\Get $get) => $get('start_date') ?? today())
-                                ->live(),
+                                ->required(),
+                            TimePicker::make('start_time')
+                                ->label('Waktu Keluar')
+                                ->required()
+                                ->withoutSeconds(),
                         ]),
                         Grid::make(2)->schema([
-                            TimePicker::make('start_time')
-                                ->label('Jam Keluar')
-                                ->default('08:00')
-                                ->withoutSeconds()
-                                ->live(),
-
+                            DatePicker::make('end_date')
+                                ->label('Sampai Tanggal')
+                                ->required(),
                             TimePicker::make('end_time')
-                                ->label('Jam Kembali')
-                                ->default('20:00')
-                                ->withoutSeconds()
-                                ->live(),
+                                ->label('Waktu Kembali')
+                                ->required()
+                                ->withoutSeconds(),
                         ]),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        // Semua field harus terisi sebelum filter dijalankan
-                        if (
-                            blank($data['start_date']) ||
-                            blank($data['end_date']) ||
-                            blank($data['start_time']) ||
-                            blank($data['end_time'])
-                        ) {
+                        if (empty($data['start_date']) || empty($data['end_date']) ||
+                            empty($data['start_time']) || empty($data['end_time'])) {
                             return $query;
                         }
 
-                        $start = Carbon::parse($data['start_date'] . ' ' . $data['start_time']);
-                        $end = Carbon::parse($data['end_date'] . ' ' . $data['end_time']);
-
-                        // Pastikan rentang valid (end harus setelah start)
-                        if ($end->lte($start)) {
-                            return $query;
-                        }
+                        $startDateTime = Carbon::parse($data['start_date'] . ' ' . $data['start_time']);
+                        $endDateTime   = Carbon::parse($data['end_date']   . ' ' . $data['end_time']);
 
                         return $query
-                            // Hanya tampilkan mobil yang statusnya memungkinkan untuk disewa
                             ->whereNotIn('status', ['perawatan', 'nonaktif'])
-
-                            // Tidak ada booking aktif yang tumpang tindih dengan rentang waktu ini
-                            ->whereDoesntHave('bookings', function (Builder $q) use ($start, $end) {
-                                $q
-                                    // Hanya booking yang masih aktif (bukan selesai / batal)
-                                    ->whereNotIn('status', ['selesai', 'batal', 'cancelled'])
-
-                                    // Logika overlap: booking bentrok jika
-                                    // tanggal_keluar < end DAN tanggal_kembali > start
-                                    ->where('tanggal_keluar', '<', $end)
-                                    ->where('tanggal_kembali', '>', $start);
+                            ->whereDoesntHave('bookings', function (Builder $q) use ($startDateTime, $endDateTime) {
+                                $q->where('tanggal_keluar', '<', $endDateTime)
+                                  ->where('tanggal_kembali', '>', $startDateTime);
                             });
                     })
-                    ->indicateUsing(function (array $data): array {
-                        $indicators = [];
-
-                        if (
-                            filled($data['start_date']) &&
-                            filled($data['end_date']) &&
-                            filled($data['start_time']) &&
-                            filled($data['end_time'])
-                        ) {
-                            $start = Carbon::parse($data['start_date'] . ' ' . $data['start_time'])
-                                ->locale('id')->isoFormat('D MMM Y, HH:mm');
-                            $end = Carbon::parse($data['end_date'] . ' ' . $data['end_time'])
-                                ->locale('id')->isoFormat('D MMM Y, HH:mm');
-
-                            $indicators[] = Tables\Filters\Indicator::make("Tersedia: {$start} → {$end}")
-                                ->removeField('start_date')  // klik × akan reset semua field
-                                ->removeField('start_time')
-                                ->removeField('end_date')
-                                ->removeField('end_time');
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data['start_date']) || empty($data['end_date'])) {
+                            return null;
                         }
-
-                        return $indicators;
+                        $from = Carbon::parse($data['start_date'])->locale('id')->isoFormat('D MMM Y');
+                        $to   = Carbon::parse($data['end_date'])->locale('id')->isoFormat('D MMM Y');
+                        return "Tersedia: {$from} → {$to}";
                     }),
 
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'ready' => 'Ready',
-                        'disewa' => 'Disewa',
+                        'ready'     => 'Ready',
+                        'disewa'    => 'Disewa',
                         'perawatan' => 'Maintenance',
-                        'nonaktif' => 'Nonaktif',
+                        'nonaktif'  => 'Nonaktif',
                     ]),
 
                 Tables\Filters\SelectFilter::make('transmisi')
                     ->label('Transmisi')
                     ->options([
-                        'matic' => 'Matic',
+                        'matic'  => 'Matic',
                         'manual' => 'Manual',
                     ]),
             ])
@@ -351,7 +304,7 @@ class CarResource extends Resource
                     ->visible(function (Pages\ListCars $livewire): bool {
                         $filters = $livewire->tableFilters;
                         return !empty($filters['availability']['start_date']) &&
-                            !empty($filters['availability']['end_date']);
+                               !empty($filters['availability']['end_date']);
                     })
                     ->modalContent(function (Pages\ListCars $livewire): View {
                         $cars = $livewire->getFilteredTableQuery()
@@ -361,13 +314,13 @@ class CarResource extends Resource
                             ->sortBy(fn($car) => $car->carModel->name, SORT_NATURAL | SORT_FLAG_CASE)
                             ->values();
 
-                        $filters = $livewire->tableFilters;
+                        $filters       = $livewire->tableFilters;
                         $startDateTime = Carbon::parse($filters['availability']['start_date'] . ' ' . $filters['availability']['start_time'])
                             ->locale('id')->isoFormat('D MMMM Y, HH:mm');
-                        $endDateTime = Carbon::parse($filters['availability']['end_date'] . ' ' . $filters['availability']['end_time'])
+                        $endDateTime   = Carbon::parse($filters['availability']['end_date']   . ' ' . $filters['availability']['end_time'])
                             ->locale('id')->isoFormat('D MMMM Y, HH:mm');
 
-                        $textToCopy = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDateTime}* sampai *{$endDateTime}* :\n\n";
+                        $textToCopy  = "Halo,✋ Lombok 😊\nMobil yang tersedia di Garasi Semeton Pesiar periode *{$startDateTime}* sampai *{$endDateTime}* :\n\n";
                         foreach ($cars as $index => $car) {
                             $textToCopy .= ($index + 1) . ". *{$car->carModel->brand->name} {$car->carModel->name}* {$car->nopol} ✅\n";
                         }
@@ -396,10 +349,10 @@ class CarResource extends Resource
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
                 ])
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(\Filament\Support\Enums\ActionSize::Small)
-                    ->color('gray')
-                    ->button(),
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->size(\Filament\Support\Enums\ActionSize::Small)
+                ->color('gray')
+                ->button(),
             ])
 
             ->bulkActions([
@@ -418,10 +371,10 @@ class CarResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCars::route('/'),
+            'index'  => Pages\ListCars::route('/'),
             'create' => Pages\CreateCar::route('/create'),
-            'edit' => Pages\EditCar::route('/{record}/edit'),
-            'view' => Pages\ViewCar::route('/{record}'),
+            'edit'   => Pages\EditCar::route('/{record}/edit'),
+            'view'   => Pages\ViewCar::route('/{record}'),
         ];
     }
 
@@ -461,10 +414,7 @@ class CarResource extends Resource
     // ─────────────────────────────────────────
     //  ACCESS CONTROL
     // ─────────────────────────────────────────
-    public static function canViewAny(): bool
-    {
-        return true;
-    }
+    public static function canViewAny(): bool  { return true; }
 
     public static function canCreate(): bool
     {
