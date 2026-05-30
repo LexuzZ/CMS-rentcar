@@ -20,249 +20,366 @@ class ServiceHistoryResource extends Resource
 {
     protected static ?string $model = ServiceHistory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationIcon  = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
-    protected static ?int $navigationSort = 3;
-    protected static ?string $modelLabel = 'Riwayat Service';
+    protected static ?int    $navigationSort  = 3;
+    protected static ?string $modelLabel      = 'Riwayat Service';
     protected static ?string $pluralModelLabel = 'Riwayat Service';
 
-
+    // ─────────────────────────────────────────
+    //  BASE QUERY
+    // ─────────────────────────────────────────
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('car', function (Builder $query) {
-                $query->where('garasi', 'SPT');
-            });
+            ->whereHas('car', fn (Builder $q) => $q->where('garasi', 'SPT'));
     }
 
+    // ─────────────────────────────────────────
+    //  FORM
+    // ─────────────────────────────────────────
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                // PERBAIKAN 2: Memfilter dropdown mobil
-                Forms\Components\Select::make('car_id')
-                    ->label('Mobil')
-                    ->relationship(
-                        name: 'car',
-                        titleAttribute: 'nopol',
-                        modifyQueryUsing: fn(Builder $query) => $query
-                            ->where('garasi', 'SPT')
-                            ->with('carModel')
-                    )
-                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
-                    ->searchable()
-                    ->getSearchResultsUsing(function (string $search) {
-                        return Car::query()
-                            ->where('garasi', 'SPT')
-                            ->where(function ($query) use ($search) {
-                                $query->where('nopol', 'like', "%{$search}%")
-                                    ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
-                            })
-                            ->with('carModel')
-                            ->limit(50)
-                            ->get()
-                            ->mapWithKeys(fn($car) => [
-                                $car->id => "{$car->carModel->name} ({$car->nopol})"
-                            ]);
-                    })
-                    ->preload()
-                    ->required(),
+        return $form->schema([
 
+            Forms\Components\Section::make('Informasi Kendaraan')
+                ->icon('heroicon-o-truck')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\Select::make('car_id')
+                        ->label('Mobil')
+                        ->relationship(
+                            name: 'car',
+                            titleAttribute: 'nopol',
+                            modifyQueryUsing: fn (Builder $q) => $q
+                                ->where('garasi', 'SPT')
+                                ->with('carModel')
+                        )
+                        ->getOptionLabelFromRecordUsing(
+                            fn (Car $record) => "{$record->carModel->name} ({$record->nopol})"
+                        )
+                        ->searchable()
+                        ->getSearchResultsUsing(function (string $search) {
+                            return Car::query()
+                                ->where('garasi', 'SPT')
+                                ->where(fn ($q) => $q
+                                    ->where('nopol', 'like', "%{$search}%")
+                                    ->orWhereHas('carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
+                                )
+                                ->with('carModel')
+                                ->limit(50)
+                                ->get()
+                                ->mapWithKeys(fn ($car) => [
+                                    $car->id => "{$car->carModel->name} ({$car->nopol})"
+                                ]);
+                        })
+                        ->preload()
+                        ->required()
+                        ->columnSpanFull(),
 
+                    Forms\Components\Select::make('jenis_service')
+                        ->label('Jenis Service')
+                        ->options([
+                            'service'       => 'Service & Tune Up',
+                            'oli_mesin'     => 'Oli Mesin',
+                            'oli_transmisi' => 'Oli Transmisi',
+                            'ganti_aki'     => 'Pergantian Aki',
+                            'ganti_ban'     => 'Pergantian Ban',
+                        ])
+                        ->default('service')
+                        ->required(),
 
-                Forms\Components\DatePicker::make('service_date')
-                    ->label('Tanggal Service')
-                    ->required(),
-                Forms\Components\Select::make('jenis_service')
-                    ->label('Jenis Service')
-                    ->options(['service' => 'Service & Tune Up', 'oli_mesin' => 'Oli Mesin', 'oli_transmisi' => 'Oli Transmisi', 'ganti_aki' => 'Pergantian Aki', 'ganti_ban' => 'Pergantian Ban'])
-                    ->default('service') // Mengubah default agar valid
-                    ->required(),
-                Forms\Components\TextInput::make('current_km')
-                    ->label('KM Saat Ini')
-                    ->numeric()
-                    ->nullable(),
-                Forms\Components\Textarea::make('description')
-                    ->label('Deskripsi')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('workshop')
-                    ->label('Nama Bengkel'),
-                Forms\Components\TextInput::make('next_km')
-                    ->label('KM Service Berikutnya')
-                    ->numeric()
-                    ->nullable(),
-                Forms\Components\DatePicker::make('next_service_date')
-                    ->label('Tanggal Service Berikutnya')
-                    ->nullable(),
-            ]);
+                    Forms\Components\TextInput::make('workshop')
+                        ->label('Nama Bengkel')
+                        ->placeholder('Contoh: Bengkel Maju Jaya')
+                        ->prefixIcon('heroicon-o-building-storefront'),
+                ]),
+
+            Forms\Components\Section::make('Detail Pelaksanaan')
+                ->icon('heroicon-o-calendar-days')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\DatePicker::make('service_date')
+                        ->label('Tanggal Service')
+                        ->native(false)
+                        ->required(),
+
+                    Forms\Components\TextInput::make('current_km')
+                        ->label('KM Saat Ini')
+                        ->numeric()
+                        ->suffix('km')
+                        ->nullable(),
+
+                    Forms\Components\Textarea::make('description')
+                        ->label('Deskripsi Pekerjaan')
+                        ->placeholder('Contoh: Ganti oli mesin + filter udara, cek rem...')
+                        ->rows(3)
+                        ->required()
+                        ->columnSpanFull(),
+                ]),
+
+            Forms\Components\Section::make('Jadwal Berikutnya')
+                ->icon('heroicon-o-arrow-path')
+                ->columns(2)
+                ->schema([
+                    Forms\Components\DatePicker::make('next_service_date')
+                        ->label('Tanggal Service Berikutnya')
+                        ->native(false)
+                        ->nullable(),
+
+                    Forms\Components\TextInput::make('next_km')
+                        ->label('KM Service Berikutnya')
+                        ->numeric()
+                        ->suffix('km')
+                        ->nullable(),
+                ]),
+        ]);
     }
 
+    // ─────────────────────────────────────────
+    //  TABLE
+    // ─────────────────────────────────────────
     public static function table(Table $table): Table
     {
         return $table
             ->recordUrl(null)
             ->columns([
+
+                // Mobil + nopol
                 Tables\Columns\TextColumn::make('car.carModel.name')
-                    ->label('Mobil')
-                    ->description(fn(ServiceHistory $record): string => $record->car->nopol)
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
-                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
-                    }),
+                    ->label('Kendaraan')
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
+                    ->description(fn (ServiceHistory $record): string => $record->car->nopol ?? '—')
+                    ->searchable(query: fn (Builder $q, string $search) => $q
+                        ->whereHas('car.carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('car', fn ($q2) => $q2->where('nopol', 'like', "%{$search}%"))
+                    ),
+
+                // Tanggal service
                 Tables\Columns\TextColumn::make('service_date')
                     ->label('Tgl. Service')
                     ->date('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->icon('heroicon-m-calendar'),
+
+                // Jenis service — badge berwarna + ikon
                 Tables\Columns\TextColumn::make('jenis_service')
-                    ->label('Jenis Service')
-                    ->badge()->alignCenter()
-                    ->colors(['danger' => 'service', 'info' => 'ganti_aki', 'primary' => 'ganti_ban', 'warning' => 'oli_mesin', 'success' => 'oli_transmisi'])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'service' => 'Service & Tune Up',
-                        'ganti_aki' => 'Pergantian Aki',
-                        'ganti_ban' => 'Pergantian Ban',
-                        'oli_mesin' => 'Oli Mesin',
+                    ->label('Jenis')
+                    ->badge()
+                    ->alignCenter()
+                    ->icon(fn (string $state): string => match ($state) {
+                        'service'       => 'heroicon-m-wrench-screwdriver',
+                        'oli_mesin'     => 'heroicon-m-beaker',
+                        'oli_transmisi' => 'heroicon-m-beaker',
+                        'ganti_aki'     => 'heroicon-m-bolt',
+                        'ganti_ban'     => 'heroicon-m-arrow-path',
+                        default         => 'heroicon-m-cog-6-tooth',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'service'       => 'danger',
+                        'oli_mesin'     => 'warning',
+                        'oli_transmisi' => 'success',
+                        'ganti_aki'     => 'info',
+                        'ganti_ban'     => 'primary',
+                        default         => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'service'       => 'Service & Tune Up',
+                        'ganti_aki'     => 'Ganti Aki',
+                        'ganti_ban'     => 'Ganti Ban',
+                        'oli_mesin'     => 'Oli Mesin',
                         'oli_transmisi' => 'Oli Transmisi',
-                        default => ucfirst($state)
-                    })->wrap()
-                    ->width(150),
-                Tables\Columns\TextColumn::make('next_km')
-                    ->label('Next Km')
-                    ->numeric(),
+                        default         => ucfirst($state),
+                    }),
+
+                // Bengkel
                 Tables\Columns\TextColumn::make('workshop')
+                    ->label('Bengkel')
                     ->searchable()
-                    ->wrap()
-                    ->width(150),
+                    ->placeholder('—')
+                    ->icon('heroicon-m-building-storefront')
+                    ->toggleable(),
+
+                // KM service berikutnya
+                Tables\Columns\TextColumn::make('next_km')
+                    ->label('Next KM')
+                    ->alignCenter()
+                    ->placeholder('—')
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
+                    ->toggleable(),
+
+                // Tanggal service berikutnya + indikator urgensi
                 Tables\Columns\TextColumn::make('next_service_date')
                     ->label('Next Service')
                     ->date('d M Y')
                     ->sortable()
-                    ->wrap()
-                    ->width(150),
+                    ->placeholder('—')
+                    ->icon('heroicon-m-clock')
+                    ->color(fn ($state): string => match (true) {
+                        $state === null                                          => 'gray',
+                        Carbon::parse($state)->isPast()                         => 'danger',
+                        Carbon::parse($state)->diffInDays(now(), false) >= -7   => 'warning',
+                        default                                                 => 'success',
+                    })
+                    ->description(fn ($state): ?string => match (true) {
+                        $state === null                        => null,
+                        Carbon::parse($state)->isPast()       => 'Sudah lewat!',
+                        Carbon::parse($state)->isToday()      => 'Hari ini',
+                        default => Carbon::parse($state)->locale('id')->diffForHumans(),
+                    }),
             ])
-            ->defaultSort('created_at', 'desc')
+
+            ->defaultSort('service_date', 'desc')
+
             ->filters([
                 Filter::make('bulan_ini')
                     ->label('Hanya Bulan Ini')
-                    ->toggle() // Menjadikannya tombol on/off
+                    ->toggle()
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('next_service_date', Carbon::now()->month)
-                        ->whereYear('next_service_date', Carbon::now()->year)
+                    ->query(fn (Builder $q) => $q
+                        ->whereMonth('next_service_date', now()->month)
+                        ->whereYear('next_service_date', now()->year)
+                    )
+                    ->indicateUsing(fn (array $data): ?string =>
+                        $data['isActive'] ? 'Next service: ' . now()->locale('id')->isoFormat('MMMM Y') : null
                     ),
-                //
+
+                Tables\Filters\SelectFilter::make('jenis_service')
+                    ->label('Jenis Service')
+                    ->options([
+                        'service'       => 'Service & Tune Up',
+                        'oli_mesin'     => 'Oli Mesin',
+                        'oli_transmisi' => 'Oli Transmisi',
+                        'ganti_aki'     => 'Pergantian Aki',
+                        'ganti_ban'     => 'Pergantian Ban',
+                    ]),
+
+                Filter::make('overdue')
+                    ->label('Sudah Lewat Jadwal')
+                    ->toggle()
+                    ->query(fn (Builder $q) => $q
+                        ->whereNotNull('next_service_date')
+                        ->where('next_service_date', '<', today())
+                    )
+                    ->indicateUsing(fn (array $data): ?string =>
+                        $data['isActive'] ? '⚠ Melewati jadwal service' : null
+                    ),
             ])
+
+            ->filtersLayout(Tables\Enums\FiltersLayout::AboveContentCollapsible)
+
             ->actions([
-                Tables\Actions\Action::make('addToTempo')
-                    ->label('')
-                    ->tooltip('Tambah ke Jatuh Tempo')
-                    ->icon('heroicon-o-calendar')
-                    ->color('success')
-                    ->hiddenLabel()
-                    ->button()
-                    ->action(function (ServiceHistory $record) {
-                        // Cek apakah sudah ada di Tempo untuk mobil yang sama
-                        $existingTempo = \App\Models\Tempo::where('car_id', $record->car_id)
-                            ->where('perawatan', 'service')
-                            ->whereDate('jatuh_tempo', $record->next_service_date)
-                            ->first();
+                Tables\Actions\ActionGroup::make([
+                    // Tambah ke Jatuh Tempo
+                    Tables\Actions\Action::make('addToTempo')
+                        ->label('Tambah ke Jatuh Tempo')
+                        ->icon('heroicon-o-calendar-days')
+                        ->color('success')
+                        ->visible(fn (ServiceHistory $record): bool =>
+                            $record->next_service_date !== null &&
+                            Auth::user()->hasAnyRole(['superadmin', 'admin'])
+                        )
+                        ->action(function (ServiceHistory $record) {
+                            $existing = \App\Models\Tempo::where('car_id', $record->car_id)
+                                ->where('perawatan', 'service')
+                                ->whereDate('jatuh_tempo', $record->next_service_date)
+                                ->first();
 
-                        if ($existingTempo) {
-                            // GANTI: Pakai notifikasi
+                            if ($existing) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Data Sudah Ada')
+                                    ->body(
+                                        'Jatuh tempo service untuk ' .
+                                        $record->car->carModel->name . ' (' . $record->car->nopol . ') pada ' .
+                                        Carbon::parse($record->next_service_date)->format('d M Y') .
+                                        ' sudah ada.'
+                                    )
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            \App\Models\Tempo::create([
+                                'car_id'      => $record->car_id,
+                                'perawatan'   => 'service',
+                                'jatuh_tempo' => $record->next_service_date,
+                                'description' => 'Service berikutnya — ' . ($record->description ?: 'Service rutin'),
+                            ]);
+
                             \Filament\Notifications\Notification::make()
-                                ->title('Data Sudah Ada')
-                                ->body('Jatuh tempo service untuk ' . $record->car->carModel->name . ' (' . $record->car->nopol . ') pada tanggal ' .
-                                    \Carbon\Carbon::parse($record->next_service_date)->format('d M Y') .
-                                    ' sudah ada di sistem Jatuh Tempo.')
-                                ->warning()
+                                ->title('Berhasil Ditambahkan!')
+                                ->body('Data service berhasil ditambahkan ke Jatuh Tempo.')
+                                ->success()
                                 ->send();
-                            return;
-                        }
+                        }),
 
-                        // Buat data di Tempo
-                        \App\Models\Tempo::create([
-                            'car_id' => $record->car_id,
-                            'perawatan' => 'service',
-                            'jatuh_tempo' => $record->next_service_date,
-                            'description' => "Service berikutnya - " . ($record->description ?: 'Service rutin'),
-                        ]);
+                    Tables\Actions\EditAction::make()
+                        ->label('Edit')
+                        ->icon('heroicon-o-pencil-square')
+                        ->color('warning'),
 
-                        \Filament\Notifications\Notification::make()
-                            ->title('Berhasil!')
-                            ->body('Data service berhasil ditambahkan ke Jatuh Tempo')
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(
-                        fn(ServiceHistory $record): bool =>
-                        $record->next_service_date !== null &&
-                        Auth::user()->hasAnyRole(['superadmin', 'admin'])
-                    ),
-                Tables\Actions\EditAction::make()
-                    ->label('')
-                    ->tooltip('Edit Riwayat Service')
-                    ->icon('heroicon-o-pencil')
-                    ->color('warning')
-                    ->hiddenLabel()
-                    ->button(),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Hapus')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger'),
+                ])
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->size(\Filament\Support\Enums\ActionSize::Small)
+                ->color('gray')
+                ->button(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+
+            ->striped()
+            ->paginated([10, 25, 50]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+    // ─────────────────────────────────────────
+    //  RELATIONS & PAGES
+    // ─────────────────────────────────────────
+    public static function getRelations(): array { return []; }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListServiceHistories::route('/'),
-            // PERBAIKAN DI SINI: Mengubah rute 'create' agar tidak konflik
+            'index'  => Pages\ListServiceHistories::route('/'),
             'create' => Pages\CreateServiceHistory::route('/create'),
-            'edit' => Pages\EditServiceHistory::route('/{record}/edit'),
+            'edit'   => Pages\EditServiceHistory::route('/{record}/edit'),
         ];
     }
-    public static function canViewAny(): bool
-    {
-        // Semua peran bisa melihat daftar mobil
-        return true;
-    }
+
+    // ─────────────────────────────────────────
+    //  ACCESS CONTROL
+    // ─────────────────────────────────────────
+    public static function canViewAny(): bool { return true; }
 
     public static function canCreate(): bool
     {
-        // Hanya superadmin dan admin yang bisa membuat data baru
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
-
     }
 
     public static function canEdit(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa mengedit
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDelete(Model $record): bool
     {
-        // Hanya superadmin dan admin yang bisa menghapus
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
     public static function canDeleteAny(): bool
     {
-        // Hanya superadmin dan admin yang bisa hapus massal
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
+
     public static function canAccess(): bool
     {
-        // Hanya pengguna dengan peran 'admin' yang bisa melihat halaman ini
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
