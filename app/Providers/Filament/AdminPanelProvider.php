@@ -50,8 +50,8 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::Zinc,         // teks netral
             ])
 
-            ->topNavigation()
-            ->breadcrumbs(false) // opsional, lebih bersih tanpa breadcrumb
+            // ->topNavigation()
+            // ->breadcrumbs(false) // opsional, lebih bersih tanpa breadcrumb
             ->maxContentWidth('full') // konten lebih lebar
 
             ->sidebarCollapsibleOnDesktop()
