@@ -209,7 +209,7 @@ class PenaltyResource extends Resource
                     ->sortable()
                     ->icon('heroicon-m-calendar')
                     ->color('gray')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
 
             ->defaultSort('created_at', 'desc')
@@ -220,13 +220,7 @@ class PenaltyResource extends Resource
                     ->options(self::klaimOptions())
                     ->searchable(),
 
-                Tables\Filters\Filter::make('has_amount')
-                    ->label('Hanya Yang Berbayar')
-                    ->toggle()
-                    ->query(fn (Builder $q) => $q->where('amount', '>', 0))
-                    ->indicateUsing(fn (array $data): ?string =>
-                        $data['isActive'] ? 'Hanya klaim berbayar' : null
-                    ),
+
 
                 Tables\Filters\Filter::make('bulan_ini')
                     ->label('Bulan Ini')
