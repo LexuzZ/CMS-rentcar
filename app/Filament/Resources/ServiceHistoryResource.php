@@ -198,7 +198,7 @@ class ServiceHistoryResource extends Resource
                     ->searchable()
                     ->placeholder('—')
                     ->icon('heroicon-m-building-storefront')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // KM service berikutnya
                 Tables\Columns\TextColumn::make('next_km')
@@ -206,7 +206,7 @@ class ServiceHistoryResource extends Resource
                     ->alignCenter()
                     ->placeholder('—')
                     ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // Tanggal service berikutnya + indikator urgensi
                 Tables\Columns\TextColumn::make('next_service_date')
