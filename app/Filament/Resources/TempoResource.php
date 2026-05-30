@@ -230,10 +230,10 @@ class TempoResource extends Resource
 
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil-square')
-                        ->color('warning'),
+                    // Tables\Actions\EditAction::make()
+                    //     ->label('Edit')
+                    //     ->icon('heroicon-o-pencil-square')
+                    //     ->color('warning'),
 
                     Tables\Actions\Action::make('selesaikan')
                         ->label('Tandai Selesai')
