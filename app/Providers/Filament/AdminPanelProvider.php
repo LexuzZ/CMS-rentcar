@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
 
             // ->topNavigation()
             // ->breadcrumbs(false) // opsional, lebih bersih tanpa breadcrumb
-            ->maxContentWidth('full') // konten lebih lebar
+            // ->maxContentWidth('full') // konten lebih lebar
 
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
