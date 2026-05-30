@@ -149,13 +149,7 @@ class CarResource extends Resource
             ->columns([
 
                 // Foto thumbnail
-                ImageColumn::make('photo')
-                    ->label('')
-                    ->disk('public')
-                    ->height(40)
-                    ->width(64)
-                    ->defaultImageUrl(asset('images/car-placeholder.png'))
-                    ->extraImgAttributes(['class' => 'rounded-lg object-cover']),
+
 
                 // Nopol + nama mobil dalam satu kolom
                 TextColumn::make('nopol')
