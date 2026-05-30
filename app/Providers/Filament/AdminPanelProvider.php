@@ -50,7 +50,9 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::Zinc,         // teks netral
             ])
 
-
+            ->topNavigation()
+            ->breadcrumbs(false) // opsional, lebih bersih tanpa breadcrumb
+            ->maxContentWidth('full') // konten lebih lebar
 
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
@@ -61,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ->font('Poppins')
             ->databaseNotifications()
             // ->viteTheme('resources/css/filament/admin/theme.css')
-            // ->spa()
+            ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
