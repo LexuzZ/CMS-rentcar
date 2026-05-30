@@ -229,7 +229,7 @@ class ServiceHistoryResource extends Resource
                     }),
             ])
 
-            ->defaultSort('service_date', 'desc')
+            ->defaultSort('created_at', 'desc')
 
             ->filters([
                 Filter::make('bulan_ini')
