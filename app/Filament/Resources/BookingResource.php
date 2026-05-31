@@ -497,12 +497,12 @@ class BookingResource extends Resource
             ->columns([
 
                 // Nomor booking
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->formatStateUsing(fn ($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
-                    ->badge()
-                    ->color('gray')
-                    ->sortable(),
+                // TextColumn::make('id')
+                //     ->label('ID')
+                //     ->formatStateUsing(fn ($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
+                //     ->badge()
+                //     ->color('gray')
+                //     ->sortable(),
 
                 // Mobil + nopol
                 TextColumn::make('car.carModel.name')
