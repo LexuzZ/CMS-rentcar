@@ -40,8 +40,8 @@ class ExportController extends Controller
         $sheet->mergeCells('A1:G1');
         $sheet->mergeCells('A2:G2');
         $sheet->mergeCells('A3:G3');
-        $sheet->getStyle('A1:A3')->getFont()->setBold(true);
-        $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1:G3')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G3')->getAlignment()->setHorizontal('center');
 
 
         // Header tabel
@@ -56,7 +56,7 @@ class ExportController extends Controller
                 'Laba Kotor',
             ]
         ], null, 'A5');
-        $sheet->getStyle('A5:E5')->getFont()->setBold(true);
+        $sheet->getStyle('A5:G5')->getFont()->setBold(true);
 
 
         $row = 6;
@@ -117,12 +117,12 @@ class ExportController extends Controller
         // Ringkasan total
         $summaryRow = $row + 1;
         $sheet->setCellValue("A{$summaryRow}", 'TOTAL');
-        $sheet->setCellValue("D{$summaryRow}", $totalDays);
+        // $sheet->setCellValue("D{$summaryRow}", $totalDays);
         $sheet->setCellValue("E{$summaryRow}", $totalRevenue);
         $sheet->setCellValue("F{$summaryRow}", $totalCost);
         $sheet->setCellValue("G{$summaryRow}", $totalProfit);
         $sheet->getStyle("A{$summaryRow}:G{$summaryRow}")->getFont()->setBold(true);
-        $sheet->getStyle("E{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+        $sheet->getStyle("E{$summaryRow}:G{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
         // Atur lebar kolom
         foreach (range('A', 'G') as $col) {
