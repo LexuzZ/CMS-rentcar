@@ -20,10 +20,10 @@ class ServiceHistoryResource extends Resource
 {
     protected static ?string $model = ServiceHistory::class;
 
-    protected static ?string $navigationIcon  = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Manajemen Mobil';
-    protected static ?int    $navigationSort  = 3;
-    protected static ?string $modelLabel      = 'Riwayat Service';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $modelLabel = 'Riwayat Service';
     protected static ?string $pluralModelLabel = 'Riwayat Service';
 
     // ─────────────────────────────────────────
@@ -32,7 +32,7 @@ class ServiceHistoryResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('car', fn (Builder $q) => $q->where('garasi', 'SPT'));
+            ->whereHas('car', fn(Builder $q) => $q->where('garasi', 'SPT'));
     }
 
     // ─────────────────────────────────────────
@@ -51,25 +51,26 @@ class ServiceHistoryResource extends Resource
                         ->relationship(
                             name: 'car',
                             titleAttribute: 'nopol',
-                            modifyQueryUsing: fn (Builder $q) => $q
+                            modifyQueryUsing: fn(Builder $q) => $q
                                 ->where('garasi', 'SPT')
                                 ->with('carModel')
                         )
                         ->getOptionLabelFromRecordUsing(
-                            fn (Car $record) => "{$record->carModel->name} ({$record->nopol})"
+                            fn(Car $record) => "{$record->carModel->name} ({$record->nopol})"
                         )
                         ->searchable()
                         ->getSearchResultsUsing(function (string $search) {
                             return Car::query()
                                 ->where('garasi', 'SPT')
-                                ->where(fn ($q) => $q
-                                    ->where('nopol', 'like', "%{$search}%")
-                                    ->orWhereHas('carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
+                                ->where(
+                                    fn($q) => $q
+                                        ->where('nopol', 'like', "%{$search}%")
+                                        ->orWhereHas('carModel', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
                                 )
                                 ->with('carModel')
                                 ->limit(50)
                                 ->get()
-                                ->mapWithKeys(fn ($car) => [
+                                ->mapWithKeys(fn($car) => [
                                     $car->id => "{$car->carModel->name} ({$car->nopol})"
                                 ]);
                         })
@@ -80,11 +81,11 @@ class ServiceHistoryResource extends Resource
                     Forms\Components\Select::make('jenis_service')
                         ->label('Jenis Service')
                         ->options([
-                            'service'       => 'Service & Tune Up',
-                            'oli_mesin'     => 'Oli Mesin',
+                            'service' => 'Service & Tune Up',
+                            'oli_mesin' => 'Oli Mesin',
                             'oli_transmisi' => 'Oli Transmisi',
-                            'ganti_aki'     => 'Pergantian Aki',
-                            'ganti_ban'     => 'Pergantian Ban',
+                            'ganti_aki' => 'Pergantian Aki',
+                            'ganti_ban' => 'Pergantian Ban',
                         ])
                         ->default('service')
                         ->required(),
@@ -149,11 +150,11 @@ class ServiceHistoryResource extends Resource
                 Tables\Columns\TextColumn::make('car.carModel.name')
                     ->label('Kendaraan')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                    ->description(fn (ServiceHistory $record): string => $record->car->nopol ?? '—')
-                    ->searchable(query: fn (Builder $q, string $search) => $q
-                        ->whereHas('car.carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
-                        ->orWhereHas('car', fn ($q2) => $q2->where('nopol', 'like', "%{$search}%"))
-                    ),
+                    ->description(fn(ServiceHistory $record): string => $record->car->nopol ?? '—')
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
 
                 // Tanggal service
                 Tables\Columns\TextColumn::make('service_date')
@@ -167,29 +168,29 @@ class ServiceHistoryResource extends Resource
                     ->label('Jenis')
                     ->badge()
                     ->alignCenter()
-                    ->icon(fn (string $state): string => match ($state) {
-                        'service'       => 'heroicon-m-wrench-screwdriver',
-                        'oli_mesin'     => 'heroicon-m-beaker',
+                    ->icon(fn(string $state): string => match ($state) {
+                        'service' => 'heroicon-m-wrench-screwdriver',
+                        'oli_mesin' => 'heroicon-m-beaker',
                         'oli_transmisi' => 'heroicon-m-beaker',
-                        'ganti_aki'     => 'heroicon-m-bolt',
-                        'ganti_ban'     => 'heroicon-m-arrow-path',
-                        default         => 'heroicon-m-cog-6-tooth',
+                        'ganti_aki' => 'heroicon-m-bolt',
+                        'ganti_ban' => 'heroicon-m-arrow-path',
+                        default => 'heroicon-m-cog-6-tooth',
                     })
-                    ->color(fn (string $state): string => match ($state) {
-                        'service'       => 'danger',
-                        'oli_mesin'     => 'warning',
+                    ->color(fn(string $state): string => match ($state) {
+                        'service' => 'danger',
+                        'oli_mesin' => 'warning',
                         'oli_transmisi' => 'success',
-                        'ganti_aki'     => 'info',
-                        'ganti_ban'     => 'primary',
-                        default         => 'gray',
+                        'ganti_aki' => 'info',
+                        'ganti_ban' => 'primary',
+                        default => 'gray',
                     })
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'service'       => 'Service & Tune Up',
-                        'ganti_aki'     => 'Ganti Aki',
-                        'ganti_ban'     => 'Ganti Ban',
-                        'oli_mesin'     => 'Oli Mesin',
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'service' => 'Service & Tune Up',
+                        'ganti_aki' => 'Ganti Aki',
+                        'ganti_ban' => 'Ganti Ban',
+                        'oli_mesin' => 'Oli Mesin',
                         'oli_transmisi' => 'Oli Transmisi',
-                        default         => ucfirst($state),
+                        default => ucfirst($state),
                     }),
 
                 // Bengkel
@@ -205,7 +206,7 @@ class ServiceHistoryResource extends Resource
                     ->label('Next KM')
                     ->alignCenter()
                     ->placeholder('—')
-                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
+                    ->formatStateUsing(fn($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 // Tanggal service berikutnya + indikator urgensi
@@ -215,16 +216,16 @@ class ServiceHistoryResource extends Resource
                     ->sortable()
                     ->placeholder('—')
                     ->icon('heroicon-m-clock')
-                    ->color(fn ($state): string => match (true) {
-                        $state === null                                          => 'gray',
-                        Carbon::parse($state)->isPast()                         => 'danger',
-                        Carbon::parse($state)->diffInDays(now(), false) >= -7   => 'warning',
-                        default                                                 => 'success',
+                    ->color(fn($state): string => match (true) {
+                        $state === null => 'gray',
+                        Carbon::parse($state)->isPast() => 'danger',
+                        Carbon::parse($state)->diffInDays(now(), false) >= -7 => 'warning',
+                        default => 'success',
                     })
-                    ->description(fn ($state): ?string => match (true) {
-                        $state === null                        => null,
-                        Carbon::parse($state)->isPast()       => 'Sudah lewat!',
-                        Carbon::parse($state)->isToday()      => 'Hari ini',
+                    ->description(fn($state): ?string => match (true) {
+                        $state === null => null,
+                        Carbon::parse($state)->isPast() => 'Sudah lewat!',
+                        Carbon::parse($state)->isToday() => 'Hari ini',
                         default => Carbon::parse($state)->locale('id')->diffForHumans(),
                     }),
             ])
@@ -236,32 +237,36 @@ class ServiceHistoryResource extends Resource
                     ->label('Hanya Bulan Ini')
                     ->toggle()
                     ->default(true)
-                    ->query(fn (Builder $q) => $q
-                        ->whereMonth('next_service_date', now()->month)
-                        ->whereYear('next_service_date', now()->year)
+                    ->query(
+                        fn(Builder $q) => $q
+                            ->whereMonth('next_service_date', now()->month)
+                            ->whereYear('next_service_date', now()->year)
                     )
-                    ->indicateUsing(fn (array $data): ?string =>
+                    ->indicateUsing(
+                        fn(array $data): ?string =>
                         $data['isActive'] ? 'Next service: ' . now()->locale('id')->isoFormat('MMMM Y') : null
                     ),
 
                 Tables\Filters\SelectFilter::make('jenis_service')
                     ->label('Jenis Service')
                     ->options([
-                        'service'       => 'Service & Tune Up',
-                        'oli_mesin'     => 'Oli Mesin',
+                        'service' => 'Service & Tune Up',
+                        'oli_mesin' => 'Oli Mesin',
                         'oli_transmisi' => 'Oli Transmisi',
-                        'ganti_aki'     => 'Pergantian Aki',
-                        'ganti_ban'     => 'Pergantian Ban',
+                        'ganti_aki' => 'Pergantian Aki',
+                        'ganti_ban' => 'Pergantian Ban',
                     ]),
 
                 Filter::make('overdue')
                     ->label('Sudah Lewat Jadwal')
                     ->toggle()
-                    ->query(fn (Builder $q) => $q
-                        ->whereNotNull('next_service_date')
-                        ->where('next_service_date', '<', today())
+                    ->query(
+                        fn(Builder $q) => $q
+                            ->whereNotNull('next_service_date')
+                            ->where('next_service_date', '<', today())
                     )
-                    ->indicateUsing(fn (array $data): ?string =>
+                    ->indicateUsing(
+                        fn(array $data): ?string =>
                         $data['isActive'] ? '⚠ Melewati jadwal service' : null
                     ),
             ])
@@ -275,7 +280,8 @@ class ServiceHistoryResource extends Resource
                         ->label('Tambah ke Jatuh Tempo')
                         ->icon('heroicon-o-calendar-days')
                         ->color('success')
-                        ->visible(fn (ServiceHistory $record): bool =>
+                        ->visible(
+                            fn(ServiceHistory $record): bool =>
                             $record->next_service_date !== null &&
                             Auth::user()->hasAnyRole(['superadmin', 'admin'])
                         )
@@ -300,8 +306,8 @@ class ServiceHistoryResource extends Resource
                             }
 
                             \App\Models\Tempo::create([
-                                'car_id'      => $record->car_id,
-                                'perawatan'   => 'service',
+                                'car_id' => $record->car_id,
+                                'perawatan' => 'service',
                                 'jatuh_tempo' => $record->next_service_date,
                                 'description' => 'Service berikutnya — ' . ($record->description ?: 'Service rutin'),
                             ]);
@@ -323,10 +329,10 @@ class ServiceHistoryResource extends Resource
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size(\Filament\Support\Enums\ActionSize::Small)
-                ->color('gray')
-                ->button(),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(\Filament\Support\Enums\ActionSize::Small)
+                    ->color('gray')
+                    ->button(),
             ])
 
             ->bulkActions([
@@ -342,21 +348,27 @@ class ServiceHistoryResource extends Resource
     // ─────────────────────────────────────────
     //  RELATIONS & PAGES
     // ─────────────────────────────────────────
-    public static function getRelations(): array { return []; }
+    public static function getRelations(): array
+    {
+        return [];
+    }
 
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListServiceHistories::route('/'),
+            'index' => Pages\ListServiceHistories::route('/'),
             'create' => Pages\CreateServiceHistory::route('/create'),
-            'edit'   => Pages\EditServiceHistory::route('/{record}/edit'),
+            'edit' => Pages\EditServiceHistory::route('/{record}/edit'),
         ];
     }
 
     // ─────────────────────────────────────────
     //  ACCESS CONTROL
     // ─────────────────────────────────────────
-    public static function canViewAny(): bool { return true; }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 
     public static function canCreate(): bool
     {
