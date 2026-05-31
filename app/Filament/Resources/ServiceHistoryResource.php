@@ -51,22 +51,19 @@ class ServiceHistoryResource extends Resource
                         ->relationship(
                             name: 'car',
                             titleAttribute: 'nopol',
-                            modifyQueryUsing: fn(Builder $q) => $q
+                            modifyQueryUsing: fn(Builder $query) => $query
                                 ->where('garasi', 'SPT')
                                 ->with('carModel')
                         )
-                        ->getOptionLabelFromRecordUsing(
-                            fn(Car $record) => "{$record->carModel->name} ({$record->nopol})"
-                        )
+                        ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
                         ->searchable()
                         ->getSearchResultsUsing(function (string $search) {
                             return Car::query()
                                 ->where('garasi', 'SPT')
-                                ->where(
-                                    fn($q) => $q
-                                        ->where('nopol', 'like', "%{$search}%")
-                                        ->orWhereHas('carModel', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                                )
+                                ->where(function ($query) use ($search) {
+                                    $query->where('nopol', 'like', "%{$search}%")
+                                        ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                                })
                                 ->with('carModel')
                                 ->limit(50)
                                 ->get()
