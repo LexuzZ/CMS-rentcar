@@ -358,7 +358,7 @@
         <div class="invoice-number muted">Tgl: {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
         <div>
             <span class="status-badge {{ $isLunas ? 'status-lunas' : 'status-belum' }}">
-                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+                {{ $isLunas ? 'LUNAS' : 'BELUM LUNAS' }}
             </span>
         </div>
     </div>
@@ -451,13 +451,13 @@
         <div class="section-title" style="margin-bottom:10px">Metode Pembayaran</div>
 
         <div class="bank-item">
-            <div class="bank-name">🏦 Bank Mandiri</div>
+            <div class="bank-name">Bank Mandiri</div>
             <div class="bank-detail">1610 006 892 835</div>
             <div class="bank-holder">a.n. ACHMAD MUZAMMIL</div>
         </div>
 
         <div class="bank-item">
-            <div class="bank-name">🏦 Bank BCA</div>
+            <div class="bank-name">Bank BCA</div>
             <div class="bank-detail">2320 418 758</div>
             <div class="bank-holder">a.n. SRI NOVYANA</div>
         </div>
