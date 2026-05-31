@@ -45,7 +45,7 @@ class RecentTransactions extends BaseWidget
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
-                ->money('IDR')
+                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(
                     'success'
                 ),
