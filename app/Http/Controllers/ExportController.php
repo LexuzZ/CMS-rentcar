@@ -56,7 +56,7 @@ class ExportController extends Controller
                 'Laba Kotor',
             ]
         ], null, 'A5');
-        $sheet->getStyle('A5:G5')->getFont()->setBold(true);
+        $sheet->getStyle('A5:F5')->getFont()->setBold(true);
 
 
         $row = 6;
@@ -103,11 +103,11 @@ class ExportController extends Controller
             $sheet->setCellValue("C{$row}", $effectiveEndDate->format('d-m-Y'));
             // $sheet->setCellValue("D{$row}", $daysInMonth);
 
-            $sheet->setCellValue("E{$row}", $revenueInMonth);
-            $sheet->setCellValue("F{$row}", $costInMonth);
-            $sheet->setCellValue("G{$row}", $profitInMonth);
+            $sheet->setCellValue("D{$row}", $revenueInMonth);
+            $sheet->setCellValue("E{$row}", $costInMonth);
+            $sheet->setCellValue("F{$row}", $profitInMonth);
 
-            $sheet->getStyle("E{$row}:G{$row}")
+            $sheet->getStyle("D{$row}:F{$row}")
                 ->getNumberFormat()
                 ->setFormatCode('"Rp"#,##0');
 
@@ -118,14 +118,14 @@ class ExportController extends Controller
         $summaryRow = $row + 1;
         $sheet->setCellValue("A{$summaryRow}", 'TOTAL');
         // $sheet->setCellValue("D{$summaryRow}", $totalDays);
-        $sheet->setCellValue("E{$summaryRow}", $totalRevenue);
-        $sheet->setCellValue("F{$summaryRow}", $totalCost);
-        $sheet->setCellValue("G{$summaryRow}", $totalProfit);
-        $sheet->getStyle("A{$summaryRow}:G{$summaryRow}")->getFont()->setBold(true);
-        $sheet->getStyle("E{$summaryRow}:G{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+        $sheet->setCellValue("D{$summaryRow}", $totalRevenue);
+        $sheet->setCellValue("E{$summaryRow}", $totalCost);
+        $sheet->setCellValue("F{$summaryRow}", $totalProfit);
+        $sheet->getStyle("A{$summaryRow}:F{$summaryRow}")->getFont()->setBold(true);
+        $sheet->getStyle("D{$summaryRow}:F{$summaryRow}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
         // Atur lebar kolom
-        foreach (range('A', 'G') as $col) {
+        foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
