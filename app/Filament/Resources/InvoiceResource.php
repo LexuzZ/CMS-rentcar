@@ -373,7 +373,7 @@ class InvoiceResource extends Resource
                     ->sortable()
                     ->icon('heroicon-m-calendar')
                     ->color('gray')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
 
                 // Total tagihan
                 TextColumn::make('total_tagihan')
