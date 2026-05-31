@@ -107,7 +107,7 @@ class PaymentResource extends Resource
                     ->alignCenter(),
                 TextColumn::make('pembayaran')
                     ->label('Dibayar')
-                    ->money('IDR', true),
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tanggal')
                     ->date('d M Y'),
