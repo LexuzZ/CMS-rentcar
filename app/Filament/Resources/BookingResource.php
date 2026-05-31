@@ -497,12 +497,13 @@ class BookingResource extends Resource
             ->columns([
 
                 // Nomor booking
-                // TextColumn::make('id')
-                //     ->label('ID')
-                //     ->formatStateUsing(fn ($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
-                //     ->badge()
-                //     ->color('gray')
-                //     ->sortable(),
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->formatStateUsing(fn ($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
+                    ->badge()
+                    ->color('gray')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // Mobil + nopol
                 TextColumn::make('car.carModel.name')
@@ -538,8 +539,8 @@ class BookingResource extends Resource
                     ->suffix(' hari')
                     ->alignCenter()
                     ->badge()
-                    ->color('primary')
-                    ->toggleable(),
+                    ->color('primary'),
+                    // ->toggleable(),
 
                 // Status
                 TextColumn::make('status')
