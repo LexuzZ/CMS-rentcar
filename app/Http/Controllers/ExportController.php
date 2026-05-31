@@ -13,7 +13,7 @@ class ExportController extends Controller
     public function exportCarBookings($carId, $year, $month)
     {
         $startDate = Carbon::createFromDate($year, $month, 1)->startOfDay();
-        $endDate = $startDate->copy()->endOfMonth()->endOfDay();
+        $endDate = $startDate->copy()->endOfMonth()->startOfDay();
 
         // Ambil mobil beserta booking sesuai filter di CarPerformanceReport
         $car = Car::with([
