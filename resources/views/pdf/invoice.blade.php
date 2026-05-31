@@ -1,364 +1,535 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #{{ $invoice->id }}</title>
+    <title>Faktur #{{ $invoice->id }} — Semeton Pesiar</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Helvetica', sans-serif;
-            font-size: 12px;
-            color: #333;
-            margin: 0;
-            padding: 0;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 11px;
+            color: #1a1a2e;
+            background: #fff;
+            padding: 32px 36px;
         }
 
-        .container {
-            width: 100%;
-            margin: 0 auto;
+        /* ══════════════════════════════════
+           WARNA & UTILITAS
+        ══════════════════════════════════ */
+        .text-right  { text-align: right; }
+        .text-center { text-align: center; }
+        .clear       { clear: both; }
+        .bold        { font-weight: bold; }
+        .muted       { color: #6b7280; }
+
+        /* ══════════════════════════════════
+           HEADER
+        ══════════════════════════════════ */
+        .header {
+            border-bottom: 3px solid #1e3a5f;
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+            overflow: hidden;
         }
 
-        .clear {
-            clear: both;
-        }
-
-        /* =========================
-   Header
-   ========================= */
-        .header-section {
-            margin-bottom: 20px;
-        }
+        .header-left  { float: left; }
+        .header-right { float: right; text-align: right; }
 
         .logo {
-            width: 150px;
+            width: 120px;
             height: auto;
-            float: left;
+            display: block;
+            margin-bottom: 6px;
         }
 
-        .company-details {
+        .company-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-bottom: 2px;
+        }
+
+        .company-sub {
+            font-size: 10px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .invoice-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1e3a5f;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .invoice-number {
+            font-size: 13px;
+            color: #4b5563;
+            margin-top: 4px;
+        }
+
+        /* Status Lunas / Belum */
+        .status-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 3px 12px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .status-lunas      { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .status-belum      { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+        /* ══════════════════════════════════
+           META BLOCK (Faktur + Billing)
+        ══════════════════════════════════ */
+        .meta-block {
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px 18px;
+        }
+
+        .meta-col {
+            float: left;
+            width: 48%;
+        }
+
+        .meta-col-right {
             float: right;
+            width: 48%;
             text-align: right;
         }
 
-        .company-details h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #000;
+        .meta-label {
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #9ca3af;
+            margin-bottom: 6px;
         }
 
-        .company-details p {
-            margin: 0;
+        .meta-row {
+            margin-bottom: 3px;
+            color: #374151;
+            line-height: 1.6;
         }
 
-        /* =========================
-   Invoice & Billing Details
-   ========================= */
-        .invoice-details {
+        .meta-row strong {
+            color: #1e3a5f;
+        }
+
+        /* ══════════════════════════════════
+           TABEL RINCIAN
+        ══════════════════════════════════ */
+        .section-title {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #1e3a5f;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        .invoice-details table {
-            width: 100%;
+        .items-table thead tr {
+            background: #1e3a5f;
+            color: #fff;
         }
 
-        .text-right {
-            text-align: right;
+        .items-table thead th {
+            padding: 8px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .05em;
         }
 
-        /* =========================
-   Items Table
-   ========================= */
-        .items-table h3 {
-            font-size: 14px;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+        .items-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        .items-table table {
-            width: 100%;
-            border-collapse: collapse;
+        .items-table tbody tr:nth-child(even) {
+            background: #f8fafc;
         }
 
-        .items-table th,
-        .items-table td {
-            border: 1px solid #eee;
-            padding: 8px;
-            text-align: left;
+        .items-table tbody td {
+            padding: 9px 10px;
+            vertical-align: top;
+            color: #374151;
+            line-height: 1.5;
         }
 
-        .items-table th {
-            background-color: #f8f8f8;
+        .item-detail {
+            font-size: 10px;
+            color: #6b7280;
+            margin-top: 3px;
         }
 
-        /* =========================
-   Totals
-   ========================= */
-        .totals-table {
-            width: 55%;
-            margin-top: 20px;
+        .item-detail span {
+            margin-right: 8px;
+        }
+
+        /* ══════════════════════════════════
+           TOTALS + PEMBAYARAN (side by side)
+        ══════════════════════════════════ */
+        .bottom-section {
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        /* Pembayaran — kiri */
+        .payment-box {
+            float: left;
+            width: 48%;
+        }
+
+        .bank-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+        }
+
+        .bank-name {
+            font-weight: bold;
+            color: #1e3a5f;
+            font-size: 11px;
+        }
+
+        .bank-detail {
+            font-size: 10.5px;
+            color: #374151;
+            margin-top: 1px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: .04em;
+        }
+
+        .bank-holder {
+            font-size: 10px;
+            color: #6b7280;
+            margin-top: 1px;
+        }
+
+        /* Totals — kanan */
+        .totals-box {
             float: right;
+            width: 46%;
+        }
+
+        .totals-table {
+            width: 100%;
             border-collapse: collapse;
         }
 
         .totals-table td {
-            padding: 5px 8px;
+            padding: 6px 8px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
         }
 
-        /* =========================
-   Payment Details
-   ========================= */
-        .payment-details {
-            margin-top: 40px;
-        }
+        .totals-table tr:last-child td { border-bottom: none; }
 
-        .payment-details h3 {
-            font-size: 14px;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* =========================
-   Signature Section
-   ========================= */
-        .signature-section {
-            width: 170px;
-            margin-top: 50px;
-            text-align: center;
-            float: right;
-        }
-
-        .signature-container {
-            position: relative;
-            height: 70px;
-            /* ruang cukup untuk gambar */
-        }
-
-        .signature-image,
-        .stamp-image {
-            position: absolute;
-            width: 90px;
-            height: auto;
-            left: 50%;
-            margin-left: -120px;
-        }
-
-        .signature-image {
-            top: 0;
-            z-index: 10;
-        }
-
-        .signature-name {
+        .totals-table .total-row td {
             font-weight: bold;
-            margin-top: 10px;
-            padding-top: 5px;
-            border-top: 1px solid #333;
+            font-size: 12px;
+            color: #1e3a5f;
+            padding-top: 8px;
+            border-top: 2px solid #1e3a5f;
         }
 
-        /* =========================
-   Footer
-   ========================= */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 10px;
-            color: #777;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        .totals-table .sisa-row td {
+            font-weight: bold;
+            font-size: 13px;
+            background: #fef2f2;
+            color: #b91c1c;
         }
+
+        .totals-table .sisa-lunas td {
+            font-weight: bold;
+            font-size: 13px;
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        /* ══════════════════════════════════
+           TANDA TANGAN
+        ══════════════════════════════════ */
+        .signature-section {
+            float: right;
+            width: 170px;
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        .signature-img {
+            height: 72px;
+            width: auto;
+            display: block;
+            margin: 0 auto 8px;
+            opacity: .85;
+        }
+
+        .signature-line {
+            border-top: 1px solid #374151;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #1e3a5f;
+        }
+
+        .signature-role {
+            font-size: 10px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* ══════════════════════════════════
+           FOOTER
+        ══════════════════════════════════ */
+        .footer {
+            border-top: 1px solid #e2e8f0;
+            margin-top: 36px;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 9.5px;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+        .footer strong { color: #6b7280; }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="header-section">
-            {{-- PERUBAHAN 1: Menambahkan Logo --}}
-            @php
-                // Mengambil path gambar dan mengubahnya ke Base64 agar bisa di-embed di PDF
-                $imagePath = public_path('spt.png');
-                if (file_exists($imagePath)) {
-                    $imageData = base64_encode(file_get_contents($imagePath));
-                    $src = 'data:' . mime_content_type($imagePath) . ';base64,' . $imageData;
-                } else {
-                    $src = ''; // Kosongkan jika logo tidak ditemukan
-                }
-            @endphp
-            @if ($src)
-                <img src="{{ $src }}" alt="Logo" class="logo" />
-            @endif
 
-            <div class="company-details">
-                <h1>FAKTUR SEWA</h1>
-                <p>Semeton Pesiar Trans</p>
-                <p>Jl. Batu Ringgit No.218, Kota Mataram, NTB | Telp: 0811-2894-8884</p>
-            </div>
-            <div class="clear"></div>
-        </div>
+@php
+    $logoPath = public_path('spt.png');
+    $logoSrc  = file_exists($logoPath)
+        ? 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath))
+        : '';
 
-        <div class="invoice-details">
-            <table>
-                <tr>
-                    <td>
-                        <strong>Faktur No:</strong> #{{ $invoice->id }}<br>
-                        <strong>Tanggal:</strong>
-                        {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}<br>
-                        <strong>Booking ID:</strong> #{{ $invoice->booking->id }}
-                    </td>
-                    <td class="text-right">
-                        <strong>Ditagihkan Kepada:</strong><br>
-                        {{ $invoice->booking->customer->nama }}<br>
-                        {{ $invoice->booking->customer->alamat }}<br>
-                        {{ $invoice->booking->customer->no_telp }}
-                    </td>
-                </tr>
-            </table>
-        </div>
+    $stampPath = public_path('stempel.png');
+    $stampData = file_exists($stampPath)
+        ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
+        : '';
 
-        <div class="items-table">
-            <h3>Rincian Sewa</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Deskripsi</th>
-                        <th class="text-right">Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <strong>Sewa Mobil:</strong> {{ $invoice->booking->car->carModel->brand->name }}
-                            {{ $invoice->booking->car->carModel->name }} ({{ $invoice->booking->car->nopol }})
-                            <br>
-                            <small>
-                                <strong>Dari:</strong>
-                                {{ \Carbon\Carbon::parse($invoice->booking->tanggal_keluar)->format('d M Y') }}{{ $invoice->booking->waktu_keluar ? ' - ' . \Carbon\Carbon::parse($invoice->booking->waktu_keluar)->format('H:i') : '' }}
-                                WITA
-                                <br>
-                                <strong> Sampai:</strong>
-                                {{ \Carbon\Carbon::parse($invoice->booking->tanggal_kembali)->format('d M Y') }}{{ $invoice->booking->waktu_kembali ? ' - ' . \Carbon\Carbon::parse($invoice->booking->waktu_kembali)->format('H:i') : '' }}
-                                WITA
-                                <br>
-                                <strong>Total Hari:</strong> {{ $invoice->booking->total_hari }} hari
-                            </small>
-                            <br>
-                            <small>
-                                <strong>Harga per Hari:</strong> Rp
-                                {{ number_format($invoice->booking->estimasi_biaya / $invoice->booking->total_hari, 0, ',', '.') }}
+    $booking    = $invoice->booking;
+    $customer   = $booking->customer;
+    $car        = $booking->car;
+    $isLunas    = $invoice->sisa_pembayaran <= 0;
 
-                            </small>
-                        </td>
-                        <td class="text-right">
-                            Rp {{ number_format($invoice->booking->estimasi_biaya, 0, ',', '.') }}
-                        </td>
-                    </tr>
-                    @if ($invoice->pickup_dropOff > 0)
-                        <tr>
-                            <td>Biaya Antar / Jemput</td>
-                            <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
-                        </tr>
-                    @endif
-                    @foreach ($invoice->booking->penalties as $penalty)
-                        <tr>
-                            <td><strong>{{ ucfirst($penalty->klaim) }}</strong> <br>
-                                <small>{{ $penalty->description }}</small>
+    $hargaPerHari = $booking->total_hari > 0
+        ? $booking->estimasi_biaya / $booking->total_hari
+        : $booking->estimasi_biaya;
+@endphp
 
-                            </td>
-                            <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="totals-table">
-            <table class="totals-table">
-                <tr>
-                    <td>Subtotal</td>
-                    <td class="text-right">
-                        Rp {{ number_format($invoice->total_tagihan, 0, ',', '.') }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Total Dibayar</td>
-                    <td class="text-right">
-                        Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td><strong>Sisa Pembayaran</strong></td>
-                    <td class="text-right">
-                        <strong>
-                            Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}
-                        </strong>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Status</td>
-                    <td class="text-right">
-                        <strong>
-                            {{ $invoice->sisa_pembayaran <= 0 ? 'LUNAS' : 'BELUM LUNAS' }}
-                        </strong>
-                    </td>
-                </tr>
-
-            </table>
-        </div>
-
-
-        <div class="clear"></div>
-
-        {{-- PERUBAHAN 2: Menambahkan Informasi Pembayaran --}}
-        <div class="payment-details">
-            <h3>Metode Pembayaran</h3>
-            <p>Silakan lakukan pembayaran ke salah satu rekening berikut:</p>
-            <ul>
-                <li><strong>Mandiri:</strong> 1610006892835 (a.n. ACHMAD MUZAMMIL)</li>
-                <li><strong>BCA:</strong> 2320418758 (a.n. SRI NOVYANA)</li>
-            </ul>
-            <p>Mohon konfirmasi setelah melakukan pembayaran. Terima kasih.</p>
-        </div>
-        <div class="clear"></div>
-
-        <div class="signature-section">
-            @php
-                // PERBAIKAN 1: Menggunakan nama file yang benar
-                // $signaturePath = public_path('ttd.png');
-                $stampPath = public_path('stempel.png');
-
-                // $signatureData = file_exists($signaturePath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath)) : '';
-                $stampData = file_exists($stampPath)
-                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
-                    : '';
-            @endphp
-
-            <p>Hormat kami,</p>
-
-            {{-- PERBAIKAN 2: Hanya menggunakan satu blok untuk menampilkan gambar --}}
-            <div class="signature-container">
-                {{-- @if ($stampData)
-                    <img src="{{  $stampData }}" alt="Tanda Tangan" class="signature-image">
-                @endif --}}
-                @if ($stampData)
-                    <img src="{{ $stampData }}" alt="Stempel"
-                        style="height: 80px; width: auto; opacity: 0.75; display: inline-block; vertical-align: middle;">
-                @endif
-            </div>
-
-            <p class="signature-name">ACHMAD MUZAMMIL</p>
-            <p>Direktur</p>
-        </div>
-        <div class="clear"></div>
-
-        <div class="footer">
-            <p>Terima kasih telah menggunakan jasa Semeton Pesiar.</p>
+{{-- ═══════════════════════════════
+     HEADER
+═══════════════════════════════ --}}
+<div class="header">
+    <div class="header-left">
+        @if ($logoSrc)
+            <img src="{{ $logoSrc }}" alt="Logo" class="logo">
+        @endif
+        <div class="company-name">Semeton Pesiar Trans</div>
+        <div class="company-sub">
+            Jl. Batu Ringgit No.218, Kota Mataram, NTB<br>
+            Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com
         </div>
     </div>
-</body>
 
+    <div class="header-right">
+        <div class="invoice-title">Faktur Sewa</div>
+        <div class="invoice-number">No. <strong>#INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</strong></div>
+        <div class="invoice-number muted">Tgl: {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
+        <div>
+            <span class="status-badge {{ $isLunas ? 'status-lunas' : 'status-belum' }}">
+                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+            </span>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+
+{{-- ═══════════════════════════════
+     META: FAKTUR + BILLING
+═══════════════════════════════ --}}
+<div class="meta-block">
+    <div class="meta-col">
+        <div class="meta-label">Detail Faktur</div>
+        <div class="meta-row"><strong>No. Faktur</strong> &nbsp; #INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</div>
+        <div class="meta-row"><strong>No. Booking</strong> &nbsp; #BK{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</div>
+        <div class="meta-row"><strong>Tanggal</strong> &nbsp; {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
+    </div>
+
+    <div class="meta-col-right">
+        <div class="meta-label">Ditagihkan Kepada</div>
+        <div class="meta-row bold">{{ $customer->nama }}</div>
+        <div class="meta-row">{{ $customer->alamat }}</div>
+        <div class="meta-row">{{ $customer->no_telp }}</div>
+    </div>
+    <div class="clear"></div>
+</div>
+
+{{-- ═══════════════════════════════
+     RINCIAN SEWA
+═══════════════════════════════ --}}
+<div class="section-title">Rincian Sewa</div>
+
+<table class="items-table">
+    <thead>
+        <tr>
+            <th style="width:65%">Deskripsi</th>
+            <th class="text-right">Jumlah</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{-- Sewa Mobil --}}
+        <tr>
+            <td>
+                <span class="bold">Sewa Mobil</span> —
+                {{ $car->carModel->brand->name }} {{ $car->carModel->name }}
+                <span class="muted">({{ $car->nopol }})</span>
+                <div class="item-detail">
+                    <span>📅 Keluar: {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}</span>
+                    <span>📅 Kembali: {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}</span>
+                </div>
+                <div class="item-detail">
+                    <span>⏱ Durasi: {{ $booking->total_hari }} hari</span>
+                    <span>💰 Rp {{ number_format($hargaPerHari, 0, ',', '.') }} / hari</span>
+                </div>
+            </td>
+            <td class="text-right bold">
+                Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}
+            </td>
+        </tr>
+
+        {{-- Antar / Jemput --}}
+        @if ($invoice->pickup_dropOff > 0)
+        <tr>
+            <td>Biaya Antar / Jemput</td>
+            <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
+        </tr>
+        @endif
+
+        {{-- Denda / Klaim --}}
+        @foreach ($booking->penalties as $penalty)
+        <tr>
+            <td>
+                <span class="bold">{{ ucfirst($penalty->klaim) }}</span>
+                @if ($penalty->description)
+                    <div class="item-detail">{{ $penalty->description }}</div>
+                @endif
+            </td>
+            <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
+{{-- ═══════════════════════════════
+     BOTTOM: PEMBAYARAN + TOTALS
+═══════════════════════════════ --}}
+<div class="bottom-section">
+
+    {{-- Rekening --}}
+    <div class="payment-box">
+        <div class="section-title" style="margin-bottom:10px">Metode Pembayaran</div>
+
+        <div class="bank-item">
+            <div class="bank-name">🏦 Bank Mandiri</div>
+            <div class="bank-detail">1610 006 892 835</div>
+            <div class="bank-holder">a.n. ACHMAD MUZAMMIL</div>
+        </div>
+
+        <div class="bank-item">
+            <div class="bank-name">🏦 Bank BCA</div>
+            <div class="bank-detail">2320 418 758</div>
+            <div class="bank-holder">a.n. SRI NOVYANA</div>
+        </div>
+
+        <div style="font-size:10px;color:#6b7280;margin-top:8px">
+            Mohon konfirmasi setelah melakukan pembayaran.<br>
+            Terima kasih atas kepercayaan Anda.
+        </div>
+    </div>
+
+    {{-- Totals --}}
+    <div class="totals-box">
+        <table class="totals-table">
+            <tr>
+                <td>Biaya Sewa</td>
+                <td class="text-right">Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}</td>
+            </tr>
+            @if ($invoice->pickup_dropOff > 0)
+            <tr>
+                <td>Biaya Antar/Jemput</td>
+                <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
+            </tr>
+            @endif
+            @if ($invoice->total_denda > 0)
+            <tr>
+                <td>Denda / Klaim</td>
+                <td class="text-right">Rp {{ number_format($invoice->total_denda, 0, ',', '.') }}</td>
+            </tr>
+            @endif
+            <tr class="total-row">
+                <td>Total Tagihan</td>
+                <td class="text-right">Rp {{ number_format($invoice->total_tagihan, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td class="muted">Total Dibayar</td>
+                <td class="text-right muted">Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}</td>
+            </tr>
+            <tr class="{{ $isLunas ? 'sisa-lunas' : 'sisa-row' }}">
+                <td>Sisa Pembayaran</td>
+                <td class="text-right">Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="clear"></div>
+</div>
+
+{{-- ═══════════════════════════════
+     TANDA TANGAN
+═══════════════════════════════ --}}
+<div class="signature-section">
+    <div class="muted" style="font-size:10px;margin-bottom:6px">Hormat kami,</div>
+    @if ($stampData)
+        <img src="{{ $stampData }}" alt="Stempel" class="signature-img">
+    @else
+        <div style="height:72px;"></div>
+    @endif
+    <div class="signature-line">ACHMAD MUZAMMIL</div>
+    <div class="signature-role">Direktur</div>
+</div>
+
+<div class="clear"></div>
+
+{{-- ═══════════════════════════════
+     FOOTER
+═══════════════════════════════ --}}
+<div class="footer">
+    <strong>Semeton Pesiar Trans</strong> &nbsp;·&nbsp;
+    Jl. Batu Ringgit No.218, Kota Mataram, NTB &nbsp;·&nbsp;
+    Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com<br>
+    Dokumen ini diterbitkan secara digital dan sah tanpa tanda tangan basah.
+</div>
+
+</body>
 </html>
