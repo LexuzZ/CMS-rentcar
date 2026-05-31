@@ -249,97 +249,97 @@ class CarPerformanceReport extends Page implements HasForms
     // ──────────────────────────────────────────────────────────────────────────
     // EKSPOR DETAIL PER MOBIL
     // ──────────────────────────────────────────────────────────────────────────
-    public function exportCarDetail(
-        int $carId,
-        int $year,
-        int $month
-    ): StreamedResponse {
+    // public function exportCarDetail(
+    //     int $carId,
+    //     int $year,
+    //     int $month
+    // ): StreamedResponse {
 
-        // Ambil data dari reportTableData yang sudah di-load
-        $reportData = collect($this->reportTableData)
-            ->firstWhere('car_id', $carId);
+    //     // Ambil data dari reportTableData yang sudah di-load
+    //     $reportData = collect($this->reportTableData)
+    //         ->firstWhere('car_id', $carId);
 
-        if (!$reportData) {
-            abort(404, 'Data mobil tidak ditemukan');
-        }
+    //     if (!$reportData) {
+    //         abort(404, 'Data mobil tidak ditemukan');
+    //     }
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+    //     $spreadsheet = new Spreadsheet();
+    //     $sheet = $spreadsheet->getActiveSheet();
 
-        // ── Judul ────────────────────────────────────────────────────────────
-        $sheet->setCellValue('A1', 'Detail Harga Pokok Mobil');
-        $sheet->setCellValue('A2', "Mobil: {$reportData['model']} ({$reportData['nopol']})");
-        $sheet->setCellValue('A3', "Periode: {$this->reportTitle}");
+    //     // ── Judul ────────────────────────────────────────────────────────────
+    //     $sheet->setCellValue('A1', 'Detail Harga Pokok Mobil');
+    //     $sheet->setCellValue('A2', "Mobil: {$reportData['model']} ({$reportData['nopol']})");
+    //     $sheet->setCellValue('A3', "Periode: {$this->reportTitle}");
 
-        $sheet->mergeCells('A1:G1');
-        $sheet->mergeCells('A2:G2');
-        $sheet->mergeCells('A3:G3');
+    //     $sheet->mergeCells('A1:G1');
+    //     $sheet->mergeCells('A2:G2');
+    //     $sheet->mergeCells('A3:G3');
 
-        $sheet->getStyle('A1:A3')->getFont()->setBold(true);
-        $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal('center');
+    //     $sheet->getStyle('A1:A3')->getFont()->setBold(true);
+    //     $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal('center');
 
-        // ── Header ───────────────────────────────────────────────────────────
-        $sheet->fromArray([
-            'Booking ID',
-            'Pelanggan',
-            'Tanggal Keluar',
-            'Tanggal Kembali',
-            'Hari Dalam Bulan',
-            'Pendapatan',
-            'Harga Pokok',
-        ], null, 'A5');
-        $sheet->getStyle('A5:G5')->getFont()->setBold(true);
+    //     // ── Header ───────────────────────────────────────────────────────────
+    //     $sheet->fromArray([
+    //         'Booking ID',
+    //         'Pelanggan',
+    //         'Tanggal Keluar',
+    //         'Tanggal Kembali',
+    //         'Hari Dalam Bulan',
+    //         'Pendapatan',
+    //         'Harga Pokok',
+    //     ], null, 'A5');
+    //     $sheet->getStyle('A5:G5')->getFont()->setBold(true);
 
-        // ── Data ─────────────────────────────────────────────────────────────
-        $row = 6;
-        $totalRevenue = 0;
-        $totalCost = 0;
+    //     // ── Data ─────────────────────────────────────────────────────────────
+    //     $row = 6;
+    //     $totalRevenue = 0;
+    //     $totalCost = 0;
 
-        foreach ($reportData['bookings'] as $booking) {
-            $sheet->fromArray([
-                $booking['id'],
-                $booking['customer'],
-                $booking['start'],
-                $booking['end'],
-                $booking['days_in_month'],   // ← sekarang selalu terisi
-                $booking['revenue'],
-                $booking['cost'],
-            ], null, "A{$row}");
+    //     foreach ($reportData['bookings'] as $booking) {
+    //         $sheet->fromArray([
+    //             $booking['id'],
+    //             $booking['customer'],
+    //             $booking['start'],
+    //             $booking['end'],
+    //             $booking['days_in_month'],   // ← sekarang selalu terisi
+    //             $booking['revenue'],
+    //             $booking['cost'],
+    //         ], null, "A{$row}");
 
-            $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
-            $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+    //         $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+    //         $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-            $totalRevenue += $booking['revenue'];
-            $totalCost += $booking['cost'];
+    //         $totalRevenue += $booking['revenue'];
+    //         $totalCost += $booking['cost'];
 
-            $row++;
-        }
+    //         $row++;
+    //     }
 
-        // ── Total ────────────────────────────────────────────────────────────
-        $sheet->setCellValue("F{$row}", 'TOTAL');
-        $sheet->setCellValue("F{$row}", $totalRevenue);  // kolom F = pendapatan
-        $sheet->setCellValue("G{$row}", $totalCost);     // kolom G = harga pokok
+    //     // ── Total ────────────────────────────────────────────────────────────
+    //     $sheet->setCellValue("F{$row}", 'TOTAL');
+    //     $sheet->setCellValue("F{$row}", $totalRevenue);  // kolom F = pendapatan
+    //     $sheet->setCellValue("G{$row}", $totalCost);     // kolom G = harga pokok
 
-        // Tulis label TOTAL di kolom E agar tidak menimpa angka
-        $sheet->setCellValue("E{$row}", 'TOTAL');
-        $sheet->getStyle("E{$row}:G{$row}")->getFont()->setBold(true);
-        $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
-        $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+    //     // Tulis label TOTAL di kolom E agar tidak menimpa angka
+    //     $sheet->setCellValue("E{$row}", 'TOTAL');
+    //     $sheet->getStyle("E{$row}:G{$row}")->getFont()->setBold(true);
+    //     $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
+    //     $sheet->getStyle("G{$row}")->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-        // ── Auto size ────────────────────────────────────────────────────────
-        foreach (range('A', 'G') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
+    //     // ── Auto size ────────────────────────────────────────────────────────
+    //     foreach (range('A', 'G') as $col) {
+    //         $sheet->getColumnDimension($col)->setAutoSize(true);
+    //     }
 
-        // ── Download ─────────────────────────────────────────────────────────
-        $writer = new Xlsx($spreadsheet);
-        $filename = 'detail_harga_pokok_' . str_replace(' ', '_', $reportData['nopol']) . '.xlsx';
+    //     // ── Download ─────────────────────────────────────────────────────────
+    //     $writer = new Xlsx($spreadsheet);
+    //     $filename = 'detail_harga_pokok_' . str_replace(' ', '_', $reportData['nopol']) . '.xlsx';
 
-        return response()->streamDownload(
-            fn() => $writer->save('php://output'),
-            $filename
-        );
-    }
+    //     return response()->streamDownload(
+    //         fn() => $writer->save('php://output'),
+    //         $filename
+    //     );
+    // }
 
     public static function canAccess(): bool
     {
