@@ -443,6 +443,7 @@ class InvoiceResource extends Resource
                 Tables\Filters\Filter::make('bulan_ini')
                     ->label('Bulan Ini')
                     ->toggle()
+                    ->default(true)
                     ->query(fn ($query) => $query
                         ->whereMonth('tanggal_invoice', now()->month)
                         ->whereYear('tanggal_invoice', now()->year)
