@@ -58,34 +58,32 @@ class TempoResource extends Resource
                 ->columns(2)
                 ->schema([
                     Forms\Components\Select::make('car_id')
-                        ->label('Mobil')
-                        ->relationship(
-                            name: 'car',
-                            titleAttribute: 'nopol',
-                            modifyQueryUsing: fn (Builder $q) => $q
-                                ->where('garasi', 'SPT')
-                                ->with('carModel')
-                        )
-                        ->getOptionLabelFromRecordUsing(
-                            fn (Car $record) => "{$record->carModel->name} ({$record->nopol})"
-                        )
-                        ->searchable()
-                        ->getSearchResultsUsing(function (string $search) {
-                            return Car::query()
-                                ->where('garasi', 'SPT')
-                                ->where(fn ($q) => $q
-                                    ->where('nopol', 'like', "%{$search}%")
-                                    ->orWhereHas('carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
-                                )
-                                ->with('carModel')
-                                ->limit(50)
-                                ->get()
-                                ->mapWithKeys(fn ($car) => [
-                                    $car->id => "{$car->carModel->name} ({$car->nopol})"
-                                ]);
-                        })
-                        ->preload()
-                        ->required(),
+                    ->label('Mobil')
+                    ->relationship(
+                        name: 'car',
+                        titleAttribute: 'nopol',
+                        modifyQueryUsing: fn(Builder $query) => $query
+                            ->where('garasi', 'SPT')
+                            ->with('carModel')
+                    )
+                    ->getOptionLabelFromRecordUsing(fn(Car $record) => "{$record->carModel->name} ({$record->nopol})")
+                    ->searchable()
+                    ->getSearchResultsUsing(function (string $search) {
+                        return Car::query()
+                            ->where('garasi', 'SPT')
+                            ->where(function ($query) use ($search) {
+                                $query->where('nopol', 'like', "%{$search}%")
+                                    ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
+                            })
+                            ->with('carModel')
+                            ->limit(50)
+                            ->get()
+                            ->mapWithKeys(fn($car) => [
+                                $car->id => "{$car->carModel->name} ({$car->nopol})"
+                            ]);
+                    })
+                    ->preload()
+                    ->required(),
 
                     Forms\Components\Select::make('perawatan')
                         ->label('Jenis Perawatan')
