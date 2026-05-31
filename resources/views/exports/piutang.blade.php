@@ -389,7 +389,7 @@
             <div class="report-title">Laporan Piutang</div>
             <div class="report-subtitle">Periode: <strong>{{ now()->isoFormat('MMMM YYYY') }}</strong></div>
             <div class="report-subtitle muted">Dicetak: {{ now()->isoFormat('D MMMM YYYY, HH:mm') }}</div>
-            <div><span class="badge-piutang">⏳ Belum Lunas</span></div>
+            <div><span class="badge-piutang">Belum Lunas</span></div>
         </div>
         <div class="clear"></div>
     </div>
@@ -468,6 +468,7 @@
                         <div class="date-text">
                             {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}
                             {{ $booking->waktu_keluar ? '· ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') : '' }}
+                            WITA
                         </div>
                         <div class="date-text">
                             {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}
@@ -478,7 +479,7 @@
 
                     {{-- Durasi --}}
                     <td class="text-center">
-                        <span class="durasi-badge">{{ $booking->total_hari }} hr</span>
+                        <span class="durasi-badge">{{ $booking->total_hari }} Hari</span>
                     </td>
 
                     {{-- Rincian Biaya --}}
