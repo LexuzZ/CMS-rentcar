@@ -517,7 +517,9 @@ class BookingResource extends Resource
                     ->searchable()
                     ->description(fn (Booking $record): string =>
                         $record->customer->no_telp ?? '—'
-                    ),
+                    )
+                    ->wrap()
+                    ->width(150),
 
                 // Tanggal keluar & kembali dalam satu kolom
                 TextColumn::make('tanggal_keluar')
