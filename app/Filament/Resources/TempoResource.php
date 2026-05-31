@@ -130,10 +130,10 @@ class TempoResource extends Resource
                     ->label('Kendaraan')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->description(fn (Tempo $record): string => $record->car->nopol ?? '—')
-                    ->searchable(query: fn (Builder $q, string $search) => $q
-                        ->whereHas('car.carModel', fn ($q2) => $q2->where('name', 'like', "%{$search}%"))
-                        ->orWhereHas('car', fn ($q2) => $q2->where('nopol', 'like', "%{$search}%"))
-                    ),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('car.carModel', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('car', fn($q) => $q->where('nopol', 'like', "%{$search}%"));
+                    }),
 
                 // Jenis perawatan — badge + ikon
                 Tables\Columns\TextColumn::make('perawatan')
