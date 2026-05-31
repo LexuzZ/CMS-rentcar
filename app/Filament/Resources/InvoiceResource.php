@@ -349,7 +349,8 @@ class InvoiceResource extends Resource
                     ->formatStateUsing(fn ($state) => '#INV' . str_pad($state, 3, '0', STR_PAD_LEFT))
                     ->badge()
                     ->color('primary')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // Penyewa + nopol
                 TextColumn::make('booking.customer.nama')
@@ -368,7 +369,7 @@ class InvoiceResource extends Resource
                     ->sortable()
                     ->icon('heroicon-m-calendar')
                     ->color('gray')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // Total tagihan
                 TextColumn::make('total_tagihan')
