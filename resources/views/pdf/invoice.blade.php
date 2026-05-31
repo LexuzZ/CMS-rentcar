@@ -405,12 +405,12 @@
                 {{ $car->carModel->brand->name }} {{ $car->carModel->name }}
                 <span class="muted">({{ $car->nopol }})</span>
                 <div class="item-detail">
-                    <span>📅 Keluar: {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}</span>
-                    <span>📅 Kembali: {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}</span>
+                    <span>Keluar: {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}</span>
+                    <span>Kembali: {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}</span>
                 </div>
                 <div class="item-detail">
-                    <span>⏱ Durasi: {{ $booking->total_hari }} hari</span>
-                    <span>💰 Rp {{ number_format($hargaPerHari, 0, ',', '.') }} / hari</span>
+                    <span>Durasi: {{ $booking->total_hari }} hari</span>
+                    <span>Rp {{ number_format($hargaPerHari, 0, ',', '.') }} / hari</span>
                 </div>
             </td>
             <td class="text-right bold">
