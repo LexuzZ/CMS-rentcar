@@ -50,7 +50,7 @@ class ExportController extends Controller
                 'Pelanggan',
                 'Tanggal Efektif Keluar',
                 'Tanggal Efektif Kembali',
-                'Hari Dihitung',
+                // 'Hari Dihitung',
                 'Pendapatan',
                 'Harga Pokok',
                 'Laba Kotor',
@@ -101,7 +101,7 @@ class ExportController extends Controller
             $sheet->setCellValue("A{$row}", $booking->customer->nama);
             $sheet->setCellValue("B{$row}", $effectiveStartDate->format('d-m-Y'));
             $sheet->setCellValue("C{$row}", $effectiveEndDate->format('d-m-Y'));
-            $sheet->setCellValue("D{$row}", $daysInMonth);
+            // $sheet->setCellValue("D{$row}", $daysInMonth);
 
             $sheet->setCellValue("E{$row}", $revenueInMonth);
             $sheet->setCellValue("F{$row}", $costInMonth);
