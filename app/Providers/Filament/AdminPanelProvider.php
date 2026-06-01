@@ -76,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 DashboardMonthlySummary::class,
                 RecentTransactions::class,
                 TransactionChart::class,
-                UserActivityWidget::class,
+                // UserActivityWidget::class,
 
 
                 DashboardActionsWidget::class,
