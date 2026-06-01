@@ -6,6 +6,7 @@ use App\Filament\Widgets\DashboardMonthlySummary;
 
 use App\Filament\Widgets\RecentTransactions;
 use App\Filament\Widgets\TransactionChart;
+use App\Filament\Widgets\UserActivityWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -75,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 DashboardMonthlySummary::class,
                 RecentTransactions::class,
                 TransactionChart::class,
+                UserActivityWidget::class,
 
 
                 DashboardActionsWidget::class,
