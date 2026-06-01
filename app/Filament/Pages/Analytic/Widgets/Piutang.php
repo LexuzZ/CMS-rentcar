@@ -17,17 +17,24 @@ class Piutang extends TableWidget
     protected int|string|array $columnSpan = 'full';
 
     protected function getTableQuery(): Builder
-{
-    return Invoice::query()
-        ->where('status', 'belum_lunas') // 🔥 KUNCI UTAMA
-        ->with([
-            'booking.customer',
-            'booking.penalties',
-            'booking.car.carModel',
-            'payments',
-        ])
-        ->latest();
-}
+    {
+        return Invoice::query()
+            ->where('status', 'belum_lunas') // 🔥 KUNCI UTAMA
+            ->with([
+                'booking.customer',
+                'booking.penalties',
+                'booking.car.carModel',
+                'payments',
+            ])
+            // ->filter(function ($invoice) {
+            //     $total = ($invoice->booking->estimasi_biaya ?? 0)
+            //         + ($invoice->pickup_dropOff ?? 0)
+            //         + $invoice->booking->penalties->sum('amount');
+            //     $bayar = $invoice->payments->sum('pembayaran');
+            //     return ($total - $bayar) > 0;
+            // })
+            ->latest();
+    }
 
 
     protected function getTableColumns(): array
@@ -68,47 +75,47 @@ class Piutang extends TableWidget
     {
         return [
             SelectFilter::make('bulan')
-            ->label('Bulan')
-            ->options([
-                1  => 'Januari',
-                2  => 'Februari',
-                3  => 'Maret',
-                4  => 'April',
-                5  => 'Mei',
-                6  => 'Juni',
-                7  => 'Juli',
-                8  => 'Agustus',
-                9  => 'September',
-                10 => 'Oktober',
-                11 => 'November',
-                12 => 'Desember',
-            ])
-            ->query(function (Builder $query, array $data) {
-                if (! $data['value']) {
-                    return;
-                }
+                ->label('Bulan')
+                ->options([
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember',
+                ])
+                ->query(function (Builder $query, array $data) {
+                    if (!$data['value']) {
+                        return;
+                    }
 
-                $query->whereMonth('tanggal_invoice', $data['value']);
-            }),
+                    $query->whereMonth('tanggal_invoice', $data['value']);
+                }),
 
-        // 🔹 FILTER TAHUN
-        SelectFilter::make('tahun')
-            ->label('Tahun')
-            ->options(
-                Invoice::query()
-                    ->selectRaw('YEAR(created_at) as year')
-                    ->distinct()
-                    ->orderByDesc('year')
-                    ->pluck('year', 'year')
-                    ->toArray()
-            )
-            ->query(function (Builder $query, array $data) {
-                if (! $data['value']) {
-                    return;
-                }
+            // 🔹 FILTER TAHUN
+            SelectFilter::make('tahun')
+                ->label('Tahun')
+                ->options(
+                    Invoice::query()
+                        ->selectRaw('YEAR(created_at) as year')
+                        ->distinct()
+                        ->orderByDesc('year')
+                        ->pluck('year', 'year')
+                        ->toArray()
+                )
+                ->query(function (Builder $query, array $data) {
+                    if (!$data['value']) {
+                        return;
+                    }
 
-                $query->whereYear('tanggal_invoice', $data['value']);
-            }),
+                    $query->whereYear('tanggal_invoice', $data['value']);
+                }),
 
 
             SelectFilter::make('customer')
@@ -139,10 +146,4 @@ class Piutang extends TableWidget
                 }),
         ];
     }
-
-    /* =======================
-        HELPER METHOD
-    ======================= */
-
-
 }

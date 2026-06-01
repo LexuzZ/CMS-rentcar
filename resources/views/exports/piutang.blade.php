@@ -453,6 +453,9 @@
                     $totalTagihan = ($booking->estimasi_biaya ?? 0) + ($invoice->pickup_dropOff ?? 0) + $totalDenda;
                     $totalDibayar = $invoice->payments->sum('pembayaran');
                     $sisa = max($totalTagihan - $totalDibayar, 0);
+                    if ($sisa <= 0) {
+                        continue;
+                    } // ← tambahkan baris ini
                     $grandTotalSisa += $sisa;
                 @endphp
 
