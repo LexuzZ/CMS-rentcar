@@ -316,10 +316,10 @@ class ServiceHistoryResource extends Resource
                                 ->send();
                         }),
 
-                    // Tables\Actions\EditAction::make()
-                    //     ->label('Edit')
-                    //     ->icon('heroicon-o-pencil-square')
-                    //     ->color('warning'),
+                    Tables\Actions\EditAction::make()
+                        ->label('Edit')
+                        ->icon('heroicon-o-pencil-square')
+                        ->color('warning'),
 
                     Tables\Actions\DeleteAction::make()
                         ->label('Hapus')
