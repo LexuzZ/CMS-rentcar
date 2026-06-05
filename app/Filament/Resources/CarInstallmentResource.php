@@ -18,6 +18,8 @@ use App\Filament\Resources\CarInstallmentResource\Pages;
 use App\Models\Pengeluaran;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CarInstallmentResource extends Resource
 {
@@ -226,5 +228,33 @@ class CarInstallmentResource extends Resource
             // 'view' => Pages\ViewCarInstallment::route('/{record}'),
             'edit' => Pages\EditCarInstallment::route('/{record}/edit'),
         ];
+    }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+    public static function canCreate(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
