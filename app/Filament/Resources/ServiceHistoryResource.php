@@ -199,14 +199,15 @@ class ServiceHistoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 // KM service berikutnya
-                Tables\Columns\TextColumn::make('next_km')
-                    ->label('Next KM')
+
+                Tables\Columns\TextColumn::make('current_km')
+                    ->label('KM Saat Ini')
                     ->alignCenter()
                     ->placeholder('—')
                     ->formatStateUsing(fn($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('current_km')
-                    ->label('KM Saat Ini')
+                Tables\Columns\TextColumn::make('next_km')
+                    ->label('Next KM')
                     ->alignCenter()
                     ->placeholder('—')
                     ->formatStateUsing(fn($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
