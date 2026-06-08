@@ -205,6 +205,12 @@ class ServiceHistoryResource extends Resource
                     ->placeholder('—')
                     ->formatStateUsing(fn($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('current_km')
+                    ->label('KM Saat Ini')
+                    ->alignCenter()
+                    ->placeholder('—')
+                    ->formatStateUsing(fn($state) => $state ? number_format($state, 0, ',', '.') . ' km' : '—')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 // Tanggal service berikutnya + indikator urgensi
                 Tables\Columns\TextColumn::make('next_service_date')
