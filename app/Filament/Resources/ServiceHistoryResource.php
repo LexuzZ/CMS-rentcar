@@ -239,17 +239,13 @@ class ServiceHistoryResource extends Resource
             ->filters([
                 Filter::make('bulan_ini')
                     ->label('Hanya Bulan Ini')
-                    ->toggle()
-                    ->default(true)
-                    ->query(
-                        fn(Builder $q) => $q
+                    ->default()
+                    ->query(function (Builder $query): Builder {
+                        return $query
+                            ->whereNotNull('next_service_date')
                             ->whereMonth('next_service_date', now()->month)
-                            ->whereYear('next_service_date', now()->year)
-                    )
-                    ->indicateUsing(
-                        fn(array $data): ?string =>
-                        $data['isActive'] ? 'Next service: ' . now()->locale('id')->isoFormat('MMMM Y') : null
-                    ),
+                            ->whereYear('next_service_date', now()->year);
+                    }),
 
                 Tables\Filters\SelectFilter::make('jenis_service')
                     ->label('Jenis Service')
@@ -263,16 +259,11 @@ class ServiceHistoryResource extends Resource
 
                 Filter::make('overdue')
                     ->label('Sudah Lewat Jadwal')
-                    ->toggle()
-                    ->query(
-                        fn(Builder $q) => $q
+                    ->query(function (Builder $query): Builder {
+                        return $query
                             ->whereNotNull('next_service_date')
-                            ->where('next_service_date', '<', today())
-                    )
-                    ->indicateUsing(
-                        fn(array $data): ?string =>
-                        $data['isActive'] ? '⚠ Melewati jadwal service' : null
-                    ),
+                            ->whereDate('next_service_date', '<', now());
+                    }),
             ])
 
             ->filtersLayout(Tables\Enums\FiltersLayout::AboveContentCollapsible)
