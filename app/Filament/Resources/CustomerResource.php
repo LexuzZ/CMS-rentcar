@@ -205,7 +205,7 @@ class CustomerResource extends Resource
                 // Alamat
                 TextColumn::make('alamat')
                     ->label('Alamat')
-                    ->limit(40)
+                    ->limit(30)
                     ->tooltip(fn ($state) => $state)
                     ->toggleable(),
 
