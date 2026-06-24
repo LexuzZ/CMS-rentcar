@@ -18,6 +18,7 @@ class ServiceHistory extends Model
         'jenis_service',
         'current_km',
         'description',
+        'nota_service',
         'workshop',
         'next_km',
         'next_service_date',
