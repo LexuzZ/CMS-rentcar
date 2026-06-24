@@ -333,15 +333,20 @@ class ServiceHistoryResource extends Resource
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
-                    Tables\Actions\Action::make('downloadNota')
-                        ->label('Download Nota')
-                        ->icon('heroicon-o-arrow-down-tray')
+                    Tables\Actions\Action::make('download_nota')
+                        ->label('Download Nota Service')
+                        ->icon('heroicon-o-document-arrow-down')
                         ->color('info')
                         ->visible(fn($record) => filled($record->nota_service))
-                        ->url(
-                            fn($record) => asset('storage/' . $record->nota_service),
-                            shouldOpenInNewTab: true
-                        ),
+                        ->action(function ($record) {
+
+                            $extension = pathinfo($record->nota_service, PATHINFO_EXTENSION);
+
+                            return response()->download(
+                                storage_path('app/public/' . $record->nota_service),
+                                'Nota_Service_' . $record->car?->nopol . '.' . $extension
+                            );
+                        }),
                 ])
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size(\Filament\Support\Enums\ActionSize::Small)
