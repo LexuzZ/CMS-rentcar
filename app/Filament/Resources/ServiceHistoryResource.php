@@ -114,6 +114,16 @@ class ServiceHistoryResource extends Resource
                         ->rows(3)
                         ->required()
                         ->columnSpanFull(),
+                    Forms\Components\FileUpload::make('nota_service')
+                        ->label('Foto Nota Service')
+                        ->directory('nota-service')
+                        ->disk('public')
+                        ->image()
+                        ->imageEditor()
+                        ->downloadable()
+                        ->openable()
+                        ->maxSize(4096)
+                        ->columnSpanFull(),
                 ]),
 
             Forms\Components\Section::make('Jadwal Berikutnya')
@@ -323,6 +333,15 @@ class ServiceHistoryResource extends Resource
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
+                    Tables\Actions\Action::make('downloadNota')
+                        ->label('Download Nota')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->color('info')
+                        ->visible(fn($record) => filled($record->nota_service))
+                        ->url(
+                            fn($record) => asset('storage/' . $record->nota_service),
+                            shouldOpenInNewTab: true
+                        ),
                 ])
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size(\Filament\Support\Enums\ActionSize::Small)
