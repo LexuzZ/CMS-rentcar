@@ -389,21 +389,27 @@ class CarResource extends Resource
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
-                    Tables\Actions\Action::make('lihat_stnk')
-                        ->label('Lihat STNK')
+                    Tables\Actions\Action::make('download_stnk')
+                        ->label('Download STNK')
                         ->icon('heroicon-o-identification')
                         ->visible(fn($record) => filled($record->foto_stnk))
-                        ->url(fn($record) =>
-                            asset('storage/' . $record->foto_stnk))
-                        ->openUrlInNewTab(),
+                        ->action(
+                            fn($record) =>
+                            response()->download(
+                                storage_path('app/public/' . $record->foto_stnk)
+                            )
+                        ),
 
-                    Tables\Actions\Action::make('lihat_barcode')
-                        ->label('Barcode BBM')
+                    Tables\Actions\Action::make('download_qr')
+                        ->label('Download QR BBM')
                         ->icon('heroicon-o-qr-code')
                         ->visible(fn($record) => filled($record->barcode_bbm))
-                        ->url(fn($record) =>
-                            asset('storage/' . $record->barcode_bbm))
-                        ->openUrlInNewTab(),
+                        ->action(
+                            fn($record) =>
+                            response()->download(
+                                storage_path('app/public/' . $record->barcode_bbm)
+                            )
+                        ),
                 ])
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size(\Filament\Support\Enums\ActionSize::Small)
