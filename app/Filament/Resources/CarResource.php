@@ -251,17 +251,17 @@ class CarResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->badge()
                     ->color('gray'),
-                ImageColumn::make('foto_stnk')
-                    ->label('STNK')
-                    ->disk('public')
-                    ->square()
-                    ->height(50),
+                // ImageColumn::make('foto_stnk')
+                //     ->label('STNK')
+                //     ->disk('public')
+                //     ->square()
+                //     ->height(50),
 
-                ImageColumn::make('barcode_bbm')
-                    ->label('Barcode BBM')
-                    ->disk('public')
-                    ->square()
-                    ->height(50),
+                // ImageColumn::make('barcode_bbm')
+                //     ->label('Barcode BBM')
+                //     ->disk('public')
+                //     ->square()
+                //     ->height(50),
 
             ])
 
