@@ -77,7 +77,9 @@ class CarResource extends Resource
 
                     TextInput::make('garasi')
                         ->label('Garasi')
-                        ->required(),
+                        ->required()
+                        ->wrap()
+                        ->width(150),
 
                     TextInput::make('warna')
                         ->label('Warna Mobil')
