@@ -16,6 +16,7 @@ use Filament\Forms\Components\{TextInput, Select, FileUpload, Grid, DatePicker, 
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{TextColumn, ImageColumn};
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -319,7 +320,7 @@ class CarResource extends Resource
                         return "Tersedia: {$from} → {$to}";
                     }),
 
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->label('Status')
                     ->options([
                         'ready' => 'Ready',
@@ -328,12 +329,16 @@ class CarResource extends Resource
                         'nonaktif' => 'Nonaktif',
                     ]),
 
-                Tables\Filters\SelectFilter::make('transmisi')
-                    ->label('Transmisi')
-                    ->options([
-                        'matic' => 'Matic',
-                        'manual' => 'Manual',
-                    ]),
+                SelectFilter::make('garasi')
+                    ->label('Garasi')
+                    ->searchable()
+                    ->options(
+                        Car::query()->select('garasi')->distinct()->pluck('garasi', 'garasi')->toArray()
+                    )
+                    ->query(function (Builder $query, array $data) {
+                        if (!$data['value']) return $query;
+                        return $query->whereHas('car', fn ($q) => $q->where('garasi', $data['value']));
+                    }),
 
             ])
 
