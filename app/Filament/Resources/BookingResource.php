@@ -517,10 +517,16 @@ class BookingResource extends Resource
                     ->label('Kendaraan')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->description(fn(Booking $record): string => $record->car->nopol ?? '—')
-                    ->searchable([
-                        'car.nopol',
-                        'car.carModel.name',
-                    ]),
+                    ->searchable(
+                        query: function ($query, string $search) {
+                            $query->whereHas('car', function ($q) use ($search) {
+                                $q->where('nopol', 'like', "%{$search}%")
+                                    ->orWhereHas('carModel', function ($q2) use ($search) {
+                                        $q2->where('name', 'like', "%{$search}%");
+                                    });
+                            });
+                        }
+                    ),
 
                 // Penyewa
                 TextColumn::make('customer.nama')
