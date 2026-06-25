@@ -517,12 +517,10 @@ class BookingResource extends Resource
                     ->label('Kendaraan')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->description(fn(Booking $record): string => $record->car->nopol ?? '—')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('car.nopol')
-                    ->label('No. Polisi')
-                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-
-                    ->searchable(),
+                    ->searchable([
+                        'car.nopol',
+                        'car.carModel.name',
+                    ]),
 
                 // Penyewa
                 TextColumn::make('customer.nama')
