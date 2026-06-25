@@ -80,7 +80,7 @@ class CarResource extends Resource
                         ->label('Garasi')
                         ->required()
 
-                        ,
+                    ,
 
                     TextInput::make('warna')
                         ->label('Warna Mobil')
@@ -328,17 +328,20 @@ class CarResource extends Resource
                         'perawatan' => 'Maintenance',
                         'nonaktif' => 'Nonaktif',
                     ]),
-
                 SelectFilter::make('garasi')
                     ->label('Garasi')
-                    ->searchable()
                     ->options(
-                        Car::query()->select('garasi')->distinct()->pluck('garasi', 'garasi')->toArray()
+                        Car::query()
+                            ->whereNotNull('garasi')
+                            ->distinct()
+                            ->orderBy('garasi')
+                            ->pluck('garasi', 'garasi')
+                            ->toArray()
                     )
-                    ->query(function (Builder $query, array $data) {
-                        if (!$data['value']) return $query;
-                        return $query->whereHas('car', fn ($q) => $q->where('garasi', $data['value']));
-                    }),
+                    ->searchable()
+                    ->preload(),
+
+
 
             ])
 
