@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blacklist;
 use App\Models\Car;
 use App\Models\CarModel;
 use App\Models\Customer;
@@ -16,15 +17,36 @@ class CustomerCheckController extends Controller
 
     public function cekNIKPost(Request $request)
     {
-        $customer = Customer::where('ktp', $request->ktp)->first();
+        $request->validate(['ktp' => 'required|digits:16']);
+
+        $nik = $request->ktp;
+
+        // ══════════════════════════════════════════
+        // CEK BLACKLIST — sebelum apapun
+        // ══════════════════════════════════════════
+        $blacklist = Blacklist::findByNik($nik);
+
+        if ($blacklist) {
+            return back()
+                ->withInput()
+                ->with('error_blacklist', [
+                    'nik'    => $nik,
+                    'alasan' => $blacklist->alasan,
+                ]);
+        }
+        // ══════════════════════════════════════════
+
+        $customer = Customer::where('ktp', $nik)->first();
 
         if ($customer) {
             session(['customer_id' => $customer->id]);
+
             return redirect()->route('booking.form')
                 ->with('info', 'Data ditemukan ✅');
         }
 
-        return redirect()->route('data.penyewa')->with('info', 'NIK tidak terdaftar, silakan isi data penyewa');
+        return redirect()->route('data.penyewa')
+            ->with('info', 'NIK tidak terdaftar, silakan isi data penyewa');
     }
 
 
