@@ -40,16 +40,19 @@ class BookingResource extends Resource
     protected static ?string $model = Booking::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?int    $navigationSort = 1;
-    protected static ?string $label         = 'Pemesanan';
-    protected static ?string $pluralLabel   = 'Pemesanan Sewa';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $label = 'Pemesanan';
+    protected static ?string $pluralLabel = 'Pemesanan Sewa';
 
     // ─────────────────────────────────────────
     //  NAVIGATION BADGE
     // ─────────────────────────────────────────
     public static function getNavigationBadge(): ?string
     {
-        return Cache::remember('booking_badge', 60, fn () =>
+        return Cache::remember(
+            'booking_badge',
+            60,
+            fn() =>
             static::getModel()::where('status', 'booking')->count() ?: null
         );
     }
@@ -69,9 +72,9 @@ class BookingResource extends Resource
     // ─────────────────────────────────────────
     protected static function calculatePrice(callable $set, callable $get)
     {
-        $tanggalKeluar  = $get('tanggal_keluar');
+        $tanggalKeluar = $get('tanggal_keluar');
         $tanggalKembali = $get('tanggal_kembali');
-        $hargaHarian    = (int) $get('harga_harian');
+        $hargaHarian = (int) $get('harga_harian');
 
         if (!$tanggalKeluar || !$tanggalKembali || !$hargaHarian) {
             $set('estimasi_biaya', 0);
@@ -79,9 +82,9 @@ class BookingResource extends Resource
             return;
         }
 
-        $start    = Carbon::parse($tanggalKeluar);
-        $end      = Carbon::parse($tanggalKembali);
-        $days     = $start->diffInDays($end);
+        $start = Carbon::parse($tanggalKeluar);
+        $end = Carbon::parse($tanggalKembali);
+        $days = $start->diffInDays($end);
         $totalHari = $days > 0 ? $days : 1;
 
         $set('total_hari', $totalHari);
@@ -104,13 +107,13 @@ class BookingResource extends Resource
                     DatePicker::make('tanggal_keluar')
                         ->label('Tanggal Keluar')
                         ->required()->live()
-                        ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                        ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                         ->disabled($isNotAdmin),
 
                     DatePicker::make('tanggal_kembali')
                         ->label('Tanggal Kembali')
                         ->required()->live()
-                        ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                        ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                         ->disabled($isNotAdmin),
 
                     TimePicker::make('waktu_keluar')
@@ -132,7 +135,7 @@ class BookingResource extends Resource
                         ->label('Pilih Garasi')
                         ->options(['spt' => 'Garasi SPT', 'vendor' => 'Garasi Vendor'])
                         ->live()
-                        ->afterStateUpdated(fn (Forms\Set $set) => $set('car_id', null))
+                        ->afterStateUpdated(fn(Forms\Set $set) => $set('car_id', null))
                         ->dehydrated(false),
 
                     Select::make('car_id')
@@ -141,12 +144,13 @@ class BookingResource extends Resource
                             name: 'car',
                             titleAttribute: 'nopol',
                             modifyQueryUsing: function (Builder $query, Forms\Get $get, ?Model $record) {
-                                $startDate  = $get('tanggal_keluar');
-                                $endDate    = $get('tanggal_kembali');
+                                $startDate = $get('tanggal_keluar');
+                                $endDate = $get('tanggal_kembali');
                                 $garasiType = $get('garasi_type');
 
                                 if (!$startDate || !$endDate || !$garasiType) {
-                                    $query->whereRaw('1 = 0'); return;
+                                    $query->whereRaw('1 = 0');
+                                    return;
                                 }
                                 if ($garasiType === 'spt') {
                                     $query->where('garasi', 'SPT');
@@ -160,14 +164,17 @@ class BookingResource extends Resource
                                         ->whereIn('bookings.status', ['booking', 'disewa'])
                                         ->where('bookings.tanggal_keluar', '<', $endDate)
                                         ->where('bookings.tanggal_kembali', '>', $startDate);
-                                    if ($record) $sub->where('bookings.id', '!=', $record->id);
+                                    if ($record)
+                                        $sub->where('bookings.id', '!=', $record->id);
                                 });
-                                if ($record) $query->orWhere('id', $record->car_id);
+                                if ($record)
+                                    $query->orWhere('id', $record->car_id);
                             }
                         )
                         ->getOptionLabelFromRecordUsing(function (Car $record) {
                             $label = "{$record->carModel->name} ({$record->nopol})";
-                            if ($record->garasi !== 'SPT') $label .= " - {$record->garasi}";
+                            if ($record->garasi !== 'SPT')
+                                $label .= " - {$record->garasi}";
                             return $label;
                         })
                         ->preload()->live()->searchable()->required()
@@ -193,22 +200,22 @@ class BookingResource extends Resource
                             TextInput::make('alamat')->label('Alamat')->required(),
                             TextInput::make('ktp')->label('No KTP')->required()->unique(ignoreRecord: true),
                         ])
-                        ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
+                        ->createOptionAction(fn(Forms\Components\Actions\Action $action) => $action->disabled($isNotAdmin))
                         ->required()
                         ->disabled($isNotAdmin),
 
                     Select::make('source')
                         ->label('Sumber Orderan')
                         ->options([
-                            'website'     => 'Website',
-                            'ro'          => 'Repeat Order',
-                            'instagram'   => 'Instagram',
-                            'facebook'    => 'Facebook',
+                            'website' => 'Website',
+                            'ro' => 'Repeat Order',
+                            'instagram' => 'Instagram',
+                            'facebook' => 'Facebook',
                             'cust_garasi' => 'Customer Garasi',
-                            'agent'       => 'Agent Garasi',
-                            'tiket'       => 'Tiket.com',
-                            'traveloka'   => 'Traveloka',
-                            'tiktok'      => 'Tiktok',
+                            'agent' => 'Agent Garasi',
+                            'tiket' => 'Tiket.com',
+                            'traveloka' => 'Traveloka',
+                            'tiktok' => 'Tiktok',
                         ])
                         ->disabled($isNotAdmin)->required(),
 
@@ -225,11 +232,11 @@ class BookingResource extends Resource
                     Select::make('paket')
                         ->label('Paket Sewa')
                         ->options([
-                            'lepas_kunci'      => 'Lepas Kunci',
-                            'rr'               => 'Rent to Rent',
-                            'dengan_driver'    => 'Dengan Driver',
-                            'tour'             => 'Paket Tour',
-                            'kontrak'          => 'Kontrak',
+                            'lepas_kunci' => 'Lepas Kunci',
+                            'rr' => 'Rent to Rent',
+                            'dengan_driver' => 'Dengan Driver',
+                            'tour' => 'Paket Tour',
+                            'kontrak' => 'Kontrak',
                             'perdua_belas_jam' => 'Per 12 Jam',
                         ])
                         ->nullable()->disabled($isNotAdmin),
@@ -249,7 +256,7 @@ class BookingResource extends Resource
                 ->schema([
                     TextInput::make('id')->hidden()->dehydrated(),
                     TextInput::make('harga_harian')->label('Harga Harian')->prefix('Rp')->numeric()->dehydrated()->live()
-                        ->afterStateUpdated(fn (callable $set, callable $get) => static::calculatePrice($set, $get))
+                        ->afterStateUpdated(fn(callable $set, callable $get) => static::calculatePrice($set, $get))
                         ->disabled($isNotAdmin),
                     TextInput::make('total_hari')->label('Total Hari Sewa')->numeric()->dehydrated(),
                     TextInput::make('estimasi_biaya')->label('Total Sewa')->prefix('Rp')->dehydrated(true)->required()->disabled($isNotAdmin),
@@ -272,14 +279,14 @@ class BookingResource extends Resource
                             ->label('Terbitkan Tagihan')
                             ->icon('heroicon-o-document-plus')
                             ->color('primary')
-                            ->visible(fn (Booking $record) => !$record->invoice)
-                            ->url(fn (Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
+                            ->visible(fn(Booking $record) => !$record->invoice)
+                            ->url(fn(Booking $record) => InvoiceResource::getUrl('create', ['booking_id' => $record->id])),
 
                         Action::make('addPenalty')
                             ->label('Tambah Klaim')
                             ->icon('heroicon-o-exclamation-triangle')
                             ->color('danger')
-                            ->url(fn (Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
+                            ->url(fn(Booking $record) => PenaltyResource::getUrl('create', ['booking_id' => $record->id])),
                     ]),
                 ]),
 
@@ -289,55 +296,55 @@ class BookingResource extends Resource
                     Grid::make(3)->schema([
                         TextEntry::make('status')
                             ->badge()
-                            ->icon(fn ($state) => match ($state) {
+                            ->icon(fn($state) => match ($state) {
                                 'booking' => 'heroicon-m-clock',
-                                'disewa'  => 'heroicon-m-key',
+                                'disewa' => 'heroicon-m-key',
                                 'selesai' => 'heroicon-m-check-circle',
-                                'batal'   => 'heroicon-m-x-circle',
-                                default   => 'heroicon-m-question-mark-circle',
+                                'batal' => 'heroicon-m-x-circle',
+                                default => 'heroicon-m-question-mark-circle',
                             })
-                            ->color(fn ($state) => match ($state) {
-                                'disewa'  => 'success',
+                            ->color(fn($state) => match ($state) {
+                                'disewa' => 'success',
                                 'booking' => 'info',
                                 'selesai' => 'gray',
-                                'batal'   => 'danger',
-                                default   => 'gray',
+                                'batal' => 'danger',
+                                default => 'gray',
                             })
-                            ->formatStateUsing(fn ($state) => match ($state) {
-                                'disewa'  => 'Disewa',
+                            ->formatStateUsing(fn($state) => match ($state) {
+                                'disewa' => 'Disewa',
                                 'booking' => 'Booking',
                                 'selesai' => 'Selesai',
-                                'batal'   => 'Batal',
-                                default   => ucfirst($state),
+                                'batal' => 'Batal',
+                                default => ucfirst($state),
                             }),
 
                         TextEntry::make('paket')
                             ->badge()
                             ->color('primary')
-                            ->formatStateUsing(fn ($state) => match ($state) {
-                                'lepas_kunci'      => 'Lepas Kunci',
-                                'rr'               => 'Rent to Rent',
-                                'dengan_driver'    => 'Dengan Driver',
-                                'tour'             => 'Paket Tour',
-                                'kontrak'          => 'Kontrak',
+                            ->formatStateUsing(fn($state) => match ($state) {
+                                'lepas_kunci' => 'Lepas Kunci',
+                                'rr' => 'Rent to Rent',
+                                'dengan_driver' => 'Dengan Driver',
+                                'tour' => 'Paket Tour',
+                                'kontrak' => 'Kontrak',
                                 'perdua_belas_jam' => 'Per 12 Jam',
-                                default            => '-',
+                                default => '-',
                             }),
 
                         TextEntry::make('source')
                             ->badge()
                             ->color('gray')
-                            ->formatStateUsing(fn ($state) => match ($state) {
-                                'website'     => 'Website',
-                                'ro'          => 'Repeat Order',
-                                'instagram'   => 'Instagram',
-                                'facebook'    => 'Facebook',
+                            ->formatStateUsing(fn($state) => match ($state) {
+                                'website' => 'Website',
+                                'ro' => 'Repeat Order',
+                                'instagram' => 'Instagram',
+                                'facebook' => 'Facebook',
                                 'cust_garasi' => 'Customer Garasi',
-                                'agent'       => 'Agent Garasi',
-                                'tiket'       => 'Tiket.com',
-                                'traveloka'   => 'Traveloka',
-                                'tiktok'      => 'Tiktok',
-                                default       => '-',
+                                'agent' => 'Agent Garasi',
+                                'tiket' => 'Tiket.com',
+                                'traveloka' => 'Traveloka',
+                                'tiktok' => 'Tiktok',
+                                default => '-',
                             }),
 
                         TextEntry::make('driverPengantaran.nama')
@@ -388,7 +395,7 @@ class BookingResource extends Resource
                             ->label('Estimasi Biaya')
                             ->weight(\Filament\Support\Enums\FontWeight::Bold)
                             ->color('success')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                     ]),
                 ]),
 
@@ -398,33 +405,33 @@ class BookingResource extends Resource
                     Infolists\Components\Grid::make(3)->schema([
                         Infolists\Components\TextEntry::make('estimasi_biaya')
                             ->label('Biaya Sewa')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                         Infolists\Components\TextEntry::make('invoice.pickup_dropOff')
                             ->label('Biaya Antar/Jemput')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.')),
 
                         TextEntry::make('invoice.total_tagihan')
                             ->label('Total Tagihan')
                             ->weight(\Filament\Support\Enums\FontWeight::Bold)
                             ->color('primary')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                         TextEntry::make('invoice.total_denda')
                             ->label('Total Denda')
                             ->color('danger')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                         TextEntry::make('invoice.total_paid')
                             ->label('Total Dibayar')
                             ->color('success')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                         TextEntry::make('invoice.sisa_pembayaran')
                             ->label('Sisa Pembayaran')
                             ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                            ->color(fn ($state) => $state > 0 ? 'danger' : 'success')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->color(fn($state) => $state > 0 ? 'danger' : 'success')
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                     ]),
                 ]),
 
@@ -441,7 +448,7 @@ class BookingResource extends Resource
                             ->label('Model')
                             ->badge()
                             ->color('primary')
-                            ->formatStateUsing(fn (string $state): string => Str::upper($state)),
+                            ->formatStateUsing(fn(string $state): string => Str::upper($state)),
 
                         TextEntry::make('car.nopol')
                             ->label('No. Polisi')
@@ -499,7 +506,7 @@ class BookingResource extends Resource
                 // Nomor booking
                 TextColumn::make('id')
                     ->label('ID')
-                    ->formatStateUsing(fn ($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
+                    ->formatStateUsing(fn($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT))
                     ->badge()
                     ->color('gray')
                     ->sortable()
@@ -509,14 +516,20 @@ class BookingResource extends Resource
                 TextColumn::make('car.carModel.name')
                     ->label('Kendaraan')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                    ->description(fn (Booking $record): string => $record->car->nopol ?? '—')
+                    ->description(fn(Booking $record): string => $record->car->nopol ?? '—')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('car.nopol')
+                    ->label('No. Polisi')
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
+
                     ->searchable(),
 
                 // Penyewa
                 TextColumn::make('customer.nama')
                     ->label('Penyewa')
                     ->searchable()
-                    ->description(fn (Booking $record): string =>
+                    ->description(
+                        fn(Booking $record): string =>
                         $record->customer->no_telp ?? '—'
                     )
                     ->wrap()
@@ -528,7 +541,8 @@ class BookingResource extends Resource
                     ->date('d M Y')
                     ->icon('heroicon-m-arrow-right-circle')
                     ->iconColor('success')
-                    ->description(fn (Booking $record): string =>
+                    ->description(
+                        fn(Booking $record): string =>
                         Carbon::parse($record->tanggal_kembali)->format('d M Y')
                     )
                     ->sortable(),
@@ -540,32 +554,32 @@ class BookingResource extends Resource
                     ->alignCenter()
                     ->badge()
                     ->color('primary'),
-                    // ->toggleable(),
+                // ->toggleable(),
 
                 // Status
                 TextColumn::make('status')
                     ->badge()
                     ->alignCenter()
-                    ->icon(fn (string $state): string => match ($state) {
+                    ->icon(fn(string $state): string => match ($state) {
                         'booking' => 'heroicon-m-clock',
-                        'disewa'  => 'heroicon-m-key',
+                        'disewa' => 'heroicon-m-key',
                         'selesai' => 'heroicon-m-check-circle',
-                        'batal'   => 'heroicon-m-x-circle',
-                        default   => 'heroicon-m-question-mark-circle',
+                        'batal' => 'heroicon-m-x-circle',
+                        default => 'heroicon-m-question-mark-circle',
                     })
-                    ->color(fn (string $state): string => match ($state) {
-                        'disewa'  => 'success',
+                    ->color(fn(string $state): string => match ($state) {
+                        'disewa' => 'success',
                         'booking' => 'info',
                         'selesai' => 'gray',
-                        'batal'   => 'danger',
-                        default   => 'gray',
+                        'batal' => 'danger',
+                        default => 'gray',
                     })
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'disewa'  => 'Disewa',
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'disewa' => 'Disewa',
                         'booking' => 'Booking',
                         'selesai' => 'Selesai',
-                        'batal'   => 'Batal',
-                        default   => ucfirst($state),
+                        'batal' => 'Batal',
+                        default => ucfirst($state),
                     }),
 
                 // Biaya
@@ -575,7 +589,7 @@ class BookingResource extends Resource
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->color('success')
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
 
             ->defaultSort('created_at', 'desc')
@@ -585,22 +599,24 @@ class BookingResource extends Resource
                     ->label('Hanya Bulan Ini')
                     ->toggle()
                     ->default(true)
-                    ->query(fn (Builder $query) => $query
-                        ->whereMonth('tanggal_keluar', Carbon::now()->month)
-                        ->whereYear('tanggal_keluar', Carbon::now()->year)
+                    ->query(
+                        fn(Builder $query) => $query
+                            ->whereMonth('tanggal_keluar', Carbon::now()->month)
+                            ->whereYear('tanggal_keluar', Carbon::now()->year)
                     )
-                    ->indicateUsing(fn (array $data): ?string =>
+                    ->indicateUsing(
+                        fn(array $data): ?string =>
                         $data['isActive']
-                            ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
-                            : null
+                        ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
+                        : null
                     ),
 
                 SelectFilter::make('status')
                     ->options([
                         'booking' => 'Booking',
-                        'disewa'  => 'Disewa',
+                        'disewa' => 'Disewa',
                         'selesai' => 'Selesai',
-                        'batal'   => 'Batal',
+                        'batal' => 'Batal',
                     ]),
 
                 SelectFilter::make('garasi')
@@ -610,8 +626,9 @@ class BookingResource extends Resource
                         Car::query()->select('garasi')->distinct()->pluck('garasi', 'garasi')->toArray()
                     )
                     ->query(function (Builder $query, array $data) {
-                        if (!$data['value']) return $query;
-                        return $query->whereHas('car', fn ($q) => $q->where('garasi', $data['value']));
+                        if (!$data['value'])
+                            return $query;
+                        return $query->whereHas('car', fn($q) => $q->where('garasi', $data['value']));
                     }),
 
                 Filter::make('tanggal_keluar')
@@ -623,11 +640,12 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_keluar'],
-                            fn (Builder $q, $date) => $q->whereDate('tanggal_keluar', $date)
+                            fn(Builder $q, $date) => $q->whereDate('tanggal_keluar', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (!$data['tanggal_keluar']) return null;
+                        if (!$data['tanggal_keluar'])
+                            return null;
                         return 'Keluar: ' . Carbon::parse($data['tanggal_keluar'])->isoFormat('D MMM Y');
                     }),
 
@@ -640,11 +658,12 @@ class BookingResource extends Resource
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['tanggal_kembali'],
-                            fn (Builder $q, $date) => $q->whereDate('tanggal_kembali', $date)
+                            fn(Builder $q, $date) => $q->whereDate('tanggal_kembali', $date)
                         );
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (!$data['tanggal_kembali']) return null;
+                        if (!$data['tanggal_kembali'])
+                            return null;
                         return 'Kembali: ' . Carbon::parse($data['tanggal_kembali'])->isoFormat('D MMM Y');
                     }),
             ])
@@ -662,18 +681,18 @@ class BookingResource extends Resource
                         ->label('Edit')
                         ->icon('heroicon-o-pencil-square')
                         ->color('warning')
-                        ->visible(fn () => Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff'])),
+                        ->visible(fn() => Auth::user()->hasAnyRole(['superadmin', 'admin', 'supervisor', 'staff'])),
 
                     Tables\Actions\DeleteAction::make()
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
-                        ->visible(fn () => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
+                        ->visible(fn() => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size(\Filament\Support\Enums\ActionSize::Small)
-                ->color('gray')
-                ->button(),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(\Filament\Support\Enums\ActionSize::Small)
+                    ->color('gray')
+                    ->button(),
             ])
 
             ->bulkActions([
@@ -684,10 +703,10 @@ class BookingResource extends Resource
             ->paginated([10, 25, 50])
 
             // Highlight baris sesuai status
-            ->recordClasses(fn (Booking $record): string => match ($record->status) {
-                'batal'  => 'opacity-60',
+            ->recordClasses(fn(Booking $record): string => match ($record->status) {
+                'batal' => 'opacity-60',
                 'selesai' => 'opacity-75',
-                default  => '',
+                default => '',
             });
     }
 
@@ -697,10 +716,10 @@ class BookingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListBookings::route('/'),
+            'index' => Pages\ListBookings::route('/'),
             'create' => Pages\CreateBooking::route('/create'),
-            'view'   => Pages\ViewBooking::route('/{record}'),
-            'edit'   => Pages\EditBooking::route('/{record}/edit'),
+            'view' => Pages\ViewBooking::route('/{record}'),
+            'edit' => Pages\EditBooking::route('/{record}/edit'),
         ];
     }
 
