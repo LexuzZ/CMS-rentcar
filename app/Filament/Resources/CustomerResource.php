@@ -211,7 +211,9 @@ class CustomerResource extends Resource
                     ->label('Penyewa')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->searchable()
-                    ->description(fn(Customer $record): string => $record->no_telp ?? '—'),
+                    ->description(fn(Customer $record): string => $record->no_telp ?? '—')
+                    ->wrap()
+                    ->width(150),
 
                 TextColumn::make('ktp')
                     ->label('No. KTP')
