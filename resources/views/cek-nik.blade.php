@@ -49,7 +49,7 @@
                     </div>
                 </div>
 
-                {{-- Alerts --}}
+                {{-- ═══ ALERTS BIASA ═══ --}}
                 @if (session('success'))
                 <div class="ck-alert ck-alert--success">
                     <span class="ck-alert-dot ck-alert-dot--success"></span>
@@ -78,6 +78,67 @@
                 </div>
                 @endif
 
+                {{-- ═══ BLACKLIST ALERT ═══ --}}
+                @if (session('error_blacklist'))
+                @php
+                    $bl = session('error_blacklist');
+                    $alasanLabel = match($bl['alasan'] ?? '') {
+                        'tidak_bayar'   => 'Tidak membayar tagihan sewa',
+                        'merusak_mobil' => 'Merusak kendaraan',
+                        'kabur'         => 'Melarikan diri / tidak mengembalikan kendaraan',
+                        'penipuan'      => 'Penipuan atau identitas palsu',
+                        'bermasalah'    => 'Penyewa bermasalah',
+                        default         => 'Pelanggaran ketentuan sewa',
+                    };
+                @endphp
+                <div class="ck-bl">
+                    {{-- Header --}}
+                    <div class="ck-bl-header">
+                        <div class="ck-bl-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="ck-bl-title">NIK Tidak Dapat Digunakan</p>
+                            <p class="ck-bl-subtitle">Nomor identitas ini terdaftar dalam daftar hitam sistem</p>
+                        </div>
+                    </div>
+
+                    {{-- NIK box --}}
+                    <div class="ck-bl-nik">
+                        <span class="ck-bl-nik-tag">NIK</span>
+                        <span class="ck-bl-nik-val">{{ $bl['nik'] }}</span>
+                    </div>
+
+                    {{-- Alasan --}}
+                    <div class="ck-bl-reason">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        <span><strong>Alasan:</strong> {{ $alasanLabel }}</span>
+                    </div>
+
+                    <div class="ck-bl-divider"></div>
+
+                    <p class="ck-bl-help">
+                        Jika Anda merasa ini kesalahan, hubungi kami untuk klarifikasi:
+                    </p>
+
+                    <a href="https://wa.me/6281128948884?text={{ urlencode('Halo, saya ingin klarifikasi terkait NIK ' . $bl['nik'] . ' yang terblacklist di sistem Semeton Pesiar.') }}"
+                       target="_blank"
+                       class="ck-bl-wa">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                        Hubungi Kami via WhatsApp
+                    </a>
+                </div>
+                @endif
+                {{-- ═══ END BLACKLIST ALERT ═══ --}}
+
                 {{-- Form --}}
                 <form action="{{ route('cek.nik.post') }}" method="POST" class="ck-form">
                     @csrf
@@ -94,7 +155,8 @@
                             </span>
                             <input type="text" id="ktp" name="ktp" maxlength="16"
                                 class="ck-input" placeholder="Masukkan 16 digit NIK…"
-                                inputmode="numeric" autocomplete="off" required>
+                                inputmode="numeric" autocomplete="off" required
+                                value="{{ old('ktp') }}">
                             <span class="ck-counter" id="nik-counter">0 / 16</span>
                         </div>
                         <p class="ck-hint">Sesuai e-KTP yang masih berlaku</p>
@@ -152,9 +214,7 @@
         }
 
         /* Blobs */
-        .ck-blob {
-            position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-        }
+        .ck-blob { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
         .ck-blob--tl {
             width: 480px; height: 480px; top: -160px; left: -120px;
             background: radial-gradient(circle, rgba(99,102,241,.28) 0%, transparent 70%);
@@ -190,20 +250,16 @@
 
         /* Card */
         .ck-card {
-            background: #ffffff;
-            border-radius: 20px;
-            overflow: hidden;
+            background: #ffffff; border-radius: 20px; overflow: hidden;
             box-shadow:
                 0 0 0 1px rgba(255,255,255,.06),
                 0 20px 50px rgba(0,0,0,.45),
                 0 2px 8px rgba(0,0,0,.2);
         }
-
         .ck-card-strip {
             height: 4px;
             background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
         }
-
         .ck-card-body { padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 18px; }
         @media (max-width: 480px) { .ck-card-body { padding: 22px 20px 20px; } }
 
@@ -229,13 +285,92 @@
         .ck-alert--success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
         .ck-alert--info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
         .ck-alert--error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-
         .ck-alert-dot {
             position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
             width: 7px; height: 7px; border-radius: 50%;
         }
         .ck-alert-dot--success { background: #16a34a; animation: ck-blink 1.8s infinite; }
         @keyframes ck-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        /* ═══ BLACKLIST ALERT ═══ */
+        .ck-bl {
+            border-radius: 14px;
+            border: 2px solid #fca5a5;
+            background: linear-gradient(135deg, #fff1f2, #fee2e2);
+            overflow: hidden;
+            animation: ck-shake .45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes ck-shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-6px); }
+            40%      { transform: translateX(6px); }
+            60%      { transform: translateX(-4px); }
+            80%      { transform: translateX(4px); }
+        }
+
+        /* Header */
+        .ck-bl-header {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 16px 16px 12px;
+        }
+        .ck-bl-icon {
+            width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px;
+            background: #fee2e2; border: 1.5px solid #fca5a5;
+            display: flex; align-items: center; justify-content: center;
+            color: #dc2626;
+            box-shadow: 0 3px 8px rgba(220,38,38,.18);
+        }
+        .ck-bl-title {
+            font-size: 14px; font-weight: 800; color: #991b1b;
+            margin: 0 0 3px; letter-spacing: -.01em;
+        }
+        .ck-bl-subtitle { font-size: 11.5px; color: #b91c1c; line-height: 1.45; }
+
+        /* NIK box */
+        .ck-bl-nik {
+            display: flex; align-items: center; gap: 10px;
+            margin: 0 16px 12px;
+            background: #fff; border: 1px solid #fecaca;
+            border-radius: 10px; padding: 9px 14px;
+        }
+        .ck-bl-nik-tag {
+            font-size: 10px; font-weight: 800; letter-spacing: .08em;
+            text-transform: uppercase; color: #dc2626;
+            background: #fee2e2; border-radius: 5px; padding: 2px 8px;
+            flex-shrink: 0;
+        }
+        .ck-bl-nik-val {
+            font-size: 16px; font-weight: 800;
+            font-family: ui-monospace, monospace;
+            letter-spacing: .12em; color: #991b1b;
+        }
+
+        /* Alasan */
+        .ck-bl-reason {
+            display: flex; align-items: flex-start; gap: 7px;
+            margin: 0 16px 12px;
+            font-size: 12.5px; color: #b91c1c; line-height: 1.55;
+        }
+
+        .ck-bl-divider { height: 1px; background: #fecaca; margin: 0 0 12px; }
+
+        .ck-bl-help {
+            font-size: 11.5px; color: #9f1239; line-height: 1.5;
+            padding: 0 16px; margin-bottom: 10px;
+        }
+
+        /* WA Button */
+        .ck-bl-wa {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin: 0 16px 16px;
+            padding: 10px 16px; border-radius: 10px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff; text-decoration: none;
+            font-size: 13px; font-weight: 700;
+            box-shadow: 0 3px 10px rgba(34,197,94,.3);
+            transition: filter .15s, transform .15s;
+        }
+        .ck-bl-wa:hover { filter: brightness(.92); transform: translateY(-1px); }
 
         /* Form */
         .ck-form { display: flex; flex-direction: column; gap: 14px; }
@@ -271,7 +406,6 @@
             transition: color .18s;
         }
         .ck-counter.full { color: #6366f1; }
-
         .ck-hint { font-size: 11.5px; color: #94a3b8; }
 
         /* Submit */
@@ -289,19 +423,14 @@
         .ck-submit:active { transform: translateY(0); }
 
         /* Divider */
-        .ck-divider {
-            display: flex; align-items: center; gap: 12px;
-        }
-        .ck-divider::before, .ck-divider::after {
-            content: ''; flex: 1; height: 1px; background: #f1f5f9;
-        }
+        .ck-divider { display: flex; align-items: center; gap: 12px; }
+        .ck-divider::before, .ck-divider::after { content: ''; flex: 1; height: 1px; background: #f1f5f9; }
         .ck-divider span { font-size: 12px; color: #94a3b8; white-space: nowrap; font-weight: 500; }
 
         /* Register */
         .ck-register {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 11px;
-            border: 1.5px solid #e2e8f0; border-radius: 11px;
+            padding: 11px; border: 1.5px solid #e2e8f0; border-radius: 11px;
             font-size: 13.5px; font-weight: 600; color: #374151;
             text-decoration: none; background: #f8fafc;
             transition: border-color .16s, background .16s, color .16s;
@@ -318,6 +447,13 @@
     <script>
         const input   = document.getElementById('ktp');
         const counter = document.getElementById('nik-counter');
+
+        // Isi counter jika ada old value (mis. setelah redirect back)
+        if (input.value.length) {
+            counter.textContent = input.value.length + ' / 16';
+            if (input.value.length === 16) counter.classList.add('full');
+        }
+
         input.addEventListener('input', () => {
             input.value = input.value.replace(/\D/g, '');
             const n = input.value.length;
