@@ -171,12 +171,7 @@ class CarResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
-            ->contentGrid([
-                'md' => 1,
-            ])
-            ->extraAttributes([
-                'class' => 'text-xs',
-            ])
+            ->recordClasses('text-xs')
             ->recordUrl(null)
             ->columns([
 
