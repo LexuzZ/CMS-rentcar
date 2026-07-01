@@ -31,23 +31,21 @@ class MonthlyReportResource extends Resource
         return $table
             ->query(
                 Invoice::query()
-                    ->join('payments', 'payments.invoice_id', '=', 'invoices.id')
                     ->select([
-                        DB::raw('YEAR(payments.tanggal_pembayaran) as year'),
-                        DB::raw('MONTH(payments.tanggal_pembayaran) as month'),
+                        DB::raw('YEAR(tanggal_invoice) as year'),
+                        DB::raw('MONTH(tanggal_invoice) as month'),
 
-                        DB::raw('COUNT(payments.id) as transaction_count'),
-                        DB::raw('SUM(payments.pembayaran) as total_paid'),
-
-                        // DB::raw('SUM(DISTINCT invoices.total_tagihan) as total_tagihan'),
-                        DB::raw('SUM(DISTINCT invoices.sisa_pembayaran) as total_sisa'),
+                        DB::raw('COUNT(id) as transaction_count'),
+                        DB::raw('SUM(total_paid) as total_paid'),
+                        DB::raw('SUM(sisa_pembayaran) as total_sisa'),
                     ])
                     ->groupBy('year', 'month')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('month')
                     ->label('Bulan')
-                    ->formatStateUsing(fn (string $state) =>
+                    ->formatStateUsing(
+                        fn(string $state) =>
                         \Carbon\Carbon::create()
                             ->month((int) $state)
                             ->locale('id')
@@ -66,14 +64,16 @@ class MonthlyReportResource extends Resource
                 Tables\Columns\TextColumn::make('total_paid')
                     ->label('Total Dibayar')
                     ->color('success')
-                    ->formatStateUsing(fn ($state) =>
+                    ->formatStateUsing(
+                        fn($state) =>
                         'Rp ' . number_format($state, 0, ',', '.')
                     ),
 
                 Tables\Columns\TextColumn::make('total_sisa')
                     ->label('Sisa Piutang')
-                    ->color(fn ($state) => $state > 0 ? 'danger' : 'success')
-                    ->formatStateUsing(fn ($state) =>
+                    ->color(fn($state) => $state > 0 ? 'danger' : 'success')
+                    ->formatStateUsing(
+                        fn($state) =>
                         'Rp ' . number_format($state, 0, ',', '.')
                     ),
 
@@ -95,11 +95,12 @@ class MonthlyReportResource extends Resource
 
                         return array_combine($years, $years);
                     })
-                    ->query(fn (Builder $query, array $data) =>
+                    ->query(
+                        fn(Builder $query, array $data) =>
                         $query->when(
                             $data['value'],
-                            fn (Builder $query, $value) =>
-                                $query->whereYear('payments.tanggal_pembayaran', $value)
+                            fn(Builder $query, $value) =>
+                            $query->whereYear('payments.tanggal_pembayaran', $value)
                         )
                     ),
             ])
@@ -110,7 +111,8 @@ class MonthlyReportResource extends Resource
                     ->color('info')
                     ->hiddenLabel()
                     ->button()
-                    ->url(fn (Model $record): string =>
+                    ->url(
+                        fn(Model $record): string =>
                         static::getUrl('details', [
                             'record' => "{$record->year}-{$record->month}",
                         ])
