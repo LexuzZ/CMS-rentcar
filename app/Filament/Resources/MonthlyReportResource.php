@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MonthlyReportResource\Pages;
+use App\Models\Invoice;
 use App\Models\Payment;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,8 +30,8 @@ class MonthlyReportResource extends Resource
     {
         return $table
             ->query(
-                Payment::query()
-                    ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+                Invoice::query()
+                    ->join('payments', 'payments.invoice_id', '=', 'invoices.id')
                     ->select([
                         DB::raw('YEAR(payments.tanggal_pembayaran) as year'),
                         DB::raw('MONTH(payments.tanggal_pembayaran) as month'),

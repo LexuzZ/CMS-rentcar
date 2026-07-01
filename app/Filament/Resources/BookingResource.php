@@ -611,8 +611,8 @@ class BookingResource extends Resource
                     ->indicateUsing(
                         fn(array $data): ?string =>
                         $data['isActive']
-                        ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
-                        : null
+                            ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
+                            : null
                     ),
 
                 SelectFilter::make('status')
