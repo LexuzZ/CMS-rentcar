@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class MonthlyReportResource extends Resource
 {
-    protected static ?string $model = Payment::class;
+    protected static ?string $model = Invoice::class;
 
     protected static bool $shouldRegisterNavigation = true;
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
