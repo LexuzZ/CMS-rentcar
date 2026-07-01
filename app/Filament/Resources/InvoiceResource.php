@@ -167,7 +167,7 @@ class InvoiceResource extends Resource
                         ->url(function (Invoice $record) {
                             $booking = $record->booking;
 
-                            if (!$booking || !$booking->customer?->no_hp) {
+                            if (!$booking || !$booking->customer?->no_telp) {
                                 return null;
                             }
 
@@ -228,7 +228,7 @@ class InvoiceResource extends Resource
 
                             $message = urlencode(implode("\n", $text));
 
-                            $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_hp);
+                            $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
 
                             if (str_starts_with($phone, '0')) {
                                 $phone = '62' . substr($phone, 1);
