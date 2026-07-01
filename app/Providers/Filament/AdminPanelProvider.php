@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
             ->sidebarWidth('18rem')
-            ->font('0.2rem')
+            ->font('0.1rem')
             ->brandName('Semeton Pesiar')
             // ->brandLogo(asset('public/spt.png'))
             ->font('Poppins')
