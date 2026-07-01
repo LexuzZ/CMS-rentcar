@@ -100,7 +100,7 @@ class MonthlyReportResource extends Resource
                         $query->when(
                             $data['value'],
                             fn(Builder $query, $value) =>
-                            $query->whereYear('payments.tanggal_invoice', $value)
+                            $query->whereYear('tanggal_invoice', $value)
                         )
                     ),
             ])
