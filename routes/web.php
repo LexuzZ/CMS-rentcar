@@ -13,29 +13,17 @@ use Illuminate\Support\Facades\Route;
 
 use function Pest\Laravel\get;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+
+    return response()->file($fullPath);
+})->where('path', '.*');
+
 Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoices.pdf.download');
-// Route::get('/api/cars', function () {
-//     return \App\Models\Car::all()->map(function ($car) {
-//         return [
-//             'id' => $car->id,
-//             'title' => $car->nama_mobil . ' (' . $car->nopol . ')',
-//         ];
-//     });
-// });
-// Route::get('/api/bookings-calendar', function () {
-//     return \App\Models\Booking::with('car', 'customer')->get()->map(function ($booking) {
-//         return [
-//             'title' => $booking->customer->nama,
-//             'start' => $booking->tanggal_keluar,
-//             'end' => \Carbon\Carbon::parse($booking->tanggal_kembali),
-//             'resourceId' => $booking->car_id,
-//             'color' => '#3b82f6',
-//         ];
-//     });
-// });
 Route::get('/order', [CustomerCheckController::class, 'cekNIK'])->name('cek.nik');
 Route::post('/order', [CustomerCheckController::class, 'cekNIKPost'])->name('cek.nik.post');
 Route::get('/penyewa', [CustomerCheckController::class, 'dataPenyewa'])->name('data.penyewa');
