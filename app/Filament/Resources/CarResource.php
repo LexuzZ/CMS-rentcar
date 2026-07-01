@@ -78,9 +78,7 @@ class CarResource extends Resource
 
                     TextInput::make('garasi')
                         ->label('Garasi')
-                        ->required()
-
-                    ,
+                        ->required(),
 
                     TextInput::make('warna')
                         ->label('Warna Mobil')
@@ -173,6 +171,12 @@ class CarResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+            ->contentGrid([
+                'md' => 1,
+            ])
+            ->extraAttributes([
+                'class' => 'text-xs',
+            ])
             ->recordUrl(null)
             ->columns([
 
@@ -186,8 +190,7 @@ class CarResource extends Resource
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->description(
-                        fn(Car $record): string =>
-                        ($record->carModel?->brand?->name ?? '') . ' ' . ($record->carModel?->name ?? '—')
+                        fn(Car $record): string => ($record->carModel?->brand?->name ?? '') . ' ' . ($record->carModel?->name ?? '—')
                     ),
 
                 // Garasi
