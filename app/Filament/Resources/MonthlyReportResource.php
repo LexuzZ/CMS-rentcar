@@ -87,7 +87,7 @@ class MonthlyReportResource extends Resource
                 Tables\Filters\SelectFilter::make('year')
                     ->label('Filter Tahun')
                     ->options(function () {
-                        $years = Payment::selectRaw('YEAR(tanggal_pembayaran) as year')
+                        $years = Payment::selectRaw('YEAR(tanggal_invoice) as year')
                             ->distinct()
                             ->orderByDesc('year')
                             ->pluck('year')
@@ -100,7 +100,7 @@ class MonthlyReportResource extends Resource
                         $query->when(
                             $data['value'],
                             fn(Builder $query, $value) =>
-                            $query->whereYear('payments.tanggal_pembayaran', $value)
+                            $query->whereYear('payments.tanggal_invoice', $value)
                         )
                     ),
             ])
