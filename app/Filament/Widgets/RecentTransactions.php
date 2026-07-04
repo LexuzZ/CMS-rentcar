@@ -15,11 +15,12 @@ class RecentTransactions extends BaseWidget
     protected static bool $isLazy = true;
     protected static ?int $pollingInterval = null;
 
-    protected int|string|array $columnSpan = [
-        'sm' => 'full',
-        'md' => 4,
-        'lg' => 4,
-    ];
+    // protected int|string|array $columnSpan = [
+    //     'sm' => 'full',
+    //     'md' => 4,
+    //     'lg' => 4,
+    // ];
+    protected int|string|array $columnSpan = 'full';
 
     protected int|string|array $perPage = 2;
 
