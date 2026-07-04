@@ -103,18 +103,19 @@ class PaymentResource extends Resource
                     Forms\Components\Select::make('invoice_id')
                         ->label('Faktur')
                         ->relationship(
-                            'invoice', 'id',
-                            fn ($query) => $query
+                            'invoice',
+                            'id',
+                            fn($query) => $query
                                 ->with(['booking.customer'])
                                 ->where('status', 'belum_lunas')
                         )
                         ->getOptionLabelFromRecordUsing(
-                            fn (Invoice $record) =>
+                            fn(Invoice $record) =>
                             "INV #{$record->id} — {$record->booking->customer->nama}"
                         )
                         ->searchable()
                         ->required()
-                        ->disabled(fn (string $operation) => $operation === 'edit')
+                        ->disabled(fn(string $operation) => $operation === 'edit')
                         ->columnSpanFull(),
                 ]),
 
@@ -141,7 +142,7 @@ class PaymentResource extends Resource
                         ->required()
                         ->columnSpanFull()
                         ->rules([
-                            fn (Forms\Get $get) => function ($attribute, $value, $fail) use ($get) {
+                            fn(Forms\Get $get) => function ($attribute, $value, $fail) use ($get) {
                                 $invoice = Invoice::find($get('invoice_id'));
                                 if ($invoice && $value > $invoice->sisa_pembayaran) {
                                     $fail('Jumlah pembayaran melebihi sisa tagihan.');
@@ -164,7 +165,7 @@ class PaymentResource extends Resource
                 // ID Faktur
                 TextColumn::make('invoice.id')
                     ->label('Faktur')
-                    ->formatStateUsing(fn ($state) => '#INV' . str_pad($state, 3, '0', STR_PAD_LEFT))
+                    ->formatStateUsing(fn($state) => '#INV' . str_pad($state, 3, '0', STR_PAD_LEFT))
                     ->badge()
                     ->color('primary')
                     ->sortable(),
@@ -174,45 +175,36 @@ class PaymentResource extends Resource
                     ->label('Penyewa')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->searchable()
-                    ->description(fn (Payment $record): string =>
-                        ($record->invoice->booking->car->carModel->name ?? '—') .
-                        ' · ' . ($record->invoice->booking->car->nopol ?? '—')
+                    ->description(
+                        fn(Payment $record): string => ($record->invoice->booking->car->carModel->name ?? '—') .
+                            ' · ' . ($record->invoice->booking->car->nopol ?? '—')
                     ),
 
                 // Jumlah
+                TextColumn::make('pembayaran')
+                    ->label('Jumlah')
+                    ->alignEnd()
+                    ->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold)
+                    ->color('success')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+                // Tanggal
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tanggal')
                     ->date('d M Y')
-                    ->icon('heroicon-o-calendar-days'),
+                    ->sortable()
+                    ->icon('heroicon-m-calendar')
+                    ->color('gray'),
 
-                TextColumn::make('pembayaran')
-                    ->label('Jumlah')
-                    ->money('IDR', true)
-                    ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                    ->color('success'),
-
+                // Metode — badge + ikon
                 TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
-                    ->wrap()
-                    ->width(150)
                     ->alignCenter()
-                    ->colors([
-                        'success' => 'tunai',
-                        'info'    => 'transfer',
-                        'gray'    => 'qris',
-                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
-                    ])
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'tunai'          => 'Tunai',
-                        'transfer'       => 'Transfer',
-                        'qris'           => 'QRIS',
-                        'tunai_transfer' => 'Tunai & Transfer',
-                        'tunai_qris'     => 'Tunai & QRIS',
-                        'transfer_qris'  => 'Transfer & QRIS',
-                        default          => ucfirst($state),
-                    }),
-
+                    ->icon(fn(string $state): string => self::metodeIcon($state))
+                    ->color(fn(string $state): string => self::metodeColor($state))
+                    ->formatStateUsing(fn($state): string => self::metodeOptions()[$state] ?? ucfirst($state)),
                 TextColumn::make('proof')
                     ->label('Bukti')
                     ->alignCenter()
@@ -220,6 +212,7 @@ class PaymentResource extends Resource
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'gray'),
             ])
+
             ->defaultSort('created_at', 'desc')
 
             ->filters([
@@ -234,13 +227,15 @@ class PaymentResource extends Resource
                             ->label('Tanggal Pembayaran')
                             ->native(false),
                     ])
-                    ->query(fn (Builder $query, array $data): Builder =>
+                    ->query(
+                        fn(Builder $query, array $data): Builder =>
                         $query->when(
                             $data['date'],
-                            fn (Builder $q, $date) => $q->whereDate('tanggal_pembayaran', $date)
+                            fn(Builder $q, $date) => $q->whereDate('tanggal_pembayaran', $date)
                         )
                     )
-                    ->indicateUsing(fn (array $data): ?string =>
+                    ->indicateUsing(
+                        fn(array $data): ?string =>
                         $data['date']
                             ? 'Tgl: ' . Carbon::parse($data['date'])->isoFormat('D MMMM Y')
                             : null
@@ -267,10 +262,11 @@ class PaymentResource extends Resource
                                 ->default(now()->year),
                         ]),
                     ])
-                    ->query(fn (Builder $query, array $data): Builder =>
+                    ->query(
+                        fn(Builder $query, array $data): Builder =>
                         $query
-                            ->when($data['month'], fn (Builder $q, $m) => $q->whereMonth('tanggal_pembayaran', $m))
-                            ->when($data['year'],  fn (Builder $q, $y) => $q->whereYear('tanggal_pembayaran', $y))
+                            ->when($data['month'], fn(Builder $q, $m) => $q->whereMonth('tanggal_pembayaran', $m))
+                            ->when($data['year'],  fn(Builder $q, $y) => $q->whereYear('tanggal_pembayaran', $y))
                     )
                     ->indicateUsing(function (array $data): ?string {
                         if (!$data['month'] && !$data['year']) return null;
@@ -293,18 +289,18 @@ class PaymentResource extends Resource
                         ->label('Edit')
                         ->icon('heroicon-o-pencil-square')
                         ->color('warning')
-                        ->visible(fn () => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
+                        ->visible(fn() => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
 
                     Tables\Actions\DeleteAction::make()
                         ->label('Hapus')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
-                        ->visible(fn () => Auth::user()->isSuperAdmin()),
+                        ->visible(fn() => Auth::user()->isSuperAdmin()),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size(\Filament\Support\Enums\ActionSize::Small)
-                ->color('gray')
-                ->button(),
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(\Filament\Support\Enums\ActionSize::Small)
+                    ->color('gray')
+                    ->button(),
             ])
 
             ->bulkActions([
@@ -328,7 +324,10 @@ class PaymentResource extends Resource
         ];
     }
 
-    public static function canViewAny(): bool  { return true; }
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 
     public static function canCreate(): bool
     {
