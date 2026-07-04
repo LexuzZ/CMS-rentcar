@@ -638,7 +638,7 @@
                         <td class="td-sep">:</td>
                         <td class="td-val">
                             <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
-                                {{ $isLunas ? '✓ LUNAS' : ' BELUM LUNAS' }}
+                                {{ $isLunas ? 'LUNAS' : ' BELUM LUNAS' }}
                             </span>
                         </td>
                     </tr>

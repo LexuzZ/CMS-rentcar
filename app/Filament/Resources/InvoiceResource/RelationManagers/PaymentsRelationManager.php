@@ -4,6 +4,7 @@ namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -57,6 +58,15 @@ class PaymentsRelationManager extends RelationManager
                     'transfer_qris' => 'Transfer & QRIS',
                 ])
                 ->required(),
+            FileUpload::make('proof')
+                ->label('Bukti Pembayaran')
+                ->image()
+                ->directory('bukti_payment')
+                ->disk('public')
+                ->visibility('public')
+                ->downloadable()
+                ->openable()
+                ->imagePreviewHeight('150'),
         ]);
     }
 
