@@ -25,7 +25,7 @@ class Worksheet extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            AvailableCarsOverview::class,
+            // AvailableCarsOverview::class,
             // DashboardMonthlySummary::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
