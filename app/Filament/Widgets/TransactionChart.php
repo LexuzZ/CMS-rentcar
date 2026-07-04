@@ -163,7 +163,7 @@ class TransactionChart extends ChartWidget
         return 'line';
     }
 
-    public static function canViewAny(): bool
+    public static function canView(): bool
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }

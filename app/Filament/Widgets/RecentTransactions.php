@@ -120,7 +120,7 @@ class RecentTransactions extends BaseWidget
             ->defaultPaginationPageOption(5)
             ->poll('60s');
     }
-    public static function canViewAny(): bool
+    public static function canView(): bool
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
