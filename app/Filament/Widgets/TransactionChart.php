@@ -3,15 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Payment;
-use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Cache;
 
-class TransactionChart extends ChartWidget
+class TransactionChart extends Widget
 {
-    protected static ?string $heading = 'Transaksi Bulan Ini';
     protected static ?int $sort = 4;
-
     protected static bool $isLazy = true;
+
+    protected static string $view = 'filament.widgets.transaction-chart';
 
     protected int|string|array $columnSpan = [
         'sm' => 'full',
@@ -19,19 +19,16 @@ class TransactionChart extends ChartWidget
         'lg' => '10',
     ];
 
-    protected function getData(): array
+    protected function getViewData(): array
     {
         $year  = now()->year;
         $month = now()->month;
 
         $cacheKey = "transaction_chart_{$year}_{$month}";
 
-        $data = Cache::remember($cacheKey, 300, function () use ($year, $month) {
+        $rows = Cache::remember($cacheKey, 300, function () use ($year, $month) {
             return Payment::query()
-                ->selectRaw('
-                    DAY(tanggal_pembayaran) as day,
-                    SUM(pembayaran) as total
-                ')
+                ->selectRaw('DAY(tanggal_pembayaran) as day, SUM(pembayaran) as total')
                 ->whereYear('tanggal_pembayaran', $year)
                 ->whereMonth('tanggal_pembayaran', $month)
                 ->groupBy('day')
@@ -39,21 +36,18 @@ class TransactionChart extends ChartWidget
                 ->get();
         });
 
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Total Pembayaran',
-                    'data' => $data->pluck('total')->map(fn ($v) => (int) $v),
-                    'fill' => true,
-                    'tension' => 0.3,
-                ],
-            ],
-            'labels' => $data->pluck('day')->map(fn ($d) =>  $d),
-        ];
-    }
+        // Summary stats
+        $totalBulanIni = $rows->sum('total');
+        $rataHarian    = $rows->count() ? round($totalBulanIni / $rows->count()) : 0;
+        $hariTertinggi = $rows->sortByDesc('total')->first();
 
-    protected function getType(): string
-    {
-        return 'line';
+        return [
+            'labels'        => $rows->pluck('day')->map(fn($d) => (string) $d)->values()->toJson(),
+            'values'        => $rows->pluck('total')->map(fn($v) => (int) $v)->values()->toJson(),
+            'totalBulanIni' => $totalBulanIni,
+            'rataHarian'    => $rataHarian,
+            'hariTertinggi' => $hariTertinggi,
+            'bulan'         => now()->locale('id')->isoFormat('MMMM YYYY'),
+        ];
     }
 }

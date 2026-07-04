@@ -16,7 +16,7 @@ class RecentTransactions extends BaseWidget
     protected static ?int $pollingInterval = null;
 
     protected int|string|array $columnSpan = [
-        'sm' => 'full',
+        'sm' => '50%',
         'md' => '10',
         'lg' => '10',
     ];
