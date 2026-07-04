@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 class TransactionChart extends ChartWidget
 {
     protected static ?string $heading = 'Transaksi Bulan Ini';
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
 
     protected static bool $isLazy = true;
 

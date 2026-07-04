@@ -31,9 +31,7 @@ class RecentTransactions extends BaseWidget
                     'invoice.booking.customer:id,nama',
                 ])
             ->whereDate('tanggal_pembayaran', today())
-            ->latest()
-            ->toBase()
-            ->getQuery();
+            ->latest();
     }
 
     protected function getTableColumns(): array
