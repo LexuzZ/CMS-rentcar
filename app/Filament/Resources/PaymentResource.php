@@ -285,11 +285,11 @@ class PaymentResource extends Resource
                     ->label('Detail')
                     ->modalHeading('Detail Pembayaran')
                     ->modalWidth('lg'),
-                    Tables\Actions\EditAction::make()
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil-square')
-                        ->color('warning')
-                        ->visible(fn() => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
+                    // Tables\Actions\EditAction::make()
+                    //     ->label('Edit')
+                    //     ->icon('heroicon-o-pencil-square')
+                    //     ->color('warning')
+                    //     ->visible(fn() => Auth::user()->hasAnyRole(['superadmin', 'admin'])),
 
                     Tables\Actions\DeleteAction::make()
                         ->label('Hapus')
