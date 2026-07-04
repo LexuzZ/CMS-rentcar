@@ -8,6 +8,7 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -149,6 +150,15 @@ class PaymentResource extends Resource
                                 }
                             },
                         ]),
+                    FileUpload::make('proof')
+                        ->label('Bukti Pembayaran')
+                        ->image()
+                        ->directory('bukti_payment')
+                        ->disk('public')
+                        ->visibility('public')
+                        ->downloadable()
+                        ->openable()
+                        ->imagePreviewHeight('150'),
                 ]),
         ]);
     }
@@ -282,9 +292,9 @@ class PaymentResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()
-                    ->label('Detail')
-                    ->modalHeading('Detail Pembayaran')
-                    ->modalWidth('lg'),
+                        ->label('Detail')
+                        ->modalHeading('Detail Pembayaran')
+                        ->modalWidth('lg'),
                     // Tables\Actions\EditAction::make()
                     //     ->label('Edit')
                     //     ->icon('heroicon-o-pencil-square')
