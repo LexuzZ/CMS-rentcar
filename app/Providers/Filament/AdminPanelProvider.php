@@ -78,9 +78,6 @@ class AdminPanelProvider extends PanelProvider
                 AvailableCarsOverview::class,
                 RecentTransactions::class,
                 TransactionChart::class,
-                // UserActivityWidget::class,
-
-
                 DashboardActionsWidget::class,
 
             ])
@@ -102,8 +99,7 @@ class AdminPanelProvider extends PanelProvider
 
     public static function canAccess(): bool
     {
-        return auth()->check()
-            && auth()->user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 
 }
