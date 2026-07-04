@@ -15,12 +15,11 @@ class RecentTransactions extends BaseWidget
     protected static bool $isLazy = true;
     protected static ?int $pollingInterval = null;
 
-    // protected int|string|array $columnSpan = [
-    //     'sm' => 'full',
-    //     'md' => 4,
-    //     'lg' => 4,
-    // ];
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = [
+        'sm' => 'full',
+        'md' => '10',
+        'lg' => '10',
+    ];
 
     protected int|string|array $perPage = 2;
 
@@ -28,9 +27,9 @@ class RecentTransactions extends BaseWidget
     {
         return Payment::query()
             ->with([
-                    'invoice:id,booking_id,status',
-                    'invoice.booking.customer:id,nama',
-                ])
+                'invoice:id,booking_id,status',
+                'invoice.booking.customer:id,nama',
+            ])
             ->whereDate('tanggal_pembayaran', today())
             ->latest();
     }
@@ -46,7 +45,7 @@ class RecentTransactions extends BaseWidget
             Tables\Columns\TextColumn::make('pembayaran')
                 ->label('Nominal')
                 ->alignCenter()
-                ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->color(
                     'success'
                 ),
@@ -55,13 +54,13 @@ class RecentTransactions extends BaseWidget
                 ->label('Metode')
                 ->alignCenter()
                 ->colors([
-                        'success' => 'tunai',
-                        'info' => 'transfer',
-                        'gray' => 'qris',
-                        'primary' => 'tunai_transfer',
-                        'warning' => 'tunai_qris',
-                        'danger' => 'transfer_qris',
-                    ])
+                    'success' => 'tunai',
+                    'info' => 'transfer',
+                    'gray' => 'qris',
+                    'primary' => 'tunai_transfer',
+                    'warning' => 'tunai_qris',
+                    'danger' => 'transfer_qris',
+                ])
                 ->formatStateUsing(fn($state) => match ($state) {
                     'tunai' => 'Tunai',
                     'transfer' => 'Transfer',
