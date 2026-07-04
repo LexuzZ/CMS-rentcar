@@ -8,6 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class RecentTransactions extends BaseWidget
 {
@@ -118,5 +119,9 @@ class RecentTransactions extends BaseWidget
             ->paginated([5, 10, 25])
             ->defaultPaginationPageOption(5)
             ->poll('60s');
+    }
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }

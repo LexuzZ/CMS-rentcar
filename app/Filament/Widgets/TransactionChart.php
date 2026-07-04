@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Payment;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class TransactionChart extends ChartWidget
@@ -160,5 +161,10 @@ class TransactionChart extends ChartWidget
     protected function getType(): string
     {
         return 'line';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
 }
