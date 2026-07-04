@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Providers\Filament;
+
+use App\Filament\Widgets\AvailableCarsOverview;
 use App\Filament\Widgets\DashboardActionsWidget;
 use App\Filament\Widgets\DashboardMonthlySummary;
 
@@ -72,8 +74,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                    // WidgetsAvailableCarsOverview::class,
                 DashboardMonthlySummary::class,
+                AvailableCarsOverview::class,
                 RecentTransactions::class,
                 TransactionChart::class,
                 // UserActivityWidget::class,
