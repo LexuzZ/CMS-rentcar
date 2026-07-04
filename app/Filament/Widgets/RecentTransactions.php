@@ -20,7 +20,7 @@ class RecentTransactions extends BaseWidget
     //     'md' => 4,
     //     'lg' => 4,
     // ];
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 
     protected int|string|array $perPage = 2;
 

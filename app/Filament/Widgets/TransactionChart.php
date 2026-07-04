@@ -13,7 +13,7 @@ class TransactionChart extends ChartWidget
 
     protected static bool $isLazy = true;
 
-    protected int|string|array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'full';
 
     protected function getData(): array
     {
