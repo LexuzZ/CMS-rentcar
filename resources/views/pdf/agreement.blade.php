@@ -14,34 +14,37 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 9.5px;
-            color: #1a1a2e;
+            color: #1c1917;
             background: #fff;
-            padding: 28px 32px;
-            line-height: 1.5;
+            padding: 30px 34px;
+            line-height: 1.55;
         }
 
         .clear {
             clear: both;
         }
 
-        .text-right {
-            text-align: right;
+        /* ══ TOP ACCENT BAR ══ */
+        .accent-bar {
+            height: 4px;
+            background: #1e3a5f;
+            border-radius: 3px;
+            margin-bottom: 18px;
         }
 
-        .bold {
-            font-weight: bold;
-        }
-
-        .muted {
-            color: #6b7280;
+        .accent-bar-inner {
+            height: 4px;
+            width: 60px;
+            background: #f59e0b;
+            border-radius: 3px;
         }
 
         /* ══ HEADER ══ */
         .header {
             overflow: hidden;
-            border-bottom: 3px solid #1e3a5f;
-            padding-bottom: 14px;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e7e5e4;
         }
 
         .header-left {
@@ -54,58 +57,67 @@
         }
 
         .logo {
-            width: 120px;
+            width: 110px;
             height: auto;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .company-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             color: #1e3a5f;
+            letter-spacing: .04em;
             margin-bottom: 2px;
         }
 
         .company-sub {
-            font-size: 9px;
-            color: #6b7280;
-            line-height: 1.5;
+            font-size: 8.5px;
+            color: #a8a29e;
+            line-height: 1.6;
         }
 
-        .doc-title {
-            font-size: 18px;
+        .doc-badge {
+            display: inline-block;
+            background: #1e3a5f;
+            color: #fff;
+            font-size: 13px;
             font-weight: bold;
-            color: #1e3a5f;
             letter-spacing: 1.5px;
             text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 5px;
+            margin-bottom: 5px;
         }
 
         .doc-sub {
-            font-size: 10px;
-            color: #4b5563;
-            margin-top: 3px;
+            font-size: 9px;
+            color: #78716c;
+            margin-bottom: 8px;
         }
 
         /* ══ SECTION TITLE ══ */
         .section-title {
-            font-size: 9px;
+            display: table;
+            font-size: 8.5px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #1e3a5f;
-            border-bottom: 2px solid #1e3a5f;
-            padding-bottom: 4px;
-            margin: 16px 0 10px;
+            letter-spacing: .1em;
+            color: #fff;
+            background: #1e3a5f;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin: 18px 0 10px;
         }
 
-        /* ══ ATURAN ══ */
+        /* ══ RULES ══ */
         .rules {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 14px;
-            margin-bottom: 16px;
+            border: 1px solid #e7e5e4;
+            border-left: 3px solid #1e3a5f;
+            border-radius: 0 6px 6px 0;
+            padding: 12px 14px 12px 16px;
+            background: #faf9f7;
+            margin-bottom: 4px;
         }
 
         .rules ol {
@@ -114,9 +126,9 @@
 
         .rules li {
             margin-bottom: 4px;
-            font-size: 9px;
-            color: #374151;
-            line-height: 1.55;
+            font-size: 8.5px;
+            color: #44403c;
+            line-height: 1.6;
         }
 
         .rules li::marker {
@@ -124,12 +136,28 @@
             font-weight: bold;
         }
 
+        /* ══ TWO-COL DATA LAYOUT ══ */
+        .two-col {
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .col-half {
+            float: left;
+            width: 48%;
+        }
+
+        .col-half-right {
+            float: right;
+            width: 48%;
+        }
+
         /* ══ DATA TABLE ══ */
         .data-wrap {
+            border: 1px solid #e7e5e4;
             border-radius: 8px;
-            border: 1px solid #e2e8f0;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .data-table {
@@ -138,7 +166,7 @@
         }
 
         .data-table tr:nth-child(even) td {
-            background: #f8fafc;
+            background: #faf9f7;
         }
 
         .data-table tr:last-child td {
@@ -146,23 +174,31 @@
         }
 
         .data-table td {
-            padding: 6px 10px;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 6.5px 11px;
+            border-bottom: 1px solid #f0eeed;
             vertical-align: top;
         }
 
-        .data-table .td-label {
-            width: 34%;
-            color: #6b7280;
-            font-size: 9px;
+        .td-label {
+            width: 36%;
+            color: #78716c;
+            font-size: 8.5px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: .04em;
+            letter-spacing: .05em;
         }
 
-        .data-table .td-val {
-            color: #1e293b;
+        .td-val {
+            color: #1c1917;
             font-size: 9.5px;
+        }
+
+        .td-sep {
+            width: 8px;
+            color: #d6d3d1;
+            font-size: 9px;
+            padding-left: 0;
+            padding-right: 0;
         }
 
         /* Highlight rows */
@@ -179,67 +215,104 @@
             background: #fef2f2 !important;
         }
 
-        /* Badges inline */
+        /* ══ BADGES ══ */
         .badge {
             display: inline-block;
-            padding: 1px 7px;
+            padding: 1.5px 7px;
             border-radius: 4px;
-            font-size: 8.5px;
+            font-size: 8px;
             font-weight: bold;
-            letter-spacing: .04em;
+            letter-spacing: .05em;
+            border: 1px solid;
         }
 
         .badge-green {
-            background: #dcfce7;
-            color: #15803d;
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
         }
 
         .badge-red {
-            background: #fee2e2;
-            color: #b91c1c;
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
         }
 
         .badge-blue {
-            background: #dbeafe;
+            background: #eff6ff;
             color: #1d4ed8;
+            border-color: #bfdbfe;
         }
 
         .badge-amber {
-            background: #fef3c7;
+            background: #fffbeb;
             color: #92400e;
+            border-color: #fde68a;
         }
 
-        /* ══ FOTO ══ */
-        .foto-section {
+        .badge-dark {
+            background: #1e3a5f;
+            color: #fff;
+            border-color: #1e3a5f;
+        }
+
+        /* ══ INFO STRIP (meta dokumen) ══ */
+        .info-strip {
+            overflow: hidden;
+            background: #faf9f7;
+            border: 1px solid #e7e5e4;
+            border-radius: 7px;
+            padding: 8px 12px;
             margin-bottom: 16px;
         }
 
+        .info-strip-item {
+            float: left;
+            margin-right: 24px;
+        }
+
+        .info-strip-label {
+            font-size: 7.5px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #a8a29e;
+            display: block;
+        }
+
+        .info-strip-val {
+            font-size: 9.5px;
+            font-weight: bold;
+            color: #1c1917;
+        }
+
+        /* ══ FOTO ══ */
         .foto-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 4px;
         }
 
         .foto-table td {
             width: 33%;
             text-align: center;
-            padding: 8px 6px;
+            padding: 6px;
             vertical-align: top;
         }
 
         .foto-label {
-            font-size: 8.5px;
+            font-size: 8px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: .05em;
-            color: #6b7280;
+            letter-spacing: .06em;
+            color: #78716c;
             margin-bottom: 5px;
         }
 
         .foto-frame {
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e7e5e4;
             border-radius: 6px;
             overflow: hidden;
-            background: #f8fafc;
+            background: #faf9f7;
             padding: 3px;
         }
 
@@ -253,72 +326,101 @@
         /* ══ SIGNATURE ══ */
         .sig-section {
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 22px;
             page-break-inside: avoid;
         }
 
         .sig-block {
             float: left;
-            width: 48%;
+            width: 46%;
             text-align: center;
         }
 
         .sig-block-right {
             float: right;
+            width: 46%;
+            text-align: center;
         }
 
         .sig-role {
-            font-size: 9px;
-            color: #6b7280;
-            margin-bottom: 8px;
+            font-size: 8.5px;
+            color: #78716c;
+            margin-bottom: 6px;
         }
 
         .sig-img-wrap {
             height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             border-bottom: 1px solid #374151;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+
+        .sig-img-inner {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
         }
 
         .sig-img-wrap img {
             max-height: 85px;
             width: auto;
-            opacity: .82;
+            opacity: .85;
         }
 
         .sig-empty {
-            font-size: 9px;
-            color: #94a3b8;
+            font-size: 8.5px;
+            color: #c4bfbb;
             font-style: italic;
         }
 
         .sig-name {
             font-weight: bold;
             font-size: 9.5px;
-            color: #1e293b;
+            color: #1c1917;
         }
 
         .sig-title {
-            font-size: 9px;
-            color: #6b7280;
+            font-size: 8.5px;
+            color: #78716c;
             margin-top: 1px;
         }
 
         /* ══ FOOTER ══ */
-        .footer {
-            border-top: 1px solid #e2e8f0;
+        .footer-wrap {
+            border-top: 1px solid #e7e5e4;
             margin-top: 24px;
-            padding-top: 8px;
-            text-align: center;
-            font-size: 8px;
-            color: #9ca3af;
-            line-height: 1.6;
+            padding-top: 10px;
+            overflow: hidden;
         }
 
-        .footer strong {
-            color: #6b7280;
+        .footer-left {
+            float: left;
+            font-size: 8px;
+            color: #a8a29e;
+            line-height: 1.7;
+        }
+
+        .footer-right {
+            float: right;
+            font-size: 8px;
+            color: #a8a29e;
+            text-align: right;
+            line-height: 1.7;
+        }
+
+        .footer-brand {
+            font-weight: bold;
+            color: #1e3a5f;
+            font-size: 8.5px;
+        }
+
+        /* divider */
+        .divider {
+            border: none;
+            border-top: 1px solid #f0eeed;
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -343,34 +445,68 @@
             ->unique()
             ->map(fn($m) => ucfirst(strtolower($m)))
             ->implode(', ') ?? '—';
+
+        $noDoc = 'SPT/' . \Carbon\Carbon::parse($booking->tanggal_keluar)->format('Y/m') . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
     @endphp
 
-    {{-- ═══════════════════ HEADER ═══════════════════ --}}
+    {{-- ── Accent bar ── --}}
+    <div class="accent-bar">
+        <div class="accent-bar-inner"></div>
+    </div>
+
+    {{-- ══ HEADER ══ --}}
     <div class="header">
         <div class="header-left">
-            @if ($logoSrc)
+            @if($logoSrc)
                 <img src="{{ $logoSrc }}" class="logo" alt="Logo">
             @endif
             <div class="company-name">Semeton Pesiar Trans</div>
             <div class="company-sub">
                 Jl. Batu Ringgit No.218, Kota Mataram, NTB<br>
-                Telp: 0811-2894-8884 · www.semetonpesiar.com
+                0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com
             </div>
         </div>
         <div class="header-right">
-            <div class="doc-title">Perjanjian Sewa</div>
-            <div class="doc-sub">Kendaraan</div>
-            <div style="margin-top:6px;">
-                <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
-                    {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
-                </span>
-            </div>
+            <div class="doc-badge">Perjanjian Sewa</div>
+            <div class="doc-sub">Kendaraan &nbsp;·&nbsp; No. {{ $noDoc }}</div>
+            <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
+                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+            </span>
         </div>
         <div class="clear"></div>
     </div>
 
-    {{-- ═══════════════════ ATURAN ═══════════════════ --}}
-    <div class="section-title">Syarat & Ketentuan Sewa</div>
+    {{-- ── Info strip ── --}}
+    <div class="info-strip">
+        <div class="info-strip-item">
+            <span class="info-strip-label">Penyewa</span>
+            <span class="info-strip-val">{{ $booking->customer?->nama ?? '—' }}</span>
+        </div>
+        <div class="info-strip-item">
+            <span class="info-strip-label">Kendaraan</span>
+            <span class="info-strip-val">
+                {{ $booking->car?->carModel?->name }}
+                &nbsp;<span class="badge badge-amber">{{ $booking->car?->nopol }}</span>
+            </span>
+        </div>
+        <div class="info-strip-item">
+            <span class="info-strip-label">Durasi</span>
+            <span class="info-strip-val">
+                {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}
+                → {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}
+                &nbsp;<span class="badge badge-blue">{{ $booking->total_hari }} hari</span>
+            </span>
+        </div>
+        <div class="info-strip-item">
+            <span class="info-strip-label">Total</span>
+            <span class="info-strip-val">Rp
+                {{ number_format($booking->invoice->total_tagihan ?? 0, 0, ',', '.') }}</span>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    {{-- ══ SYARAT & KETENTUAN ══ --}}
+    <div class="section-title">Syarat &amp; Ketentuan Sewa</div>
     <div class="rules">
         <ol>
             <li>Pembatalan sewa kurang dari 1×24 jam dikenakan biaya penuh rental selama 1 hari sesuai type kendaraan.
@@ -408,124 +544,133 @@
         </ol>
     </div>
 
-    {{-- ═══════════════════ DATA PENYEWA ═══════════════════ --}}
-    <div class="section-title">Data Penyewa & Detail Sewa</div>
-    <div class="data-wrap">
-        <table class="data-table">
-            <tr>
-                <td class="td-label">Nama Penyewa</td>
-                <td class="td-val bold">{{ $booking->customer?->nama ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">No. KTP</td>
-                <td class="td-val" style="font-family:monospace;letter-spacing:.05em;">
-                    {{ $booking->customer?->ktp ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">No. Telepon</td>
-                <td class="td-val">{{ $booking->customer?->no_telp ?? '—' }}</td>
-            </tr>
-            <tr class="row-highlight">
-                <td class="td-label">Kendaraan</td>
-                <td class="td-val bold">
-                    {{ $booking->car?->carModel?->name }}
-                    <span class="badge badge-amber" style="margin-left:6px">{{ $booking->car?->nopol }}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="td-label">Periode Sewa</td>
-                <td class="td-val">
-                    {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}
-                    <span class="muted"> → </span>
-                    {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}
-                    <span class="badge badge-blue" style="margin-left:4px">{{ $booking->total_hari }} hari</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="td-label">Lokasi Pengantaran</td>
-                <td class="td-val">{{ $booking->lokasi_pengantaran ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">Lokasi Pengembalian</td>
-                <td class="td-val">{{ $booking->lokasi_pengembalian ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">Jaminan Sewa</td>
-                <td class="td-val">☑ Motor &nbsp;&nbsp; ☑ STNK</td>
-            </tr>
-            <tr>
-                <td class="td-label">Metode Bayar</td>
-                <td class="td-val">{{ $methods }}</td>
-            </tr>
-        </table>
+    {{-- ══ DATA PENYEWA & RINCIAN — dua kolom ══ --}}
+    <div class="section-title">Data Penyewa &amp; Rincian Sewa</div>
+    <div class="two-col">
+
+        {{-- Kiri: Data Penyewa --}}
+        <div class="col-half">
+            <div class="data-wrap">
+                <table class="data-table">
+                    <tr>
+                        <td class="td-label">Nama</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val" style="font-weight:bold;">{{ $booking->customer?->nama ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">No. KTP</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val" style="font-family:monospace;letter-spacing:.04em;">
+                            {{ $booking->customer?->ktp ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Telepon</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">{{ $booking->customer?->no_telp ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Jaminan</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">☑ Motor &nbsp; ☑ STNK</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Metode Bayar</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">{{ $methods }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Lokasi Antar</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">{{ $booking->lokasi_pengantaran ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Lokasi Ambil</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">{{ $booking->lokasi_pengembalian ?? '—' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        {{-- Kanan: Rincian Biaya --}}
+        <div class="col-half-right">
+            <div class="data-wrap">
+                <table class="data-table">
+                    <tr>
+                        <td class="td-label">Harga Harian</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">Rp {{ number_format($booking->car->harga_harian ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-label">Estimasi Sewa</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">Rp {{ number_format($booking->estimasi_biaya ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    @if(($booking->invoice->pickup_dropOff ?? 0) > 0)
+                        <tr>
+                            <td class="td-label">Antar / Jemput</td>
+                            <td class="td-sep">:</td>
+                            <td class="td-val">Rp {{ number_format($booking->invoice->pickup_dropOff, 0, ',', '.') }}</td>
+                        </tr>
+                    @endif
+                    @foreach($booking->penalties as $penalty)
+                        <tr>
+                            <td class="td-label">{{ ucfirst($penalty->klaim) }}</td>
+                            <td class="td-sep">:</td>
+                            <td class="td-val" style="color:#991b1b;">Rp {{ number_format($penalty->amount, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    @endforeach
+                    <tr class="row-total">
+                        <td class="td-label">Total Tagihan</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val" style="color:#1e3a5f;font-size:10px;">
+                            Rp {{ number_format($booking->invoice->total_tagihan ?? 0, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr class="{{ $isLunas ? 'row-total' : 'row-danger' }}">
+                        <td class="td-label">Sisa Bayar</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val" style="font-weight:bold;color:{{ $isLunas ? '#166534' : '#991b1b' }};">
+                            Rp {{ number_format($booking->invoice->sisa_pembayaran ?? 0, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr class="{{ $isLunas ? 'row-total' : 'row-danger' }}">
+                        <td class="td-label">Status</td>
+                        <td class="td-sep">:</td>
+                        <td class="td-val">
+                            <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
+                                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="clear"></div>
     </div>
 
-    {{-- ═══════════════════ RINCIAN BIAYA ═══════════════════ --}}
-    <div class="section-title">Rincian Biaya</div>
-    <div class="data-wrap">
-        <table class="data-table">
-            <tr>
-                <td class="td-label">Harga Harian</td>
-                <td class="td-val">Rp {{ number_format($booking->car->harga_harian ?? 0, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">Estimasi Biaya Sewa</td>
-                <td class="td-val">Rp {{ number_format($booking->estimasi_biaya ?? 0, 0, ',', '.') }}</td>
-            </tr>
-            @if (($booking->invoice->pickup_dropOff ?? 0) > 0)
-                <tr>
-                    <td class="td-label">Biaya Antar / Jemput</td>
-                    <td class="td-val">Rp {{ number_format($booking->invoice->pickup_dropOff, 0, ',', '.') }}</td>
-                </tr>
-            @endif
-            @foreach ($booking->penalties as $penalty)
-                <tr>
-                    <td class="td-label">Klaim: {{ ucfirst($penalty->klaim) }}</td>
-                    <td class="td-val" style="color:#b91c1c;">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
-                </tr>
-            @endforeach
-            <tr class="row-total">
-                <td class="td-label">Total Tagihan</td>
-                <td class="td-val" style="color:#1e3a5f;font-size:10px;">Rp
-                    {{ number_format($booking->invoice->total_tagihan ?? 0, 0, ',', '.') }}</td>
-            </tr>
-            <tr class="{{ $isLunas ? 'row-total' : 'row-danger' }}">
-                <td class="td-label">Sisa Pembayaran</td>
-                <td class="td-val" style="font-weight:bold;color:{{ $isLunas ? '#15803d' : '#b91c1c' }};">
-                    Rp {{ number_format($booking->invoice->sisa_pembayaran ?? 0, 0, ',', '.') }}
-                </td>
-            </tr>
-            <tr class="{{ $isLunas ? 'row-total' : 'row-danger' }}">
-                <td class="td-label">Status Pembayaran</td>
-                <td class="td-val">
-                    <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
-                        {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
-                    </span>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    {{-- ═══════════════════ FOTO DOKUMENTASI ═══════════════════ --}}
-    @if (!empty($foto_bbm) || !empty($foto_dongkrak) || !empty($foto_ban_serep))
-        <div class="section-title">Dokumentasi Foto Serah Terima</div>
+    {{-- ══ FOTO DOKUMENTASI ══ --}}
+    @if(!empty($foto_bbm) || !empty($foto_dongkrak) || !empty($foto_ban_serep))
+        <div class="section-title">Dokumentasi Serah Terima</div>
         <table class="foto-table">
             <tr>
-                @if (!empty($foto_bbm))
+                @if(!empty($foto_bbm))
                     <td>
                         <div class="foto-label">Indikator BBM</div>
                         <div class="foto-frame"><img src="{{ $foto_bbm }}" alt="Foto BBM"></div>
                     </td>
                 @endif
-                @if (!empty($foto_dongkrak))
+                @if(!empty($foto_dongkrak))
                     <td>
                         <div class="foto-label">Foto Serah Terima</div>
                         <div class="foto-frame"><img src="{{ $foto_dongkrak }}" alt="Foto Serah Terima"></div>
                     </td>
                 @endif
-                @if (!empty($foto_ban_serep))
+                @if(!empty($foto_ban_serep))
                     <td>
-                        <div class="foto-label">Ban Serep & Dongkrak</div>
+                        <div class="foto-label">Ban Serep &amp; Dongkrak</div>
                         <div class="foto-frame"><img src="{{ $foto_ban_serep }}" alt="Foto Ban Serep"></div>
                     </td>
                 @endif
@@ -533,28 +678,37 @@
         </table>
     @endif
 
-    {{-- ═══════════════════ TANDA TANGAN ═══════════════════ --}}
-    <div class="sig-section">
+    {{-- ══ TANDA TANGAN ══ --}}
+    <div class="section-title">Persetujuan &amp; Tanda Tangan</div>
+    <div style="font-size:8.5px;color:#78716c;margin-bottom:12px;line-height:1.6;">
+        Dengan menandatangani dokumen ini, penyewa menyatakan telah membaca, memahami,<br>
+        dan menyetujui seluruh syarat dan ketentuan yang berlaku.
+    </div>
 
+    <div class="sig-section">
         <div class="sig-block">
             <div class="sig-role">Hormat Kami,</div>
             <div class="sig-img-wrap">
-                @if ($stampData)
-                    <img src="{{ $stampData }}" alt="Stempel">
-                @endif
+                <div class="sig-img-inner">
+                    @if($stampData)
+                        <img src="{{ $stampData }}" alt="Stempel">
+                    @endif
+                </div>
             </div>
             <div class="sig-name">ACHMAD MUZAMMIL</div>
-            <div class="sig-title">Direktur</div>
+            <div class="sig-title">Direktur — PT. Semeton Pesiar Trans</div>
         </div>
 
         <div class="sig-block sig-block-right">
             <div class="sig-role">Penyewa,</div>
             <div class="sig-img-wrap">
-                @if ($booking->ttd)
-                    <img src="{{ $booking->ttd }}" alt="TTD Penyewa">
-                @else
-                    <div class="sig-empty">TTD belum tersedia</div>
-                @endif
+                <div class="sig-img-inner">
+                    @if($booking->ttd)
+                        <img src="{{ $booking->ttd }}" alt="TTD Penyewa">
+                    @else
+                        <div class="sig-empty">Tanda tangan belum tersedia</div>
+                    @endif
+                </div>
             </div>
             <div class="sig-name">({{ $booking->customer?->nama ?? '—' }})</div>
             <div class="sig-title">Penyewa Kendaraan</div>
@@ -563,13 +717,17 @@
         <div class="clear"></div>
     </div>
 
-    {{-- ═══════════════════ FOOTER ═══════════════════ --}}
-    <div class="footer">
-        <strong>Semeton Pesiar Trans</strong> &nbsp;·&nbsp;
-        Jl. Batu Ringgit No.218, Kota Mataram, NTB &nbsp;·&nbsp;
-        Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com<br>
-        Dokumen ini diterbitkan secara digital dan sah tanpa tanda tangan basah.
-        Dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y, HH:mm') }} WITA.
+    {{-- ══ FOOTER ══ --}}
+    <div class="footer-wrap">
+        <div class="footer-left">
+            <span class="footer-brand">Semeton Pesiar Trans</span><br>
+            Jl. Batu Ringgit No.218, Kota Mataram, NTB &nbsp;·&nbsp; 0811-2894-8884
+        </div>
+        <div class="footer-right">
+            No. Dokumen: {{ $noDoc }}<br>
+            Diterbitkan: {{ now()->locale('id')->isoFormat('D MMMM Y, HH:mm') }} WITA
+        </div>
+        <div class="clear"></div>
     </div>
 
 </body>
