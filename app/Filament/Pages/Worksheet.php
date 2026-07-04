@@ -7,6 +7,7 @@ use App\Filament\Pages\Worksheet\Widgets\DashboardMonthlySummary;
 use App\Filament\Pages\Worksheet\Widgets\InvoiceTable;
 use App\Filament\Pages\Worksheet\Widgets\MobilKeluar;
 use App\Filament\Pages\Worksheet\Widgets\MobilKembali;
+use App\Filament\Pages\Worksheet\Widgets\MobilSchedule;
 use App\Filament\Pages\Worksheet\Widgets\MonthlyStaffRankingWidget;
 use App\Filament\Pages\Worksheet\Widgets\OverdueTasksWidget;
 use App\Filament\Pages\Worksheet\Widgets\StaffRankingWidget;
@@ -29,8 +30,9 @@ class Worksheet extends Page
             // DashboardMonthlySummary::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
-            MobilKeluar::class,
-            MobilKembali::class,
+            MobilSchedule::class,
+            // MobilKeluar::class,
+            // MobilKembali::class,
             StaffRankingWidget::class,
             MonthlyStaffRankingWidget::class,
 
