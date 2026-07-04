@@ -285,6 +285,10 @@ class PaymentResource extends Resource
 
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                    ->label('Detail')
+                    ->modalHeading('Detail Pembayaran')
+                    ->modalWidth('lg'),
                     Tables\Actions\EditAction::make()
                         ->label('Edit')
                         ->icon('heroicon-o-pencil-square')
