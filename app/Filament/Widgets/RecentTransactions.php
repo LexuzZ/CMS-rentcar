@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
 
     protected static bool $isLazy = true;
     protected static ?int $pollingInterval = null;
@@ -31,7 +31,9 @@ class RecentTransactions extends BaseWidget
                     'invoice.booking.customer:id,nama',
                 ])
             ->whereDate('tanggal_pembayaran', today())
-            ->latest();
+            ->latest()
+            ->toBase()
+            ->getQuery();
     }
 
     protected function getTableColumns(): array
