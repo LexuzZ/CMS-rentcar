@@ -470,7 +470,7 @@
             <div class="doc-badge">Perjanjian Sewa</div>
             <div class="doc-sub">Kendaraan &nbsp;·&nbsp; No. {{ $noDoc }}</div>
             <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
-                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+                {{ $isLunas ? 'LUNAS' : 'BELUM LUNAS' }}
             </span>
         </div>
         <div class="clear"></div>
@@ -486,7 +486,7 @@
             <span class="info-strip-label">Kendaraan</span>
             <span class="info-strip-val">
                 {{ $booking->car?->carModel?->name }}
-                &nbsp;<span class="badge badge-amber">{{ $booking->car?->nopol }}</span>
+                <span class="badge badge-amber">{{ $booking->car?->nopol }}</span>
             </span>
         </div>
         <div class="info-strip-item">
@@ -494,7 +494,7 @@
             <span class="info-strip-val">
                 {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}
                 → {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}
-                &nbsp;<span class="badge badge-blue">{{ $booking->total_hari }} hari</span>
+                <span class="badge badge-blue">{{ $booking->total_hari }} hari</span>
             </span>
         </div>
         <div class="info-strip-item">
@@ -640,7 +640,7 @@
                         <td class="td-sep">:</td>
                         <td class="td-val">
                             <span class="badge {{ $isLunas ? 'badge-green' : 'badge-red' }}">
-                                {{ $isLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS' }}
+                                {{ $isLunas ? '✓ LUNAS' : ' BELUM LUNAS' }}
                             </span>
                         </td>
                     </tr>
