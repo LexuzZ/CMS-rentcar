@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists;
@@ -147,6 +148,15 @@ class InvoiceResource extends Resource
                                     'transfer_qris' => 'Transfer & QRIS',
                                 ])
                                 ->required(),
+                            FileUpload::make('proof')
+                                ->label('Bukti Pembayaran')
+                                ->image()
+                                ->directory('bukti_payment')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->downloadable()
+                                ->openable()
+                                ->imagePreviewHeight('150'),
                         ])
                         ->action(function (Invoice $record, array $data) {
                             $record->payments()->create($data);
