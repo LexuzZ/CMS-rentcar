@@ -1,7 +1,6 @@
 <x-filament-widgets::widget>
     <x-filament::section>
 
-        {{-- ── Header ── --}}
         <x-slot name="heading">
             <div style="display:flex; align-items:center; gap:12px;">
                 <div style="display:flex; align-items:center; justify-content:center;
@@ -67,87 +66,77 @@
                 height: 220px;
             }
             @media (prefers-color-scheme: dark) {
-                .tc-stat         { background: #1c1917; border-color: #292524; }
-                .tc-stat-val     { color: #fafaf9; }
-                .tc-stat-label   { color: #78716c; }
-                .tc-stat-sub     { color: #57534e; }
+                .tc-stat     { background: #1c1917; border-color: #292524; }
+                .tc-stat-val { color: #fafaf9; }
             }
         </style>
 
-        {{-- ── Stats row ── --}}
+        {{-- Stats --}}
         <div class="tc-stats">
             <div class="tc-stat">
                 <div class="tc-stat-bar" style="background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div>
                 <div class="tc-stat-label">Total Bulan Ini</div>
-                <div class="tc-stat-val">
-                    Rp {{ number_format($totalBulanIni, 0, ',', '.') }}
-                </div>
+                <div class="tc-stat-val">Rp {{ number_format($totalBulanIni, 0, ',', '.') }}</div>
                 <div class="tc-stat-sub">semua transaksi</div>
             </div>
             <div class="tc-stat">
                 <div class="tc-stat-bar" style="background:linear-gradient(90deg,#8b5cf6,#a78bfa);"></div>
                 <div class="tc-stat-label">Rata-rata Harian</div>
-                <div class="tc-stat-val">
-                    Rp {{ number_format($rataHarian, 0, ',', '.') }}
-                </div>
+                <div class="tc-stat-val">Rp {{ number_format($rataHarian, 0, ',', '.') }}</div>
                 <div class="tc-stat-sub">per hari aktif</div>
             </div>
             <div class="tc-stat">
                 <div class="tc-stat-bar" style="background:linear-gradient(90deg,#22c55e,#4ade80);"></div>
                 <div class="tc-stat-label">Hari Tertinggi</div>
                 <div class="tc-stat-val">
-                    @if($hariTertinggi)
-                        Tgl {{ $hariTertinggi->day }}
-                    @else
-                        —
-                    @endif
+                    @if($hariTertinggi) Tgl {{ $hariTertinggi->day }} @else — @endif
                 </div>
                 <div class="tc-stat-sub">
-                    @if($hariTertinggi)
-                        Rp {{ number_format($hariTertinggi->total, 0, ',', '.') }}
-                    @else
-                        belum ada data
-                    @endif
+                    @if($hariTertinggi) Rp {{ number_format($hariTertinggi->total, 0, ',', '.') }}
+                    @else belum ada data @endif
                 </div>
             </div>
         </div>
 
-        {{-- ── Chart ── --}}
+        {{-- Chart canvas --}}
         <div class="tc-chart-wrap">
-            <canvas id="tc-chart"></canvas>
+            <canvas id="tc-chart-{{ $this->getId() }}"></canvas>
         </div>
 
+        {{-- Load Chart.js from CDN then init --}}
         <script>
         (function () {
-            const labels = {!! $labels !!};
-            const values = {!! $values !!};
-
-            function isDark() {
-                return document.documentElement.classList.contains('dark');
-            }
+            var CANVAS_ID = 'tc-chart-{{ $this->getId() }}';
+            var labels    = {!! $labels !!};
+            var values    = {!! $values !!};
 
             function buildChart() {
-                const canvas = document.getElementById('tc-chart');
+                var canvas = document.getElementById(CANVAS_ID);
                 if (!canvas) return;
 
-                const dark = isDark();
-                const ctx  = canvas.getContext('2d');
+                var dark = document.documentElement.classList.contains('dark');
+                var ctx  = canvas.getContext('2d');
 
-                // Gradient fill
-                const grad = ctx.createLinearGradient(0, 0, 0, 200);
-                grad.addColorStop(0,   'rgba(59,130,246,.35)');
-                grad.addColorStop(0.6, 'rgba(59,130,246,.08)');
+                var grad = ctx.createLinearGradient(0, 0, 0, 200);
+                grad.addColorStop(0,   'rgba(59,130,246,.30)');
+                grad.addColorStop(0.7, 'rgba(59,130,246,.05)');
                 grad.addColorStop(1,   'rgba(59,130,246,0)');
 
-                const gridColor  = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.05)';
-                const labelColor = dark ? '#78716c' : '#a8a29e';
+                var gridColor  = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.05)';
+                var labelColor = dark ? '#78716c' : '#a8a29e';
+                var tooltipBg  = dark ? '#1c1917' : '#ffffff';
+                var tooltipBorder = dark ? '#292524' : '#e7e5e4';
+                var tooltipTitle  = dark ? '#a8a29e' : '#78716c';
+                var tooltipBody   = dark ? '#fafaf9' : '#1c1917';
 
-                if (window._tcChart) window._tcChart.destroy();
+                if (window['_tc_' + CANVAS_ID]) {
+                    window['_tc_' + CANVAS_ID].destroy();
+                }
 
-                window._tcChart = new Chart(ctx, {
+                window['_tc_' + CANVAS_ID] = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels,
+                        labels: labels,
                         datasets: [{
                             label: 'Pembayaran',
                             data: values,
@@ -155,13 +144,13 @@
                             backgroundColor: grad,
                             borderColor: '#3b82f6',
                             borderWidth: 2.5,
-                            pointBackgroundColor: '#fff',
+                            pointBackgroundColor: '#ffffff',
                             pointBorderColor: '#3b82f6',
                             pointBorderWidth: 2,
                             pointRadius: 4,
                             pointHoverRadius: 6,
                             pointHoverBackgroundColor: '#3b82f6',
-                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderColor: '#ffffff',
                             tension: 0.4,
                         }]
                     },
@@ -172,16 +161,18 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                backgroundColor: dark ? '#1c1917' : '#fff',
-                                borderColor: dark ? '#292524' : '#e7e5e4',
+                                backgroundColor: tooltipBg,
+                                borderColor: tooltipBorder,
                                 borderWidth: 1,
-                                titleColor: dark ? '#a8a29e' : '#78716c',
-                                bodyColor: dark ? '#fafaf9' : '#1c1917',
+                                titleColor: tooltipTitle,
+                                bodyColor: tooltipBody,
                                 padding: 10,
                                 cornerRadius: 8,
                                 callbacks: {
-                                    title: ctx => 'Tanggal ' + ctx[0].label,
-                                    label: ctx => ' Rp ' + ctx.parsed.y.toLocaleString('id-ID'),
+                                    title: function(ctx) { return 'Tanggal ' + ctx[0].label; },
+                                    label: function(ctx) {
+                                        return ' Rp ' + Number(ctx.parsed.y).toLocaleString('id-ID');
+                                    }
                                 }
                             }
                         },
@@ -189,11 +180,7 @@
                             x: {
                                 grid: { color: gridColor },
                                 border: { display: false },
-                                ticks: {
-                                    color: labelColor,
-                                    font: { size: 11 },
-                                    maxTicksLimit: 15,
-                                }
+                                ticks: { color: labelColor, font: { size: 11 }, maxTicksLimit: 15 }
                             },
                             y: {
                                 grid: { color: gridColor },
@@ -201,9 +188,9 @@
                                 ticks: {
                                     color: labelColor,
                                     font: { size: 11 },
-                                    callback: v => {
-                                        if (v >= 1_000_000) return 'Rp ' + (v/1_000_000).toFixed(1) + 'jt';
-                                        if (v >= 1_000)     return 'Rp ' + (v/1_000).toFixed(0) + 'rb';
+                                    callback: function(v) {
+                                        if (v >= 1000000) return 'Rp ' + (v/1000000).toFixed(1) + 'jt';
+                                        if (v >= 1000)    return 'Rp ' + (v/1000).toFixed(0) + 'rb';
                                         return 'Rp ' + v;
                                     }
                                 }
@@ -211,22 +198,34 @@
                         }
                     }
                 });
+
+                // Rebuild on dark mode toggle
+                var observer = new MutationObserver(function() { buildChart(); });
+                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
             }
 
-            // Wait for Chart.js (bundled by Filament)
+            function loadChartJs(cb) {
+                // If already loaded, just run
+                if (typeof Chart !== 'undefined') { cb(); return; }
+
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
+                script.onload = cb;
+                document.head.appendChild(script);
+            }
+
             function init() {
-                if (typeof Chart !== 'undefined') {
-                    buildChart();
-                    // Rebuild on dark mode toggle
-                    const observer = new MutationObserver(() => buildChart());
-                    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-                } else {
-                    setTimeout(init, 120);
-                }
+                loadChartJs(buildChart);
             }
 
-            document.addEventListener('DOMContentLoaded', init);
-            // Livewire re-render
+            // Run after DOM ready or immediately if already ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            // Livewire SPA navigation
             document.addEventListener('livewire:navigated', init);
         })();
         </script>
