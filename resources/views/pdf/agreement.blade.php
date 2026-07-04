@@ -217,12 +217,10 @@
 
         /* ══ BADGES ══ */
         .badge {
-            display: inline-block;
             padding: 1.5px 7px;
             border-radius: 4px;
             font-size: 8px;
             font-weight: bold;
-            letter-spacing: .05em;
             border: 1px solid;
         }
 
