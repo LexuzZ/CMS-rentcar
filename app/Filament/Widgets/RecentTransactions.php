@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RecentTransactions extends BaseWidget
 {
     protected static ?string $heading = 'Transaksi Hari Ini';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
 
     protected static bool $isLazy = true;
     protected static ?int $pollingInterval = null;
