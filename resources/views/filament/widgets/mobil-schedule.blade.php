@@ -52,7 +52,7 @@
             /* 2-col grid for cards */
             .ms-cards-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 14px;
             }
             @media(max-width: 900px) {
