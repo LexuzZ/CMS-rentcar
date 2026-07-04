@@ -180,32 +180,46 @@ class PaymentResource extends Resource
                     ),
 
                 // Jumlah
-                TextColumn::make('pembayaran')
-                    ->label('Jumlah')
-                    ->alignEnd()
-                    ->sortable()
-                    ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                    ->color('success')
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-
-                // Tanggal
                 TextColumn::make('tanggal_pembayaran')
                     ->label('Tanggal')
                     ->date('d M Y')
-                    ->sortable()
-                    ->icon('heroicon-m-calendar')
-                    ->color('gray'),
+                    ->icon('heroicon-o-calendar-days'),
 
-                // Metode — badge + ikon
+                TextColumn::make('pembayaran')
+                    ->label('Jumlah')
+                    ->money('IDR', true)
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold)
+                    ->color('success'),
+
                 TextColumn::make('metode_pembayaran')
                     ->label('Metode')
                     ->badge()
+                    ->wrap()
+                    ->width(150)
                     ->alignCenter()
-                    ->icon(fn (string $state): string => self::metodeIcon($state))
-                    ->color(fn (string $state): string => self::metodeColor($state))
-                    ->formatStateUsing(fn ($state): string => self::metodeOptions()[$state] ?? ucfirst($state)),
-            ])
+                    ->colors([
+                        'success' => 'tunai',
+                        'info'    => 'transfer',
+                        'gray'    => 'qris',
+                        'warning' => ['tunai_transfer', 'tunai_qris', 'transfer_qris'],
+                    ])
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'tunai'          => 'Tunai',
+                        'transfer'       => 'Transfer',
+                        'qris'           => 'QRIS',
+                        'tunai_transfer' => 'Tunai & Transfer',
+                        'tunai_qris'     => 'Tunai & QRIS',
+                        'transfer_qris'  => 'Transfer & QRIS',
+                        default          => ucfirst($state),
+                    }),
 
+                TextColumn::make('proof')
+                    ->label('Bukti')
+                    ->alignCenter()
+                    ->formatStateUsing(fn($state) => $state ? '✓ Ada' : '—')
+                    ->badge()
+                    ->color(fn($state) => $state ? 'success' : 'gray'),
+            ])
             ->defaultSort('created_at', 'desc')
 
             ->filters([
