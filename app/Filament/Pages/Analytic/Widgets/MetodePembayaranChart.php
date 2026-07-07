@@ -11,13 +11,13 @@ class MetodePembayaranChart extends ChartWidget
     protected static ?string $heading    = null;
     protected static ?int    $sort       = 3;
     public    ?string        $filter     = 'this_month';
-    protected static ?string $maxHeight  = '320px';
+    // protected static ?string $maxHeight  = '320px';
 
-    protected int|string|array $columnSpan = [
-        'sm' => 'full',
-        'md' => 2,
-        'lg' => 2,
-    ];
+    // protected int|string|array $columnSpan = [
+    //     'sm' => 'full',
+    //     'md' => 2,
+    //     'lg' => 2,
+    // ];
 
     protected function getFilters(): ?array
     {
