@@ -1,11 +1,19 @@
 @php
     $isKeluar = $type === 'keluar';
+    $isToday  = $isToday ?? true;
 
     $accentColor  = $isKeluar ? '#d97706' : '#16a34a';
     $accentLight  = $isKeluar ? '#fffbeb' : '#f0fdf4';
     $accentBorder = $isKeluar ? '#fde68a' : '#bbf7d0';
     $accentText   = $isKeluar ? '#92400e' : '#15803d';
-    $btnHover     = $isKeluar ? '#b45309' : '#15803d';
+
+    // Warna tombol aksi:
+    // Pick Up hari ini  = Hijau   | Pick Up besok   = Biru
+    // Kembali hari ini  = Merah   | Kembali besok   = Orange
+    if ($isKeluar && $isToday)       { $btnColor = '#16a34a'; $btnHover = '#15803d'; }
+    elseif ($isKeluar && !$isToday)  { $btnColor = '#2563eb'; $btnHover = '#1d4ed8'; }
+    elseif (!$isKeluar && $isToday)  { $btnColor = '#dc2626'; $btnHover = '#b91c1c'; }
+    else                             { $btnColor = '#ea580c'; $btnHover = '#c2410c'; }
 
     $timeLabel  = $isKeluar ? 'Waktu Keluar'   : 'Waktu Kembali';
     $dateLabel  = $isKeluar ? 'Tanggal Keluar' : 'Tanggal Kembali';
@@ -52,7 +60,6 @@
         {{-- ── Rows ── --}}
         <div class="bc-rows">
 
-            {{-- Penyewa --}}
             <div class="bc-row">
                 <span class="bc-row-icon">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -63,7 +70,6 @@
                 <span class="bc-row-value">{{ $booking->customer->nama ?? '—' }}</span>
             </div>
 
-            {{-- No. Telepon --}}
             <div class="bc-row">
                 <span class="bc-row-icon">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -74,7 +80,6 @@
                 <span class="bc-row-value">{{ $booking->customer->no_telp ?? '—' }}</span>
             </div>
 
-            {{-- Lokasi --}}
             <div class="bc-row">
                 <span class="bc-row-icon">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -88,7 +93,6 @@
                 </span>
             </div>
 
-            {{-- Durasi sewa --}}
             <div class="bc-row">
                 <span class="bc-row-icon">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -107,7 +111,6 @@
                 </span>
             </div>
 
-            {{-- Vendor/Garasi --}}
             @if($booking->car->garasi ?? null)
             <div class="bc-row">
                 <span class="bc-row-icon">
@@ -121,7 +124,6 @@
             </div>
             @endif
 
-            {{-- Staff / Driver --}}
             <div class="bc-row">
                 <span class="bc-row-icon">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -193,9 +195,9 @@
                 <button wire:click="pickupBooking({{ $booking->id }})"
                         wire:loading.attr="disabled"
                         class="bc-btn bc-btn--primary"
-                        style="background:{{ $accentColor }};"
+                        style="background:{{ $btnColor }};"
                         onmouseover="this.style.background='{{ $btnHover }}'"
-                        onmouseout="this.style.background='{{ $accentColor }}'">
+                        onmouseout="this.style.background='{{ $btnColor }}'">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"/>
@@ -208,9 +210,9 @@
                 <button wire:click="selesaikanBooking({{ $booking->id }})"
                         wire:loading.attr="disabled"
                         class="bc-btn bc-btn--primary"
-                        style="background:{{ $accentColor }};"
+                        style="background:{{ $btnColor }};"
                         onmouseover="this.style.background='{{ $btnHover }}'"
-                        onmouseout="this.style.background='{{ $accentColor }}'">
+                        onmouseout="this.style.background='{{ $btnColor }}'">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"/>
@@ -236,7 +238,6 @@
     .bc-accent-bar { height: 3px; width: 100%; }
     .bc-inner { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 
-    /* Header */
     .bc-header { display: flex; align-items: center; gap: 10px; }
     .bc-car-icon {
         width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
@@ -258,7 +259,6 @@
         padding: 3px 10px; border-radius: 100px; border: 1px solid; white-space: nowrap; flex-shrink: 0;
     }
 
-    /* Rows */
     .bc-rows {
         display: flex; flex-direction: column;
         border: 1px solid #f1f5f9; border-radius: 10px; overflow: hidden;
@@ -266,8 +266,7 @@
     .dark .bc-rows { border-color: #374151; }
     .bc-row {
         display: flex; align-items: center; gap: 8px;
-        padding: 8px 12px; border-bottom: 1px solid #f8fafc;
-        transition: background .12s;
+        padding: 8px 12px; border-bottom: 1px solid #f8fafc; transition: background .12s;
     }
     .dark .bc-row { border-color: #374151; }
     .bc-row:last-child { border-bottom: none; }
@@ -283,19 +282,14 @@
     .dark .bc-row-value { color: #e5e7eb; }
     .bc-row-value--staff {
         display: inline-flex; align-items: center;
-        padding: 2px 8px; border-radius: 100px;
-        font-size: 11px; border: 1px solid;
+        padding: 2px 8px; border-radius: 100px; font-size: 11px; border: 1px solid;
     }
 
-    /* Time block */
     .bc-time-block {
         display: flex; align-items: stretch;
         border: 1px solid; border-radius: 10px; overflow: hidden;
     }
-    .bc-time-item {
-        flex: 1; padding: 10px 12px;
-        display: flex; flex-direction: column; gap: 4px;
-    }
+    .bc-time-item { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
     .bc-time-label {
         display: flex; align-items: center; gap: 4px;
         font-size: 10.5px; font-weight: 600; color: #9ca3af;
@@ -304,21 +298,16 @@
     .bc-time-value { font-size: 13px; font-weight: 700; }
     .bc-time-divider { width: 1px; background: currentColor; opacity: .15; align-self: stretch; }
 
-    /* Actions */
     .bc-actions { display: flex; gap: 8px; }
     .bc-btn {
         flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-        padding: 9px 14px; border-radius: 9px;
-        font-size: 13px; font-weight: 600; cursor: pointer;
-        border: none; font-family: inherit;
-        transition: opacity .15s, transform .15s;
-        text-decoration: none;
+        padding: 9px 14px; border-radius: 9px; font-size: 13px; font-weight: 600;
+        cursor: pointer; border: none; font-family: inherit;
+        transition: opacity .15s, transform .15s; text-decoration: none;
     }
     .bc-btn:hover { transform: translateY(-1px); opacity: .9; }
     .bc-btn:active { transform: translateY(0); }
-    .bc-btn--ghost {
-        background: #f1f5f9; color: #374151; border: 1px solid #e2e8f0;
-    }
+    .bc-btn--ghost { background: #f1f5f9; color: #374151; border: 1px solid #e2e8f0; }
     .dark .bc-btn--ghost { background: #374151; color: #d1d5db; border-color: #4b5563; }
     .bc-btn--ghost:hover { background: #e2e8f0; }
     .dark .bc-btn--ghost:hover { background: #4b5563; }

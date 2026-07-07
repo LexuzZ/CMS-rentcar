@@ -49,13 +49,16 @@
             .ms-day-line { flex:1; height:1px; background:#f0eeed; }
             .dark .ms-day-line { background:#292524; }
 
-            /* 2-col grid for cards */
+            /* 3-col grid for cards */
             .ms-cards-grid {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 14px;
             }
-            @media(max-width: 900px) {
+            @media(max-width: 1100px) {
+                .ms-cards-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media(max-width: 700px) {
                 .ms-cards-grid { grid-template-columns: 1fr; }
             }
 
@@ -104,7 +107,7 @@
         <div class="ms-cards-grid" style="margin-bottom:16px;">
             @forelse ($keluarHariIni as $booking)
                 @include('filament.widgets.partials.ms-card', [
-                    'booking' => $booking, 'type' => 'keluar',
+                    'booking' => $booking, 'type' => 'keluar', 'isToday' => true,
                 ])
             @empty
                 <div class="ms-empty"><p>Tidak ada mobil keluar hari ini.</p></div>
@@ -119,7 +122,7 @@
         <div class="ms-cards-grid">
             @forelse ($kembaliHariIni as $booking)
                 @include('filament.widgets.partials.ms-card', [
-                    'booking' => $booking, 'type' => 'kembali',
+                    'booking' => $booking, 'type' => 'kembali', 'isToday' => true,
                 ])
             @empty
                 <div class="ms-empty"><p>Tidak ada mobil kembali hari ini.</p></div>
@@ -145,7 +148,7 @@
         <div class="ms-cards-grid" style="margin-bottom:16px;">
             @forelse ($keluarBesok as $booking)
                 @include('filament.widgets.partials.ms-card', [
-                    'booking' => $booking, 'type' => 'keluar',
+                    'booking' => $booking, 'type' => 'keluar', 'isToday' => false,
                 ])
             @empty
                 <div class="ms-empty"><p>Tidak ada mobil keluar besok.</p></div>
@@ -160,7 +163,7 @@
         <div class="ms-cards-grid">
             @forelse ($kembaliBesok as $booking)
                 @include('filament.widgets.partials.ms-card', [
-                    'booking' => $booking, 'type' => 'kembali',
+                    'booking' => $booking, 'type' => 'kembali', 'isToday' => false,
                 ])
             @empty
                 <div class="ms-empty"><p>Tidak ada mobil kembali besok.</p></div>
