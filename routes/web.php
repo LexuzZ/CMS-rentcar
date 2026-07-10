@@ -23,7 +23,9 @@ Route::get('/storage/{path}', function ($path) {
     return response()->file($fullPath);
 })->where('path', '.*');
 
-Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoices.pdf.download');
+// Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoices.pdf.download');
+Route::get('invoices/{record}/pdf', [ExportController::class, 'download'])
+    ->name('invoices.pdf.download');
 Route::get('/order', [CustomerCheckController::class, 'cekNIK'])->name('cek.nik');
 Route::post('/order', [CustomerCheckController::class, 'cekNIKPost'])->name('cek.nik.post');
 Route::get('/penyewa', [CustomerCheckController::class, 'dataPenyewa'])->name('data.penyewa');
@@ -42,7 +44,4 @@ Route::group(['middleware' => ['web', Authenticate::class]], function () {
         ->name('invoices.pdf.download');
     Route::get('/reports/monthly-recap/{year}/{month}/pdf', [PdfController::class, 'downloadMonthlyRecapPdf'])
         ->name('reports.monthly-recap.pdf');
-
-
-
 });
