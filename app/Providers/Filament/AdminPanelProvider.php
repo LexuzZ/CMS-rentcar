@@ -5,7 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\AvailableCarsOverview;
 use App\Filament\Widgets\DashboardActionsWidget;
 use App\Filament\Widgets\DashboardMonthlySummary;
-
+use App\Filament\Widgets\LoginActivityWidget;
 use App\Filament\Widgets\RecentTransactions;
 use App\Filament\Widgets\TransactionChart;
 use App\Filament\Widgets\UserActivityWidget;
@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 AvailableCarsOverview::class,
                 RecentTransactions::class,
                 TransactionChart::class,
-                UserActivityWidget::class,
+                LoginActivityWidget::class,
                 DashboardActionsWidget::class,
             ])
             ->middleware([
