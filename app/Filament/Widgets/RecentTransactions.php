@@ -42,11 +42,11 @@ class RecentTransactions extends BaseWidget
                         'invoice.booking:id,customer_id',
                         'invoice.booking.customer:id,nama',
                     ])
-                    ->whereDate('tanggal_pembayaran', today())
+                    ->whereDate('created_at', today())
                     ->latest()
             )
             ->columns([
-                TextColumn::make('tanggal_pembayaran')
+                TextColumn::make('created_at')
                     ->label('Waktu')
                     ->time('H:i')
                     ->icon('heroicon-o-clock')

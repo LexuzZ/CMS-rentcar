@@ -79,7 +79,6 @@ class AdminPanelProvider extends PanelProvider
                 RecentTransactions::class,
                 TransactionChart::class,
                 DashboardActionsWidget::class,
-
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -96,7 +95,6 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
-
     public static function canAccess(): bool
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
