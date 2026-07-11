@@ -20,7 +20,7 @@ class LoginActivityWidget extends Widget
 
     protected static ?string $pollingInterval = '120s';
 
-    public int $perPage = 10;
+    public int $perPage = 5;
     public string $filterStatus = 'all';   // all | success | failed
     public string $filterPeriod = 'today'; // today | week | month
 
@@ -32,13 +32,13 @@ class LoginActivityWidget extends Widget
     public function setFilter(string $status): void
     {
         $this->filterStatus = $status;
-        $this->perPage = 10;
+        $this->perPage = 5;
     }
 
     public function setPeriod(string $period): void
     {
         $this->filterPeriod = $period;
-        $this->perPage = 10;
+        $this->perPage = 5;
     }
 
     protected function getViewData(): array
