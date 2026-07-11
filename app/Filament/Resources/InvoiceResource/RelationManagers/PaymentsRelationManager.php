@@ -119,11 +119,11 @@ class PaymentsRelationManager extends RelationManager
                         TextEntry::make('created_at')
                             ->label('Dicatat Pada')
                             ->icon('heroicon-o-clock')
-                            ->dateTime('d M Y, H:i')
+                            // ->dateTime('d M Y, H:i')
                             ->formatStateUsing(fn($state) => Carbon::parse($state)
                             ->locale('id')
-                            ->diffForHumans())
-                            ->since(),
+                            ->diffForHumans()),
+                            // ->since(),
                     ]),
                 ]),
 
