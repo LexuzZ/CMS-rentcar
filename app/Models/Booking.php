@@ -112,11 +112,10 @@ class Booking extends Model
         });
     }
     use LogsActivity;
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logFillable()
+            ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn(string $eventName) => $eventName);
