@@ -219,7 +219,7 @@
             .dark .la-empty-sub   { color:#78716c !important; }
         </style>
 
-        {{-- <div class="la-stats">
+        <div class="la-stats">
             <div class="la-stat success">
                 <svg class="la-stat-bg-icon" width="80" height="80" viewBox="0 0 24 24" fill="#10b981">
                     <polyline points="20 6 9 17 4 12"/>
@@ -267,7 +267,7 @@
                 <div class="la-stat-val">{{ $uniqueUsers }}</div>
                 <div class="la-stat-label">User Unik Hari Ini</div>
             </div>
-        </div> --}}
+        </div>
 
         <div class="la-filter-bar">
             <div class="la-filter-group">
