@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Observers\ActivityObserver;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Booking extends Model
 {
@@ -108,6 +110,16 @@ class Booking extends Model
                     - ($invoice->total_paid ?? 0),
             ]);
         });
+    }
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => $eventName);
     }
 
 
