@@ -80,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 RecentTransactions::class,
                 TransactionChart::class,
                 LoginActivityWidget::class,
-                UserActivityFeedWidget::class,
+                // UserActivityFeedWidget::class,
                 DashboardActionsWidget::class,
             ])
             ->middleware([
