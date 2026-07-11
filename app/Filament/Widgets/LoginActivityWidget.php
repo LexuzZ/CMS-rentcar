@@ -26,7 +26,7 @@ class LoginActivityWidget extends Widget
 
     public function loadMore(): void
     {
-        $this->perPage += 10;
+        $this->perPage += 5;
     }
 
     public function setFilter(string $status): void
