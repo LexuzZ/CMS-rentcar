@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -119,6 +120,9 @@ class PaymentsRelationManager extends RelationManager
                             ->label('Dicatat Pada')
                             ->icon('heroicon-o-clock')
                             ->dateTime('d M Y, H:i')
+                            ->formatStateUsing(fn($state) => Carbon::parse($state)
+                            ->locale('id')
+                            ->diffForHumans())
                             ->since(),
                     ]),
                 ]),
