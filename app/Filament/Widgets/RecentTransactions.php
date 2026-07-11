@@ -121,8 +121,8 @@ class RecentTransactions extends BaseWidget
             ->emptyStateHeading('Belum ada transaksi')
             ->emptyStateDescription('Transaksi hari ini akan muncul di sini.')
             ->striped()
-            ->paginated([5, 10, 25])
-            ->defaultPaginationPageOption(5)
+            ->paginated([2, 5, 10])
+            ->defaultPaginationPageOption(2)
             ->poll('60s');
     }
     public static function canView(): bool
