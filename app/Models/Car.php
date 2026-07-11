@@ -39,11 +39,11 @@ class Car extends Model
     }
     use LogsActivity;
     public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->setDescriptionForEvent(fn(string $eventName) => $eventName);
-    }
+{
+    return LogOptions::defaults()
+        ->logAll()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs()
+        ->setDescriptionForEvent(fn(string $eventName) => $eventName);
+}
 }
