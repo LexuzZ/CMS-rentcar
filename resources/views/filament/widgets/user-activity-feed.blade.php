@@ -14,14 +14,14 @@
                         </svg>
                     </div>
                     <div>
-                        <p style="margin:0;font-size:14px;font-weight:700;color:inherit;">Aktivitas Pengguna</p>
-                        <p style="margin:2px 0 0;font-size:11px;color:#a8a29e;font-weight:400;">
+                        <p style="margin:0;font-size:14px;font-weight:700;color:var(--fi-color-gray-950,#111827);">Aktivitas Pengguna</p>
+                        <p style="margin:2px 0 0;font-size:11px;color:var(--fi-color-gray-500,#6b7280);font-weight:400;">
                             Log perubahan data oleh pengguna
                         </p>
                     </div>
                 </div>
                 <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;
-                             background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);color:#0284c7;">
+                             background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);color:#0284c7;">
                     {{ $total }} aktivitas
                 </span>
             </div>
@@ -33,90 +33,114 @@
             @media(max-width:640px){ .af-stats{grid-template-columns:1fr} }
 
             .af-stat {
-                padding:14px 16px; border-radius:13px; border:1px solid;
+                padding:16px; border-radius:14px; border:1px solid;
                 position:relative; overflow:hidden;
                 transition:transform .15s, box-shadow .15s;
-                background:#fff;
             }
-            .af-stat:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.07); }
+            .af-stat:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.1); }
             .af-stat::before {
                 content:''; position:absolute; top:0; left:0; right:0;
-                height:3px; border-radius:13px 13px 0 0;
+                height:3px; border-radius:14px 14px 0 0;
             }
-            .af-stat.created { border-color:#d1fae5; }
-            .af-stat.updated { border-color:#dbeafe; }
-            .af-stat.deleted { border-color:#fee2e2; }
+
+            /* Light mode stat cards */
+            .af-stat.created { background:linear-gradient(160deg,#f0fdf4,#dcfce7); border-color:#86efac; }
+            .af-stat.updated { background:linear-gradient(160deg,#eff6ff,#dbeafe); border-color:#93c5fd; }
+            .af-stat.deleted { background:linear-gradient(160deg,#fff1f2,#fecdd3); border-color:#fca5a5; }
             .af-stat.created::before { background:linear-gradient(90deg,#10b981,#34d399); }
             .af-stat.updated::before { background:linear-gradient(90deg,#3b82f6,#60a5fa); }
             .af-stat.deleted::before { background:linear-gradient(90deg,#ef4444,#f87171); }
 
             .af-stat-icon {
-                width:36px; height:36px; border-radius:9px;
-                display:flex; align-items:center; justify-content:center;
-                margin-bottom:10px;
+                width:38px; height:38px; border-radius:10px;
+                display:flex; align-items:center; justify-content:center; margin-bottom:12px;
             }
-            .af-stat.created .af-stat-icon { background:#ecfdf5; }
-            .af-stat.updated .af-stat-icon { background:#eff6ff; }
-            .af-stat.deleted .af-stat-icon { background:#fef2f2; }
+            .af-stat.created .af-stat-icon { background:rgba(16,185,129,.15); }
+            .af-stat.updated .af-stat-icon { background:rgba(59,130,246,.12); }
+            .af-stat.deleted .af-stat-icon { background:rgba(239,68,68,.12); }
 
-            .af-stat-val   { font-size:26px; font-weight:900; letter-spacing:-.03em; line-height:1; }
-            .af-stat.created .af-stat-val { color:#065f46; }
+            .af-stat-val { font-size:28px; font-weight:900; letter-spacing:-.03em; line-height:1; }
+            .af-stat.created .af-stat-val { color:#047857; }
             .af-stat.updated .af-stat-val { color:#1e40af; }
-            .af-stat.deleted .af-stat-val { color:#991b1b; }
-            .af-stat-label { font-size:11px; color:#9ca3af; margin-top:4px; font-weight:500; }
+            .af-stat.deleted .af-stat-val { color:#b91c1c; }
+            .af-stat-label { font-size:11px; color:#4b5563; margin-top:4px; font-weight:600; }
+
+            /* Dark stat cards */
+            .dark .af-stat.created { background:linear-gradient(160deg,#052e16,#14532d); border-color:#166534; }
+            .dark .af-stat.updated { background:linear-gradient(160deg,#0c1a33,#1e3a5f); border-color:#1d4ed8; }
+            .dark .af-stat.deleted { background:linear-gradient(160deg,#1a0505,#3f1d1d); border-color:#7f1d1d; }
+            .dark .af-stat.created .af-stat-icon { background:rgba(16,185,129,.2); }
+            .dark .af-stat.updated .af-stat-icon { background:rgba(59,130,246,.2); }
+            .dark .af-stat.deleted .af-stat-icon { background:rgba(239,68,68,.2); }
+            .dark .af-stat.created .af-stat-val { color:#4ade80; }
+            .dark .af-stat.updated .af-stat-val { color:#60a5fa; }
+            .dark .af-stat.deleted .af-stat-val { color:#f87171; }
+            .dark .af-stat-label { color:#a8a29e; }
 
             /* ── Filter bar ── */
             .af-filter-bar {
                 display:flex; align-items:center; gap:6px; margin-bottom:16px;
-                padding:6px 8px; background:#f9f8f7;
-                border:1px solid #ede9e4; border-radius:12px; flex-wrap:wrap;
+                padding:6px 8px; border-radius:12px; flex-wrap:wrap;
+                background:#f3f4f6; border:1px solid #e5e7eb;
             }
-            .af-filter-group { display:flex; gap:2px; background:#fff; border:1px solid #e9e4de; border-radius:8px; padding:3px; }
+            .dark .af-filter-bar { background:#1c1917; border-color:#292524; }
+
+            .af-filter-group {
+                display:flex; gap:2px; border-radius:8px; padding:3px;
+                background:#fff; border:1px solid #e5e7eb;
+                box-shadow:0 1px 2px rgba(0,0,0,.04);
+            }
+            .dark .af-filter-group { background:#111110; border-color:#292524; box-shadow:none; }
+
             .af-fbtn {
                 padding:4px 12px; border-radius:6px; font-size:11.5px; font-weight:600;
-                border:none; background:transparent; color:#9ca3af; cursor:pointer; transition:all .12s;
+                border:none; background:transparent; cursor:pointer; transition:all .12s;
+                color:#4b5563;
             }
-            .af-fbtn:hover { color:#374151; }
-            .af-fbtn.fp-active  { background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; box-shadow:0 2px 8px rgba(14,165,233,.3); }
-            .af-fbtn.fe-all     { }
-            .af-fbtn.fe-active-all     { background:#111827; color:#fff; }
-            .af-fbtn.fe-active-created { background:#065f46; color:#fff; }
-            .af-fbtn.fe-active-updated { background:#1e40af; color:#fff; }
-            .af-fbtn.fe-active-deleted { background:#991b1b; color:#fff; }
-            .af-filter-div { width:1px; height:22px; background:#e9e4de; margin:0 2px; flex-shrink:0; }
+            .dark .af-fbtn { color:#a8a29e; }
+            .af-fbtn:hover { color:#111827; background:#f9fafb; }
+            .dark .af-fbtn:hover { color:#e5e7eb; background:transparent; }
+            .af-fbtn.fp-active        { background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff !important; box-shadow:0 2px 8px rgba(14,165,233,.3); }
+            .af-fbtn.fe-active-all    { background:#1f2937; color:#fff !important; }
+            .af-fbtn.fe-active-created{ background:#047857; color:#fff !important; }
+            .af-fbtn.fe-active-updated{ background:#1e40af; color:#fff !important; }
+            .af-fbtn.fe-active-deleted{ background:#b91c1c; color:#fff !important; }
+
+            .af-filter-div { width:1px; height:22px; background:#e5e7eb; margin:0 2px; flex-shrink:0; }
+            .dark .af-filter-div { background:#44403c; }
 
             /* ── Timeline ── */
             .af-timeline { position:relative; }
             .af-timeline::before {
                 content:''; position:absolute; left:19px; top:0; bottom:0;
-                width:2px; background:linear-gradient(180deg,#e9e4de,transparent);
+                width:2px; background:linear-gradient(180deg,#e5e7eb,transparent);
                 border-radius:2px;
             }
+            .dark .af-timeline::before { background:linear-gradient(180deg,#292524,transparent); }
 
             .af-item {
                 display:flex; gap:14px; padding:12px 0;
-                border-bottom:1px solid #f5f2ef; position:relative;
+                border-bottom:1px solid #f3f4f6; position:relative;
             }
+            .dark .af-item { border-color:#1c1917; }
             .af-item:last-child { border-bottom:none; }
-            .af-item:hover .af-item-card { background:#fdfaf8; }
 
-            /* Avatar column */
             .af-avatar-col { flex-shrink:0; position:relative; z-index:1; }
             .af-avatar {
                 width:38px; height:38px; border-radius:11px;
                 display:flex; align-items:center; justify-content:center;
-                font-size:14px; font-weight:800; color:#fff;
+                font-size:14px; font-weight:800; color:#fff !important;
                 box-shadow:0 2px 8px rgba(0,0,0,.15);
                 background:linear-gradient(135deg,#0ea5e9,#0284c7);
             }
 
-            /* Event dot */
             .af-event-dot {
                 position:absolute; bottom:-2px; right:-2px;
                 width:14px; height:14px; border-radius:50%;
                 display:flex; align-items:center; justify-content:center;
                 border:2px solid #fff;
             }
+            .dark .af-event-dot { border-color:#0c0a09; }
             .af-event-dot.created { background:#10b981; }
             .af-event-dot.updated { background:#3b82f6; }
             .af-event-dot.deleted { background:#ef4444; }
@@ -125,67 +149,74 @@
             /* Card */
             .af-item-card {
                 flex:1; min-width:0; padding:10px 12px;
-                background:#faf9f7; border:1px solid #ede9e4;
+                background:#f9fafb; border:1px solid #e5e7eb;
                 border-radius:11px; transition:background .12s;
             }
+            .dark .af-item-card { background:#1c1917; border-color:#292524; }
+            .af-item:hover .af-item-card { background:#f3f4f6; }
+            .dark .af-item:hover .af-item-card { background:#111110; }
 
             .af-item-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:5px; }
 
-            .af-sentence { font-size:13px; color:#111827; line-height:1.5; }
-            .af-sentence strong { font-weight:700; }
-            .af-sentence .af-who  { color:#0284c7; font-weight:700; }
-            .af-sentence .af-what { font-weight:600; }
-            .af-sentence .af-model {
+            .af-sentence { font-size:13px; color:#111827 !important; line-height:1.5; margin:0; }
+            .dark .af-sentence { color:#f5f5f4 !important; }
+            .af-sentence .af-who  { color:#0284c7 !important; font-weight:700; }
+            .dark .af-sentence .af-who { color:#38bdf8 !important; }
+
+            .af-model {
                 display:inline-flex; align-items:center; gap:3px;
                 padding:1px 7px; border-radius:5px; font-size:11px; font-weight:700;
                 border:1px solid; vertical-align:middle; margin:0 2px;
             }
-            .af-model.created { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
-            .af-model.updated { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
-            .af-model.deleted { background:#fef2f2; color:#991b1b; border-color:#fca5a5; }
-            .af-model.other   { background:#f5f3ff; color:#5b21b6; border-color:#c4b5fd; }
+            .af-model.created { background:#ecfdf5; color:#065f46 !important; border-color:#a7f3d0; }
+            .af-model.updated { background:#eff6ff; color:#1e40af !important; border-color:#bfdbfe; }
+            .af-model.deleted { background:#fef2f2; color:#991b1b !important; border-color:#fca5a5; }
+            .af-model.other   { background:#f5f3ff; color:#5b21b6 !important; border-color:#c4b5fd; }
 
             .af-id-chip {
                 display:inline-flex; font-family:ui-monospace,monospace;
                 padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700;
-                background:#f5f3f0; color:#6b7280; border:1px solid #e9e4de;
+                background:#f3f4f6; color:#6b7280 !important; border:1px solid #e5e7eb;
                 vertical-align:middle; margin-left:2px;
             }
+            .dark .af-id-chip { background:#292524; color:#a8a29e !important; border-color:#44403c; }
 
-            .af-time {
-                font-size:11px; font-weight:600; color:#9ca3af; white-space:nowrap; flex-shrink:0;
-            }
-            .af-time-abs { font-size:10px; color:#c4bfbb; display:block; margin-top:1px; text-align:right; }
+            .af-time { font-size:11px; font-weight:600; color:#6b7280 !important; white-space:nowrap; flex-shrink:0; }
+            .dark .af-time { color:#78716c !important; }
+            .af-time-abs { font-size:10px; color:#9ca3af !important; display:block; margin-top:1px; text-align:right; }
+            .dark .af-time-abs { color:#57534e !important; }
 
             /* Changed fields */
-            .af-fields { display:flex; flex-wrap:wrap; gap:4px; margin-top:7px; }
+            .af-fields { display:flex; flex-wrap:wrap; gap:4px; margin-top:7px; align-items:center; }
+            .af-fields-label { font-size:10px; color:#9ca3af !important; font-weight:600; margin-right:2px; }
+            .dark .af-fields-label { color:#78716c !important; }
             .af-field-chip {
                 display:inline-flex; align-items:center; gap:3px;
                 padding:2px 8px; border-radius:5px; font-size:10.5px; font-weight:500;
-                background:#fff; color:#374151; border:1px solid #e9e4de;
+                background:#fff; color:#374151 !important; border:1px solid #e5e7eb;
             }
-            .af-field-chip svg { color:#9ca3af; }
-            .af-field-more { color:#9ca3af; font-size:10.5px; padding:2px 6px; }
+            .dark .af-field-chip { background:#292524; color:#d4d0cb !important; border-color:#44403c; }
 
             /* Day separator */
-            .af-day-sep {
-                display:flex; align-items:center; gap:10px;
-                padding:8px 0; margin:4px 0;
-            }
+            .af-day-sep { display:flex; align-items:center; gap:10px; padding:8px 0; margin:4px 0; }
             .af-day-label {
                 font-size:10px; font-weight:800; text-transform:uppercase;
-                letter-spacing:.1em; color:#9ca3af; white-space:nowrap; padding-left:52px;
+                letter-spacing:.1em; color:#6b7280 !important; white-space:nowrap; padding-left:52px;
             }
-            .af-day-line { flex:1; height:1px; background:#f0eeed; }
+            .dark .af-day-label { color:#78716c !important; }
+            .af-day-line { flex:1; height:1px; background:#e5e7eb; }
+            .dark .af-day-line { background:#292524; }
 
             /* Load more */
             .af-load-more { display:flex; justify-content:center; padding:16px 0 4px; }
             .af-load-btn {
                 padding:8px 24px; border-radius:9px; font-size:12px; font-weight:700;
-                background:#fff; border:1px solid #e9e4de; color:#374151;
+                background:#fff; border:1px solid #e5e7eb; color:#374151 !important;
                 cursor:pointer; transition:all .12s; box-shadow:0 1px 3px rgba(0,0,0,.06);
             }
-            .af-load-btn:hover { border-color:#7dd3fc; color:#0284c7; box-shadow:0 2px 8px rgba(14,165,233,.12); }
+            .dark .af-load-btn { background:#292524; border-color:#44403c; color:#e5e7eb !important; }
+            .af-load-btn:hover { border-color:#7dd3fc; color:#0284c7 !important; box-shadow:0 2px 8px rgba(14,165,233,.15); }
+            .dark .af-load-btn:hover { background:#3c3836; border-color:#7dd3fc; color:#38bdf8 !important; }
 
             /* Empty */
             .af-empty { display:flex;flex-direction:column;align-items:center;padding:52px 20px;text-align:center; }
@@ -196,44 +227,18 @@
                 display:flex;align-items:center;justify-content:center;margin-bottom:14px;
                 box-shadow:0 4px 16px rgba(14,165,233,.1);
             }
-            .af-empty-title { font-size:14px;font-weight:700;color:#6b7280;margin:0; }
-            .af-empty-sub   { font-size:12px;color:#c4c0bb;margin:5px 0 0; }
-
-            /* Dark */
-            @media(prefers-color-scheme:dark){
-                .af-stat { background:#1c1917; }
-                .af-stat.created { border-color:#14532d; }
-                .af-stat.updated { border-color:#1e3a5f; }
-                .af-stat.deleted { border-color:#3f1d1d; }
-                .af-stat.created .af-stat-icon { background:#052e16; }
-                .af-stat.updated .af-stat-icon { background:#0c1a33; }
-                .af-stat.deleted .af-stat-icon { background:#1a0505; }
-                .af-stat.created .af-stat-val { color:#4ade80; }
-                .af-stat.updated .af-stat-val { color:#60a5fa; }
-                .af-stat.deleted .af-stat-val { color:#f87171; }
-                .af-filter-bar  { background:#1c1917; border-color:#292524; }
-                .af-filter-group{ background:#111110; border-color:#292524; }
-                .af-filter-div  { background:#44403c; }
-                .af-fbtn:hover  { color:#e5e7eb; }
-                .af-timeline::before { background:linear-gradient(180deg,#292524,transparent); }
-                .af-item        { border-color:#1c1917; }
-                .af-item-card   { background:#1c1917; border-color:#292524; }
-                .af-item:hover .af-item-card { background:#111110; }
-                .af-sentence    { color:#f9fafb; }
-                .af-event-dot   { border-color:#0c0a09; }
-                .af-field-chip  { background:#292524; color:#e5e7eb; border-color:#44403c; }
-                .af-id-chip     { background:#292524; color:#a8a29e; border-color:#44403c; }
-                .af-day-line    { background:#292524; }
-                .af-load-btn    { background:#292524; border-color:#44403c; color:#e5e7eb; }
-                .af-empty-icon  { background:#0c1a33; border-color:#1e3a5f; }
-            }
+            .dark .af-empty-icon { background:#0c1a33; border-color:#1e3a5f; }
+            .af-empty-title { font-size:14px;font-weight:700;color:#374151 !important;margin:0; }
+            .dark .af-empty-title { color:#d4d0cb !important; }
+            .af-empty-sub { font-size:12px;color:#9ca3af !important;margin:5px 0 0; }
+            .dark .af-empty-sub { color:#78716c !important; }
         </style>
 
         {{-- ── Stats ── --}}
         <div class="af-stats">
             <div class="af-stat created">
                 <div class="af-stat-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
                 </div>
@@ -242,7 +247,7 @@
             </div>
             <div class="af-stat updated">
                 <div class="af-stat-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
@@ -252,7 +257,7 @@
             </div>
             <div class="af-stat deleted">
                 <div class="af-stat-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
                         <path d="M10 11v6"/><path d="M14 11v6"/>
                     </svg>
@@ -327,7 +332,6 @@
                     @endif
 
                     <div class="af-item">
-                        {{-- Avatar + dot --}}
                         <div class="af-avatar-col">
                             <div class="af-avatar">{{ $activity['initial'] }}</div>
                             <div class="af-event-dot {{ $eventClass }}">
@@ -335,7 +339,6 @@
                             </div>
                         </div>
 
-                        {{-- Card --}}
                         <div class="af-item-card">
                             <div class="af-item-top">
                                 <p class="af-sentence">
@@ -354,10 +357,9 @@
                                 </div>
                             </div>
 
-                            {{-- Changed fields --}}
                             @if(!empty($activity['changedFields']))
                                 <div class="af-fields">
-                                    <span style="font-size:10px;color:#9ca3af;font-weight:600;align-self:center;margin-right:2px;">Field:</span>
+                                    <span class="af-fields-label">Field:</span>
                                     @foreach($activity['changedFields'] as $field)
                                         <span class="af-field-chip">
                                             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4L16.5 3.5z"/></svg>
@@ -371,7 +373,6 @@
                 @endforeach
             </div>
 
-            {{-- Load more --}}
             @if($hasMore)
                 <div class="af-load-more">
                     <button wire:click="loadMore" class="af-load-btn" wire:loading.attr="disabled">
