@@ -55,6 +55,8 @@ class UserActivityFeedWidget extends Widget
             'User'           => 'Pengguna',
             'Pengeluaran'    => 'Pengeluaran',
             'ServiceHistory' => 'Servis',
+            'Tempo' => 'Jatuh Tempo',
+            'Blacklist' => 'Daftar Hitam',
         ];
 
         $mapped = $activities->map(function (Activity $a) use ($modelLabels) {
