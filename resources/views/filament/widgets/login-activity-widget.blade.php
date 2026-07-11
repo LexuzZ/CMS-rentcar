@@ -304,7 +304,7 @@
                                     </div>
                                     <div>
                                         <div class="la-user-name">{{ $activity->user?->name ?? 'Pengguna Dihapus' }}</div>
-                                        <div class="la-user-email">{{ $activity->user?->email ?? '—' }}</div>
+                                        {{-- <div class="la-user-email">{{ $activity->user?->email ?? '—' }}</div> --}}
                                     </div>
                                 </div>
                             </td>
