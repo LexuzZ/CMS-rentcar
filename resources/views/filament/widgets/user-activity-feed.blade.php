@@ -14,9 +14,9 @@
                         </svg>
                     </div>
                     <div>
-                        <p style="margin:0;font-size:14px;font-weight:700;color:var(--fi-color-gray-950,#111827);">Aktivitas Pengguna</p>
+                        <p style="margin:0;font-size:14px;font-weight:700;color:var(--fi-color-gray-950,#111827);">Aktivitas Operasional</p>
                         <p style="margin:2px 0 0;font-size:11px;color:var(--fi-color-gray-500,#6b7280);font-weight:400;">
-                            Log perubahan data oleh pengguna
+                            Log perubahan data oleh Staff Operasional
                         </p>
                     </div>
                 </div>
