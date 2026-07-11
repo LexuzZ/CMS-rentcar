@@ -78,6 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 AvailableCarsOverview::class,
                 RecentTransactions::class,
                 TransactionChart::class,
+                UserActivityWidget::class,
                 DashboardActionsWidget::class,
             ])
             ->middleware([
