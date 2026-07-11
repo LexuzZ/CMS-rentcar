@@ -11,12 +11,12 @@ class LoginActivityWidget extends Widget
     protected static string $view = 'filament.widgets.login-activity-widget';
     protected static ?int   $sort = 6;
     protected static bool   $isLazy = true;
-    // protected int|string|array $columnSpan = [
-    //     'sm' => 'full',
-    //     'md' => '10',
-    //     'lg' => '10',
-    // ];
-    protected int|string|array $columnSpan = 5;
+    protected int|string|array $columnSpan = [
+        'sm' => 'full',
+        'md' => '5',
+        'lg' => '5',
+    ];
+    // protected int|string|array $columnSpan = 5;
 
     protected static ?string $pollingInterval = '120s';
 
