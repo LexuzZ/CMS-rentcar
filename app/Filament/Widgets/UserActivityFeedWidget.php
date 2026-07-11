@@ -18,13 +18,13 @@ class UserActivityFeedWidget extends Widget
     ];
     protected static ?string $pollingInterval = '60s';
 
-    public int    $perPage      = 15;
+    public int    $perPage      = 5;
     public string $filterEvent  = 'all';   // all | created | updated | deleted
     public string $filterPeriod = 'today'; // today | week | month
 
-    public function loadMore(): void   { $this->perPage += 15; }
-    public function setEvent(string $e): void  { $this->filterEvent = $e;  $this->perPage = 15; }
-    public function setPeriod(string $p): void { $this->filterPeriod = $p; $this->perPage = 15; }
+    public function loadMore(): void   { $this->perPage += 5; }
+    public function setEvent(string $e): void  { $this->filterEvent = $e;  $this->perPage = 5; }
+    public function setPeriod(string $p): void { $this->filterPeriod = $p; $this->perPage = 5; }
 
     protected function getViewData(): array
     {
