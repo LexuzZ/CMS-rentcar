@@ -345,7 +345,7 @@
                         <th class="la-th">Pengguna</th>
                         <th class="la-th">Status</th>
                         <th class="la-th">Perangkat</th>
-                        <th class="la-th">IP Address</th>
+                        {{-- <th class="la-th">IP Address</th> --}}
                         <th class="la-th">Waktu</th>
                     </tr>
                 </thead>
@@ -401,9 +401,9 @@
                             </td>
 
                             {{-- IP --}}
-                            <td class="la-td">
+                            {{-- <td class="la-td">
                                 <span class="la-ip">{{ $activity->ip_address ?? '—' }}</span>
-                            </td>
+                            </td> --}}
 
                             {{-- Waktu --}}
                             <td class="la-td">
