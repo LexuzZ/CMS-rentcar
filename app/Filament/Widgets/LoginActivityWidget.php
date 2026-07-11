@@ -16,7 +16,7 @@ class LoginActivityWidget extends Widget
     //     'md' => '10',
     //     'lg' => '10',
     // ];
-    protected int|string|array $columnSpan = 4;
+    protected int|string|array $columnSpan = 5;
 
     protected static ?string $pollingInterval = '120s';
 
