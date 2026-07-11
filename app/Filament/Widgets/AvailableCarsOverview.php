@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\DB;
 class AvailableCarsOverview extends Widget
 {
     protected static string $view = 'filament.widgets.available-cars-overview';
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = [
+        'sm' => 'full',
+        'md' => '10',
+        'lg' => '10',
+    ];
     protected static ?int $sort = 2;
 
     public function getViewData(): array
