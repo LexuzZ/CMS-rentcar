@@ -16,11 +16,12 @@ class RecentTransactions extends BaseWidget
     protected static ?int $sort = 4;
     protected static bool $isLazy = true;
 
-    protected int|string|array $columnSpan = [
-        'sm' => 'full',
-        'md' => '10',
-        'lg' => '10',
-    ];
+    // protected int|string|array $columnSpan = [
+    //     'sm' => 'full',
+    //     'md' => '10',
+    //     'lg' => '10',
+    // ];
+    protected int|string|array $columnSpan = 6;
 
     public function table(Table $table): Table
     {

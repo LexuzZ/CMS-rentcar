@@ -12,11 +12,7 @@ class TransactionChart extends ChartWidget
     protected static ?int $sort = 4;
     protected static bool $isLazy = true;
 
-    protected int|string|array $columnSpan = [
-        'sm' => 'full',
-        'md' => '10',
-        'lg' => '10',
-    ];
+    protected int|string|array $columnSpan = 4;
 
     // Filter bulan — tampil di pojok kanan heading
     protected static ?string $maxHeight = '280px';
