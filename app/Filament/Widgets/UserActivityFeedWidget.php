@@ -16,7 +16,7 @@ class UserActivityFeedWidget extends Widget
     //     'md' => '10',
     //     'lg' => '10',
     // ];
-    protected static int | string | array $columnSpan = 'half';
+    protected static int|string|array $columnSpan = 'half';
     protected static ?string $pollingInterval = '60s';
 
     public int    $perPage      = 5;
