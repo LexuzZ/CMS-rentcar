@@ -35,16 +35,16 @@ class RecentTransactions extends BaseWidget
                     ->url(route('filament.admin.resources.payments.index'))
                     ->openUrlInNewTab(),
             ])
-            ->query(
-                Payment::query()
+            ->query(function () {
+                return Payment::query()
                     ->with([
                         'invoice:id,booking_id,status',
                         'invoice.booking:id,customer_id',
                         'invoice.booking.customer:id,nama',
                     ])
                     ->whereDate('created_at', today())
-                    ->latest()
-            )
+                    ->latest();
+            })
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Waktu')
