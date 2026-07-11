@@ -8,6 +8,7 @@ use App\Filament\Widgets\DashboardMonthlySummary;
 use App\Filament\Widgets\LoginActivityWidget;
 use App\Filament\Widgets\RecentTransactions;
 use App\Filament\Widgets\TransactionChart;
+use App\Filament\Widgets\UserActivityFeedWidget;
 use App\Filament\Widgets\UserActivityWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -79,6 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 RecentTransactions::class,
                 TransactionChart::class,
                 LoginActivityWidget::class,
+                UserActivityFeedWidget::class,
                 DashboardActionsWidget::class,
             ])
             ->middleware([
