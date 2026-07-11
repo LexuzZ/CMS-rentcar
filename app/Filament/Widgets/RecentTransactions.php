@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Payment;
+use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -47,9 +48,12 @@ class RecentTransactions extends BaseWidget
             })
             ->columns([
                 TextColumn::make('created_at')
-                    ->label('Waktu')
-                    ->time('H:i')
+                    ->label('Dicatat Pada')
                     ->icon('heroicon-o-clock')
+                    // ->dateTime('d M Y, H:i')
+                    ->formatStateUsing(fn($state) => Carbon::parse($state)
+                        ->locale('id')
+                        ->diffForHumans())
                     ->iconColor('gray')
                     ->size(TextColumn\TextColumnSize::ExtraSmall)
                     ->color('gray'),
