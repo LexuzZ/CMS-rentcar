@@ -17,10 +17,8 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
-use Filament\Widgets\ChartWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,41 +37,53 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
-            // ->defaultThemeMode(ThemeMode::Light)
-            ->darkMode(true)
+
+            // ── Branding ──────────────────────────────────────────
             ->favicon(asset('semetonpesiar.png'))
             ->brandLogo(asset('spt.png'))
             ->brandLogoHeight('4rem')
-            // ->domain('');
+            ->brandName('Semeton Pesiar')
+
+            // ── Theme ─────────────────────────────────────────────
+            ->darkMode(true)               // biarkan user pilih sendiri
+            ->font('Poppins')
+
             ->colors([
-                'primary' => Color::Sky,       // tombol, highlights
-                'success' => Color::Teal,      // income
-                'danger' => Color::Rose,       // expense
-                'warning' => Color::Amber,     // overdue
-                'info' => Color::Indigo,       // notice
-                'gray' => Color::Zinc,         // teks netral
+                'primary' => Color::Sky,
+                'success' => Color::Teal,
+                'danger'  => Color::Rose,
+                'warning' => Color::Amber,
+                'info'    => Color::Indigo,
+                'gray'    => Color::Zinc,
             ])
 
-            // ->topNavigation()
-            // ->breadcrumbs(false) // opsional, lebih bersih tanpa breadcrumb
-            // ->maxContentWidth('full') // konten lebih lebar
-
+            // ── Layout ────────────────────────────────────────────
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
             ->sidebarWidth('18rem')
-            ->font('0.1rem')
-            ->brandName('Semeton Pesiar')
-            // ->brandLogo(asset('public/spt.png'))
-            ->font('Poppins')
+            ->maxContentWidth('full')      // ✅ konten lebih lebar, tidak sempit di tengah
+            ->breadcrumbs(false)           // ✅ lebih bersih tanpa breadcrumb di dashboard
+
+            // ── Features ──────────────────────────────────────────
+            ->spa()                        // navigasi cepat tanpa full reload
             ->databaseNotifications()
-            // ->viteTheme('resources/css/filament/admin/theme.css')
-            ->spa()
+            ->databaseNotificationsPolling('30s') // ✅ polling notifikasi tiap 30 detik
+
+            // ── Global Search ─────────────────────────────────────
+            ->globalSearch(true)           // ✅ aktifkan global search (Ctrl+K)
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+
+            // ── Collapsible sidebar groups ─────────────────────────
+            ->collapsibleNavigationGroups(true) // ✅ grup navigasi bisa di-collapse
+
+            // ── Resources & Pages ─────────────────────────────────
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+
+            // ── Widgets ───────────────────────────────────────────
             ->widgets([
                 DashboardMonthlySummary::class,
                 AvailableCarsOverview::class,
@@ -83,6 +93,8 @@ class AdminPanelProvider extends PanelProvider
                 UserActivityFeedWidget::class,
                 DashboardActionsWidget::class,
             ])
+
+            // ── Middleware ────────────────────────────────────────
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -98,9 +110,9 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
+
     public static function canAccess(): bool
     {
         return Auth::user()->hasAnyRole(['superadmin', 'admin']);
     }
-
 }
