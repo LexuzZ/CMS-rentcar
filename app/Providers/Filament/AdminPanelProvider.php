@@ -46,15 +46,15 @@ class AdminPanelProvider extends PanelProvider
 
             // ── Theme ─────────────────────────────────────────────
             ->darkMode(true)               // biarkan user pilih sendiri
-            ->font('Poppins')
+            ->font('Plus Jakarta Sans')
 
             ->colors([
                 'primary' => Color::Sky,
-                'info'    => Color::Cyan,
                 'success' => Color::Emerald,
-                'warning' => Color::Amber,
                 'danger'  => Color::Red,
-                'gray'    => Color::Slate,
+                'warning' => Color::Amber,
+                'info'    => Color::Cyan,
+                'gray'    => Color::Zinc,
             ])
 
             // ── Layout ────────────────────────────────────────────
