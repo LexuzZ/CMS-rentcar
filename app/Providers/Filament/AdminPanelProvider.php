@@ -60,7 +60,7 @@ class AdminPanelProvider extends PanelProvider
             // ── Layout ────────────────────────────────────────────
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
-            ->sidebarWidth('15rem')
+            ->sidebarWidth('18rem')
             ->maxContentWidth('full')      // ✅ konten lebih lebar, tidak sempit di tengah
             ->breadcrumbs(false)           // ✅ lebih bersih tanpa breadcrumb di dashboard
 
