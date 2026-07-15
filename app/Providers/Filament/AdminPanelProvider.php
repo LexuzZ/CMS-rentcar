@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AttendanceWidget;
 use App\Filament\Widgets\AvailableCarsOverview;
 use App\Filament\Widgets\DashboardActionsWidget;
 use App\Filament\Widgets\DashboardMonthlySummary;
@@ -89,6 +90,7 @@ class AdminPanelProvider extends PanelProvider
                 AvailableCarsOverview::class,
                 RecentTransactions::class,
                 TransactionChart::class,
+                AttendanceWidget::class,
                 LoginActivityWidget::class,
                 UserActivityFeedWidget::class,
                 DashboardActionsWidget::class,
