@@ -13,6 +13,11 @@ class AttendanceWidget extends Widget
 {
     protected static string $view = 'filament.widgets.attendance-widget';
     protected static ?int $sort = 0; // tampil paling atas
+    protected int|string|array $columnSpan = [
+        'sm' => 'full',
+        'md' => '10',
+        'lg' => '10',
+    ];
     protected static bool $isLazy = false;
 
     // Koordinat kantor — GANTI dengan koordinat kantor Semeton Pesiar
