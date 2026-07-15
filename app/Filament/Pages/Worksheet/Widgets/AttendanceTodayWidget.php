@@ -20,9 +20,8 @@ class AttendanceTodayWidget extends Widget
             ->orderBy('check_in_time')
             ->get();
 
-        $totalStaff = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['admin', 'staff']);
-        })->count();
+        // Jika pakai kolom 'role' di tabel users
+        $totalStaff = User::whereIn('role', ['admin', 'staff'])->count();
         $totalHadir     = $attended->where('status', 'hadir')->count();
         $totalTerlambat = $attended->where('status', 'terlambat')->count();
         $totalBelum     = max(0, $totalStaff - $attended->count());

@@ -30,7 +30,7 @@ class Worksheet extends Page
         return [
             // AvailableCarsOverview::class,
             // DashboardMonthlySummary::class,
-            // AttendanceTodayWidget::class,
+            AttendanceTodayWidget::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
             MobilSchedule::class,
