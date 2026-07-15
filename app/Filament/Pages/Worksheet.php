@@ -13,6 +13,7 @@ use App\Filament\Pages\Worksheet\Widgets\OverdueTasksWidget;
 use App\Filament\Pages\Worksheet\Widgets\StaffRankingWidget;
 use App\Filament\Pages\Worksheet\Widgets\SummaryWidget;
 use App\Filament\Pages\Worksheet\Widgets\TempoDueToday;
+use App\Filament\Widgets\AttendanceTodayWidget;
 use Filament\Pages\Page;
 
 class Worksheet extends Page
@@ -28,6 +29,7 @@ class Worksheet extends Page
         return [
             // AvailableCarsOverview::class,
             // DashboardMonthlySummary::class,
+            AttendanceTodayWidget::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
             MobilSchedule::class,
