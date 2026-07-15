@@ -21,7 +21,7 @@ class AttendanceTodayWidget extends Widget
             ->get();
 
         // Jika pakai kolom 'role' di tabel users
-        $totalStaff = User::whereIn('role', ['admin', 'staff'])->count();
+        $totalStaff = User::where('role', '!=', 'superadmin')->count();
         $totalHadir     = $attended->where('status', 'hadir')->count();
         $totalTerlambat = $attended->where('status', 'terlambat')->count();
         $totalBelum     = max(0, $totalStaff - $attended->count());
