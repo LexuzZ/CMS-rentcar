@@ -12,6 +12,7 @@ class AttendanceTodayWidget extends Widget
     protected static string $view = 'filament.widgets.attendance-today-widget';
     protected static ?int $sort = 1;
     protected static bool $isLazy = true;
+    protected int|string|array $columnSpan = 'full';
 
     public function getViewData(): array
     {
