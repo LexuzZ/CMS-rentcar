@@ -23,7 +23,7 @@ class AttendanceWidget extends Widget
     // Koordinat kantor — GANTI dengan koordinat kantor Semeton Pesiar
     const OFFICE_LAT = -8.598337531302349;  // ← ganti ini
     const OFFICE_LON = 116.08490908043622; // ← ganti ini
-    const MAX_DISTANCE = 29000;       // meter
+    const MAX_DISTANCE = 50;       // meter
 
     // Jam kerja
     const JAM_MASUK       = '08:00';
