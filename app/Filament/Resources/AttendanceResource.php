@@ -179,10 +179,10 @@ class AttendanceResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return (string) Attendance::whereDate('date', today())->count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return (string) Attendance::whereDate('date', today('Hadir Hari Ini'))->count();
+    // }
 
     public static function getNavigationBadgeColor(): ?string
     {
