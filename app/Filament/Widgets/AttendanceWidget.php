@@ -99,6 +99,6 @@ class AttendanceWidget extends Widget
     public static function canView(): bool
     {
         // Semua user yang login bisa lihat widget ini
-        return Auth::check();
+        return Auth::user()->hasAnyRole(['staff', 'admin', 'supervisor']);
     }
 }
