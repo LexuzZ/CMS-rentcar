@@ -20,12 +20,20 @@ class AttendanceTodayWidget extends Widget
             ->orderBy('check_in_time')
             ->get();
 
-        $totalStaff     = User::count();
+        // Exclude superadmin
+        $totalStaff     = User::where('role', '!=', 'superadmin')->count();
         $totalHadir     = $attended->where('status', 'hadir')->count();
         $totalTerlambat = $attended->where('status', 'terlambat')->count();
         $totalBelum     = max(0, $totalStaff - $attended->count());
 
-        return compact('attended', 'totalStaff', 'totalHadir', 'totalTerlambat', 'totalBelum');
+        // User yang belum absen (exclude superadmin)
+        $absentUserIds = $attended->pluck('user_id')->toArray();
+        $absentUsers   = User::where('role', '!=', 'superadmin')
+            ->whereNotIn('id', $absentUserIds)
+            ->orderBy('name')
+            ->get();
+
+        return compact('attended', 'totalStaff', 'totalHadir', 'totalTerlambat', 'totalBelum', 'absentUsers');
     }
 
     // public static function canView(): bool

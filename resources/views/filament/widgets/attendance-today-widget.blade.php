@@ -494,6 +494,7 @@
             $pctHadir = $totalStaff > 0 ? round($totalHadir / $totalStaff * 100) : 0;
             $pctLate = $totalStaff > 0 ? round($totalTerlambat / $totalStaff * 100) : 0;
 
+
             // User yang belum absen
             $absentUserIds = $attended->pluck('user_id')->toArray();
             $absentUsers = \App\Models\User::whereNotIn('id', $absentUserIds)
