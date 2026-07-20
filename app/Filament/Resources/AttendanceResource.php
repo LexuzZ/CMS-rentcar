@@ -25,7 +25,7 @@ class AttendanceResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin', 'admin']);
+        return Auth::user()->hasAnyRole(['superadmin']);
     }
 
     public static function form(Form $form): Form
