@@ -37,8 +37,8 @@ class AttendanceTodayWidget extends Widget
         return compact('attended', 'totalStaff', 'totalHadir', 'totalTerlambat', 'totalBelum', 'absentUsers');
     }
 
-    // public static function canView(): bool
-    // {
-    //     return Auth::user()->hasAnyRole(['superadmin', 'admin']);
-    // }
+    public static function canView(): bool
+    {
+        return Auth::user()->hasAnyRole(['superadmin']);
+    }
 }
