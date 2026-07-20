@@ -496,10 +496,10 @@
 
 
             // User yang belum absen
-            $absentUserIds = $attended->pluck('user_id')->toArray();
-            $absentUsers = \App\Models\User::whereNotIn('id', $absentUserIds)
-                ->orderBy('name')
-                ->get();
+            // $absentUserIds = $attended->pluck('user_id')->toArray();
+            // $absentUsers = \App\Models\User::whereNotIn('id', $absentUserIds)
+            //     ->orderBy('name')
+            //     ->get();
         @endphp
 
         {{-- ── Stats ── --}}
