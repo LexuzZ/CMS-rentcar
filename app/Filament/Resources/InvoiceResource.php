@@ -279,12 +279,10 @@ class InvoiceResource extends Resource
                                 )
                                 : '-';
 
-                            $tglKeluar = $booking->tanggal_keluar
-                                ? Carbon::parse($booking->tanggal_keluar)->isoFormat('D MMMM Y')
-                                : '-';
+
 
                             $tglKembali = $booking->tanggal_kembali
-                                ? Carbon::parse($booking->tanggal_kembali)->isoFormat('D MMMM Y')
+                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('D MMMM Y')
                                 : '-';
                             $waktuKembali = $booking->waktu_kembali
                                 ? Carbon::parse($booking->waktu_kembali)->format('H:i')
@@ -298,12 +296,12 @@ class InvoiceResource extends Resource
                             $text = [];
                             $text[] = "Halo *{$customerName}* 👋";
                             $text[] = "";
-                            $text[] = "**DETAIL PENGEMBALIAN:**";
+                            $text[] = "📌 *DETAIL PENGEMBALIAN:*";
                             $text[] = "";
 
-                            $text[] = "Mobil: {$carDetails}";
-                            $text[] = "Hari: {$tglKembali}";
-                            $text[] = "Jam Kembali: {$waktuKembali}";
+                            $text[] = "🚗 Mobil: {$carDetails}";
+                            $text[] = "📅 Hari: {$tglKembali}";
+                            $text[] = "⏳ Jam Kembali: {$waktuKembali}";
                             $text[] = "📍 Lokasi Pengembalian : {$lokasiPengembalian}";
                             // $text[] = "🗺 Wilayah Sewa : {$wilayahSewa}";
                             $text[] = "🧑‍🔧 Petugas Pengembalian : {$petugas}";
