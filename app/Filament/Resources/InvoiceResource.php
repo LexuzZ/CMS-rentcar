@@ -320,7 +320,7 @@ class InvoiceResource extends Resource
                             $text[] = "Terima kasih banyak atas kerja samanya Kak 🙏😊";
                             $text[] = "*Semeton Pesiar Trans* 🚗";
 
-                            $message = urlencode(implode("\n", $text));
+                            $message = rawurlencode(implode("\n", $text));
 
                             $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
 
