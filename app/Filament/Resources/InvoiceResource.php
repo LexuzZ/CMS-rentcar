@@ -328,7 +328,10 @@ class InvoiceResource extends Resource
                             }
 
                             return "https://wa.me/{$phone}?text={$message}";
-                        }),
+                        })
+                        ->openUrlInNewTab()
+                        ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
+
 
                     Action::make('copyInvoice')
                         ->label('Copy Tagihan')
