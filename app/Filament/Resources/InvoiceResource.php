@@ -289,23 +289,23 @@ class InvoiceResource extends Resource
                             $waktuKembali = $booking->waktu_kembali
                                 ? Carbon::parse($booking->waktu_kembali)->format('H:i')
                                 : '-';
-                            $wilayahSewa = $car?->garasi ?? '-';
+                            // $wilayahSewa = $car?->garasi ?? '-';
                             $lokasiPengembalian = $booking->lokasi_pengembalian ?? '-';
 
                             // Petugas pengembalian dari relasi booking
                             $petugas = $booking->driverPengembalian?->nama ?? '-';
 
                             $text = [];
-                            $text[] = "Halo {$customerName} 👋";
+                            $text[] = "Halo *{$customerName}* 👋";
                             $text[] = "";
-                            $text[] = "Berikut detail sewa mobil Anda dari Semeton Pesiar:";
+                            $text[] = "**DETAIL PENGEMBALIAN:**";
                             $text[] = "";
 
                             $text[] = "Mobil: {$carDetails}";
                             $text[] = "Hari: {$tglKembali}";
                             $text[] = "Jam Kembali: {$waktuKembali}";
                             $text[] = "📍 Lokasi Pengembalian : {$lokasiPengembalian}";
-                            $text[] = "🗺 Wilayah Sewa : {$wilayahSewa}";
+                            // $text[] = "🗺 Wilayah Sewa : {$wilayahSewa}";
                             $text[] = "🧑‍🔧 Petugas Pengembalian : {$petugas}";
                             $text[] = "";
                             $text[] = "Apakah data pengembalian di atas sudah sesuai, Kak? 😊";
