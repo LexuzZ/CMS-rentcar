@@ -254,6 +254,90 @@ class InvoiceResource extends Resource
                         ->label('Notif Kembali WA')
                         ->icon('heroicon-o-arrow-uturn-left')
                         ->color('warning')
+                        ->url(function (Invoice $record) {
+                            $booking = $record->booking;
+
+                            if (!$booking || !$booking->customer?->no_telp) {
+                                return null;
+                            }
+
+                            $totalDenda = $booking->penalties?->sum('amount') ?? 0;
+                            $biayaSewa = $booking->estimasi_biaya ?? 0;
+                            $pickupDropOff = $record->pickup_dropOff ?? 0;
+                            $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
+                            $dp = $record->total_paid ?? 0;
+                            $sisaPembayaran = $record->sisa_pembayaran ?? 0;
+
+                            $customerName = $booking->customer?->nama ?? '-';
+
+                            $car = $booking->car;
+                            $carDetails = $car
+                                ? trim(
+                                    ($car->carModel?->brand?->name ?? '') . ' ' .
+                                        ($car->carModel?->name ?? '') .
+                                        ($car->nopol ? " ({$car->nopol})" : '')
+                                )
+                                : '-';
+
+                            $tglKeluar = $booking->tanggal_keluar
+                                ? Carbon::parse($booking->tanggal_keluar)->isoFormat('D MMMM Y')
+                                : '-';
+
+                            $tglKembali = $booking->tanggal_kembali
+                                ? Carbon::parse($booking->tanggal_kembali)->isoFormat('D MMMM Y')
+                                : '-';
+                            $waktuKembali = $booking->waktu_kembali
+                                ? Carbon::parse($booking->waktu_kembali)->format('H:i')
+                                : '-';
+                            $wilayahSewa = $car?->garasi ?? '-';
+                            $lokasiPengembalian = $booking->lokasi_pengembalian ?? '-';
+
+                            // Petugas pengembalian dari relasi booking
+                            $petugas = $booking->driverPengembalian?->nama ?? '-';
+
+                            $text = [];
+                            $text[] = "Halo {$customerName} 👋";
+                            $text[] = "";
+                            $text[] = "Berikut detail sewa mobil Anda dari Semeton Pesiar:";
+                            $text[] = "";
+
+                            $text[] = "Mobil: {$carDetails}";
+                            $text[] = "Hari: {$tglKembali}";
+                            $text[] = "Jam Kembali: {$waktuKembali}";
+                            $text[] = "📍 Lokasi Pengembalian : {$lokasiPengembalian}";
+                            $text[] = "🗺 Wilayah Sewa : {$wilayahSewa}";
+                            $text[] = "🧑‍🔧 Petugas Pengembalian : {$petugas}";
+                            $text[] = "";
+                            $text[] = "Apakah data pengembalian di atas sudah sesuai, Kak? 😊";
+                            $text[] = "Jika ada perubahan waktu atau lokasi, mohon diinformasikan sebelumnya agar kami dapat menyesuaikan proses penjemputan unit 🙏";
+                            $text[] = "━━━━━━━━━━━━━━━";
+                            $text[] = "✨ Mohon bantuannya sebelum pengembalian kendaraan:";
+                            $text[] = "✅ Pastikan barang bawaan pribadi tidak tertinggal";
+                            $text[] = "✅ Pastikan BBM sesuai ketentuan awal sewa";
+                            $text[] = "✅ Pastikan kendaraan dalam kondisi baik saat serah terima";
+                            $text[] = "✅ Keterlambatan pengembalian/overtime akan di kenakan charge";
+                            $text[] = "";
+                            $text[] = "📌 Segala bentuk kehilangan barang pribadi di dalam kendaraan bukan menjadi tanggung jawab pihak kami.";
+                            $text[] = "";
+                            $text[] = "Terima kasih banyak atas kerja samanya Kak 🙏😊";
+                            $text[] = "*Semeton Pesiar Trans* 🚗";
+
+                            $message = urlencode(implode("\n", $text));
+
+                            $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
+
+                            if (str_starts_with($phone, '0')) {
+                                $phone = '62' . substr($phone, 1);
+                            }
+
+                            return "https://wa.me/{$phone}?text={$message}";
+                        })
+                        ->openUrlInNewTab()
+                        ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
+                    Action::make('notif_kembali_wa')
+                        ->label('Notif Kembali WA')
+                        ->icon('heroicon-o-arrow-uturn-left')
+                        ->color('warning')
                         ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp))
 
                         ->action(function (Invoice $record, array $data) {
