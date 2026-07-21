@@ -282,7 +282,7 @@ class InvoiceResource extends Resource
 
 
                             $tglKembali = $booking->tanggal_kembali
-                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('d M Y')
+                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y')
                                 : '-';
                             $waktuKembali = $booking->waktu_kembali
                                 ? Carbon::parse($booking->waktu_kembali)->format('H:i')
