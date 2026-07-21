@@ -58,7 +58,7 @@ class PenaltyResource extends Resource
             'event'      => 'Event',
             'check_in'   => 'Check In',
             'check_out'  => 'Check Out',
-            'no_penalty' => 'Tidak Ada Denda',
+            'no_penalty' => 'Lainnya',
         ];
     }
 
