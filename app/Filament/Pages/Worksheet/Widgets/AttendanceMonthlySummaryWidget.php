@@ -131,6 +131,6 @@ class AttendanceMonthlySummaryWidget extends Widget
     }
     public static function canView(): bool
     {
-        return Auth::user()->hasRole('superadmin');
+        return Auth::user()->role === 'superadmin';
     }
 }
