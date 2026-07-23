@@ -320,7 +320,7 @@ class InvoiceResource extends Resource
                             $text[] = "Terima kasih banyak atas kerja samanya Kak 🙏😊";
                             $text[] = "*Semeton Pesiar Trans* 🚗";
 
-                            $message = rawurlencode(implode("\n", $text));
+                            $message = implode("\n", $text);
 
                             $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
 
@@ -330,7 +330,7 @@ class InvoiceResource extends Resource
 
                             return "https://wa.me/{$phone}?text={$message}";
                         })
-                        // ->openUrlInNewTab()
+                        ->openUrlInNewTab()
                         ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
 
 
