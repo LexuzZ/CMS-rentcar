@@ -25,9 +25,7 @@ class AttendanceMonthlySummaryWidget extends Widget
         $this->selectedYear  = now()->format('Y');
 
         // Jika bukan superadmin, default ke user sendiri
-        if (!Auth::user()->hasRole('superadmin')) {
-            $this->selectedUserId = Auth::id();
-        }
+        Auth::user()->role === 'superadmin';
     }
 
     // ------------------------------------------------------------------
