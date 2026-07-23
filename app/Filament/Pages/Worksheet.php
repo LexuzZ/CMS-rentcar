@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Pages\Worksheet\Widgets\AttendanceMonthlySummaryWidget;
 use App\Filament\Pages\Worksheet\Widgets\AttendanceTodayWidget;
 use App\Filament\Pages\Worksheet\Widgets\AvailableCarsOverview;
 use App\Filament\Pages\Worksheet\Widgets\DashboardMonthlySummary;
@@ -30,6 +31,7 @@ class Worksheet extends Page
         return [
             // AvailableCarsOverview::class,
             // DashboardMonthlySummary::class,
+            AttendanceMonthlySummaryWidget::class,
             AttendanceTodayWidget::class,
             TempoDueToday::class,
             OverdueTasksWidget::class,
