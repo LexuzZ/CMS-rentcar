@@ -25,7 +25,9 @@ class AttendanceMonthlySummaryWidget extends Widget
         $this->selectedYear  = now()->format('Y');
 
         // Jika bukan superadmin, default ke user sendiri
-        // Auth::user()->role === 'superadmin';
+        if (Auth::user()->role !== 'superadmin') {
+            $this->selectedUserId = Auth::id();
+        }
     }
 
     // ------------------------------------------------------------------
@@ -129,8 +131,8 @@ class AttendanceMonthlySummaryWidget extends Widget
         ];
         return $months[$this->selectedMonth] ?? $this->selectedMonth;
     }
-    public static function canView(): bool
-    {
-        return Auth::user()->role === 'superadmin';
-    }
+    // public static function canView(): bool
+    // {
+    //     return Auth::user()->role === 'superadmin';
+    // }
 }
