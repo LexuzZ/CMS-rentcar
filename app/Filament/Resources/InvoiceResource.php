@@ -330,7 +330,7 @@ class InvoiceResource extends Resource
 
                             return "https://wa.me/{$phone}?text={$message}";
                         })
-                        ->openUrlInNewTab()
+                        // ->openUrlInNewTab()
                         ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
 
 
