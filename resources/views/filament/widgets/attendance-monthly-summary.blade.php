@@ -46,7 +46,7 @@
                 </select>
 
                 {{-- Filter Karyawan (hanya superadmin) --}}
-                @if(Auth::user()->where('superadmin', true))
+                @if(Auth::user()->role === 'superadmin')
                 <select
                     wire:model.live="selectedUserId"
                     class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800
