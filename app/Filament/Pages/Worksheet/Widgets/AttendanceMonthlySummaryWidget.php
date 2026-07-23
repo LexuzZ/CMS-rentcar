@@ -101,9 +101,7 @@ class AttendanceMonthlySummaryWidget extends Widget
     // ------------------------------------------------------------------
     // Listener reaktif saat filter berubah
     // ------------------------------------------------------------------
-    public function updatedSelectedUserId(): void {}
-    public function updatedSelectedMonth(): void {}
-    public function updatedSelectedYear(): void {}
+
 
     public function getSelectedUserName(): string
     {
@@ -133,6 +131,6 @@ class AttendanceMonthlySummaryWidget extends Widget
     }
     public static function canView(): bool
     {
-        return Auth::user()->hasAnyRole(['superadmin']);
+        return Auth::user()->hasRole('superadmin');
     }
 }
