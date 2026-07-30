@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Faktur #{{ $invoice->id }} — Semeton Pesiar</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
@@ -17,11 +22,25 @@
         /* ══════════════════════════════════
            WARNA & UTILITAS
         ══════════════════════════════════ */
-        .text-right  { text-align: right; }
-        .text-center { text-align: center; }
-        .clear       { clear: both; }
-        .bold        { font-weight: bold; }
-        .muted       { color: #6b7280; }
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
 
         /* ══════════════════════════════════
            HEADER
@@ -33,8 +52,14 @@
             overflow: hidden;
         }
 
-        .header-left  { float: left; }
-        .header-right { float: right; text-align: right; }
+        .header-left {
+            float: left;
+        }
+
+        .header-right {
+            float: right;
+            text-align: right;
+        }
 
         .logo {
             width: 120px;
@@ -81,8 +106,18 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
-        .status-lunas      { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-        .status-belum      { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+        .status-lunas {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        .status-belum {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
 
         /* ══════════════════════════════════
            META BLOCK (Faktur + Billing)
@@ -243,7 +278,9 @@
             color: #374151;
         }
 
-        .totals-table tr:last-child td { border-bottom: none; }
+        .totals-table tr:last-child td {
+            border-bottom: none;
+        }
 
         .totals-table .total-row td {
             font-weight: bold;
@@ -311,225 +348,236 @@
             color: #9ca3af;
             line-height: 1.6;
         }
-        .footer strong { color: #6b7280; }
+
+        .footer strong {
+            color: #6b7280;
+        }
     </style>
 </head>
+
 <body>
 
-@php
-    $logoPath = public_path('spt.png');
-    $logoSrc  = file_exists($logoPath)
-        ? 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath))
-        : '';
+    @php
+        $logoPath = public_path('spt.png');
+        $logoSrc = file_exists($logoPath)
+            ? 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath))
+            : '';
 
-    $stampPath = public_path('stempel.png');
-    $stampData = file_exists($stampPath)
-        ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
-        : '';
+        $stampPath = public_path('stempel.png');
+        $stampData = file_exists($stampPath)
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($stampPath))
+            : '';
 
-    $booking    = $invoice->booking;
-    $customer   = $booking->customer;
-    $car        = $booking->car;
-    $isLunas    = $invoice->sisa_pembayaran <= 0;
+        $booking = $invoice->booking;
+        $customer = $booking->customer;
+        $car = $booking->car;
+        $isLunas = $invoice->sisa_pembayaran <= 0;
 
-    $hargaPerHari = $booking->total_hari > 0
-        ? $booking->estimasi_biaya / $booking->total_hari
-        : $booking->estimasi_biaya;
-@endphp
+        $hargaPerHari = $booking->total_hari > 0
+            ? $booking->estimasi_biaya / $booking->total_hari
+            : $booking->estimasi_biaya;
+    @endphp
 
-{{-- ═══════════════════════════════
-     HEADER
-═══════════════════════════════ --}}
-<div class="header">
-    <div class="header-left">
-        @if ($logoSrc)
-            <img src="{{ $logoSrc }}" alt="Logo" class="logo">
-        @endif
-        <div class="company-name">Semeton Pesiar Trans</div>
-        <div class="company-sub">
-            Jl. Batu Ringgit No.218, Kota Mataram, NTB<br>
-            Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com
-        </div>
-    </div>
-
-    <div class="header-right">
-        <div class="invoice-title">Faktur Sewa</div>
-        <div class="invoice-number">No. <strong>#INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</strong></div>
-        <div class="invoice-number muted">Tgl: {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
-        <div>
-            <span class="status-badge {{ $isLunas ? 'status-lunas' : 'status-belum' }}">
-                {{ $isLunas ? 'LUNAS' : 'BELUM LUNAS' }}
-            </span>
-        </div>
-    </div>
-    <div class="clear"></div>
-</div>
-
-{{-- ═══════════════════════════════
-     META: FAKTUR + BILLING
-═══════════════════════════════ --}}
-<div class="meta-block">
-    <div class="meta-col">
-        <div class="meta-label">Detail Faktur</div>
-        <div class="meta-row"><strong>No. Faktur</strong> &nbsp; #INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</div>
-        <div class="meta-row"><strong>No. Booking</strong> &nbsp; #BK{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</div>
-        <div class="meta-row"><strong>Tanggal</strong> &nbsp; {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
-    </div>
-
-    <div class="meta-col-right">
-        <div class="meta-label">Ditagihkan Kepada</div>
-        <div class="meta-row bold">{{ $customer->nama }}</div>
-        <div class="meta-row">{{ $customer->alamat }}</div>
-        <div class="meta-row">{{ $customer->no_telp }}</div>
-    </div>
-    <div class="clear"></div>
-</div>
-
-{{-- ═══════════════════════════════
-     RINCIAN SEWA
-═══════════════════════════════ --}}
-<div class="section-title">Rincian Sewa</div>
-
-<table class="items-table">
-    <thead>
-        <tr>
-            <th style="width:65%">Deskripsi</th>
-            <th class="text-right">Jumlah</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{-- Sewa Mobil --}}
-        <tr>
-            <td>
-                <span class="bold">Sewa Mobil</span> —
-                {{ $car->carModel->brand->name }} {{ $car->carModel->name }}
-                <span class="muted">({{ $car->nopol }})</span>
-                <div class="item-detail">
-                    <span>Keluar: {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}</span>
-                    <span>Kembali: {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}</span>
-                </div>
-                <div class="item-detail">
-                    <span>Durasi: {{ $booking->total_hari }} hari</span>
-                    <span>Rp {{ number_format($hargaPerHari, 0, ',', '.') }} / hari</span>
-                </div>
-            </td>
-            <td class="text-right bold">
-                Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}
-            </td>
-        </tr>
-
-        {{-- Antar / Jemput --}}
-        @if ($invoice->pickup_dropOff > 0)
-        <tr>
-            <td>Biaya Antar / Jemput</td>
-            <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
-        </tr>
-        @endif
-
-        {{-- Denda / Klaim --}}
-        @foreach ($booking->penalties as $penalty)
-        <tr>
-            <td>
-                <span class="bold">{{ ucfirst($penalty->klaim) }}</span>
-                @if ($penalty->description)
-                    <div class="item-detail">{{ $penalty->description }}</div>
-                @endif
-            </td>
-            <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
-{{-- ═══════════════════════════════
-     BOTTOM: PEMBAYARAN + TOTALS
-═══════════════════════════════ --}}
-<div class="bottom-section">
-
-    {{-- Rekening --}}
-    <div class="payment-box">
-        <div class="section-title" style="margin-bottom:10px">Metode Pembayaran</div>
-
-        <div class="bank-item">
-            <div class="bank-name">Bank Mandiri</div>
-            <div class="bank-detail">1610 006 892 835</div>
-            <div class="bank-holder">a.n. ACHMAD MUZAMMIL</div>
+    {{-- ═══════════════════════════════
+    HEADER
+    ═══════════════════════════════ --}}
+    <div class="header">
+        <div class="header-left">
+            @if ($logoSrc)
+                <img src="{{ $logoSrc }}" alt="Logo" class="logo">
+            @endif
+            <div class="company-name">Semeton Pesiar Trans</div>
+            <div class="company-sub">
+                Jl. Batu Ringgit No.218, Kota Mataram, NTB<br>
+                Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com
+            </div>
         </div>
 
-        <div class="bank-item">
-            <div class="bank-name">Bank BCA</div>
-            <div class="bank-detail">2320 418 758</div>
-            <div class="bank-holder">a.n. SRI NOVYANA</div>
+        <div class="header-right">
+            <div class="invoice-title">Faktur Sewa</div>
+            <div class="invoice-number">No. <strong>#INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</strong></div>
+            <div class="invoice-number muted">Tgl:
+                {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
+            <div>
+                <span class="status-badge {{ $isLunas ? 'status-lunas' : 'status-belum' }}">
+                    {{ $isLunas ? 'LUNAS' : 'BELUM LUNAS' }}
+                </span>
+            </div>
         </div>
-
-        <div style="font-size:10px;color:#6b7280;margin-top:8px">
-            Mohon konfirmasi setelah melakukan pembayaran.<br>
-            Terima kasih atas kepercayaan Anda.
-        </div>
+        <div class="clear"></div>
     </div>
 
-    {{-- Totals --}}
-    <div class="totals-box">
-        <table class="totals-table">
+    {{-- ═══════════════════════════════
+    META: FAKTUR + BILLING
+    ═══════════════════════════════ --}}
+    <div class="meta-block">
+        <div class="meta-col">
+            <div class="meta-label">Detail Faktur</div>
+            <div class="meta-row"><strong>No. Faktur</strong> &nbsp;
+                #INV{{ str_pad($invoice->id, 4, '0', STR_PAD_LEFT) }}</div>
+            <div class="meta-row"><strong>No. Booking</strong> &nbsp;
+                #BK{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</div>
+            <div class="meta-row"><strong>Tanggal</strong> &nbsp;
+                {{ \Carbon\Carbon::parse($invoice->tanggal_invoice)->format('d F Y') }}</div>
+        </div>
+
+        <div class="meta-col-right">
+            <div class="meta-label">Ditagihkan Kepada</div>
+            <div class="meta-row bold">{{ $customer->nama }}</div>
+            <div class="meta-row">{{ $customer->alamat }}</div>
+            <div class="meta-row">{{ $customer->no_telp }}</div>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    {{-- ═══════════════════════════════
+    RINCIAN SEWA
+    ═══════════════════════════════ --}}
+    <div class="section-title">Rincian Sewa</div>
+
+    <table class="items-table">
+        <thead>
             <tr>
-                <td>Biaya Sewa</td>
-                <td class="text-right">Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}</td>
+                <th style="width:65%">Deskripsi</th>
+                <th class="text-right">Jumlah</th>
             </tr>
+        </thead>
+        <tbody>
+            {{-- Sewa Mobil --}}
+            <tr>
+                <td>
+                    <span class="bold">Sewa Mobil</span> —
+                    {{ $car->carModel->brand->name }} {{ $car->carModel->name }}
+                    <span class="muted">({{ $car->nopol }})</span>
+                    <div class="item-detail">
+                        <span>Keluar:
+                            {{ \Carbon\Carbon::parse($booking->tanggal_keluar)->format('d M Y') }}{{ $booking->waktu_keluar ? ' · ' . \Carbon\Carbon::parse($booking->waktu_keluar)->format('H:i') . ' WITA' : '' }}</span>
+                        <span>Kembali:
+                            {{ \Carbon\Carbon::parse($booking->tanggal_kembali)->format('d M Y') }}{{ $booking->waktu_kembali ? ' · ' . \Carbon\Carbon::parse($booking->waktu_kembali)->format('H:i') . ' WITA' : '' }}</span>
+                    </div>
+                    <div class="item-detail">
+                        <span>Durasi: {{ $booking->total_hari }} hari</span>
+                        <span>Rp {{ number_format($hargaPerHari, 0, ',', '.') }} / hari</span>
+                    </div>
+                </td>
+                <td class="text-right bold">
+                    Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}
+                </td>
+            </tr>
+
+            {{-- Antar / Jemput --}}
             @if ($invoice->pickup_dropOff > 0)
-            <tr>
-                <td>Biaya Antar/Jemput</td>
-                <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
-            </tr>
+                <tr>
+                    <td>Biaya Antar / Jemput</td>
+                    <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
+                </tr>
             @endif
-            @if ($invoice->total_denda > 0)
-            <tr>
-                <td>Denda / Klaim</td>
-                <td class="text-right">Rp {{ number_format($invoice->total_denda, 0, ',', '.') }}</td>
-            </tr>
-            @endif
-            <tr class="total-row">
-                <td>Total Tagihan</td>
-                <td class="text-right">Rp {{ number_format($invoice->total_tagihan, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td class="muted">Total Dibayar</td>
-                <td class="text-right muted">Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}</td>
-            </tr>
-            <tr class="{{ $isLunas ? 'sisa-lunas' : 'sisa-row' }}">
-                <td>Sisa Pembayaran</td>
-                <td class="text-right">Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</td>
-            </tr>
-        </table>
+
+            {{-- Denda / Klaim --}}
+            @foreach ($booking->penalties as $penalty)
+                <tr>
+                    <td>
+                        <span class="bold">{{ ucfirst($penalty->klaim) }}</span>
+                        @if ($penalty->description)
+                            <div class="item-detail">{{ $penalty->description }}</div>
+                        @endif
+                    </td>
+                    <td class="text-right">Rp {{ number_format($penalty->amount, 0, ',', '.') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{-- ═══════════════════════════════
+    BOTTOM: PEMBAYARAN + TOTALS
+    ═══════════════════════════════ --}}
+    <div class="bottom-section">
+
+        {{-- Rekening --}}
+        <div class="payment-box">
+            <div class="section-title" style="margin-bottom:10px">Metode Pembayaran</div>
+
+            <div class="bank-item">
+                <div class="bank-name">Bank Mandiri</div>
+                <div class="bank-detail">1610 006 892 835</div>
+                <div class="bank-holder">a.n. ACHMAD MUZAMMIL</div>
+            </div>
+
+            <div class="bank-item">
+                <div class="bank-name">Bank BCA</div>
+                <div class="bank-detail">2320 418 758</div>
+                <div class="bank-holder">a.n. SRI NOVYANA</div>
+            </div>
+
+            <div style="font-size:10px;color:#6b7280;margin-top:8px">
+                Mohon konfirmasi setelah melakukan pembayaran.<br>
+                Terima kasih atas kepercayaan Anda.
+            </div>
+        </div>
+
+        {{-- Totals --}}
+        <div class="totals-box">
+            <table class="totals-table">
+                <tr>
+                    <td>Biaya Sewa</td>
+                    <td class="text-right">Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}</td>
+                </tr>
+                @if ($invoice->pickup_dropOff > 0)
+                    <tr>
+                        <td>Biaya Antar/Jemput</td>
+                        <td class="text-right">Rp {{ number_format($invoice->pickup_dropOff, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
+                @if ($invoice->total_denda > 0)
+                    <tr>
+                        <td>Denda / Klaim</td>
+                        <td class="text-right">Rp {{ number_format($invoice->total_denda, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
+                <tr class="total-row">
+                    <td>Total Tagihan</td>
+                    <td class="text-right">Rp {{ number_format($invoice->total_tagihan, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td class="muted">Total Dibayar</td>
+                    <td class="text-right muted">Rp {{ number_format($invoice->total_paid, 0, ',', '.') }}</td>
+                </tr>
+                <tr class="{{ $isLunas ? 'sisa-lunas' : 'sisa-row' }}">
+                    <td>Sisa Pembayaran</td>
+                    <td class="text-right">Rp {{ number_format($invoice->sisa_pembayaran, 0, ',', '.') }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="clear"></div>
+    </div>
+
+    {{-- ═══════════════════════════════
+    TANDA TANGAN
+    ═══════════════════════════════ --}}
+    <div class="signature-section">
+        <div class="muted" style="font-size:10px;margin-bottom:6px">Hormat kami,</div>
+        @if ($stampData)
+            <img src="{{ $stampData }}" alt="Stempel" class="signature-img">
+        @else
+            <div style="height:72px;"></div>
+        @endif
+        <div class="signature-line">ACHMAD MUZAMMIL</div>
+        <div class="signature-role">Direktur</div>
     </div>
 
     <div class="clear"></div>
-</div>
 
-{{-- ═══════════════════════════════
-     TANDA TANGAN
-═══════════════════════════════ --}}
-<div class="signature-section">
-    <div class="muted" style="font-size:10px;margin-bottom:6px">Hormat kami,</div>
-    @if ($stampData)
-        <img src="{{ $stampData }}" alt="Stempel" class="signature-img">
-    @else
-        <div style="height:72px;"></div>
-    @endif
-    <div class="signature-line">ACHMAD MUZAMMIL</div>
-    <div class="signature-role">Direktur</div>
-</div>
-
-<div class="clear"></div>
-
-{{-- ═══════════════════════════════
-     FOOTER
-═══════════════════════════════ --}}
-<div class="footer">
-    <strong>Semeton Pesiar Trans</strong> &nbsp;·&nbsp;
-    Jl. Batu Ringgit No.218, Kota Mataram, NTB &nbsp;·&nbsp;
-    Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com<br>
-    Dokumen ini diterbitkan secara digital dan sah tanpa tanda tangan basah.
-</div>
+    {{-- ═══════════════════════════════
+    FOOTER
+    ═══════════════════════════════ --}}
+    <div class="footer">
+        <strong>Semeton Pesiar Trans</strong> &nbsp;·&nbsp;
+        Jl. Batu Ringgit No.218, Kota Mataram, NTB &nbsp;·&nbsp;
+        Telp: 0811-2894-8884 &nbsp;·&nbsp; www.semetonpesiar.com<br>
+        Dokumen ini diterbitkan secara digital dan sah tanpa tanda tangan basah.
+    </div>
 
 </body>
+
 </html>

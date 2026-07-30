@@ -12,7 +12,8 @@
             maksimal (1x24
             jam) setelah kendaraan diterima Kembali oleh pihak rental.</li>
         <li>Mobil tidak dilengkapi dengan Asuransi Allrisk (total kehilangan dan lecet). Apabila terjadi kecelakaan
-            pihak penyewa di wajibkan membayar biaya perbaikan bengkel dan biaya sewa kendaraan selama di bengkel sebesar 75% dari
+            pihak penyewa di wajibkan membayar biaya perbaikan bengkel dan biaya sewa kendaraan selama di bengkel
+            sebesar 75% dari
             harga sewa yang di sepakati</li>
         <li>Pembayaran sewa kendaraan penuh wajib maksimal pada saat penyerahan kendaraan.</li>
         <li>Kelebihan jam sewa (overtime) pemakaian akan dikenakan denda 20%/jam dari harga sewa kendaraan dan

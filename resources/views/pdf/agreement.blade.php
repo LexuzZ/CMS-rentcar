@@ -514,7 +514,8 @@
                 verifikasi data dan dokumen kepada instansi terkait, bank, tetangga rumah, ataupun di tempat kerja.</li>
             <li>Calon penyewa wajib menunjukkan KTP asli dan dokumen asli lainnya serta memberikan deposit minimal
                 <strong>Rp 2.500.000</strong> (mobil) dan <strong>Rp 1.000.000</strong> (motor). Pengambilan deposit
-                hanya melalui transfer bank maksimal 1×24 jam setelah kendaraan diterima kembali.</li>
+                hanya melalui transfer bank maksimal 1×24 jam setelah kendaraan diterima kembali.
+            </li>
             <li>Mobil tidak dilengkapi asuransi All-Risk. Apabila terjadi kecelakaan, penyewa wajib membayar biaya
                 perbaikan bengkel dan biaya sewa selama di bengkel sebesar <strong>75%</strong> dari harga sewa yang
                 disepakati.</li>
@@ -533,7 +534,8 @@
             <li>Kendaraan hanya boleh digunakan di <strong>Pulau Lombok</strong>. Overland dikenakan biaya <strong>Rp
                     200.000/hari</strong>.</li>
             <li>Penyewa wajib mengembalikan BBM seperti semula. Kekurangan BBM: <strong>Rp 50.000/bar</strong> atau
-                <strong>Rp 10.000/10 km</strong>.</li>
+                <strong>Rp 10.000/10 km</strong>.
+            </li>
             <li>Kendaraan diserahkan dalam keadaan bersih dan harus dikembalikan bersih. Biaya cuci jika dikembalikan
                 kotor: <strong>Rp 25.000</strong>.</li>
             <li>Penyewa wajib foto bersama kendaraan saat serah terima. Seluruh dokumentasi adalah hak rental.</li>
@@ -559,7 +561,8 @@
                         <td class="td-label">No. KTP</td>
                         <td class="td-sep">:</td>
                         <td class="td-val" style="font-family:monospace;letter-spacing:.04em;">
-                            {{ $booking->customer?->ktp ?? '—' }}</td>
+                            {{ $booking->customer?->ktp ?? '—' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-label">Telepon</td>

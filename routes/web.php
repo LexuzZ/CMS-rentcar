@@ -4,19 +4,15 @@ use App\Http\Controllers\CustomerCheckController;
 use App\Http\Controllers\CustomerFileController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PdfController;
-use App\Models\Booking;
-use Carbon\Carbon;
 use Filament\Http\Middleware\Authenticate;
-use Filament\Notifications\Notification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use function Pest\Laravel\get;
 
 Route::get('/storage/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
+    $fullPath = storage_path('app/public/'.$path);
 
-    if (!file_exists($fullPath)) {
+    if (! file_exists($fullPath)) {
         abort(404);
     }
 

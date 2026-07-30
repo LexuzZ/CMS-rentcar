@@ -108,9 +108,9 @@
                     </td>
                     {{-- <td>
                         @if (!is_null($row['change']))
-                            {{ number_format($row['change'], 1) }}%
+                        {{ number_format($row['change'], 1) }}%
                         @else
-                            -
+                        -
                         @endif
                     </td> --}}
                 </tr>
@@ -127,9 +127,9 @@
                     </td>
                     {{-- <td>
                         @if (!is_null($row['change']))
-                            {{ number_format($row['change'], 1) }}%
+                        {{ number_format($row['change'], 1) }}%
                         @else
-                            -
+                        -
                         @endif
                     </td> --}}
                 </tr>

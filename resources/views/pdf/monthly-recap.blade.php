@@ -163,7 +163,8 @@
             <h2>RINGKASAN</h2>
             <p><strong>Total Transaksi:</strong> {{ $summary['total_transactions'] }}</p>
             <p><strong>Periode:</strong> {{ $startDate->isoFormat('D MMMM YYYY') }} -
-                {{ $endDate->isoFormat('D MMMM YYYY') }}</p>
+                {{ $endDate->isoFormat('D MMMM YYYY') }}
+            </p>
             <p><strong>Rincian Status:</strong></p>
             <ul>
                 <li>Lunas: {{ $summary['status_breakdown']['lunas'] ?? 0 }} transaksi</li>
@@ -210,12 +211,14 @@
                                     <li>Sewa: Rp {{ number_format($booking->estimasi_biaya, 0, ',', '.') }}</li>
                                     @if ($payment->invoice->pickup_dropOff > 0)
                                         <li>Antar/Jemput: Rp
-                                            {{ number_format($payment->invoice->pickup_dropOff, 0, ',', '.') }}</li>
+                                            {{ number_format($payment->invoice->pickup_dropOff, 0, ',', '.') }}
+                                        </li>
                                     @endif
                                     @if ($booking->penalty->count() > 0)
                                         @foreach ($booking->penalty as $penalty)
                                             <li>{{ ucfirst($penalty->klaim) }}: Rp
-                                                {{ number_format($penalty->amount, 0, ',', '.') }}</li>
+                                                {{ number_format($penalty->amount, 0, ',', '.') }}
+                                            </li>
                                         @endforeach
                                     @endif
                                 </ul>
@@ -304,7 +307,7 @@
             {{-- PERBAIKAN 2: Hanya menggunakan satu blok untuk menampilkan gambar --}}
             <div class="signature-container">
                 {{-- @if ($stampData)
-                    <img src="{{  $stampData }}" alt="Tanda Tangan" class="signature-image">
+                <img src="{{  $stampData }}" alt="Tanda Tangan" class="signature-image">
                 @endif --}}
                 @if ($stampData)
                     <img src="{{ $stampData }}" alt="Stempel"
