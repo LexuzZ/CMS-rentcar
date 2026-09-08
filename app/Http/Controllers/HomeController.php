@@ -10,56 +10,163 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Car::with(['carModel.brand'])
-            ->get()
-            ->unique(function ($car) {
-                return $car->carModel?->brand_id.'-'.$car->car_model_id;
+        /*
+        |--------------------------------------------------------------------------
+        | Query dasar
+        |--------------------------------------------------------------------------
+        | Ambil hanya 1 mobil untuk setiap car_model_id.
+        | Karena setiap CarModel memiliki 1 brand, ini otomatis menghasilkan
+        | 1 data untuk setiap kombinasi Brand + Car Model.
+        |
+        | MIN(id) digunakan sebagai mobil yang akan ditampilkan.
+        |--------------------------------------------------------------------------
+        */
+
+        $query = Car::query()
+            ->with(['carModel.brand'])
+            ->whereIn('id', function ($subQuery) {
+                $subQuery->selectRaw('MIN(id)')
+                    ->from('cars')
+                    ->groupBy('car_model_id');
             });
 
-        // ── Filter pencarian nama ────────────────────────────
+        /*
+        |--------------------------------------------------------------------------
+        | Filter pencarian Brand / Car Model
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = trim($request->search);
+
             $query->whereHas('carModel', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhereHas('brand', fn ($b) => $b->where('name', 'like', "%{$search}%"));
-            });
-        }
-
-        // ── Filter transmisi ─────────────────────────────────
-        if ($request->filled('transmisi') && $request->transmisi !== 'semua') {
-            $query->where('transmisi', $request->transmisi);
-        }
-
-        // ── Filter ketersediaan berdasarkan tanggal ──────────
-        if ($request->filled('tgl_keluar') && $request->filled('tgl_kembali')) {
-            $tglKeluar = $request->tgl_keluar;
-            $tglKembali = $request->tgl_kembali;
-
-            $query->whereDoesntHave('bookings', function ($q) use ($tglKeluar, $tglKembali) {
-                $q->whereIn('status', ['booking', 'disewa'])
-                    ->where(function ($q2) use ($tglKeluar, $tglKembali) {
-                        $q2->where('tanggal_keluar', '<', $tglKembali)
-                            ->where('tanggal_kembali', '>', $tglKeluar);
+                    ->orWhereHas('brand', function ($brandQuery) use ($search) {
+                        $brandQuery->where('name', 'like', "%{$search}%");
                     });
             });
         }
 
-        // ── Sorting ──────────────────────────────────────────
-        match ($request->get('sort', 'termurah')) {
-            'termahal' => $query->orderBy('harga_harian', 'desc'),
-            'terbaru' => $query->latest(),
-            default => $query->orderBy('harga_harian', 'asc'),
-        };
+        /*
+        |--------------------------------------------------------------------------
+        | Filter transmisi
+        |--------------------------------------------------------------------------
+        */
 
-        $cars = $query->paginate(12)->withQueryString();
-
-        // ── Hitung total hari ─────────────────────────────────
-        $totalHari = 1;
-        if ($request->filled('tgl_keluar') && $request->filled('tgl_kembali')) {
-            $totalHari = max(1, Carbon::parse($request->tgl_keluar)
-                ->diffInDays(Carbon::parse($request->tgl_kembali)));
+        if (
+            $request->filled('transmisi') &&
+            $request->transmisi !== 'semua'
+        ) {
+            $query->where('transmisi', $request->transmisi);
         }
 
-        return view('home', compact('cars', 'totalHari'));
+        /*
+        |--------------------------------------------------------------------------
+        | Filter berdasarkan ketersediaan tanggal
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->filled('tgl_keluar') &&
+            $request->filled('tgl_kembali')
+        ) {
+            $tglKeluar = Carbon::parse($request->tgl_keluar);
+            $tglKembali = Carbon::parse($request->tgl_kembali);
+
+            // Pastikan tanggal kembali tidak lebih kecil dari tanggal keluar
+            if ($tglKembali->greaterThan($tglKeluar)) {
+                $query->whereDoesntHave('bookings', function ($bookingQuery) use (
+                    $tglKeluar,
+                    $tglKembali
+                ) {
+                    $bookingQuery
+                        ->whereIn('status', ['booking', 'disewa'])
+                        ->where(function ($overlapQuery) use (
+                            $tglKeluar,
+                            $tglKembali
+                        ) {
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Cek apakah periode booking bentrok
+                            |
+                            | Booking bentrok jika:
+                            | tanggal_keluar < tanggal yang dipilih
+                            | DAN
+                            | tanggal_kembali > tanggal yang dipilih
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $overlapQuery
+                                ->where('tanggal_keluar', '<', $tglKembali)
+                                ->where('tanggal_kembali', '>', $tglKeluar);
+                        });
+                });
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sorting
+        |--------------------------------------------------------------------------
+        */
+
+        switch ($request->get('sort', 'termurah')) {
+            case 'termahal':
+                $query->orderBy('harga_harian', 'desc');
+                break;
+
+            case 'terbaru':
+                $query->latest();
+                break;
+
+            case 'termurah':
+            default:
+                $query->orderBy('harga_harian', 'asc');
+                break;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination
+        |--------------------------------------------------------------------------
+        */
+
+        $cars = $query
+            ->paginate(12)
+            ->withQueryString();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hitung total hari sewa
+        |--------------------------------------------------------------------------
+        */
+
+        $totalHari = 1;
+
+        if (
+            $request->filled('tgl_keluar') &&
+            $request->filled('tgl_kembali')
+        ) {
+            $tglKeluar = Carbon::parse($request->tgl_keluar);
+            $tglKembali = Carbon::parse($request->tgl_kembali);
+
+            if ($tglKembali->greaterThan($tglKeluar)) {
+                $totalHari = max(
+                    1,
+                    $tglKeluar->diffInDays($tglKembali)
+                );
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Return View
+        |--------------------------------------------------------------------------
+        */
+
+        return view('home', compact(
+            'cars',
+            'totalHari'
+        ));
     }
 }
