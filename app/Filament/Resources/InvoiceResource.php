@@ -295,6 +295,7 @@ class InvoiceResource extends Resource
                             $text[] = '  📞 *HUBUNGI KAMI*';
                             $text[] = '  WA : +6281128948884';
                             $text[] = '  🌐 : www.semetonpesiar.com';
+                            $text[] = '  IG : @semeton.pesiar.lombok';
                             $text[] = '╚══════════════════════╝';
                             $text[] = '';
                             $text[] = '_Terima kasih telah mempercayai_';
