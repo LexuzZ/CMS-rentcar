@@ -263,7 +263,9 @@
                         $harga = $car->harga_harian ?? 0;
                         $totalHarga = $harga * $totalHari;
                         $transmisi = strtoupper($car->transmisi ?? 'AT');
-                        $foto = $car->photo ? Storage::url($car->photo) : asset('images/car-placeholder.png');
+                       $foto = $car->photo
+    ? asset('storage/cars/' . $car->photo)
+    : asset('images/car-placeholder.png');
 
                         // Badge ketersediaan — pakai warna default karena tidak ada kolom unit
                         $badgeColor = 'bg-green-100 text-green-700';
