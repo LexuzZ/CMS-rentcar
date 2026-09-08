@@ -39,7 +39,7 @@ class HomeController extends Controller
             $tglKembali = $request->tgl_kembali;
 
             $query->whereDoesntHave('bookings', function ($q) use ($tglKeluar, $tglKembali) {
-                $q->whereNotIn('status', ['cancelled', 'rejected'])
+                $q->whereNotIn('status', ['booking', 'selesai', 'batal', 'disewa'])
                     ->where(function ($q2) use ($tglKeluar, $tglKembali) {
                         // Overlap: booking yang bentrok dengan rentang yang diminta
                         $q2->where('tanggal_keluar', '<', $tglKembali)
