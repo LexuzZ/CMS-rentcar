@@ -88,19 +88,13 @@
             </a>
 
             {{-- Nav kanan --}}
-            <div class="flex items-center gap-3">
+            {{-- <div class="flex items-center gap-3">
                 @auth
                     <a href="{{ route('filament.admin.pages.dashboard') }}"
                         class="text-sm font-600 text-gray-600 hover:text-orange-700 transition">
                         Dashboard
                     </a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button
-                            class="text-sm font-600 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
-                            Keluar
-                        </button>
-                    </form>
+
                 @else
                     <a href="{{ route('filament.admin.auth.login') }}"
                         class="flex items-center gap-2 bg-brand bg-brand-hover text-white text-sm font-700 px-5 py-2 rounded-xl transition shadow-sm">
@@ -113,7 +107,7 @@
                         Masuk
                     </a>
                 @endauth
-            </div>
+            </div> --}}
         </div>
     </nav>
 
