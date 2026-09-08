@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Car::with(['carModel.brand'])
+        $query = Car::with(['carModel'])
             ->where('status', 'ready')
             ->where('garasi', 'SPT');
 
