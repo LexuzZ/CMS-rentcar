@@ -67,11 +67,11 @@ class HomeController extends Controller
         */
 
         if (
-            $request->filled('tgl_keluar') &&
-            $request->filled('tgl_kembali')
+            $request->filled('tanggal_keluar') &&
+            $request->filled('tanggal_kembali')
         ) {
-            $tglKeluar = Carbon::parse($request->tgl_keluar);
-            $tglKembali = Carbon::parse($request->tgl_kembali);
+            $tglKeluar = Carbon::parse($request->tanggal_keluar);
+            $tglKembali = Carbon::parse($request->tanggal_kembali);
 
             // Pastikan tanggal kembali tidak lebih kecil dari tanggal keluar
             if ($tglKembali->greaterThan($tglKeluar)) {
@@ -144,11 +144,11 @@ class HomeController extends Controller
         $totalHari = 1;
 
         if (
-            $request->filled('tgl_keluar') &&
-            $request->filled('tgl_kembali')
+            $request->filled('tanggal_keluar') &&
+            $request->filled('tanggal_kembali')
         ) {
-            $tglKeluar = Carbon::parse($request->tgl_keluar);
-            $tglKembali = Carbon::parse($request->tgl_kembali);
+            $tglKeluar = Carbon::parse($request->tanggal_keluar);
+            $tglKembali = Carbon::parse($request->tanggal_kembali);
 
             if ($tglKembali->greaterThan($tglKeluar)) {
                 $totalHari = max(

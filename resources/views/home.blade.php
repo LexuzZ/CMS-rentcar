@@ -299,8 +299,8 @@
                         $bookingUrl = \App\Filament\Resources\BookingResource::getUrl('create')
                             . '?' . http_build_query([
                                 'car_id' => $car->id,
-                                'tgl_keluar' => request('tgl_keluar'),
-                                'tgl_kembali' => request('tgl_kembali'),
+                                'tanggal_keluar' => request('tanggal_keluar'),
+                                'tanggal_kembali' => request('tanggal_kembali'),
                             ]);
 
                         $badgeColor = 'bg-green-100 text-green-700';
