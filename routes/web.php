@@ -3,10 +3,10 @@
 use App\Http\Controllers\CustomerCheckController;
 use App\Http\Controllers\CustomerFileController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PdfController;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 
 
 
@@ -27,7 +27,7 @@ Route::get('/order', [CustomerCheckController::class, 'cekNIK'])->name('cek.nik'
 Route::post('/order', [CustomerCheckController::class, 'cekNIKPost'])->name('cek.nik.post');
 Route::get('/penyewa', [CustomerCheckController::class, 'dataPenyewa'])->name('data.penyewa');
 Route::post('/penyewa', [CustomerCheckController::class, 'dataPenyewaPost'])->name('data.penyewa.post');
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/booking', [CustomerCheckController::class, 'bookingForm'])->name('booking.form');
 Route::get('/customers/{customer}/download-ktp', [CustomerFileController::class, 'downloadKtp'])->name('customers.download.ktp');
 Route::get('/customers/{customer}/download-sim', [CustomerFileController::class, 'downloadSim'])->name('customers.download.sim');
