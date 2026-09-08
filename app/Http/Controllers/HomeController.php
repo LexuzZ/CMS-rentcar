@@ -24,7 +24,6 @@ class HomeController extends Controller
         }
 
         // ── Filter transmisi ─────────────────────────────────
-        // Kolom 'jenis' dihapus karena tidak ada di tabel cars
         if ($request->filled('transmisi') && $request->transmisi !== 'semua') {
             $query->where('transmisi', $request->transmisi);
         }
@@ -35,7 +34,6 @@ class HomeController extends Controller
             $tglKembali = $request->tgl_kembali;
 
             $query->whereDoesntHave('bookings', function ($q) use ($tglKeluar, $tglKembali) {
-                // Hanya booking aktif (booking & disewa) yang dianggap menghalangi
                 $q->whereIn('status', ['booking', 'disewa'])
                   ->where(function ($q2) use ($tglKeluar, $tglKembali) {
                       $q2->where('tanggal_keluar', '<', $tglKembali)
@@ -44,12 +42,12 @@ class HomeController extends Controller
             });
         }
 
-        // // ── Sorting ──────────────────────────────────────────
-        // match ($request->get('sort', 'termurah')) {
-        //     'termahal' => $query->orderBy('harga', 'desc') // ← sesuaikan nama kolom harga,
-        //     'terbaru'  => $query->latest(),
-        //     default    => $query->orderBy('harga', 'asc')   // ← sesuaikan nama kolom harga,
-        // };
+        // ── Sorting ──────────────────────────────────────────
+        match ($request->get('sort', 'termurah')) {
+            'termahal' => $query->orderBy('harga_harian', 'desc'),
+            'terbaru'  => $query->latest(),
+            default    => $query->orderBy('harga_harian', 'asc'),
+        };
 
         $cars = $query->paginate(12)->withQueryString();
 
