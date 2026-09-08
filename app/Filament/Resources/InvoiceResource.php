@@ -241,7 +241,8 @@ class InvoiceResource extends Resource
                             // ── Kendaraan ───────────────────────────
                             $text[] = '🚘 *KENDARAAN*';
                             $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
-                            $text[] = "• Mobil       : *{$namaMobil}{$nopol}*";
+                            $text[] = "• Mobil       : *{$namaMobil}*";
+                            $text[] = "• No. Polisi  : *{$nopol}*";
                             $text[] = "• Transmisi   : {$transmisi}";
                             $text[] = '';
 
