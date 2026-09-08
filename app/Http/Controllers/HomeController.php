@@ -9,15 +9,17 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Car::with(['carModel.brand'])
-            ->where('status', 'tersedia'); // sesuaikan kolom status
+        $query = Car::with(['carModel']) // <-- Eager load relasi
+            ->where('status', 'ready')
+            ->where('garasi', 'SPT')
+            ->get();
 
         // ── Filter pencarian nama ────────────────────────────
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('carModel', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('brand', fn($b) => $b->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('brand', fn ($b) => $b->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -33,28 +35,28 @@ class HomeController extends Controller
 
         // ── Filter ketersediaan berdasarkan tanggal ──────────
         if ($request->filled('tgl_keluar') && $request->filled('tgl_kembali')) {
-            $tglKeluar  = $request->tgl_keluar;
+            $tglKeluar = $request->tgl_keluar;
             $tglKembali = $request->tgl_kembali;
 
             $query->whereDoesntHave('bookings', function ($q) use ($tglKeluar, $tglKembali) {
                 $q->whereNotIn('status', ['cancelled', 'rejected'])
-                  ->where(function ($q2) use ($tglKeluar, $tglKembali) {
-                      // Overlap: booking yang bentrok dengan rentang yang diminta
-                      $q2->where('tanggal_keluar', '<', $tglKembali)
-                         ->where('tanggal_kembali', '>', $tglKeluar);
-                  });
+                    ->where(function ($q2) use ($tglKeluar, $tglKembali) {
+                        // Overlap: booking yang bentrok dengan rentang yang diminta
+                        $q2->where('tanggal_keluar', '<', $tglKembali)
+                            ->where('tanggal_kembali', '>', $tglKeluar);
+                    });
             });
         }
 
         // ── Sorting ──────────────────────────────────────────
         match ($request->get('sort', 'termurah')) {
-            'termahal'  => $query->orderBy('harga_per_hari', 'desc'),
-            'terbaru'   => $query->latest(),
-            default     => $query->orderBy('harga_per_hari', 'asc'),
+            'termahal' => $query->orderBy('harga_per_hari', 'desc'),
+            'terbaru' => $query->latest(),
+            default => $query->orderBy('harga_per_hari', 'asc'),
         };
 
-        $cars       = $query->paginate(12)->withQueryString();
-        $totalCars  = $query->toBase()->getCountForPagination();
+        $cars = $query->paginate(12)->withQueryString();
+        $totalCars = $query->toBase()->getCountForPagination();
 
         // Hitung jumlah hari untuk tampilan harga total
         $totalHari = 1;
