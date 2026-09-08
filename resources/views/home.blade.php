@@ -32,7 +32,7 @@
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <img src="{{ asset('spt.png') }}" alt="Semeton Pesiar" class="h-9 w-auto">
         </a>
-        <div class="flex items-center gap-3">
+        {{-- <div class="flex items-center gap-3">
             @auth
                 <a href="{{ route('filament.admin.pages.dashboard') }}"
                    class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">
@@ -55,7 +55,7 @@
                     Masuk
                 </a>
             @endauth
-        </div>
+        </div> --}}
     </div>
 </nav>
 
