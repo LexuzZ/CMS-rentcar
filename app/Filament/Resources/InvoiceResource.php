@@ -11,11 +11,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
 use Filament\Infolists;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\Section;
-use Illuminate\Support\Facades\URL;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,8 +27,11 @@ class InvoiceResource extends Resource
     protected static ?string $model = Invoice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+
     protected static ?int $navigationSort = 2;
+
     protected static ?string $label = 'Faktur';
+
     protected static ?string $pluralLabel = 'Faktur Sewa';
 
     // ─────────────────────────────────────────
@@ -39,6 +40,7 @@ class InvoiceResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         $count = Invoice::where('sisa_pembayaran', '>', 0)->count();
+
         return $count > 0 ? (string) $count : null;
     }
 
@@ -70,8 +72,7 @@ class InvoiceResource extends Resource
                             fn($query) => $query->with(['car.carModel', 'customer'])
                         )
                         ->getOptionLabelFromRecordUsing(
-                            fn($record) =>
-                            "#{$record->id} — {$record->car?->nopol} ({$record->customer?->nama})"
+                            fn($record) => "#{$record->id} — {$record->car?->nopol} ({$record->customer?->nama})"
                         )
                         ->searchable()
                         ->required()
@@ -182,65 +183,90 @@ class InvoiceResource extends Resource
                                 return null;
                             }
 
-                            $totalDenda = $booking->penalties?->sum('amount') ?? 0;
-                            $biayaSewa = $booking->estimasi_biaya ?? 0;
+                            $totalDenda    = $booking->penalties?->sum('amount') ?? 0;
+                            $biayaSewa     = $booking->estimasi_biaya ?? 0;
                             $pickupDropOff = $record->pickup_dropOff ?? 0;
-                            $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
-                            $dp = $record->total_paid ?? 0;
-                            $sisaPembayaran = $record->sisa_pembayaran ?? 0;
+                            $totalTagihan  = $biayaSewa + $pickupDropOff + $totalDenda;
+                            $totalBayar    = $record->total_paid ?? 0;
+                            $sisaBayar     = $record->sisa_pembayaran ?? 0;
 
                             $customerName = $booking->customer?->nama ?? '-';
+                            $noTelp       = $booking->customer?->no_telp ?? '-';
 
-                            $car = $booking->car;
-                            $carDetails = $car
-                                ? trim(
-                                    ($car->carModel?->brand?->name ?? '') . ' ' .
-                                        ($car->carModel?->name ?? '') .
-                                        ($car->nopol ? " ({$car->nopol})" : '')
-                                )
+                            $car        = $booking->car;
+                            $namaMobil  = $car
+                                ? trim(($car->carModel?->brand?->name ?? '') . ' ' . ($car->carModel?->name ?? ''))
                                 : '-';
+                            $transmisi  = $car?->transmisi ?? '-';
+                            $nopol      = $car?->nopol ? "({$car->nopol})" : '';
 
-                            $tglKeluar = $booking->tanggal_keluar
-                                ? Carbon::parse($booking->tanggal_keluar)->isoFormat('D MMMM Y')
+                            $tglKeluar  = $booking->tanggal_keluar
+                                ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
                                 : '-';
-
                             $tglKembali = $booking->tanggal_kembali
-                                ? Carbon::parse($booking->tanggal_kembali)->isoFormat('D MMMM Y')
+                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
                                 : '-';
+                            $totalHari  = $booking->total_hari ?? 0;
 
-                            $text = [];
-                            $text[] = "Halo {$customerName} 👋";
-                            $text[] = "";
-                            $text[] = "Berikut detail faktur sewa mobil Anda dari Semeton Pesiar:";
-                            $text[] = "";
-                            $text[] = "No. Faktur: #{$record->id}";
-                            $text[] = "Tanggal: " . Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y');
-                            $text[] = "Mobil: {$carDetails}";
-                            $text[] = "Durasi: {$tglKeluar} - {$tglKembali} ({$booking->total_hari} hari)";
-                            $text[] = "Biaya Sewa: Rp " . number_format($biayaSewa, 0, ',', '.');
+                            $tglDibuat  = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('dddd, D MMMM Y');
+
+                            // Status pembayaran
+                            $statusBayar = match (true) {
+                                $sisaBayar <= 0             => 'Lunas ✅',
+                                $totalBayar > 0             => 'Bayar Sebagian',
+                                default                     => 'Belum Bayar',
+                            };
+
+                            // Harga per hari
+                            $hargaPerHari = $totalHari > 0 ? $biayaSewa / $totalHari : $biayaSewa;
+
+                            $text   = [];
+                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
+                            $text[] = "*SEMETON PESIAR*";
+                            $text[] = "*DETAIL TRANSAKSI SEWA*";
+                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
+                            $text[] = "*No. Faktur:* #{$record->id}";
+                            $text[] = "*Customer:* {$customerName}";
+                            $text[] = "*Telepon:* {$noTelp}";
+                            $text[] = "*--- Kendaraan ---*";
+                            $text[] = "*Mobil:* " . strtoupper($namaMobil) . " {$nopol}";
+                            $text[] = "*Transmisi:* " . strtoupper($transmisi);
+                            $text[] = "*--- Waktu Sewa ---*";
+                            $text[] = "*Mulai:* {$tglKeluar}";
+                            $text[] = "*Selesai:* {$tglKembali}";
+                            $text[] = "*Durasi:* {$totalHari} hari";
+                            $text[] = "*--- Rincian Biaya ---*";
+                            $text[] = "{$totalHari} hari x Rp " . number_format($hargaPerHari, 0, ',', '.') . " = Rp " . number_format($biayaSewa, 0, ',', '.');
 
                             if ($pickupDropOff > 0) {
-                                $text[] = "Biaya Antar/Jemput: Rp " . number_format($pickupDropOff, 0, ',', '.');
+                                $text[] = "Biaya Antar/Jemput = Rp " . number_format($pickupDropOff, 0, ',', '.');
                             }
 
                             if ($totalDenda > 0) {
-                                $text[] = "Denda/Klaim Garasi: Rp " . number_format($totalDenda, 0, ',', '.');
+                                $text[] = "Denda/Klaim Garasi = Rp " . number_format($totalDenda, 0, ',', '.');
                             }
 
-                            $text[] = "Total Tagihan: Rp " . number_format($totalTagihan, 0, ',', '.');
-                            $text[] = "Total Dibayar: Rp " . number_format($dp, 0, ',', '.');
-                            $text[] = "Sisa Pembayaran: Rp " . number_format($sisaPembayaran, 0, ',', '.');
+                            $text[] = "─────────────────────";
+                            $text[] = "*TOTAL TAGIHAN = Rp " . number_format($totalTagihan, 0, ',', '.') . "*";
+                            $text[] = "*--- Pembayaran ---*";
+                            $text[] = "Total Bayar = Rp " . number_format($totalBayar, 0, ',', '.');
+                            $text[] = "*Sisa = Rp " . number_format($sisaBayar, 0, ',', '.') . "*";
+                            $text[] = "*Status: {$statusBayar}*";
+                            $text[] = "*Dibuat pada:* {$tglDibuat}";
+                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
                             $text[] = "";
                             $text[] = "Pembayaran dapat dilakukan ke:";
                             $text[] = "Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL";
                             $text[] = "BCA: 2320418758 a.n. SRI NOVYANA";
                             $text[] = "";
-                            $text[] = "Terima kasih 🙏";
+                            $text[] = "📞 *Hubungi Kami*";
+                            $text[] = "WA: +6281907777178";
+                            $text[] = "";
+                            $text[] = "Terima kasih telah mempercayai *Semeton Pesiar* 🙏";
 
                             $message = urlencode(implode("\n", $text));
 
                             $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
-
                             if (str_starts_with($phone, '0')) {
                                 $phone = '62' . substr($phone, 1);
                             }
@@ -249,7 +275,6 @@ class InvoiceResource extends Resource
                         })
                         ->openUrlInNewTab()
                         ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
-
                     Action::make('notif_kembali_wa')
                         ->label('Notif Kembali WA')
                         ->icon('heroicon-o-arrow-uturn-left')
@@ -257,7 +282,7 @@ class InvoiceResource extends Resource
                         ->url(function (Invoice $record) {
                             $booking = $record->booking;
 
-                            if (!$booking || !$booking->customer?->no_telp) {
+                            if (! $booking || ! $booking->customer?->no_telp) {
                                 return null;
                             }
 
@@ -279,8 +304,6 @@ class InvoiceResource extends Resource
                                 )
                                 : '-';
 
-
-
                             $tglKembali = $booking->tanggal_kembali
                                 ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y')
                                 : '-';
@@ -295,9 +318,9 @@ class InvoiceResource extends Resource
 
                             $text = [];
                             $text[] = "Halo *{$customerName}* 👋";
-                            $text[] = "";
-                            $text[] = "📌 *DETAIL PENGEMBALIAN:*";
-                            $text[] = "";
+                            $text[] = '';
+                            $text[] = '📌 *DETAIL PENGEMBALIAN:*';
+                            $text[] = '';
 
                             $text[] = "🚗 Mobil: {$carDetails}";
                             $text[] = "📅 Hari: {$tglKembali}";
@@ -305,20 +328,20 @@ class InvoiceResource extends Resource
                             $text[] = "📍 Lokasi Pengembalian : {$lokasiPengembalian}";
                             // $text[] = "🗺 Wilayah Sewa : {$wilayahSewa}";
                             $text[] = "🧑‍🔧 Petugas Pengembalian : {$petugas}";
-                            $text[] = "";
-                            $text[] = "Apakah data pengembalian di atas sudah sesuai, Kak? 😊";
-                            $text[] = "Jika ada perubahan waktu atau lokasi, mohon diinformasikan sebelumnya agar kami dapat menyesuaikan proses penjemputan unit 🙏";
-                            $text[] = "━━━━━━━━━━━━━━━";
-                            $text[] = "✨ Mohon bantuannya sebelum pengembalian kendaraan:";
-                            $text[] = "✅ Pastikan barang bawaan pribadi tidak tertinggal";
-                            $text[] = "✅ Pastikan BBM sesuai ketentuan awal sewa";
-                            $text[] = "✅ Pastikan kendaraan dalam kondisi baik saat serah terima";
-                            $text[] = "✅ Keterlambatan pengembalian/overtime akan di kenakan charge";
-                            $text[] = "";
-                            $text[] = "📌 Segala bentuk kehilangan barang pribadi di dalam kendaraan bukan menjadi tanggung jawab pihak kami.";
-                            $text[] = "";
-                            $text[] = "Terima kasih banyak atas kerja samanya Kak 🙏😊";
-                            $text[] = "*Semeton Pesiar Trans* 🚗";
+                            $text[] = '';
+                            $text[] = 'Apakah data pengembalian di atas sudah sesuai, Kak? 😊';
+                            $text[] = 'Jika ada perubahan waktu atau lokasi, mohon diinformasikan sebelumnya agar kami dapat menyesuaikan proses penjemputan unit 🙏';
+                            $text[] = '━━━━━━━━━━━━━━━';
+                            $text[] = '✨ Mohon bantuannya sebelum pengembalian kendaraan:';
+                            $text[] = '✅ Pastikan barang bawaan pribadi tidak tertinggal';
+                            $text[] = '✅ Pastikan BBM sesuai ketentuan awal sewa';
+                            $text[] = '✅ Pastikan kendaraan dalam kondisi baik saat serah terima';
+                            $text[] = '✅ Keterlambatan pengembalian/overtime akan di kenakan charge';
+                            $text[] = '';
+                            $text[] = '📌 Segala bentuk kehilangan barang pribadi di dalam kendaraan bukan menjadi tanggung jawab pihak kami.';
+                            $text[] = '';
+                            $text[] = 'Terima kasih banyak atas kerja samanya Kak 🙏😊';
+                            $text[] = '*Semeton Pesiar Trans* 🚗';
 
                             $message = rawurlencode(implode("\n", $text));
 
@@ -333,7 +356,6 @@ class InvoiceResource extends Resource
                         ->openUrlInNewTab()
                         ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
 
-
                     Action::make('copyInvoice')
                         ->label('Copy Tagihan')
                         ->icon('heroicon-o-clipboard-document')
@@ -342,7 +364,7 @@ class InvoiceResource extends Resource
                         ->modalContent(function (Invoice $record): View {
                             $booking = $record->booking;
 
-                            if (!$booking) {
+                            if (! $booking) {
                                 return view('filament.actions.copy-invoice', [
                                     'textToCopy' => 'Data booking tidak ditemukan.',
                                 ]);
@@ -372,31 +394,31 @@ class InvoiceResource extends Resource
 
                             $text = [];
                             $text[] = "Halo *{$customerName}* 👋😊";
-                            $text[] = "";
-                            $text[] = "Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:";
-                            $text[] = "";
+                            $text[] = '';
+                            $text[] = 'Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:';
+                            $text[] = '';
                             $text[] = "🧾 *No. Faktur:* #{$record->id}";
-                            $text[] = "📅 *Tanggal:* " . Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y');
-                            $text[] = "-----------------------------------";
+                            $text[] = '📅 *Tanggal:* ' . Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y');
+                            $text[] = '-----------------------------------';
                             $text[] = "🚗 *Mobil:* {$carDetails}";
                             $text[] = "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$booking->total_hari} hari)";
-                            $text[] = "💰 *Biaya Sewa:* Rp " . number_format($biayaSewa, 0, ',', '.');
+                            $text[] = '💰 *Biaya Sewa:* Rp ' . number_format($biayaSewa, 0, ',', '.');
                             if ($pickupDropOff > 0) {
-                                $text[] = "➡️⬅️ *Biaya Antar/Jemput:* Rp " . number_format($pickupDropOff, 0, ',', '.');
+                                $text[] = '➡️⬅️ *Biaya Antar/Jemput:* Rp ' . number_format($pickupDropOff, 0, ',', '.');
                             }
                             if ($totalDenda > 0) {
-                                $text[] = "⚖️ *Denda / Klaim Garasi:* Rp " . number_format($totalDenda, 0, ',', '.');
+                                $text[] = '⚖️ *Denda / Klaim Garasi:* Rp ' . number_format($totalDenda, 0, ',', '.');
                             }
-                            $text[] = "-----------------------------------";
-                            $text[] = "✉️ *Total Tagihan:* Rp " . number_format($totalTagihan, 0, ',', '.');
-                            $text[] = "🔐 *Total Dibayar:* Rp " . number_format($dp, 0, ',', '.');
-                            $text[] = "🔔 *Sisa Pembayaran:* *Rp " . number_format($sisaPembayaran, 0, ',', '.') . "*";
-                            $text[] = "";
-                            $text[] = "Mohon lakukan pembayaran ke salah satu rekening berikut:";
-                            $text[] = "🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL";
-                            $text[] = "🏦 BCA: 2320418758 a.n. SRI NOVYANA";
-                            $text[] = "";
-                            $text[] = "🙏 Terima kasih.";
+                            $text[] = '-----------------------------------';
+                            $text[] = '✉️ *Total Tagihan:* Rp ' . number_format($totalTagihan, 0, ',', '.');
+                            $text[] = '🔐 *Total Dibayar:* Rp ' . number_format($dp, 0, ',', '.');
+                            $text[] = '🔔 *Sisa Pembayaran:* *Rp ' . number_format($sisaPembayaran, 0, ',', '.') . '*';
+                            $text[] = '';
+                            $text[] = 'Mohon lakukan pembayaran ke salah satu rekening berikut:';
+                            $text[] = '🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL';
+                            $text[] = '🏦 BCA: 2320418758 a.n. SRI NOVYANA';
+                            $text[] = '';
+                            $text[] = '🙏 Terima kasih.';
 
                             return view('filament.actions.copy-invoice', [
                                 'textToCopy' => implode("\n", $text),
@@ -606,8 +628,7 @@ class InvoiceResource extends Resource
                     ->toggle()
                     ->query(fn($query) => $query->where('sisa_pembayaran', '>', 0))
                     ->indicateUsing(
-                        fn(array $data): ?string =>
-                        $data['isActive'] ? '⚠ Belum lunas' : null
+                        fn(array $data): ?string => $data['isActive'] ? '⚠ Belum lunas' : null
                     ),
 
                 Tables\Filters\Filter::make('lunas')
@@ -615,8 +636,7 @@ class InvoiceResource extends Resource
                     ->toggle()
                     ->query(fn($query) => $query->where('sisa_pembayaran', '<=', 0))
                     ->indicateUsing(
-                        fn(array $data): ?string =>
-                        $data['isActive'] ? '✓ Sudah lunas' : null
+                        fn(array $data): ?string => $data['isActive'] ? '✓ Sudah lunas' : null
                     ),
 
                 Tables\Filters\Filter::make('bulan_ini')
@@ -629,8 +649,7 @@ class InvoiceResource extends Resource
                             ->whereYear('tanggal_invoice', now()->year)
                     )
                     ->indicateUsing(
-                        fn(array $data): ?string =>
-                        $data['isActive']
+                        fn(array $data): ?string => $data['isActive']
                             ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
                             : null
                     ),
@@ -660,8 +679,7 @@ class InvoiceResource extends Resource
             ->paginated([10, 25, 50])
 
             ->recordClasses(
-                fn(Invoice $record): string =>
-                $record->sisa_pembayaran == 0
+                fn(Invoice $record): string => $record->sisa_pembayaran == 0
                     ? 'opacity-70'
                     : ''
             );
