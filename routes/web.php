@@ -6,8 +6,9 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PdfController;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-use function Pest\Laravel\get;
+
 
 Route::get('/storage/{path}', function ($path) {
     $fullPath = storage_path('app/public/'.$path);
@@ -26,13 +27,12 @@ Route::get('/order', [CustomerCheckController::class, 'cekNIK'])->name('cek.nik'
 Route::post('/order', [CustomerCheckController::class, 'cekNIKPost'])->name('cek.nik.post');
 Route::get('/penyewa', [CustomerCheckController::class, 'dataPenyewa'])->name('data.penyewa');
 Route::post('/penyewa', [CustomerCheckController::class, 'dataPenyewaPost'])->name('data.penyewa.post');
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/booking', [CustomerCheckController::class, 'bookingForm'])->name('booking.form');
 Route::get('/customers/{customer}/download-ktp', [CustomerFileController::class, 'downloadKtp'])->name('customers.download.ktp');
 Route::get('/customers/{customer}/download-sim', [CustomerFileController::class, 'downloadSim'])->name('customers.download.sim');
 
 Route::group(['middleware' => ['web', Authenticate::class]], function () {
-
     Route::get('/reports/export-car-bookings/{car}/{year}/{month}', [ExportController::class, 'exportCarBookings'])
         ->name('reports.export.car.bookings');
     // URL diubah menjadi /admin/bookings-calendar agar lebih konsisten
