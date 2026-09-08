@@ -189,6 +189,8 @@ class InvoiceResource extends Resource
                             $totalTagihan  = $biayaSewa + $pickupDropOff + $totalDenda;
                             $totalBayar    = $record->total_paid ?? 0;
                             $sisaBayar     = $record->sisa_pembayaran ?? 0;
+                            $pengantaran = $booking->lokasi_pengantaran ?? '-';
+                            $pengembalian = $booking->lokasi_pengembalian ?? '-';
 
                             $customerName = $booking->customer?->nama ?? '-';
                             $noTelp       = $booking->customer?->no_telp ?? '-';
@@ -235,6 +237,8 @@ class InvoiceResource extends Resource
                             $text[] = "*Mulai:* {$tglKeluar}";
                             $text[] = "*Selesai:* {$tglKembali}";
                             $text[] = "*Durasi:* {$totalHari} hari";
+                            $text[] = "*Lokasi Antar:* {$pengantaran}";
+                            $text[] = "*Lokasi Jemput:* {$pengembalian}";
                             $text[] = "*--- Rincian Biaya ---*";
                             $text[] = "{$totalHari} hari x Rp " . number_format($hargaPerHari, 0, ',', '.') . " = Rp " . number_format($biayaSewa, 0, ',', '.');
 
