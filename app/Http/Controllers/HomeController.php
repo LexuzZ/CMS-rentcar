@@ -10,7 +10,6 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        // Bangun query dulu, JANGAN panggil ->get() di sini
         $query = Car::with(['carModel.brand'])
             ->where('status', 'ready')
             ->where('garasi', 'SPT');
@@ -24,12 +23,8 @@ class HomeController extends Controller
             });
         }
 
-        // ── Filter jenis kendaraan ───────────────────────────
-        if ($request->filled('jenis') && $request->jenis !== 'semua') {
-            $query->where('jenis', $request->jenis);
-        }
-
         // ── Filter transmisi ─────────────────────────────────
+        // Kolom 'jenis' dihapus karena tidak ada di tabel cars
         if ($request->filled('transmisi') && $request->transmisi !== 'semua') {
             $query->where('transmisi', $request->transmisi);
         }
@@ -40,7 +35,8 @@ class HomeController extends Controller
             $tglKembali = $request->tgl_kembali;
 
             $query->whereDoesntHave('bookings', function ($q) use ($tglKeluar, $tglKembali) {
-                $q->whereNotIn('status', ['booking', 'disewa', 'selesai', 'batal'])
+                // Hanya booking aktif (booking & disewa) yang dianggap menghalangi
+                $q->whereIn('status', ['booking', 'disewa'])
                   ->where(function ($q2) use ($tglKeluar, $tglKembali) {
                       $q2->where('tanggal_keluar', '<', $tglKembali)
                          ->where('tanggal_kembali', '>', $tglKeluar);
@@ -55,10 +51,9 @@ class HomeController extends Controller
             default    => $query->orderBy('harga_per_hari', 'asc'),
         };
 
-        // ── Eksekusi query (HARUS di paling bawah) ───────────
         $cars = $query->paginate(12)->withQueryString();
 
-        // ── Hitung total hari untuk tampilan harga ────────────
+        // ── Hitung total hari ─────────────────────────────────
         $totalHari = 1;
         if ($request->filled('tgl_keluar') && $request->filled('tgl_kembali')) {
             $totalHari = max(1, Carbon::parse($request->tgl_keluar)
