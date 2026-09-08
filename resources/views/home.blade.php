@@ -385,7 +385,7 @@
 
                             {{-- Tombol Booking --}}
                             <a href="{{ $bookingUrl }}"
-                                class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
+                                class="block w-full text-center bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm py-2.5 rounded-xl transition">
 
                                 Pilih kendaraan ini
 
