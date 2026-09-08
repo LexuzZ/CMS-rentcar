@@ -197,77 +197,108 @@ class InvoiceResource extends Resource
 
                             $car = $booking->car;
                             $namaMobil = $car
-                                ? trim(($car->carModel?->brand?->name ?? '').' '.($car->carModel?->name ?? ''))
+                                ? strtoupper(trim(($car->carModel?->brand?->name ?? '').' '.($car->carModel?->name ?? '')))
                                 : '-';
-                            $transmisi = $car?->transmisi ?? '-';
-                            $nopol = $car?->nopol ? "({$car->nopol})" : '';
+                            $transmisi = strtoupper($car?->transmisi ?? '-');
+                            $nopol = $car?->nopol ? " ({$car->nopol})" : '';
 
                             $tglKeluar = $booking->tanggal_keluar
-                                ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
+                                ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y • HH:mm')
                                 : '-';
                             $tglKembali = $booking->tanggal_kembali
-                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
+                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y • HH:mm')
                                 : '-';
                             $totalHari = $booking->total_hari ?? 0;
-
-                            $tglDibuat = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('dddd, D MMMM Y');
-
-                            // Status pembayaran
-                            $statusBayar = match (true) {
-                                $sisaBayar <= 0 => 'Lunas ✅',
-                                $totalBayar > 0 => 'Bayar Sebagian',
-                                default => 'Belum Bayar',
-                            };
-
-                            // Harga per hari
+                            $tglDibuat = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('D MMMM Y');
                             $hargaPerHari = $totalHari > 0 ? $biayaSewa / $totalHari : $biayaSewa;
 
+                            $statusBayar = match (true) {
+                                $sisaBayar <= 0 => '✅ Lunas',
+                                $totalBayar > 0 => '⚠️ Bayar Sebagian',
+                                default => '🔴 Belum Bayar',
+                            };
+
+                            $rp = fn ($n) => 'Rp '.number_format($n, 0, ',', '.');
+
                             $text = [];
-                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
-                            $text[] = '*SEMETON PESIAR*';
-                            $text[] = '*DETAIL TRANSAKSI SEWA*';
-                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
-                            $text[] = "*No. Faktur:* #{$record->id}";
-                            $text[] = "*Customer:* {$customerName}";
-                            $text[] = "*Telepon:* {$noTelp}";
-                            $text[] = '*--- Kendaraan ---*';
-                            $text[] = '*Mobil:* '.strtoupper($namaMobil)." {$nopol}";
-                            $text[] = '*Transmisi:* '.strtoupper($transmisi);
-                            $text[] = '*--- Waktu Sewa ---*';
-                            $text[] = "*Mulai:* {$tglKeluar}";
-                            $text[] = "*Selesai:* {$tglKembali}";
-                            $text[] = "*Durasi:* {$totalHari} hari";
-                            $text[] = "*Lokasi Antar:* {$pengantaran}";
-                            $text[] = "*Lokasi Jemput:* {$pengembalian}";
-                            $text[] = '*--- Rincian Biaya ---*';
-                            $text[] = "{$totalHari} hari x Rp ".number_format($hargaPerHari, 0, ',', '.').' = Rp '.number_format($biayaSewa, 0, ',', '.');
+
+                            // ── Header ──────────────────────────────
+                            $text[] = '╔══════════════════════╗';
+                            $text[] = '       🚗 *SEMETON PESIAR*';
+                            $text[] = '    *Detail Transaksi Sewa*';
+                            $text[] = '╚══════════════════════╝';
+                            $text[] = '';
+
+                            // ── Info Faktur ──────────────────────────
+                            $text[] = '📋 *INFO FAKTUR*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "• No. Faktur  : *#{$record->id}*";
+                            $text[] = "• Tanggal     : {$tglDibuat}";
+                            $text[] = "• Customer    : *{$customerName}*";
+                            $text[] = "• No. HP      : {$noTelp}";
+                            $text[] = '';
+
+                            // ── Kendaraan ───────────────────────────
+                            $text[] = '🚘 *KENDARAAN*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "• Mobil       : *{$namaMobil}{$nopol}*";
+                            $text[] = "• Transmisi   : {$transmisi}";
+                            $text[] = '';
+
+                            // ── Jadwal ──────────────────────────────
+                            $text[] = '📅 *JADWAL SEWA*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "• Mulai       : {$tglKeluar}";
+                            $text[] = "• Selesai     : {$tglKembali}";
+                            $text[] = "• Durasi      : *{$totalHari} hari*";
+                            $text[] = "• Lokasi Antar: {$pengantaran}";
+                            $text[] = "• Lokasi Ambil: {$pengembalian}";
+                            $text[] = '';
+
+                            // ── Rincian Biaya ───────────────────────
+                            $text[] = '💰 *RINCIAN BIAYA*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "• Biaya Sewa  : {$totalHari} hari × {$rp($hargaPerHari)}";
+                            $text[] = "               = *{$rp($biayaSewa)}*";
 
                             if ($pickupDropOff > 0) {
-                                $text[] = 'Biaya Antar/Jemput = Rp '.number_format($pickupDropOff, 0, ',', '.');
+                                $text[] = "• Antar/Jemput: *{$rp($pickupDropOff)}*";
                             }
 
                             if ($totalDenda > 0) {
-                                $text[] = 'Denda/Klaim Garasi = Rp '.number_format($totalDenda, 0, ',', '.');
+                                $text[] = "• Denda/Klaim : *{$rp($totalDenda)}*";
                             }
 
-                            $text[] = '─────────────────────';
-                            $text[] = '*TOTAL TAGIHAN = Rp '.number_format($totalTagihan, 0, ',', '.').'*';
-                            $text[] = '*--- Pembayaran ---*';
-                            $text[] = 'Total Bayar = Rp '.number_format($totalBayar, 0, ',', '.');
-                            $text[] = '*Sisa = Rp '.number_format($sisaBayar, 0, ',', '.').'*';
-                            $text[] = "*Status: {$statusBayar}*";
-                            $text[] = "*Dibuat pada:* {$tglDibuat}";
-                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "🧾 *TOTAL TAGIHAN : {$rp($totalTagihan)}*";
                             $text[] = '';
-                            $text[] = 'Pembayaran dapat dilakukan ke:';
-                            $text[] = 'Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL';
-                            $text[] = 'BCA: 2320418758 a.n. SRI NOVYANA';
+
+                            // ── Status Bayar ────────────────────────
+                            $text[] = '💳 *PEMBAYARAN*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = "• Sudah Bayar : {$rp($totalBayar)}";
+                            $text[] = "• Sisa Tagihan: *{$rp($sisaBayar)}*";
+                            $text[] = "• Status      : {$statusBayar}";
                             $text[] = '';
-                            $text[] = '📞 *Hubungi Kami*';
-                            $text[] = 'WA  : +6281128948884';
-                            $text[] = '🌐 : www.semetonpesiar.com';
+
+                            // ── Rekening ────────────────────────────
+                            $text[] = '🏦 *REKENING PEMBAYARAN*';
+                            $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+                            $text[] = '• Mandiri : *1610006892835*';
+                            $text[] = '            a.n. ACHMAD MUZAMMIL';
+                            $text[] = '• BCA     : *2320418758*';
+                            $text[] = '            a.n. SRI NOVYANA';
                             $text[] = '';
-                            $text[] = 'Terima kasih telah mempercayai *Semeton Pesiar* 🙏';
+
+                            // ── Footer ──────────────────────────────
+                            $text[] = '╔══════════════════════╗';
+                            $text[] = '  📞 *HUBUNGI KAMI*';
+                            $text[] = '  WA : +6281128948884';
+                            $text[] = '  🌐 : www.semetonpesiar.com';
+                            $text[] = '╚══════════════════════╝';
+                            $text[] = '';
+                            $text[] = '_Terima kasih telah mempercayai_';
+                            $text[] = '*Semeton Pesiar* 🙏';
 
                             $message = urlencode(implode("\n", $text));
 
