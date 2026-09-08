@@ -44,12 +44,12 @@ class HomeController extends Controller
             });
         }
 
-        // ── Sorting ──────────────────────────────────────────
-        match ($request->get('sort', 'termurah')) {
-            'termahal' => $query->orderBy('harga_per_hari', 'desc'),
-            'terbaru'  => $query->latest(),
-            default    => $query->orderBy('harga_per_hari', 'asc'),
-        };
+        // // ── Sorting ──────────────────────────────────────────
+        // match ($request->get('sort', 'termurah')) {
+        //     'termahal' => $query->orderBy('harga', 'desc') // ← sesuaikan nama kolom harga,
+        //     'terbaru'  => $query->latest(),
+        //     default    => $query->orderBy('harga', 'asc')   // ← sesuaikan nama kolom harga,
+        // };
 
         $cars = $query->paginate(12)->withQueryString();
 
