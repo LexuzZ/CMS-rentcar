@@ -260,7 +260,7 @@ class InvoiceResource extends Resource
                             $text[] = "BCA: 2320418758 a.n. SRI NOVYANA";
                             $text[] = "";
                             $text[] = "📞 *Hubungi Kami*";
-                            $text[] = "WA: +6281907777178";
+                            $text[] = "WA: +6281128948884";
                             $text[] = "";
                             $text[] = "Terima kasih telah mempercayai *Semeton Pesiar* 🙏";
 
