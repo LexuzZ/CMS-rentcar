@@ -69,10 +69,10 @@ class InvoiceResource extends Resource
                         ->relationship(
                             'booking',
                             'id',
-                            fn($query) => $query->with(['car.carModel', 'customer'])
+                            fn ($query) => $query->with(['car.carModel', 'customer'])
                         )
                         ->getOptionLabelFromRecordUsing(
-                            fn($record) => "#{$record->id} — {$record->car?->nopol} ({$record->customer?->nama})"
+                            fn ($record) => "#{$record->id} — {$record->car?->nopol} ({$record->customer?->nama})"
                         )
                         ->searchable()
                         ->required()
@@ -119,7 +119,7 @@ class InvoiceResource extends Resource
                         ->label('Tambah Pembayaran')
                         ->icon('heroicon-o-plus-circle')
                         ->color('success')
-                        ->visible(fn(Invoice $record) => $record->sisa_pembayaran > 0)
+                        ->visible(fn (Invoice $record) => $record->sisa_pembayaran > 0)
                         ->form([
                             DatePicker::make('tanggal_pembayaran')
                                 ->label('Tanggal Pembayaran')
@@ -132,7 +132,7 @@ class InvoiceResource extends Resource
                                 ->numeric()
                                 ->required()
                                 ->rules([
-                                    fn(Invoice $record) => function ($attribute, $value, $fail) use ($record) {
+                                    fn (Invoice $record) => function ($attribute, $value, $fail) use ($record) {
                                         if ($value > $record->sisa_pembayaran) {
                                             $fail('Jumlah pembayaran melebihi sisa tagihan.');
                                         }
@@ -170,7 +170,7 @@ class InvoiceResource extends Resource
                         ->label('Unduh PDF')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->color('primary')
-                        ->url(fn(Invoice $record) => route('invoices.pdf.download', $record))
+                        ->url(fn (Invoice $record) => route('invoices.pdf.download', $record))
                         ->openUrlInNewTab(),
                     Action::make('send_whatsapp')
                         ->label('Kirim WA')
@@ -179,107 +179,107 @@ class InvoiceResource extends Resource
                         ->url(function (Invoice $record) {
                             $booking = $record->booking;
 
-                            if (!$booking || !$booking->customer?->no_telp) {
+                            if (! $booking || ! $booking->customer?->no_telp) {
                                 return null;
                             }
 
-                            $totalDenda    = $booking->penalties?->sum('amount') ?? 0;
-                            $biayaSewa     = $booking->estimasi_biaya ?? 0;
+                            $totalDenda = $booking->penalties?->sum('amount') ?? 0;
+                            $biayaSewa = $booking->estimasi_biaya ?? 0;
                             $pickupDropOff = $record->pickup_dropOff ?? 0;
-                            $totalTagihan  = $biayaSewa + $pickupDropOff + $totalDenda;
-                            $totalBayar    = $record->total_paid ?? 0;
-                            $sisaBayar     = $record->sisa_pembayaran ?? 0;
+                            $totalTagihan = $biayaSewa + $pickupDropOff + $totalDenda;
+                            $totalBayar = $record->total_paid ?? 0;
+                            $sisaBayar = $record->sisa_pembayaran ?? 0;
                             $pengantaran = $booking->lokasi_pengantaran ?? '-';
                             $pengembalian = $booking->lokasi_pengembalian ?? '-';
 
                             $customerName = $booking->customer?->nama ?? '-';
-                            $noTelp       = $booking->customer?->no_telp ?? '-';
+                            $noTelp = $booking->customer?->no_telp ?? '-';
 
-                            $car        = $booking->car;
-                            $namaMobil  = $car
-                                ? trim(($car->carModel?->brand?->name ?? '') . ' ' . ($car->carModel?->name ?? ''))
+                            $car = $booking->car;
+                            $namaMobil = $car
+                                ? trim(($car->carModel?->brand?->name ?? '').' '.($car->carModel?->name ?? ''))
                                 : '-';
-                            $transmisi  = $car?->transmisi ?? '-';
-                            $nopol      = $car?->nopol ? "({$car->nopol})" : '';
+                            $transmisi = $car?->transmisi ?? '-';
+                            $nopol = $car?->nopol ? "({$car->nopol})" : '';
 
-                            $tglKeluar  = $booking->tanggal_keluar
+                            $tglKeluar = $booking->tanggal_keluar
                                 ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
                                 : '-';
                             $tglKembali = $booking->tanggal_kembali
                                 ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm:ss')
                                 : '-';
-                            $totalHari  = $booking->total_hari ?? 0;
+                            $totalHari = $booking->total_hari ?? 0;
 
-                            $tglDibuat  = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('dddd, D MMMM Y');
+                            $tglDibuat = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('dddd, D MMMM Y');
 
                             // Status pembayaran
                             $statusBayar = match (true) {
-                                $sisaBayar <= 0             => 'Lunas ✅',
-                                $totalBayar > 0             => 'Bayar Sebagian',
-                                default                     => 'Belum Bayar',
+                                $sisaBayar <= 0 => 'Lunas ✅',
+                                $totalBayar > 0 => 'Bayar Sebagian',
+                                default => 'Belum Bayar',
                             };
 
                             // Harga per hari
                             $hargaPerHari = $totalHari > 0 ? $biayaSewa / $totalHari : $biayaSewa;
 
-                            $text   = [];
-                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
-                            $text[] = "*SEMETON PESIAR*";
-                            $text[] = "*DETAIL TRANSAKSI SEWA*";
-                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
+                            $text = [];
+                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
+                            $text[] = '*SEMETON PESIAR*';
+                            $text[] = '*DETAIL TRANSAKSI SEWA*';
+                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
                             $text[] = "*No. Faktur:* #{$record->id}";
                             $text[] = "*Customer:* {$customerName}";
                             $text[] = "*Telepon:* {$noTelp}";
-                            $text[] = "*--- Kendaraan ---*";
-                            $text[] = "*Mobil:* " . strtoupper($namaMobil) . " {$nopol}";
-                            $text[] = "*Transmisi:* " . strtoupper($transmisi);
-                            $text[] = "*--- Waktu Sewa ---*";
+                            $text[] = '*--- Kendaraan ---*';
+                            $text[] = '*Mobil:* '.strtoupper($namaMobil)." {$nopol}";
+                            $text[] = '*Transmisi:* '.strtoupper($transmisi);
+                            $text[] = '*--- Waktu Sewa ---*';
                             $text[] = "*Mulai:* {$tglKeluar}";
                             $text[] = "*Selesai:* {$tglKembali}";
                             $text[] = "*Durasi:* {$totalHari} hari";
                             $text[] = "*Lokasi Antar:* {$pengantaran}";
                             $text[] = "*Lokasi Jemput:* {$pengembalian}";
-                            $text[] = "*--- Rincian Biaya ---*";
-                            $text[] = "{$totalHari} hari x Rp " . number_format($hargaPerHari, 0, ',', '.') . " = Rp " . number_format($biayaSewa, 0, ',', '.');
+                            $text[] = '*--- Rincian Biaya ---*';
+                            $text[] = "{$totalHari} hari x Rp ".number_format($hargaPerHari, 0, ',', '.').' = Rp '.number_format($biayaSewa, 0, ',', '.');
 
                             if ($pickupDropOff > 0) {
-                                $text[] = "Biaya Antar/Jemput = Rp " . number_format($pickupDropOff, 0, ',', '.');
+                                $text[] = 'Biaya Antar/Jemput = Rp '.number_format($pickupDropOff, 0, ',', '.');
                             }
 
                             if ($totalDenda > 0) {
-                                $text[] = "Denda/Klaim Garasi = Rp " . number_format($totalDenda, 0, ',', '.');
+                                $text[] = 'Denda/Klaim Garasi = Rp '.number_format($totalDenda, 0, ',', '.');
                             }
 
-                            $text[] = "─────────────────────";
-                            $text[] = "*TOTAL TAGIHAN = Rp " . number_format($totalTagihan, 0, ',', '.') . "*";
-                            $text[] = "*--- Pembayaran ---*";
-                            $text[] = "Total Bayar = Rp " . number_format($totalBayar, 0, ',', '.');
-                            $text[] = "*Sisa = Rp " . number_format($sisaBayar, 0, ',', '.') . "*";
+                            $text[] = '─────────────────────';
+                            $text[] = '*TOTAL TAGIHAN = Rp '.number_format($totalTagihan, 0, ',', '.').'*';
+                            $text[] = '*--- Pembayaran ---*';
+                            $text[] = 'Total Bayar = Rp '.number_format($totalBayar, 0, ',', '.');
+                            $text[] = '*Sisa = Rp '.number_format($sisaBayar, 0, ',', '.').'*';
                             $text[] = "*Status: {$statusBayar}*";
                             $text[] = "*Dibuat pada:* {$tglDibuat}";
-                            $text[] = "━━━━━━━━━━━━━━━━━━━━";
-                            $text[] = "";
-                            $text[] = "Pembayaran dapat dilakukan ke:";
-                            $text[] = "Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL";
-                            $text[] = "BCA: 2320418758 a.n. SRI NOVYANA";
-                            $text[] = "";
-                            $text[] = "📞 *Hubungi Kami*";
-                            $text[] = "WA  : +6281128948884";
-                            $text[] = "🌐 : www.semetonpesiar.com";
-                            $text[] = "";
-                            $text[] = "Terima kasih telah mempercayai *Semeton Pesiar* 🙏";
+                            $text[] = '━━━━━━━━━━━━━━━━━━━━';
+                            $text[] = '';
+                            $text[] = 'Pembayaran dapat dilakukan ke:';
+                            $text[] = 'Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL';
+                            $text[] = 'BCA: 2320418758 a.n. SRI NOVYANA';
+                            $text[] = '';
+                            $text[] = '📞 *Hubungi Kami*';
+                            $text[] = 'WA  : +6281128948884';
+                            $text[] = '🌐 : www.semetonpesiar.com';
+                            $text[] = '';
+                            $text[] = 'Terima kasih telah mempercayai *Semeton Pesiar* 🙏';
 
                             $message = urlencode(implode("\n", $text));
 
                             $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
                             if (str_starts_with($phone, '0')) {
-                                $phone = '62' . substr($phone, 1);
+                                $phone = '62'.substr($phone, 1);
                             }
 
                             return "https://wa.me/{$phone}?text={$message}";
                         })
                         ->openUrlInNewTab()
-                        ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
+                        ->visible(fn (Invoice $record) => filled($record->booking?->customer?->no_telp)),
                     Action::make('notif_kembali_wa')
                         ->label('Notif Kembali WA')
                         ->icon('heroicon-o-arrow-uturn-left')
@@ -303,8 +303,8 @@ class InvoiceResource extends Resource
                             $car = $booking->car;
                             $carDetails = $car
                                 ? trim(
-                                    ($car->carModel?->brand?->name ?? '') . ' ' .
-                                        ($car->carModel?->name ?? '') .
+                                    ($car->carModel?->brand?->name ?? '').' '.
+                                        ($car->carModel?->name ?? '').
                                         ($car->nopol ? " ({$car->nopol})" : '')
                                 )
                                 : '-';
@@ -353,13 +353,13 @@ class InvoiceResource extends Resource
                             $phone = preg_replace('/[^0-9]/', '', $booking->customer->no_telp);
 
                             if (str_starts_with($phone, '0')) {
-                                $phone = '62' . substr($phone, 1);
+                                $phone = '62'.substr($phone, 1);
                             }
 
                             return "https://wa.me/{$phone}?text={$message}";
                         })
                         ->openUrlInNewTab()
-                        ->visible(fn(Invoice $record) => filled($record->booking?->customer?->no_telp)),
+                        ->visible(fn (Invoice $record) => filled($record->booking?->customer?->no_telp)),
 
                     Action::make('copyInvoice')
                         ->label('Copy Tagihan')
@@ -386,8 +386,8 @@ class InvoiceResource extends Resource
                             $car = $booking->car;
                             $carDetails = $car
                                 ? trim(
-                                    ($car->carModel?->brand?->name ?? '') . ' ' .
-                                        ($car->carModel?->name ?? '') .
+                                    ($car->carModel?->brand?->name ?? '').' '.
+                                        ($car->carModel?->name ?? '').
                                         ($car->nopol ? " ({$car->nopol})" : '')
                                 )
                                 : '-';
@@ -403,21 +403,21 @@ class InvoiceResource extends Resource
                             $text[] = 'Berikut detail faktur sewa mobil Anda dari *Semeton Pesiar*:';
                             $text[] = '';
                             $text[] = "🧾 *No. Faktur:* #{$record->id}";
-                            $text[] = '📅 *Tanggal:* ' . Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y');
+                            $text[] = '📅 *Tanggal:* '.Carbon::parse($record->tanggal_invoice)->isoFormat('D MMMM Y');
                             $text[] = '-----------------------------------';
                             $text[] = "🚗 *Mobil:* {$carDetails}";
                             $text[] = "⏳ *Durasi:* {$tglKeluar} - {$tglKembali} ({$booking->total_hari} hari)";
-                            $text[] = '💰 *Biaya Sewa:* Rp ' . number_format($biayaSewa, 0, ',', '.');
+                            $text[] = '💰 *Biaya Sewa:* Rp '.number_format($biayaSewa, 0, ',', '.');
                             if ($pickupDropOff > 0) {
-                                $text[] = '➡️⬅️ *Biaya Antar/Jemput:* Rp ' . number_format($pickupDropOff, 0, ',', '.');
+                                $text[] = '➡️⬅️ *Biaya Antar/Jemput:* Rp '.number_format($pickupDropOff, 0, ',', '.');
                             }
                             if ($totalDenda > 0) {
-                                $text[] = '⚖️ *Denda / Klaim Garasi:* Rp ' . number_format($totalDenda, 0, ',', '.');
+                                $text[] = '⚖️ *Denda / Klaim Garasi:* Rp '.number_format($totalDenda, 0, ',', '.');
                             }
                             $text[] = '-----------------------------------';
-                            $text[] = '✉️ *Total Tagihan:* Rp ' . number_format($totalTagihan, 0, ',', '.');
-                            $text[] = '🔐 *Total Dibayar:* Rp ' . number_format($dp, 0, ',', '.');
-                            $text[] = '🔔 *Sisa Pembayaran:* *Rp ' . number_format($sisaPembayaran, 0, ',', '.') . '*';
+                            $text[] = '✉️ *Total Tagihan:* Rp '.number_format($totalTagihan, 0, ',', '.');
+                            $text[] = '🔐 *Total Dibayar:* Rp '.number_format($dp, 0, ',', '.');
+                            $text[] = '🔔 *Sisa Pembayaran:* *Rp '.number_format($sisaPembayaran, 0, ',', '.').'*';
                             $text[] = '';
                             $text[] = 'Mohon lakukan pembayaran ke salah satu rekening berikut:';
                             $text[] = '🏦 Mandiri: 1610006892835 a.n. ACHMAD MUZAMMIL';
@@ -443,49 +443,49 @@ class InvoiceResource extends Resource
                             ->label('Tagihan Sewa')
                             ->icon('heroicon-m-document-text')
                             ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                         TextEntry::make('total_denda')
                             ->label('Klaim Garasi')
                             ->icon('heroicon-m-exclamation-triangle')
-                            ->color(fn($state) => $state > 0 ? 'danger' : 'gray')
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->color(fn ($state) => $state > 0 ? 'danger' : 'gray')
+                            ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                         TextEntry::make('pickup_dropOff')
                             ->label('Biaya Antar/Jemput')
                             ->icon('heroicon-m-map-pin')
-                            ->color(fn($state) => $state > 0 ? 'warning' : 'gray')
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->color(fn ($state) => $state > 0 ? 'warning' : 'gray')
+                            ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                         TextEntry::make('total_paid')
                             ->label('Total Dibayar')
                             ->icon('heroicon-m-check-circle')
                             ->color('success')
                             ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                         TextEntry::make('sisa_pembayaran')
                             ->label('Sisa Pembayaran')
                             ->icon('heroicon-m-clock')
                             ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                            ->color(fn($state) => $state > 0 ? 'danger' : 'success')
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->color(fn ($state) => $state > 0 ? 'danger' : 'success')
+                            ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                         TextEntry::make('status_lunas')
                             ->label('Status')
                             ->badge()
-                            ->state(fn($record) => $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas')
-                            ->icon(fn($state) => match ($state) {
+                            ->state(fn ($record) => $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas')
+                            ->icon(fn ($state) => match ($state) {
                                 'lunas' => 'heroicon-m-check-badge',
                                 'belum_lunas' => 'heroicon-m-clock',
                                 default => 'heroicon-m-question-mark-circle',
                             })
-                            ->color(fn($state) => match ($state) {
+                            ->color(fn ($state) => match ($state) {
                                 'lunas' => 'success',
                                 'belum_lunas' => 'danger',
                                 default => 'gray',
                             })
-                            ->formatStateUsing(fn($state) => match ($state) {
+                            ->formatStateUsing(fn ($state) => match ($state) {
                                 'lunas' => 'Lunas',
                                 'belum_lunas' => 'Belum Lunas',
                                 default => ucfirst($state),
@@ -502,13 +502,13 @@ class InvoiceResource extends Resource
                             ->label('ID Faktur')
                             ->badge()
                             ->color('primary')
-                            ->formatStateUsing(fn($state) => '#INV' . str_pad($state, 3, '0', STR_PAD_LEFT)),
+                            ->formatStateUsing(fn ($state) => '#INV'.str_pad($state, 3, '0', STR_PAD_LEFT)),
 
                         TextEntry::make('booking.id')
                             ->label('ID Booking')
                             ->badge()
                             ->color('gray')
-                            ->formatStateUsing(fn($state) => '#BK' . str_pad($state, 3, '0', STR_PAD_LEFT)),
+                            ->formatStateUsing(fn ($state) => '#BK'.str_pad($state, 3, '0', STR_PAD_LEFT)),
 
                         TextEntry::make('tanggal_invoice')
                             ->label('Tanggal Faktur')
@@ -547,7 +547,7 @@ class InvoiceResource extends Resource
                 // ID Faktur
                 TextColumn::make('id')
                     ->label('Faktur')
-                    ->formatStateUsing(fn($state) => '#INV' . str_pad($state, 3, '0', STR_PAD_LEFT))
+                    ->formatStateUsing(fn ($state) => '#INV'.str_pad($state, 3, '0', STR_PAD_LEFT))
                     ->badge()
                     ->color('primary')
                     ->sortable()
@@ -559,8 +559,8 @@ class InvoiceResource extends Resource
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
                     ->searchable()
                     ->description(
-                        fn(Invoice $record): string => ($record->booking->car->carModel->name ?? '—') .
-                            ' · ' . ($record->booking->car->nopol ?? '—')
+                        fn (Invoice $record): string => ($record->booking->car->carModel->name ?? '—').
+                            ' · '.($record->booking->car->nopol ?? '—')
                     )
                     ->wrap()
                     ->width(150),
@@ -580,7 +580,7 @@ class InvoiceResource extends Resource
                     ->alignEnd()
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                    ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                 // Total dibayar
                 TextColumn::make('total_paid')
@@ -588,17 +588,17 @@ class InvoiceResource extends Resource
                     ->alignEnd()
                     ->color('success')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold)
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                    ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
 
                 // Sisa pembayaran
                 TextColumn::make('sisa_pembayaran')
                     ->label('Sisa')
                     ->alignEnd()
                     ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                    ->color(fn($state) => $state > 0 ? 'danger' : 'success')
+                    ->color(fn ($state) => $state > 0 ? 'danger' : 'success')
                     ->formatStateUsing(
-                        fn($state) => $state > 0
-                            ? 'Rp ' . number_format($state, 0, ',', '.')
+                        fn ($state) => $state > 0
+                            ? 'Rp '.number_format($state, 0, ',', '.')
                             : '—'
                     ),
 
@@ -607,18 +607,18 @@ class InvoiceResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->alignCenter()
-                    ->state(fn($record) => $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas')
-                    ->icon(fn(string $state) => match ($state) {
+                    ->state(fn ($record) => $record->sisa_pembayaran == 0 ? 'lunas' : 'belum_lunas')
+                    ->icon(fn (string $state) => match ($state) {
                         'lunas' => 'heroicon-m-check-badge',
                         'belum_lunas' => 'heroicon-m-clock',
                         default => 'heroicon-m-question-mark-circle',
                     })
-                    ->color(fn(string $state) => match ($state) {
+                    ->color(fn (string $state) => match ($state) {
                         'lunas' => 'success',
                         'belum_lunas' => 'danger',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'lunas' => 'Lunas',
                         'belum_lunas' => 'Belum Lunas',
                         default => ucfirst($state),
@@ -631,17 +631,17 @@ class InvoiceResource extends Resource
                 Tables\Filters\Filter::make('belum_lunas')
                     ->label('Belum Lunas')
                     ->toggle()
-                    ->query(fn($query) => $query->where('sisa_pembayaran', '>', 0))
+                    ->query(fn ($query) => $query->where('sisa_pembayaran', '>', 0))
                     ->indicateUsing(
-                        fn(array $data): ?string => $data['isActive'] ? '⚠ Belum lunas' : null
+                        fn (array $data): ?string => $data['isActive'] ? '⚠ Belum lunas' : null
                     ),
 
                 Tables\Filters\Filter::make('lunas')
                     ->label('Sudah Lunas')
                     ->toggle()
-                    ->query(fn($query) => $query->where('sisa_pembayaran', '<=', 0))
+                    ->query(fn ($query) => $query->where('sisa_pembayaran', '<=', 0))
                     ->indicateUsing(
-                        fn(array $data): ?string => $data['isActive'] ? '✓ Sudah lunas' : null
+                        fn (array $data): ?string => $data['isActive'] ? '✓ Sudah lunas' : null
                     ),
 
                 Tables\Filters\Filter::make('bulan_ini')
@@ -649,13 +649,13 @@ class InvoiceResource extends Resource
                     ->toggle()
                     ->default(true)
                     ->query(
-                        fn($query) => $query
+                        fn ($query) => $query
                             ->whereMonth('tanggal_invoice', now()->month)
                             ->whereYear('tanggal_invoice', now()->year)
                     )
                     ->indicateUsing(
-                        fn(array $data): ?string => $data['isActive']
-                            ? 'Bulan ini: ' . now()->locale('id')->isoFormat('MMMM Y')
+                        fn (array $data): ?string => $data['isActive']
+                            ? 'Bulan ini: '.now()->locale('id')->isoFormat('MMMM Y')
                             : null
                     ),
             ])
@@ -684,7 +684,7 @@ class InvoiceResource extends Resource
             ->paginated([10, 25, 50])
 
             ->recordClasses(
-                fn(Invoice $record): string => $record->sisa_pembayaran == 0
+                fn (Invoice $record): string => $record->sisa_pembayaran == 0
                     ? 'opacity-70'
                     : ''
             );
