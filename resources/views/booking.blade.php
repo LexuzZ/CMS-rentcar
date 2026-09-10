@@ -76,11 +76,21 @@
                                 </svg>
                             </span>
                             <select id="mobil" class="fb-select" required>
-                                <option value="">Pilih jenis mobil…</option>
+
+                                <option value="{{ $car->id }}" selected>
+                                    {{ $car->carModel->brand->name }} —
+                                    {{ $car->carModel->name }}
+                                </option>
+
                                 @foreach ($carModels as $model)
-                                    <option value="{{ $model->name }}">{{ $model->brand->name }} — {{ $model->name }}
-                                    </option>
+                                    @if ($model->id !== $car->car_model_id)
+                                        <option value="{{ $model->id }}">
+                                            {{ $model->brand->name }} —
+                                            {{ $model->name }}
+                                        </option>
+                                    @endif
                                 @endforeach
+
                             </select>
                         </div>
                     </div>
@@ -125,7 +135,8 @@
                                         <line x1="3" y1="10" x2="21" y2="10" />
                                     </svg>
                                 </span>
-                                <input type="date" id="tanggal_keluar" class="fb-input" required>
+                                <input type="date" id="tanggal_keluar" class="fb-input"
+                                    value="{{ request('tanggal_keluar', $tanggalKeluar ?? '') }}" required>
                             </div>
                         </div>
                         <div class="fb-field">
@@ -140,7 +151,8 @@
                                         <line x1="3" y1="10" x2="21" y2="10" />
                                     </svg>
                                 </span>
-                                <input type="date" id="tanggal_kembali" class="fb-input" required>
+                                <input type="date" id="tanggal_kembali" class="fb-input"
+                                    value="{{ request('tanggal_kembali', $tanggalKembali ?? '') }}" required>
                             </div>
                         </div>
                     </div>

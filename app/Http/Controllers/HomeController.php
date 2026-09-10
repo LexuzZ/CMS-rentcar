@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
+use App\Models\CarModel;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -32,7 +35,7 @@ class HomeController extends Controller
             $search  = strtolower(trim($request->search));
             $katalog = $katalog->filter(
                 fn($car) => str_contains(strtolower($car['nama']), $search)
-                         || str_contains(strtolower($car['brand']), $search)
+                    || str_contains(strtolower($car['brand']), $search)
             );
         }
 
@@ -84,5 +87,72 @@ class HomeController extends Controller
         }
 
         return view('home', compact('cars', 'totalHari', 'tipeSewa'));
+    }
+    public function cekNikAjax(Request $request)
+    {
+        $request->validate([
+            'nik'             => ['required', 'digits:16'],
+            'car_id'          => ['required', 'integer'],
+            'tanggal_keluar'  => ['required', 'date'],
+            'tanggal_kembali' => ['required', 'date'],
+            'tipe_sewa'       => ['nullable', 'string'],
+        ]);
+
+        $customer = Customer::where('ktp', $request->nik)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'success' => true,
+                'registered' => false,
+
+                'redirect' => route('data.penyewa', [
+                    'ktp' => $request->nik,
+                    'car_id' => $request->car_id,
+                    'tanggal_keluar' => $request->tanggal_keluar,
+                    'tanggal_kembali' => $request->tanggal_kembali,
+                    'tipe_sewa' => $request->tipe_sewa,
+                ]),
+            ]);
+        }
+
+        if ($customer->status === 'blacklist') {
+            return response()->json([
+                'success' => false,
+                'message' => 'NIK terdaftar sebagai blacklist.',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'registered' => true,
+
+            'redirect' => route('booking', [
+                'customer_id' => $customer->id,
+                'car_id' => $request->car_id,
+                'tanggal_keluar' => $request->tanggal_keluar,
+                'tanggal_kembali' => $request->tanggal_kembali,
+                'tipe_sewa' => $request->tipe_sewa,
+            ]),
+        ]);
+    }
+    public function create(Request $request)
+    {
+        $customer = Customer::findOrFail($request->customer_id);
+
+        $car = Car::with([
+            'carModel.brand'
+        ])->findOrFail($request->car_id);
+
+        $carModels = CarModel::with('brand')->get();
+
+        return view('booking', compact(
+            'customer',
+            'car',
+            'carModels'
+        ))->with([
+            'tanggalKeluar' => $request->tanggal_keluar,
+            'tanggalKembali' => $request->tanggal_kembali,
+            'tipeSewa' => $request->tipe_sewa,
+        ]);
     }
 }
