@@ -74,7 +74,16 @@
 
             {{-- Form --}}
             <form action="{{ route('data.penyewa.post') }}" method="POST" enctype="multipart/form-data" class="fp-form">
+
                 @csrf
+
+                <input type="hidden" name="car_id" value="{{ request('car_id') }}">
+
+                <input type="hidden" name="tanggal_keluar" value="{{ request('tanggal_keluar') }}">
+
+                <input type="hidden" name="tanggal_kembali" value="{{ request('tanggal_kembali') }}">
+
+                <input type="hidden" name="tipe_sewa" value="{{ request('tipe_sewa') }}">
 
                 {{-- Section: Data Pribadi --}}
                 <p class="fp-section-label">Data Pribadi</p>
@@ -92,7 +101,7 @@
                             </svg>
                         </span>
                         <input type="text" id="ktp" name="ktp" maxlength="16" class="fp-input"
-                            placeholder="16 digit nomor E-KTP" required>
+                            placeholder="16 digit nomor E-KTP" value="{{ request('ktp') }}" readonly required>
                     </div>
                 </div>
 

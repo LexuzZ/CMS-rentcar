@@ -41,11 +41,11 @@ Route::group(['middleware' => ['web', Authenticate::class]], function () {
     Route::get('/reports/monthly-recap/{year}/{month}/pdf', [PdfController::class, 'downloadMonthlyRecapPdf'])
         ->name('reports.monthly-recap.pdf');
 });
-Route::get('/booking', [HomeController::class, 'create'])
-    ->name('booking');
-
 Route::post('/cek-nik-ajax', [HomeController::class, 'cekNikAjax'])
     ->name('cek.nik.ajax');
 
 Route::get('/data-penyewa', [HomeController::class, 'formPenyewa'])
     ->name('data.penyewa');
+
+Route::get('/booking', [HomeController::class, 'create'])
+    ->name('booking');
