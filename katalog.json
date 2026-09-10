@@ -98,7 +98,7 @@
         "kapasitas": 7,
         "harga_lepas_kunci": 400000,
         "harga_dengan_sopir": 750000,
-        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL88yVPUvRW8wwI4SzVrAWahIfXPuqoNWQ3QdnGgDmGw&s=10",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0gzuvRArWmjCv1_dyOVF9Pypam_eB6T_nBZwnx4acGg&s=10",
         "badge": null,
         "badge_color": null,
         "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
@@ -137,9 +137,9 @@
         "kapasitas": 15,
         "harga_lepas_kunci": null,
         "harga_dengan_sopir": 1500000,
-        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCEQ5vryRaMAgBTGVsTkVWsywWZp2c1xhgU40W6QHrZQ&s=10",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC12v5tqGjx7YCD4Kk1vithKqnzoJCaUFhfL1mI9hTWw&s",
         "badge": "Buss",
-        "badge_color": "red",
+        "badge_color": "orange",
         "tipe_sewa": ["dengan_sopir"]
     },
 
