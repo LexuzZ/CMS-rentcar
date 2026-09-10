@@ -402,12 +402,12 @@
                             <div class="flex gap-2 mb-2">
                                 <span
                                     class="text-xs px-2 py-0.5 rounded-full
-                                                                                                {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                                                                                        {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
                                     🔑 Rp {{ number_format($hargaLepas, 0, ',', '.') }}
                                 </span>
                                 <span
                                     class="text-xs px-2 py-0.5 rounded-full
-                                                                                                {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                                                                                        {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
                                     👤 Rp {{ number_format($hargaSopir, 0, ',', '.') }}
                                 </span>
                             </div>
@@ -419,9 +419,9 @@
                             </div>
 
                             <button type="button" onclick="openNikModal(
-                                                        {{ $car['id'] }},
-                                                        '{{ $car['brand'] }} {{ $car['nama'] }}'
-                                                    )"
+                                                                {{ $car['id'] }},
+                                                                '{{ $car['brand'] }} {{ $car['nama'] }}'
+                                                            )"
                                 class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
                                 Pilih kendaraan ini
                             </button>
@@ -629,10 +629,8 @@
                 `${length} / 16`;
         });
 
-
         async function checkNik() {
-
-            const nik = document.getElementById('modalNik').value;
+            const nik = document.getElementById('modalNik').value.trim();
 
             const errorBox = document.getElementById('nikError');
             const successBox = document.getElementById('nikSuccess');
@@ -644,48 +642,38 @@
             successBox.classList.add('hidden');
 
             if (nik.length !== 16) {
-
-                errorBox.textContent =
-                    'NIK harus terdiri dari 16 digit.';
-
+                errorBox.textContent = 'NIK harus terdiri dari 16 digit.';
                 errorBox.classList.remove('hidden');
-
                 return;
             }
 
             if (!selectedCarId) {
-
-                errorBox.textContent =
-                    'Kendaraan belum dipilih.';
-
+                errorBox.textContent = 'Kendaraan belum dipilih.';
                 errorBox.classList.remove('hidden');
-
                 return;
             }
 
             button.disabled = true;
-
             button.classList.add('opacity-70', 'cursor-not-allowed');
-
             buttonText.textContent = 'Memeriksa...';
 
             try {
-
                 const response = await fetch(
                     "{{ route('cek.nik.ajax') }}",
                     {
                         method: 'POST',
-
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN':
-                                document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
                         },
-
                         body: JSON.stringify({
                             nik: nik,
+
                             car_id: selectedCarId,
+
                             tanggal_keluar:
                                 document.getElementById('tgl_keluar').value,
 
@@ -702,38 +690,66 @@
 
                 const data = await response.json();
 
+                // ================================
+                // NIK GAGAL / BLACKLIST
+                // ================================
                 if (!response.ok || !data.success) {
-
                     errorBox.textContent =
                         data.message ?? 'NIK tidak dapat digunakan.';
 
                     errorBox.classList.remove('hidden');
-
                     return;
                 }
 
-                successBox.textContent =
-                    data.message ?? 'NIK dapat digunakan.';
-
+                // ================================
+                // TAMPILKAN PESAN
+                // ================================
+                successBox.textContent = data.message ?? 'NIK berhasil diverifikasi.';
                 successBox.classList.remove('hidden');
 
-                /*
-                |--------------------------------------------------------------------------
-                | Lanjut ke halaman booking
-                |--------------------------------------------------------------------------
-                */
-
+                // ================================
+                // REDIRECT
+                // ================================
                 setTimeout(() => {
 
+                    /*
+                     * NIK SUDAH TERDAFTAR
+                     * → booking.blade.php
+                     */
+                    if (data.registered === true) {
+
+                        const params = new URLSearchParams({
+                            customer_id: data.customer_id,
+                            car_id: selectedCarId,
+                            tanggal_keluar:
+                                document.getElementById('tgl_keluar').value,
+                            tanggal_kembali:
+                                document.getElementById('tgl_kembali').value,
+                            tipe_sewa:
+                                document.querySelector(
+                                    'input[name="tipe_sewa"]'
+                                ).value
+                        });
+
+                        window.location.href =
+                            "{{ route('booking') }}" +
+                            '?' +
+                            params.toString();
+
+                        return;
+                    }
+
+                    /*
+                     * NIK BELUM TERDAFTAR
+                     * → form-data-penyewa.blade.php
+                     */
                     const params = new URLSearchParams({
+                        ktp: nik,
                         car_id: selectedCarId,
-                        nik: nik,
                         tanggal_keluar:
                             document.getElementById('tgl_keluar').value,
-
                         tanggal_kembali:
                             document.getElementById('tgl_kembali').value,
-
                         tipe_sewa:
                             document.querySelector(
                                 'input[name="tipe_sewa"]'
@@ -741,8 +757,9 @@
                     });
 
                     window.location.href =
-                        "{{ \App\Filament\Resources\BookingResource::getUrl('create') }}" +
-                        '?' + params.toString();
+                        "{{ route('data.penyewa') }}" +
+                        '?' +
+                        params.toString();
 
                 }, 700);
 
