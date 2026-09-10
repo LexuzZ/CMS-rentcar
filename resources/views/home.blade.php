@@ -317,11 +317,7 @@
                                     </span>
                                 </div>
 
-                                <a href="{{ route('booking.create', [
-                        'car_name' => $car['nama'],
-                        'tanggal_keluar' => request('tanggal_keluar'),
-                        'tanggal_kembali' => request('tanggal_kembali'),
-                    ]) }}"
+                                <a href=""
                                     class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
                                     Pilih kendaraan ini
                                 </a>
