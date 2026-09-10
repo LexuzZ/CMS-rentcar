@@ -17,19 +17,19 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        $katalog = $this->getKatalog();
+        $katalog   = $this->getKatalog();
+        $tipeSewa  = $request->get('tipe_sewa', 'semua');
 
-        // ── Filter tipe sewa (lepas_kunci / dengan_sopir) ────
-        if ($request->filled('tipe_sewa') && $request->tipe_sewa !== 'semua') {
-            $tipe = $request->tipe_sewa;
+        // ── Filter tipe sewa ─────────────────────────────────
+        if ($tipeSewa !== 'semua') {
             $katalog = $katalog->filter(
-                fn($car) => in_array($tipe, $car['tipe_sewa'])
+                fn($car) => in_array($tipeSewa, $car['tipe_sewa'])
             );
         }
 
-        // ── Filter pencarian nama / brand ────────────────────
+        // ── Filter pencarian ─────────────────────────────────
         if ($request->filled('search')) {
-            $search = strtolower(trim($request->search));
+            $search  = strtolower(trim($request->search));
             $katalog = $katalog->filter(
                 fn($car) => str_contains(strtolower($car['nama']), $search)
                          || str_contains(strtolower($car['brand']), $search)
@@ -43,11 +43,21 @@ class HomeController extends Controller
             );
         }
 
-        // ── Sorting ──────────────────────────────────────────
+        // ── Tambahkan kolom harga aktif berdasarkan tipe sewa ─
+        // Ini yang menentukan harga yang ditampilkan di card
+        $katalog = $katalog->map(function ($car) use ($tipeSewa) {
+            $car['harga_aktif'] = match ($tipeSewa) {
+                'dengan_sopir' => $car['harga_dengan_sopir'] ?? $car['harga_lepas_kunci'],
+                default        => $car['harga_lepas_kunci']  ?? $car['harga_dengan_sopir'],
+            };
+            return $car;
+        });
+
+        // ── Sorting berdasarkan harga aktif ──────────────────
         $katalog = match ($request->get('sort', 'termurah')) {
-            'termahal' => $katalog->sortByDesc('harga_harian'),
+            'termahal' => $katalog->sortByDesc('harga_aktif'),
             'terbaru'  => $katalog->sortByDesc('id'),
-            default    => $katalog->sortBy('harga_harian'),
+            default    => $katalog->sortBy('harga_aktif'),
         };
 
         // ── Pagination manual ────────────────────────────────
@@ -73,6 +83,6 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', compact('cars', 'totalHari'));
+        return view('home', compact('cars', 'totalHari', 'tipeSewa'));
     }
 }
