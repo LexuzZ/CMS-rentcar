@@ -20,7 +20,7 @@
         "kapasitas": 7,
         "harga_lepas_kunci": 350000,
         "harga_dengan_sopir": 500000,
-        "foto": "https://www.toyota.astra.co.id/sites/default/files/2022-02/veloz-main.png",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHY6qvxmOANoJDv8ZD51qxqg-MlZ3_nF8ZuM-kOM8j7Q&s=10",
         "badge": "Terlaris",
         "badge_color": "green",
         "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
@@ -33,7 +33,7 @@
         "kapasitas": 5,
         "harga_lepas_kunci": 275000,
         "harga_dengan_sopir": null,
-        "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/brio/exterior/brio-exterior-1.png",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS_Lv4xZe0HhRczcBkBnaonc24HWAztUG-aJCa-qpRXQ&s=10",
         "badge": "Irit BBM",
         "badge_color": "blue",
         "tipe_sewa": ["lepas_kunci"]
