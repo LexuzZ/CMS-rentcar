@@ -122,28 +122,7 @@
             <a href="{{ route('home') }}">
                 <img src="{{ asset('spt.png') }}" alt="Semeton Pesiar" class="h-9 w-auto">
             </a>
-            <div class="flex items-center gap-3">
-                @auth
-                    <a href="{{ route('filament.admin.pages.dashboard') }}"
-                        class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">Dashboard</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button
-                            class="text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">Keluar</button>
-                    </form>
-                @else
-                    <a href="{{ route('filament.admin.auth.login') }}"
-                        class="flex items-center gap-2 bg-brand bg-brand-hover text-white text-sm font-bold px-5 py-2 rounded-xl transition shadow-sm">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                            <polyline points="10 17 15 12 10 7" />
-                            <line x1="15" y1="12" x2="3" y2="12" />
-                        </svg>
-                        Masuk
-                    </a>
-                @endauth
-            </div>
+
         </div>
     </nav>
 
