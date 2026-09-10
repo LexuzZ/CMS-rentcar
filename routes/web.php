@@ -10,8 +10,6 @@ use Filament\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::get('/storage/{path}', function ($path) {
     $fullPath = storage_path('app/public/'.$path);
 
@@ -50,10 +48,9 @@ Route::post('/cek-nik-ajax', function (Request $request) {
         'car_id' => ['required', 'integer'],
     ]);
 
-    $customer = Customer::where('nik', $request->nik)->first();
+    $customer = Customer::where('ktp', $request->nik)->first();
 
-    if (!$customer) {
-
+    if (! $customer) {
         return response()->json([
             'success' => true,
             'message' => 'NIK belum terdaftar dan dapat melanjutkan booking.',
@@ -61,7 +58,6 @@ Route::post('/cek-nik-ajax', function (Request $request) {
     }
 
     if ($customer->status === 'blacklist') {
-
         return response()->json([
             'success' => false,
             'message' => 'NIK ini terdaftar dalam daftar hitam dan tidak dapat melakukan booking.',
@@ -72,5 +68,4 @@ Route::post('/cek-nik-ajax', function (Request $request) {
         'success' => true,
         'message' => 'NIK berhasil diverifikasi. Silakan lanjutkan booking.',
     ]);
-
 })->name('cek.nik.ajax');
