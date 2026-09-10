@@ -71,35 +71,35 @@
     {{-- ══ NAVBAR ══ --}}
     <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="{{ route('home') }}" class="flex items-center gap-2">
+            <a href="{{ route('home') }}">
                 <img src="{{ asset('spt.png') }}" alt="Semeton Pesiar" class="h-9 w-auto">
             </a>
-            {{-- <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3">
                 @auth
-                <a href="{{ route('filament.admin.pages.dashboard') }}"
-                    class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">
-                    Dashboard
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button
-                        class="text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
-                        Keluar
-                    </button>
-                </form>
+                    <a href="{{ route('filament.admin.pages.dashboard') }}"
+                        class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">
+                        Dashboard
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button
+                            class="text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
+                            Keluar
+                        </button>
+                    </form>
                 @else
-                <a href="{{ route('filament.admin.auth.login') }}"
-                    class="flex items-center gap-2 bg-brand bg-brand-hover text-white text-sm font-bold px-5 py-2 rounded-xl transition shadow-sm">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                        <polyline points="10 17 15 12 10 7" />
-                        <line x1="15" y1="12" x2="3" y2="12" />
-                    </svg>
-                    Masuk
-                </a>
+                    <a href="{{ route('filament.admin.auth.login') }}"
+                        class="flex items-center gap-2 bg-brand bg-brand-hover text-white text-sm font-bold px-5 py-2 rounded-xl transition shadow-sm">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                            <polyline points="10 17 15 12 10 7" />
+                            <line x1="15" y1="12" x2="3" y2="12" />
+                        </svg>
+                        Masuk
+                    </a>
                 @endauth
-            </div> --}}
+            </div>
         </div>
     </nav>
 
@@ -108,9 +108,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <form method="GET" action="{{ route('home') }}" id="search-form">
 
+                {{-- Lokasi + tanggal --}}
                 <div class="flex flex-col md:flex-row items-stretch gap-3 mb-3">
 
-                    {{-- Lokasi statis --}}
                     <div
                         class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 min-w-[160px]">
                         <svg class="text-orange-600 flex-shrink-0" width="18" height="18" viewBox="0 0 24 24"
@@ -125,17 +125,15 @@
                         </div>
                     </div>
 
-                    {{-- Tanggal Keluar --}}
                     <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
                         <p class="text-xs text-gray-400 font-medium mb-0.5">Tanggal Keluar</p>
-                        <input type="date" name="tgl_keluar" id="tgl_keluar"
-                            value="{{ request('tgl_keluar', now()->format('Y-m-d')) }}"
+                        <input type="date" name="tanggal_keluar" id="tgl_keluar"
+                            value="{{ request('tanggal_keluar', now()->format('Y-m-d')) }}"
                             min="{{ now()->format('Y-m-d') }}"
                             class="w-full bg-transparent text-sm font-semibold text-gray-800 outline-none"
                             onchange="updateMinReturn()">
                     </div>
 
-                    {{-- Panah --}}
                     <div class="hidden md:flex items-center justify-center text-gray-400">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
@@ -143,16 +141,14 @@
                         </svg>
                     </div>
 
-                    {{-- Tanggal Kembali --}}
                     <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
                         <p class="text-xs text-gray-400 font-medium mb-0.5">Tanggal Kembali</p>
-                        <input type="date" name="tgl_kembali" id="tgl_kembali"
-                            value="{{ request('tgl_kembali', now()->addDay()->format('Y-m-d')) }}"
+                        <input type="date" name="tanggal_kembali" id="tgl_kembali"
+                            value="{{ request('tanggal_kembali', now()->addDay()->format('Y-m-d')) }}"
                             min="{{ now()->addDay()->format('Y-m-d') }}"
                             class="w-full bg-transparent text-sm font-semibold text-gray-800 outline-none">
                     </div>
 
-                    {{-- Tombol Ubah --}}
                     <button type="submit"
                         class="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-sm whitespace-nowrap">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -183,7 +179,6 @@
                     </button>
                 </div>
 
-                {{-- Hidden: pertahankan state filter saat submit --}}
                 <input type="hidden" name="transmisi" value="{{ request('transmisi', 'semua') }}">
                 <input type="hidden" name="sort" value="{{ request('sort', 'termurah') }}">
 
@@ -195,10 +190,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
 
-            {{-- Filter Transmisi (jenis dihapus, tidak ada di db) --}}
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Transmisi</span>
-                @foreach (['semua' => 'Semua', 'AT' => 'Matic (AT)', 'MT' => 'Manual (MT)'] as $val => $label)
+                @foreach(['semua' => 'Semua', 'AT' => 'Matic (AT)', 'MT' => 'Manual (MT)'] as $val => $label)
                     <button onclick="setFilter('transmisi', '{{ $val }}')"
                         class="chip {{ request('transmisi', 'semua') === $val ? 'chip-active' : '' }}">
                         {{ $label }}
@@ -206,7 +200,6 @@
                 @endforeach
             </div>
 
-            {{-- Sort --}}
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Urutkan</span>
                 <select onchange="setFilter('sort', this.value)"
@@ -226,16 +219,12 @@
     {{-- ══ GRID KARTU ══ --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
-        {{-- Info jumlah hasil --}}
         <div class="flex items-baseline gap-2 mb-5">
             <h2 class="text-lg font-extrabold text-gray-900">Kendaraan tersedia</h2>
-            <span class="text-sm text-gray-400 font-medium">
-                {{ $cars->total() }} kendaraan tersedia untuk tanggal Anda
-            </span>
+            <span class="text-sm text-gray-400 font-medium">{{ $cars->total() }} kendaraan tersedia</span>
         </div>
 
-        @if ($cars->isEmpty())
-            {{-- Empty state --}}
+        @if($cars->isEmpty())
             <div class="flex flex-col items-center justify-center py-24 text-center">
                 <div class="w-20 h-20 bg-orange-50 rounded-2xl flex items-center justify-center mb-4">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="1.5"
@@ -246,159 +235,103 @@
                         <circle cx="18.5" cy="18.5" r="2.5" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-700 mb-1">Tidak ada kendaraan tersedia</h3>
-                <p class="text-sm text-gray-400 mb-5">Coba ubah tanggal atau filter pencarian Anda.</p>
+                <h3 class="text-lg font-bold text-gray-700 mb-1">Tidak ada kendaraan ditemukan</h3>
+                <p class="text-sm text-gray-400 mb-5">Coba ubah kata kunci atau filter pencarian Anda.</p>
                 <a href="{{ route('home') }}"
                     class="bg-brand bg-brand-hover text-white font-bold text-sm px-6 py-3 rounded-xl transition">
                     Reset Filter
                 </a>
             </div>
+
         @else
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-                @foreach ($cars as $car)
-                    @php
-                        $brand = $car->carModel?->brand?->name ?? '';
-                        $model = $car->carModel?->name ?? '';
-                        $namaLengkap = strtoupper(trim("{$brand} {$model}"));
+                @foreach($cars as $car)
+                        @php
+                            $harga = $car['harga_harian'];
+                            $totalHarga = $harga * $totalHari;
+                            $transmisi = strtoupper($car['transmisi']);
+                            $namaLengkap = strtoupper($car['brand'] . ' ' . $car['nama']);
 
-                        $harga = $car->harga_harian ?? 0;
-                        $totalHarga = $harga * $totalHari;
-                        $transmisi = strtoupper($car->transmisi ?? 'AT');
+                            $badgeStyles = [
+                                'orange' => 'bg-orange-100 text-orange-700',
+                                'green' => 'bg-green-100 text-green-700',
+                                'blue' => 'bg-blue-100 text-blue-700',
+                                'purple' => 'bg-purple-100 text-purple-700',
+                                'gray' => 'bg-gray-100 text-gray-600',
+                            ];
+                            $badgeClass = $badgeStyles[$car['badge_color'] ?? 'gray'] ?? 'bg-gray-100 text-gray-600';
+                        @endphp
 
-                        /*
-                        |--------------------------------------------------------------------------
-                        | FOTO KENDARAAN
-                        |--------------------------------------------------------------------------
-                        | Lokasi fisik:
-                        | storage/app/public/cars/
-                        |
-                        | Bisa menangani:
-                        | 1. database = fortuner.jpg
-                        | 2. database = cars/fortuner.jpg
-                        */
+                        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover shadow-sm">
 
-                        if ($car->photo) {
-                            $photoPath = $car->photo;
+                            {{-- Gambar --}}
+                            <div class="relative bg-gray-50 aspect-[4/3] overflow-hidden">
+                                <img src="{{ $car['foto'] }}" alt="{{ $namaLengkap }}" class="w-full h-full object-contain p-4"
+                                    onerror="this.src='https://placehold.co/400x300/f3f4f6/9ca3af?text=No+Image'">
 
-                            if (!str_starts_with($photoPath, 'cars/')) {
-                                $photoPath = 'cars/' . $photoPath;
-                            }
-
-                            $foto = \Illuminate\Support\Facades\Storage::disk('public')
-                                ->url($photoPath);
-                        } else {
-                            $foto = asset('images/car-placeholder.png');
-                        }
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | BOOKING URL
-                        |--------------------------------------------------------------------------
-                        */
-
-                        $bookingUrl = \App\Filament\Resources\BookingResource::getUrl('create')
-                            . '?' . http_build_query([
-                                'car_id' => $car->id,
-                                'tanggal_keluar' => request('tanggal_keluar'),
-                                'tanggal_kembali' => request('tanggal_kembali'),
-                            ]);
-
-                        $badgeColor = 'bg-green-100 text-green-700';
-                    @endphp
-
-                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover shadow-sm">
-
-                        {{-- Gambar --}}
-                        <div class="relative bg-gray-50 aspect-[4/3] overflow-hidden">
-
-                            <img src="{{ $foto }}" alt="{{ $namaLengkap }}" class="w-full h-full object-contain p-3"
-                                onerror="this.onerror=null; this.src='{{ asset('images/car-placeholder.png') }}';">
-
-                            {{-- Badge tersedia --}}
-                            <span class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full {{ $badgeColor }}">
-                                Tersedia
-                            </span>
-
-                            {{-- Logo brand --}}
-                            <div
-                                class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden">
-
-                                @if ($car->carModel?->brand?->logo)
-
-                                    @php
-                                        $brandLogo = $car->carModel->brand->logo;
-
-                                        if (!str_starts_with($brandLogo, 'brands/')) {
-                                            $brandLogo = 'brands/' . $brandLogo;
-                                        }
-
-                                        $brandLogoUrl = \Illuminate\Support\Facades\Storage::disk('public')
-                                            ->url($brandLogo);
-                                    @endphp
-
-                                    <img src="{{ $brandLogoUrl }}" alt="{{ $brand }}" class="w-6 h-6 object-contain">
-
-                                @else
-
-                                    <span class="text-xs font-extrabold text-orange-700">
-                                        {{ mb_substr($brand, 0, 1) }}
+                                {{-- Badge --}}
+                                @if($car['badge'])
+                                    <span class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full {{ $badgeClass }}">
+                                        {{ $car['badge'] }}
                                     </span>
-
                                 @endif
 
+                                {{-- Chip transmisi --}}
+                                <span
+                                    class="absolute bottom-3 right-3 text-xs font-bold bg-white/90 backdrop-blur px-2.5 py-1 rounded-full border border-gray-200 text-gray-600">
+                                    {{ $transmisi }}
+                                </span>
+
+                                {{-- Kapasitas --}}
+                                <span
+                                    class="absolute bottom-3 left-3 flex items-center gap-1 text-xs font-semibold bg-white/90 backdrop-blur px-2.5 py-1 rounded-full border border-gray-200 text-gray-600">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    {{ $car['kapasitas'] }} orang
+                                </span>
                             </div>
 
-                            {{-- Chip transmisi --}}
-                            <span
-                                class="absolute bottom-3 right-3 text-xs font-bold bg-white/90 backdrop-blur px-2 py-0.5 rounded-full border border-gray-200 text-gray-600">
-                                {{ $transmisi }}
-                            </span>
+                            {{-- Info --}}
+                            <div class="p-4">
+                                <p class="text-xs text-gray-400 font-medium mb-0.5">{{ $car['brand'] }}</p>
+                                <h3 class="font-extrabold text-gray-900 text-sm leading-tight mb-3">
+                                    {{ strtoupper($car['nama']) }}
+                                </h3>
+
+                                <div class="mb-1">
+                                    <span class="text-lg font-extrabold brand-orange">
+                                        Rp {{ number_format($harga, 0, ',', '.') }}
+                                    </span>
+                                    <span class="text-xs text-gray-400 font-medium"> /hari</span>
+                                </div>
+
+                                <div class="text-xs text-gray-500 font-medium mb-4">
+                                    {{ $totalHari }} hari ·
+                                    <span class="font-bold text-gray-700">
+                                        Rp {{ number_format($totalHarga, 0, ',', '.') }}
+                                    </span>
+                                </div>
+
+                                <a href="{{ route('booking.create', [
+                        'car_name' => $car['nama'],
+                        'tanggal_keluar' => request('tanggal_keluar'),
+                        'tanggal_kembali' => request('tanggal_kembali'),
+                    ]) }}"
+                                    class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
+                                    Pilih kendaraan ini
+                                </a>
+                            </div>
 
                         </div>
-
-                        {{-- Info --}}
-                        <div class="p-4">
-
-                            <h3 class="font-extrabold text-gray-900 text-sm leading-tight mb-2">
-                                {{ $namaLengkap }}
-                            </h3>
-
-                            <div class="mb-1">
-                                <span class="text-lg font-extrabold brand-orange">
-                                    Rp {{ number_format($harga, 0, ',', '.') }}
-                                </span>
-
-                                <span class="text-xs text-gray-400 font-medium">
-                                    /hari
-                                </span>
-                            </div>
-
-                            <div class="text-xs text-gray-500 font-medium mb-4">
-
-                                {{ $totalHari }} hari ·
-
-                                <span class="font-bold text-gray-700">
-                                    Rp {{ number_format($totalHarga, 0, ',', '.') }}
-                                </span>
-
-                            </div>
-
-                            {{-- Tombol Booking --}}
-                            <a href="https://adminsemetonpesiarlombok.id/order"
-                                class="block w-full text-center bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm py-2.5 rounded-xl transition">
-
-                                Pilih kendaraan ini
-
-                            </a>
-
-                        </div>
-
-                    </div>
                 @endforeach
             </div>
 
-            {{-- Pagination --}}
-            @if ($cars->hasPages())
+            @if($cars->hasPages())
                 <div class="mt-10 flex justify-center">
                     {{ $cars->links() }}
                 </div>
