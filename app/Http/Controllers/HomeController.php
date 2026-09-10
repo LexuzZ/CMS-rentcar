@@ -89,52 +89,48 @@ class HomeController extends Controller
         return view('home', compact('cars', 'totalHari', 'tipeSewa'));
     }
     public function cekNikAjax(Request $request)
-    {
-        $request->validate([
-            'nik'             => ['required', 'digits:16'],
-            'car_id'          => ['required', 'integer'],
-            'tanggal_keluar'  => ['required', 'date'],
-            'tanggal_kembali' => ['required', 'date'],
-            'tipe_sewa'       => ['nullable', 'string'],
-        ]);
+{
+    $request->validate([
+        'nik'             => ['required', 'digits:16'],
+        'car_id'          => ['required', 'integer'],
+        'tanggal_keluar'  => ['required', 'date'],
+        'tanggal_kembali' => ['required', 'date'],
+        'tipe_sewa'      => ['nullable', 'string'],
+    ]);
 
-        $customer = Customer::where('ktp', $request->nik)->first();
+    $customer = Customer::where('ktp', $request->nik)->first();
 
-        if (!$customer) {
-            return response()->json([
-                'success' => true,
-                'registered' => false,
-
-                'redirect' => route('data.penyewa', [
-                    'ktp' => $request->nik,
-                    'car_id' => $request->car_id,
-                    'tanggal_keluar' => $request->tanggal_keluar,
-                    'tanggal_kembali' => $request->tanggal_kembali,
-                    'tipe_sewa' => $request->tipe_sewa,
-                ]),
-            ]);
-        }
-
-        if ($customer->status === 'blacklist') {
-            return response()->json([
-                'success' => false,
-                'message' => 'NIK terdaftar sebagai blacklist.',
-            ], 422);
-        }
-
+    // ==========================================
+    // NIK BELUM TERDAFTAR
+    // ==========================================
+    if (!$customer) {
         return response()->json([
             'success' => true,
-            'registered' => true,
-
-            'redirect' => route('booking', [
-                'customer_id' => $customer->id,
-                'car_id' => $request->car_id,
-                'tanggal_keluar' => $request->tanggal_keluar,
-                'tanggal_kembali' => $request->tanggal_kembali,
-                'tipe_sewa' => $request->tipe_sewa,
-            ]),
+            'registered' => false,
+            'message' => 'NIK belum terdaftar. Silakan lengkapi data penyewa.',
         ]);
     }
+
+    // ==========================================
+    // BLACKLIST
+    // ==========================================
+    if ($customer->status === 'blacklist') {
+        return response()->json([
+            'success' => false,
+            'message' => 'NIK terdaftar dalam daftar hitam dan tidak dapat melakukan booking.',
+        ], 422);
+    }
+
+    // ==========================================
+    // NIK SUDAH TERDAFTAR
+    // ==========================================
+    return response()->json([
+        'success' => true,
+        'registered' => true,
+        'customer_id' => $customer->id,
+        'message' => 'NIK berhasil diverifikasi. Mengarahkan ke form booking.',
+    ]);
+}
     public function create(Request $request)
     {
         $customer = Customer::findOrFail($request->customer_id);
