@@ -86,8 +86,8 @@
         "harga_lepas_kunci": 500000,
         "harga_dengan_sopir": 850000,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ_82GMe-_7nHnGjxTdWH0fEhEp4FnbgD-kX881miMXA&s",
-        "badge": "Keluarga",
-        "badge_color": "orange",
+        "badge": "Premium",
+        "badge_color": "purple",
         "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
@@ -139,7 +139,7 @@
         "harga_dengan_sopir": 1500000,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC12v5tqGjx7YCD4Kk1vithKqnzoJCaUFhfL1mI9hTWw&s",
         "badge": "Buss",
-        "badge_color": "orange",
+        "badge_color": "purple",
         "tipe_sewa": ["dengan_sopir"]
     },
 
