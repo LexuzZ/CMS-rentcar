@@ -40,7 +40,7 @@
     },
     {
         "id": 4,
-        "nama": "Agya GR Sport",
+        "nama": "New Agya GR Sport",
         "brand": "Toyota",
         "transmisi": "AT",
         "kapasitas": 5,
@@ -124,7 +124,7 @@
         "kapasitas": 5,
         "harga_lepas_kunci": 250000,
         "harga_dengan_sopir": null,
-        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg1r8Ij16dRp2tVG4AfXKXEx6E_2Oap1KQdcKntTsfIw&s=10",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDavSQtshll_0Xcll-_aZktfRG4mb5v2-AnFRQ4rCxyA&s=10",
         "badge": "Hemat",
         "badge_color": "green",
         "tipe_sewa": ["lepas_kunci"]
