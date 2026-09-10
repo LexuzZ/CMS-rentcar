@@ -40,13 +40,13 @@
     },
     {
         "id": 4,
-        "nama": "Agya GR",
+        "nama": "Agya GR Sport",
         "brand": "Toyota",
         "transmisi": "AT",
         "kapasitas": 5,
         "harga_lepas_kunci": 250000,
         "harga_dengan_sopir": null,
-        "foto": "https://www.toyota.astra.co.id/sites/default/files/2023-01/agya-main.png",
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg1r8Ij16dRp2tVG4AfXKXEx6E_2Oap1KQdcKntTsfIw&s=10",
         "badge": "Hemat",
         "badge_color": "green",
         "tipe_sewa": ["lepas_kunci"]
@@ -116,6 +116,19 @@
         "badge_color": "gray",
         "tipe_sewa": ["dengan_sopir"]
     },
+    {
+        "id": 10,
+        "nama": "New Agya GR",
+        "brand": "Toyota",
+        "transmisi": "AT",
+        "kapasitas": 5,
+        "harga_lepas_kunci": 250000,
+        "harga_dengan_sopir": null,
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg1r8Ij16dRp2tVG4AfXKXEx6E_2Oap1KQdcKntTsfIw&s=10",
+        "badge": "Hemat",
+        "badge_color": "green",
+        "tipe_sewa": ["lepas_kunci"]
+    },
 
 
 
@@ -130,6 +143,6 @@
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvGC1JLrHWAuQ-E6aceb6ePTnkEfMZx8E1qiVeT07YZw&s=10",
         "badge": null,
         "badge_color": null,
-        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
+        "tipe_sewa": ["lepas_kunci"]
     }
 ]
