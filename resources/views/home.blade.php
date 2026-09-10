@@ -402,12 +402,12 @@
                             <div class="flex gap-2 mb-2">
                                 <span
                                     class="text-xs px-2 py-0.5 rounded-full
-                                                                                        {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                                                                                {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
                                     🔑 Rp {{ number_format($hargaLepas, 0, ',', '.') }}
                                 </span>
                                 <span
                                     class="text-xs px-2 py-0.5 rounded-full
-                                                                                        {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                                                                                {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
                                     👤 Rp {{ number_format($hargaSopir, 0, ',', '.') }}
                                 </span>
                             </div>
@@ -419,9 +419,9 @@
                             </div>
 
                             <button type="button" onclick="openNikModal(
-                                                {{ $car['id'] }},
-                                                '{{ $car['brand'] }} {{ $car['nama'] }}'
-                                            )"
+                                                        {{ $car['id'] }},
+                                                        '{{ $car['brand'] }} {{ $car['nama'] }}'
+                                                    )"
                                 class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
                                 Pilih kendaraan ini
                             </button>
@@ -741,7 +741,8 @@
                     });
 
                     window.location.href =
-                        "{{ route('booking.create') }}" + '?' + params.toString();
+                        "{{ \App\Filament\Resources\BookingResource::getUrl('create') }}" +
+                        '?' + params.toString();
 
                 }, 700);
 
