@@ -8,7 +8,8 @@
         "harga_harian": 300000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2022-02/avanza-main.png",
         "badge": "Populer",
-        "badge_color": "orange"
+        "badge_color": "orange",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 2,
@@ -19,7 +20,8 @@
         "harga_harian": 350000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2022-02/veloz-main.png",
         "badge": "Terlaris",
-        "badge_color": "green"
+        "badge_color": "green",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 3,
@@ -30,7 +32,8 @@
         "harga_harian": 275000,
         "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/brio/exterior/brio-exterior-1.png",
         "badge": "Irit BBM",
-        "badge_color": "blue"
+        "badge_color": "blue",
+        "tipe_sewa": ["lepas_kunci"]
     },
     {
         "id": 4,
@@ -41,7 +44,8 @@
         "harga_harian": 250000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2023-01/agya-main.png",
         "badge": "Hemat",
-        "badge_color": "green"
+        "badge_color": "green",
+        "tipe_sewa": ["lepas_kunci"]
     },
     {
         "id": 5,
@@ -52,7 +56,8 @@
         "harga_harian": 450000,
         "foto": "https://www.mitsubishi-motors.co.id/content/dam/mitsubishi-motors/asia/indonesia/model/xpander/grade/ultimate/exterior/xpander-ultimate-silver.png",
         "badge": "Premium",
-        "badge_color": "purple"
+        "badge_color": "purple",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 6,
@@ -63,7 +68,8 @@
         "harga_harian": 500000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2021-10/innova-main.png",
         "badge": "Keluarga",
-        "badge_color": "orange"
+        "badge_color": "orange",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 7,
@@ -74,7 +80,8 @@
         "harga_harian": 400000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2021-10/rush-main.png",
         "badge": null,
-        "badge_color": null
+        "badge_color": null,
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 8,
@@ -85,7 +92,8 @@
         "harga_harian": 750000,
         "foto": "https://www.toyota.astra.co.id/sites/default/files/2021-10/fortuner-main.png",
         "badge": "SUV",
-        "badge_color": "gray"
+        "badge_color": "gray",
+        "tipe_sewa": ["dengan_sopir"]
     },
     {
         "id": 9,
@@ -96,7 +104,8 @@
         "harga_harian": 425000,
         "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/br-v/exterior/br-v-exterior-1.png",
         "badge": null,
-        "badge_color": null
+        "badge_color": null,
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 10,
@@ -107,7 +116,8 @@
         "harga_harian": 325000,
         "foto": "https://www.suzuki.co.id/wp-content/uploads/2022/01/ertiga-hybrid-main.png",
         "badge": "Hybrid",
-        "badge_color": "green"
+        "badge_color": "green",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
         "id": 11,
@@ -118,7 +128,8 @@
         "harga_harian": 375000,
         "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/freed/exterior/freed-exterior-1.png",
         "badge": null,
-        "badge_color": null
+        "badge_color": null,
+        "tipe_sewa": ["lepas_kunci"]
     },
     {
         "id": 12,
@@ -129,6 +140,7 @@
         "harga_harian": 550000,
         "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/hr-v/exterior/hr-v-exterior-1.png",
         "badge": "SUV",
-        "badge_color": "blue"
+        "badge_color": "blue",
+        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     }
 ]

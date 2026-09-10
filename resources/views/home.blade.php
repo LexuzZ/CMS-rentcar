@@ -26,6 +26,53 @@
             background: #9a3412;
         }
 
+        /* ── Tipe sewa toggle ── */
+        .tipe-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            background: #fff;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .tipe-btn:hover {
+            border-color: #c2410c;
+            color: #c2410c;
+        }
+
+        .tipe-btn.active {
+            background: #fff7ed;
+            border-color: #c2410c;
+            color: #c2410c;
+            box-shadow: 0 0 0 3px rgba(194, 65, 12, .1);
+        }
+
+        .tipe-btn .tipe-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            flex-shrink: 0;
+            transition: background .15s;
+        }
+
+        .tipe-btn.active .tipe-icon {
+            background: #ffedd5;
+        }
+
+        /* ── Chip filter ── */
         .chip-active {
             background: #fff7ed;
             border-color: #c2410c;
@@ -50,6 +97,7 @@
             color: #c2410c;
         }
 
+        /* ── Card ── */
         .card-hover {
             transition: transform .2s, box-shadow .2s;
         }
@@ -77,15 +125,11 @@
             <div class="flex items-center gap-3">
                 @auth
                     <a href="{{ route('filament.admin.pages.dashboard') }}"
-                        class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">
-                        Dashboard
-                    </a>
+                        class="text-sm font-semibold text-gray-600 hover:text-orange-700 transition">Dashboard</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button
-                            class="text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
-                            Keluar
-                        </button>
+                            class="text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">Keluar</button>
                     </form>
                 @else
                     <a href="{{ route('filament.admin.auth.login') }}"
@@ -105,12 +149,40 @@
 
     {{-- ══ SEARCH BAR ══ --}}
     <div class="bg-white border-b border-gray-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <form method="GET" action="{{ route('home') }}" id="search-form">
 
-                {{-- Lokasi + tanggal --}}
-                <div class="flex flex-col md:flex-row items-stretch gap-3 mb-3">
+                {{-- ── Toggle Lepas Kunci / Dengan Sopir ── --}}
+                @php $tipeSewa = request('tipe_sewa', 'semua'); @endphp
+                <div class="flex gap-3 mb-4">
+                    <button type="button" onclick="setFilter('tipe_sewa','lepas_kunci')"
+                        class="tipe-btn {{ $tipeSewa === 'lepas_kunci' ? 'active' : '' }}">
+                        <div class="tipe-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="{{ $tipeSewa === 'lepas_kunci' ? '#c2410c' : '#6b7280' }}" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                            </svg>
+                        </div>
+                        Lepas kunci
+                    </button>
+                    <button type="button" onclick="setFilter('tipe_sewa','dengan_sopir')"
+                        class="tipe-btn {{ $tipeSewa === 'dengan_sopir' ? 'active' : '' }}">
+                        <div class="tipe-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="{{ $tipeSewa === 'dengan_sopir' ? '#c2410c' : '#6b7280' }}" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        Dengan sopir
+                    </button>
+                </div>
 
+                {{-- ── Tanggal + Ubah ── --}}
+                <div class="flex flex-col md:flex-row items-stretch gap-3 mb-3">
                     <div
                         class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 min-w-[160px]">
                         <svg class="text-orange-600 flex-shrink-0" width="18" height="18" viewBox="0 0 24 24"
@@ -160,7 +232,7 @@
                     </button>
                 </div>
 
-                {{-- Search nama --}}
+                {{-- ── Search nama ── --}}
                 <div class="flex gap-2">
                     <div
                         class="flex-1 flex items-center gap-3 border border-gray-200 bg-white rounded-xl px-4 py-3 focus-within:border-orange-400 transition">
@@ -179,6 +251,8 @@
                     </button>
                 </div>
 
+                {{-- Hidden state --}}
+                <input type="hidden" name="tipe_sewa" value="{{ request('tipe_sewa', 'semua') }}">
                 <input type="hidden" name="transmisi" value="{{ request('transmisi', 'semua') }}">
                 <input type="hidden" name="sort" value="{{ request('sort', 'termurah') }}">
 
@@ -186,7 +260,7 @@
         </div>
     </div>
 
-    {{-- ══ FILTER CHIPS + SORT ══ --}}
+    {{-- ══ FILTER TRANSMISI + SORT ══ --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
 
@@ -221,7 +295,12 @@
 
         <div class="flex items-baseline gap-2 mb-5">
             <h2 class="text-lg font-extrabold text-gray-900">Kendaraan tersedia</h2>
-            <span class="text-sm text-gray-400 font-medium">{{ $cars->total() }} kendaraan tersedia</span>
+            <span class="text-sm text-gray-400 font-medium">
+                {{ $cars->total() }} kendaraan
+                @if(request('tipe_sewa') === 'lepas_kunci') · Lepas Kunci
+                @elseif(request('tipe_sewa') === 'dengan_sopir') · Dengan Sopir
+                @endif
+            </span>
         </div>
 
         @if($cars->isEmpty())
@@ -236,7 +315,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-bold text-gray-700 mb-1">Tidak ada kendaraan ditemukan</h3>
-                <p class="text-sm text-gray-400 mb-5">Coba ubah kata kunci atau filter pencarian Anda.</p>
+                <p class="text-sm text-gray-400 mb-5">Coba ubah filter pencarian Anda.</p>
                 <a href="{{ route('home') }}"
                     class="bg-brand bg-brand-hover text-white font-bold text-sm px-6 py-3 rounded-xl transition">
                     Reset Filter
@@ -250,8 +329,6 @@
                             $harga = $car['harga_harian'];
                             $totalHarga = $harga * $totalHari;
                             $transmisi = strtoupper($car['transmisi']);
-                            $namaLengkap = strtoupper($car['brand'] . ' ' . $car['nama']);
-
                             $badgeStyles = [
                                 'orange' => 'bg-orange-100 text-orange-700',
                                 'green' => 'bg-green-100 text-green-700',
@@ -260,29 +337,29 @@
                                 'gray' => 'bg-gray-100 text-gray-600',
                             ];
                             $badgeClass = $badgeStyles[$car['badge_color'] ?? 'gray'] ?? 'bg-gray-100 text-gray-600';
+                            $bisaLepasKunci = in_array('lepas_kunci', $car['tipe_sewa']);
+                            $bisaDenganSopir = in_array('dengan_sopir', $car['tipe_sewa']);
                         @endphp
 
                         <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover shadow-sm">
 
                             {{-- Gambar --}}
                             <div class="relative bg-gray-50 aspect-[4/3] overflow-hidden">
-                                <img src="{{ $car['foto'] }}" alt="{{ $namaLengkap }}" class="w-full h-full object-contain p-4"
+                                <img src="{{ $car['foto'] }}" alt="{{ $car['brand'] }} {{ $car['nama'] }}"
+                                    class="w-full h-full object-contain p-4"
                                     onerror="this.src='https://placehold.co/400x300/f3f4f6/9ca3af?text=No+Image'">
 
-                                {{-- Badge --}}
                                 @if($car['badge'])
                                     <span class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full {{ $badgeClass }}">
                                         {{ $car['badge'] }}
                                     </span>
                                 @endif
 
-                                {{-- Chip transmisi --}}
                                 <span
                                     class="absolute bottom-3 right-3 text-xs font-bold bg-white/90 backdrop-blur px-2.5 py-1 rounded-full border border-gray-200 text-gray-600">
                                     {{ $transmisi }}
                                 </span>
 
-                                {{-- Kapasitas --}}
                                 <span
                                     class="absolute bottom-3 left-3 flex items-center gap-1 text-xs font-semibold bg-white/90 backdrop-blur px-2.5 py-1 rounded-full border border-gray-200 text-gray-600">
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -299,9 +376,35 @@
                             {{-- Info --}}
                             <div class="p-4">
                                 <p class="text-xs text-gray-400 font-medium mb-0.5">{{ $car['brand'] }}</p>
-                                <h3 class="font-extrabold text-gray-900 text-sm leading-tight mb-3">
+                                <h3 class="font-extrabold text-gray-900 text-sm leading-tight mb-2">
                                     {{ strtoupper($car['nama']) }}
                                 </h3>
+
+                                {{-- Tipe sewa chips --}}
+                                <div class="flex gap-1.5 mb-3">
+                                    @if($bisaLepasKunci)
+                                        <span
+                                            class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-200">
+                                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2.5">
+                                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                                            </svg>
+                                            Lepas kunci
+                                        </span>
+                                    @endif
+                                    @if($bisaDenganSopir)
+                                        <span
+                                            class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200">
+                                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2.5">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                <circle cx="12" cy="7" r="4" />
+                                            </svg>
+                                            Dengan sopir
+                                        </span>
+                                    @endif
+                                </div>
 
                                 <div class="mb-1">
                                     <span class="text-lg font-extrabold brand-orange">
@@ -312,9 +415,7 @@
 
                                 <div class="text-xs text-gray-500 font-medium mb-4">
                                     {{ $totalHari }} hari ·
-                                    <span class="font-bold text-gray-700">
-                                        Rp {{ number_format($totalHarga, 0, ',', '.') }}
-                                    </span>
+                                    <span class="font-bold text-gray-700">Rp {{ number_format($totalHarga, 0, ',', '.') }}</span>
                                 </div>
 
                                 <a href=""

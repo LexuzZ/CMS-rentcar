@@ -8,13 +8,9 @@ use Illuminate\Support\Collection;
 
 class HomeController extends Controller
 {
-    /**
-     * Load katalog dari JSON (disimpan di storage/app/katalog.json)
-     * atau bisa juga taruh di public/katalog.json
-     */
     private function getKatalog(): Collection
     {
-        $path = base_path('katalog.json'); // taruh katalog.json di root project
+        $path = base_path('katalog.json');
         $data = json_decode(file_get_contents($path), true);
         return collect($data);
     }
@@ -23,46 +19,38 @@ class HomeController extends Controller
     {
         $katalog = $this->getKatalog();
 
-        /*
-        |------------------------------------------------------------------
-        | Filter pencarian nama / brand
-        |------------------------------------------------------------------
-        */
-        if ($request->filled('search')) {
-            $search = strtolower(trim($request->search));
-            $katalog = $katalog->filter(function ($car) use ($search) {
-                return str_contains(strtolower($car['nama']), $search)
-                    || str_contains(strtolower($car['brand']), $search);
-            });
+        // ── Filter tipe sewa (lepas_kunci / dengan_sopir) ────
+        if ($request->filled('tipe_sewa') && $request->tipe_sewa !== 'semua') {
+            $tipe = $request->tipe_sewa;
+            $katalog = $katalog->filter(
+                fn($car) => in_array($tipe, $car['tipe_sewa'])
+            );
         }
 
-        /*
-        |------------------------------------------------------------------
-        | Filter transmisi
-        |------------------------------------------------------------------
-        */
+        // ── Filter pencarian nama / brand ────────────────────
+        if ($request->filled('search')) {
+            $search = strtolower(trim($request->search));
+            $katalog = $katalog->filter(
+                fn($car) => str_contains(strtolower($car['nama']), $search)
+                         || str_contains(strtolower($car['brand']), $search)
+            );
+        }
+
+        // ── Filter transmisi ─────────────────────────────────
         if ($request->filled('transmisi') && $request->transmisi !== 'semua') {
             $katalog = $katalog->filter(
                 fn($car) => strtoupper($car['transmisi']) === strtoupper($request->transmisi)
             );
         }
 
-        /*
-        |------------------------------------------------------------------
-        | Sorting
-        |------------------------------------------------------------------
-        */
+        // ── Sorting ──────────────────────────────────────────
         $katalog = match ($request->get('sort', 'termurah')) {
             'termahal' => $katalog->sortByDesc('harga_harian'),
             'terbaru'  => $katalog->sortByDesc('id'),
             default    => $katalog->sortBy('harga_harian'),
         };
 
-        /*
-        |------------------------------------------------------------------
-        | Pagination manual (karena data dari Collection bukan DB)
-        |------------------------------------------------------------------
-        */
+        // ── Pagination manual ────────────────────────────────
         $perPage     = 12;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $items       = $katalog->values()->forPage($currentPage, $perPage);
@@ -75,11 +63,7 @@ class HomeController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        /*
-        |------------------------------------------------------------------
-        | Hitung total hari sewa
-        |------------------------------------------------------------------
-        */
+        // ── Hitung total hari ─────────────────────────────────
         $totalHari = 1;
         if ($request->filled('tanggal_keluar') && $request->filled('tanggal_kembali')) {
             $keluar  = \Carbon\Carbon::parse($request->tanggal_keluar);
