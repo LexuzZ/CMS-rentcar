@@ -103,45 +103,9 @@
         "badge_color": "gray",
         "tipe_sewa": ["dengan_sopir"]
     },
-    {
-        "id": 9,
-        "nama": "BRV",
-        "brand": "Honda",
-        "transmisi": "AT",
-        "kapasitas": 7,
-        "harga_lepas_kunci": 425000,
-        "harga_dengan_sopir": 575000,
-        "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/br-v/exterior/br-v-exterior-1.png",
-        "badge": null,
-        "badge_color": null,
-        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
-    },
-    {
-        "id": 10,
-        "nama": "Ertiga",
-        "brand": "Suzuki",
-        "transmisi": "AT",
-        "kapasitas": 7,
-        "harga_lepas_kunci": 325000,
-        "harga_dengan_sopir": 475000,
-        "foto": "https://www.suzuki.co.id/wp-content/uploads/2022/01/ertiga-hybrid-main.png",
-        "badge": "Hybrid",
-        "badge_color": "green",
-        "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
-    },
-    {
-        "id": 11,
-        "nama": "Freed",
-        "brand": "Honda",
-        "transmisi": "AT",
-        "kapasitas": 7,
-        "harga_lepas_kunci": 375000,
-        "harga_dengan_sopir": null,
-        "foto": "https://www.honda-indonesia.com/assets/uploads/model-detail/freed/exterior/freed-exterior-1.png",
-        "badge": null,
-        "badge_color": null,
-        "tipe_sewa": ["lepas_kunci"]
-    },
+
+
+
     {
         "id": 12,
         "nama": "HR-V",
