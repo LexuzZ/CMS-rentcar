@@ -99,8 +99,8 @@
         "harga_lepas_kunci": 400000,
         "harga_dengan_sopir": 750000,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0gzuvRArWmjCv1_dyOVF9Pypam_eB6T_nBZwnx4acGg&s=10",
-        "badge": null,
-        "badge_color": null,
+        "badge": "Keluarga",
+        "badge_color": "orange",
         "tipe_sewa": ["lepas_kunci", "dengan_sopir"]
     },
     {
@@ -152,8 +152,8 @@
         "harga_lepas_kunci": 350000,
         "harga_dengan_sopir": null,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvGC1JLrHWAuQ-E6aceb6ePTnkEfMZx8E1qiVeT07YZw&s=10",
-        "badge": null,
-        "badge_color": null,
+        "badge": "Keluarga",
+        "badge_color": "orange",
         "tipe_sewa": ["lepas_kunci"]
     },
     {
@@ -165,8 +165,8 @@
         "harga_lepas_kunci": 275000,
         "harga_dengan_sopir": null,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqeSoksVvnwUYowBIG2vWXB1t12ZSlNAyUn1WJg-bVOg&s=10",
-        "badge": null,
-        "badge_color": null,
+        "badge": "Hemat",
+        "badge_color": "green",
         "tipe_sewa": ["lepas_kunci"]
     }
 ]
