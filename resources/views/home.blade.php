@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Semeton Pesiar – Sewa Kendaraan Lombok</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -398,18 +399,18 @@
 
                             {{-- Perbandingan harga lepas kunci vs dengan sopir --}}
                             {{-- @if($bisaLepasKunci && $bisaDenganSopir && $hargaLepas && $hargaSopir)
-                                <div class="flex gap-2 mb-2">
-                                    <span
-                                        class="text-xs px-2 py-0.5 rounded-full
-                                                {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
-                                        🔑 Rp {{ number_format($hargaLepas, 0, ',', '.') }}
-                                    </span>
-                                    <span
-                                        class="text-xs px-2 py-0.5 rounded-full
-                                                {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
-                                        👤 Rp {{ number_format($hargaSopir, 0, ',', '.') }}
-                                    </span>
-                                </div>
+                            <div class="flex gap-2 mb-2">
+                                <span
+                                    class="text-xs px-2 py-0.5 rounded-full
+                                                                                        {{ $tipeSewa === 'lepas_kunci' ? 'bg-orange-100 text-orange-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                    🔑 Rp {{ number_format($hargaLepas, 0, ',', '.') }}
+                                </span>
+                                <span
+                                    class="text-xs px-2 py-0.5 rounded-full
+                                                                                        {{ $tipeSewa === 'dengan_sopir' ? 'bg-blue-100 text-blue-700 font-bold' : 'bg-gray-100 text-gray-500 font-medium' }}">
+                                    👤 Rp {{ number_format($hargaSopir, 0, ',', '.') }}
+                                </span>
+                            </div>
                             @endif --}}
 
                             <div class="text-xs text-gray-500 font-medium mb-4">
@@ -417,10 +418,13 @@
                                 <span class="font-bold text-gray-700">Rp {{ number_format($totalHarga, 0, ',', '.') }}</span>
                             </div>
 
-                            <a href=""
+                            <button type="button" onclick="openNikModal(
+                                                {{ $car['id'] }},
+                                                '{{ $car['brand'] }} {{ $car['nama'] }}'
+                                            )"
                                 class="block w-full text-center bg-brand bg-brand-hover text-white font-bold text-sm py-2.5 rounded-xl transition">
                                 Pilih kendaraan ini
-                            </a>
+                            </button>
                         </div>
 
                     </div>
@@ -433,6 +437,113 @@
                 </div>
             @endif
         @endif
+
+    </div>
+    {{-- ═══════════════════════════════════════════════════════════
+    MODAL CEK NIK
+    ═══════════════════════════════════════════════════════════ --}}
+    <div id="nikModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+
+            {{-- Header --}}
+            <div class="bg-brand px-6 py-5 text-white">
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <p class="text-xs font-medium text-orange-100 mb-1">
+                            Langkah berikutnya
+                        </p>
+
+                        <h3 class="text-lg font-extrabold">
+                            Cek Data Penyewa
+                        </h3>
+                    </div>
+
+                    <button type="button" onclick="closeNikModal()"
+                        class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+
+                    </button>
+
+                </div>
+            </div>
+
+            {{-- Body --}}
+            <div class="p-6">
+
+                {{-- Kendaraan --}}
+                <div class="mb-5 p-3 rounded-xl bg-orange-50 border border-orange-100">
+
+                    <p class="text-xs text-gray-400 font-medium mb-1">
+                        Kendaraan yang dipilih
+                    </p>
+
+                    <p id="selectedCarName" class="text-sm font-extrabold text-gray-900">
+                        -
+                    </p>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label for="modalNik" class="block text-sm font-bold text-gray-700 mb-2">
+                        Nomor Induk Kependudukan (NIK)
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="text" id="modalNik" maxlength="16" inputmode="numeric" autocomplete="off"
+                            placeholder="Masukkan 16 digit NIK"
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-20 text-sm font-semibold text-gray-800 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100">
+
+                        <span id="modalNikCounter"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-semibold">
+                            0 / 16
+                        </span>
+
+                    </div>
+
+                    <p class="text-xs text-gray-400 mt-2">
+                        NIK digunakan untuk mengecek status data penyewa sebelum booking.
+                    </p>
+
+                </div>
+
+                {{-- Error --}}
+                <div id="nikError"
+                    class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                </div>
+
+                {{-- Success --}}
+                <div id="nikSuccess"
+                    class="hidden mb-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
+                </div>
+
+                {{-- Button --}}
+                <button type="button" id="btnCheckNik" onclick="checkNik()"
+                    class="w-full flex items-center justify-center gap-2 bg-brand bg-brand-hover text-white font-bold text-sm py-3 rounded-xl transition">
+
+                    <svg id="checkNikIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+
+                    <span id="checkNikText">
+                        Cek NIK
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -471,6 +582,190 @@
         }
 
         updateMinReturn();
+        let selectedCarId = null;
+
+        function openNikModal(carId, carName) {
+
+            selectedCarId = carId;
+
+            document.getElementById('selectedCarName').textContent = carName;
+
+            document.getElementById('modalNik').value = '';
+
+            document.getElementById('modalNikCounter').textContent = '0 / 16';
+
+            document.getElementById('nikError').classList.add('hidden');
+            document.getElementById('nikSuccess').classList.add('hidden');
+
+            const modal = document.getElementById('nikModal');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            setTimeout(() => {
+                document.getElementById('modalNik').focus();
+            }, 100);
+        }
+
+        function closeNikModal() {
+
+            const modal = document.getElementById('nikModal');
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            selectedCarId = null;
+        }
+
+        const modalNik = document.getElementById('modalNik');
+
+        modalNik.addEventListener('input', function () {
+
+            this.value = this.value.replace(/\D/g, '');
+
+            const length = this.value.length;
+
+            document.getElementById('modalNikCounter').textContent =
+                `${length} / 16`;
+        });
+
+
+        async function checkNik() {
+
+            const nik = document.getElementById('modalNik').value;
+
+            const errorBox = document.getElementById('nikError');
+            const successBox = document.getElementById('nikSuccess');
+
+            const button = document.getElementById('btnCheckNik');
+            const buttonText = document.getElementById('checkNikText');
+
+            errorBox.classList.add('hidden');
+            successBox.classList.add('hidden');
+
+            if (nik.length !== 16) {
+
+                errorBox.textContent =
+                    'NIK harus terdiri dari 16 digit.';
+
+                errorBox.classList.remove('hidden');
+
+                return;
+            }
+
+            if (!selectedCarId) {
+
+                errorBox.textContent =
+                    'Kendaraan belum dipilih.';
+
+                errorBox.classList.remove('hidden');
+
+                return;
+            }
+
+            button.disabled = true;
+
+            button.classList.add('opacity-70', 'cursor-not-allowed');
+
+            buttonText.textContent = 'Memeriksa...';
+
+            try {
+
+                const response = await fetch(
+                    "{{ route('cek.nik.ajax') }}",
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN':
+                                document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+
+                        body: JSON.stringify({
+                            nik: nik,
+                            car_id: selectedCarId,
+                            tanggal_keluar:
+                                document.getElementById('tgl_keluar').value,
+
+                            tanggal_kembali:
+                                document.getElementById('tgl_kembali').value,
+
+                            tipe_sewa:
+                                document.querySelector(
+                                    'input[name="tipe_sewa"]'
+                                ).value
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+
+                    errorBox.textContent =
+                        data.message ?? 'NIK tidak dapat digunakan.';
+
+                    errorBox.classList.remove('hidden');
+
+                    return;
+                }
+
+                successBox.textContent =
+                    data.message ?? 'NIK dapat digunakan.';
+
+                successBox.classList.remove('hidden');
+
+                /*
+                |--------------------------------------------------------------------------
+                | Lanjut ke halaman booking
+                |--------------------------------------------------------------------------
+                */
+
+                setTimeout(() => {
+
+                    const params = new URLSearchParams({
+                        car_id: selectedCarId,
+                        nik: nik,
+                        tanggal_keluar:
+                            document.getElementById('tgl_keluar').value,
+
+                        tanggal_kembali:
+                            document.getElementById('tgl_kembali').value,
+
+                        tipe_sewa:
+                            document.querySelector(
+                                'input[name="tipe_sewa"]'
+                            ).value
+                    });
+
+                    window.location.href =
+                        "{{ route('booking.create') }}" + '?' + params.toString();
+
+                }, 700);
+
+            } catch (error) {
+
+                console.error(error);
+
+                errorBox.textContent =
+                    'Terjadi kesalahan saat mengecek NIK. Silakan coba lagi.';
+
+                errorBox.classList.remove('hidden');
+
+            } finally {
+
+                button.disabled = false;
+
+                button.classList.remove(
+                    'opacity-70',
+                    'cursor-not-allowed'
+                );
+
+                buttonText.textContent = 'Cek NIK';
+            }
+        }
     </script>
 
 </body>
