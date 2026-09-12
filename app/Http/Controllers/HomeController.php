@@ -208,10 +208,7 @@ class HomeController extends Controller
         // CARI CUSTOMER BERDASARKAN KTP
         // =====================================================
 
-        $customer = Customer::where(
-            'ktp',
-            $validated['nik']
-        )->first();
+        $customer = Customer::where('ktp', $request->nik)->first();
 
         // =====================================================
         // BLACKLIST
