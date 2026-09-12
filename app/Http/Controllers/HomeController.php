@@ -25,7 +25,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        $katalog  = $this->getKatalog();
+        $katalog = $this->getKatalog();
         $tipeSewa = $request->get('tipe_sewa', 'semua');
 
         // =====================================================
@@ -34,8 +34,7 @@ class HomeController extends Controller
 
         if ($tipeSewa !== 'semua') {
             $katalog = $katalog->filter(
-                fn ($car) =>
-                    in_array($tipeSewa, $car['tipe_sewa'] ?? [])
+                fn ($car) => in_array($tipeSewa, $car['tipe_sewa'] ?? [])
             );
         }
 
@@ -47,11 +46,10 @@ class HomeController extends Controller
             $search = strtolower(trim($request->search));
 
             $katalog = $katalog->filter(
-                fn ($car) =>
-                    str_contains(
-                        strtolower($car['nama'] ?? ''),
-                        $search
-                    )
+                fn ($car) => str_contains(
+                    strtolower($car['nama'] ?? ''),
+                    $search
+                )
                     ||
                     str_contains(
                         strtolower($car['brand'] ?? ''),
@@ -69,8 +67,7 @@ class HomeController extends Controller
             $request->transmisi !== 'semua'
         ) {
             $katalog = $katalog->filter(
-                fn ($car) =>
-                    strtoupper($car['transmisi'] ?? '') ===
+                fn ($car) => strtoupper($car['transmisi'] ?? '') ===
                     strtoupper($request->transmisi)
             );
         }
@@ -83,13 +80,11 @@ class HomeController extends Controller
 
             $car['harga_aktif'] = match ($tipeSewa) {
 
-                'dengan_sopir' =>
-                    $car['harga_dengan_sopir']
+                'dengan_sopir' => $car['harga_dengan_sopir']
                     ?? $car['harga_lepas_kunci']
                     ?? 0,
 
-                default =>
-                    $car['harga_lepas_kunci']
+                default => $car['harga_lepas_kunci']
                     ?? $car['harga_dengan_sopir']
                     ?? 0,
             };
@@ -103,21 +98,18 @@ class HomeController extends Controller
 
         $katalog = match ($request->get('sort', 'termurah')) {
 
-            'termahal' =>
-                $katalog->sortByDesc('harga_aktif'),
+            'termahal' => $katalog->sortByDesc('harga_aktif'),
 
-            'terbaru' =>
-                $katalog->sortByDesc('id'),
+            'terbaru' => $katalog->sortByDesc('id'),
 
-            default =>
-                $katalog->sortBy('harga_aktif'),
+            default => $katalog->sortBy('harga_aktif'),
         };
 
         // =====================================================
         // PAGINATION
         // =====================================================
 
-        $perPage     = 12;
+        $perPage = 12;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
 
         $items = $katalog
@@ -176,53 +168,65 @@ class HomeController extends Controller
     // =========================================================
 
     public function cekNikAjax(Request $request)
-{
-    $validated = $request->validate([
-        'nik' => [
-            'required',
-            'digits:16',
-        ],
+    {
+        $validated = $request->validate([
+            'nik' => [
+                'required',
+                'digits:16',
+            ],
 
-        'car_id' => [
-            'required',
-            'integer',
-        ],
+            'car_id' => [
+                'required',
+                'integer',
+            ],
 
-        'tanggal_keluar' => [
-            'required',
-            'date',
-        ],
+            'tanggal_keluar' => [
+                'required',
+                'date',
+            ],
 
-        'tanggal_kembali' => [
-            'required',
-            'date',
-            'after:tanggal_keluar',
-        ],
+            'tanggal_kembali' => [
+                'required',
+                'date',
+            ],
 
-        'tipe_sewa' => [
-            'nullable',
-            'string',
-        ],
-    ]);
+            'tipe_sewa' => [
+                'nullable',
+                'string',
+            ],
+        ]);
 
-    // Cari customer berdasarkan kolom ktp
-    $customer = Customer::where(
-        'ktp',
-        $validated['nik']
-    )->first();
+        $customer = Customer::where(
+            'ktp',
+            $validated['nik']
+        )->first();
 
-    // BLACKLIST
-    if ($customer && $customer->status === 'blacklist') {
-        return response()->json([
-            'success' => false,
-            'message' => 'NIK terdaftar dalam daftar hitam dan tidak dapat melakukan booking.',
-        ], 422);
-    }
+        if ($customer && $customer->status === 'blacklist') {
+            return response()->json([
+                'success' => false,
+                'message' => 'NIK terdaftar dalam daftar hitam dan tidak dapat melakukan booking.',
+            ], 422);
+        }
 
-    // BELUM TERDAFTAR
-    if (!$customer) {
-        $redirectUrl = route('data.penyewa', [
-            'ktp' => $validated['nik'],
+        if (! $customer) {
+            $redirectUrl = route('data.penyewa', [
+                'ktp' => $validated['nik'],
+                'car_id' => $validated['car_id'],
+                'tanggal_keluar' => $validated['tanggal_keluar'],
+                'tanggal_kembali' => $validated['tanggal_kembali'],
+                'tipe_sewa' => $validated['tipe_sewa'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'registered' => false,
+                'message' => 'NIK belum terdaftar. Silakan lengkapi data penyewa.',
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
+        $redirectUrl = route('booking.form', [
+            'customer_id' => $customer->id,
             'car_id' => $validated['car_id'],
             'tanggal_keluar' => $validated['tanggal_keluar'],
             'tanggal_kembali' => $validated['tanggal_kembali'],
@@ -231,29 +235,12 @@ class HomeController extends Controller
 
         return response()->json([
             'success' => true,
-            'registered' => false,
-            'message' => 'NIK belum terdaftar. Silakan lengkapi data penyewa.',
+            'registered' => true,
+            'customer_id' => $customer->id,
+            'message' => 'NIK berhasil diverifikasi. Mengarahkan ke form booking.',
             'redirect' => $redirectUrl,
         ]);
     }
-
-    // SUDAH TERDAFTAR
-    $redirectUrl = route('booking', [
-        'customer_id' => $customer->id,
-        'car_id' => $validated['car_id'],
-        'tanggal_keluar' => $validated['tanggal_keluar'],
-        'tanggal_kembali' => $validated['tanggal_kembali'],
-        'tipe_sewa' => $validated['tipe_sewa'],
-    ]);
-
-    return response()->json([
-        'success' => true,
-        'registered' => true,
-        'customer_id' => $customer->id,
-        'message' => 'NIK berhasil diverifikasi. Mengarahkan ke form booking.',
-        'redirect' => $redirectUrl,
-    ]);
-}
 
     // =========================================================
     // FORM DATA PENYEWA
@@ -275,7 +262,7 @@ class HomeController extends Controller
         );
 
         $car = Car::with([
-            'carModel.brand'
+            'carModel.brand',
         ])->findOrFail(
             $request->car_id
         );
@@ -287,14 +274,11 @@ class HomeController extends Controller
             'car' => $car,
             'carModels' => $carModels,
 
-            'tanggalKeluar' =>
-                $request->tanggal_keluar,
+            'tanggalKeluar' => $request->tanggal_keluar,
 
-            'tanggalKembali' =>
-                $request->tanggal_kembali,
+            'tanggalKembali' => $request->tanggal_kembali,
 
-            'tipeSewa' =>
-                $request->tipe_sewa,
+            'tipeSewa' => $request->tipe_sewa,
         ]);
     }
 }
