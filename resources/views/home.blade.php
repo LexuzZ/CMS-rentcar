@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Semeton Pesiar – Sewa Kendaraan Lombok</title>
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f97316'/%3E%3Cpath d='M6 19h20a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H14l-4 4v3a2 2 0 0 0-4 0v0' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='10' cy='21' r='2.2' fill='%23fff'/%3E%3Ccircle cx='22' cy='21' r='2.2' fill='%23fff'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/x-icon" href="/public/SPTLOGO.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
