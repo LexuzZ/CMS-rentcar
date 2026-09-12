@@ -33,13 +33,13 @@ class ServiceHistoryResource extends Resource
     // ─────────────────────────────────────────
 
     public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->whereHas('car', fn (Builder $query) =>
-                $query->where('garasi', 'SPT')
-            )
-            ->where('is_added_to_tempo', false);
-    }
+{
+    return parent::getEloquentQuery()
+        ->whereHas('car', function (Builder $query) {
+            $query->where('garasi', 'SPT');
+        })
+        ->where('is_added_to_tempo', false);
+}
 
     // ─────────────────────────────────────────
     // FORM
