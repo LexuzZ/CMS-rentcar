@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('SPTLOGO.png'))
             ->brandLogo(asset('SPTLOGO.png'))
             ->brandLogoHeight('4rem')
-            ->brandName('Semeton Pesiar')
+            // ->brandName('Semeton Pesiar')
 
             // ── Theme ─────────────────────────────────────────────
             ->darkMode(true)               // biarkan user pilih sendiri
