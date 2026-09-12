@@ -91,7 +91,21 @@
                     </div>
 
                     {{-- Blok: Buat Akun --}}
+                    <div class="sp-block">
+                        <h2 class="sp-block-title">Buat akun</h2>
+                        <p class="sp-block-hint">Dipakai untuk melihat riwayat pesanan dan promo Anda nanti.</p>
 
+                        <div class="sp-grid-2">
+                            <div class="sp-field">
+                                <label class="sp-label" for="username">Username</label>
+                                <input type="text" id="username" class="sp-input" placeholder="Huruf, angka, titik">
+                            </div>
+                            <div class="sp-field">
+                                <label class="sp-label" for="password">Kata sandi</label>
+                                <input type="password" id="password" class="sp-input" placeholder="Minimal 6 karakter">
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- Blok: Detail Kendaraan --}}
                     <div class="sp-block">
@@ -99,23 +113,34 @@
 
                         <div class="sp-field">
                             <label class="sp-label" for="mobil">Pilih Mobil</label>
+                            @php $selectedCarName = $car->carModel->name ?? ''; @endphp
                             <select id="mobil" class="sp-input sp-select" required>
                                 <option value="">Pilih jenis mobil…</option>
                                 @foreach ($carModels as $model)
-                                    <option value="{{ $model->name }}">{{ $model->brand->name }} — {{ $model->name }}</option>
+                                    <option value="{{ $model->name }}"
+                                        {{ $model->name === $selectedCarName ? 'selected' : '' }}>
+                                        {{ $model->brand->name }} — {{ $model->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="sp-field">
                             <label class="sp-label" for="paket">Paket Sewa</label>
+                            @php
+                                $paketDefault = match($tipeSewa ?? '') {
+                                    'lepas_kunci'   => 'Lepas Kunci',
+                                    'dengan_sopir'  => 'Dengan Driver',
+                                    default         => '',
+                                };
+                            @endphp
                             <select id="paket" class="sp-input sp-select" required>
                                 <option value="">Pilih paket…</option>
-                                <option value="Lepas Kunci">Lepas Kunci</option>
-                                <option value="Dengan Driver">Dengan Driver</option>
-                                <option value="12 Jam Lepas Kunci">12 Jam (Lepas Kunci)</option>
-                                <option value="12 Jam Dengan Driver">12 Jam (Dengan Driver)</option>
-                                <option value="Paket Tour">Paket Tour</option>
+                                <option value="Lepas Kunci"          {{ $paketDefault === 'Lepas Kunci'         ? 'selected' : '' }}>Lepas Kunci</option>
+                                <option value="Dengan Driver"        {{ $paketDefault === 'Dengan Driver'       ? 'selected' : '' }}>Dengan Driver</option>
+                                <option value="12 Jam Lepas Kunci"   {{ $paketDefault === '12 Jam Lepas Kunci'  ? 'selected' : '' }}>12 Jam (Lepas Kunci)</option>
+                                <option value="12 Jam Dengan Driver" {{ $paketDefault === '12 Jam Dengan Driver'? 'selected' : '' }}>12 Jam (Dengan Driver)</option>
+                                <option value="Paket Tour"           {{ $paketDefault === 'Paket Tour'          ? 'selected' : '' }}>Paket Tour</option>
                             </select>
                         </div>
                     </div>
@@ -127,11 +152,13 @@
                         <div class="sp-grid-2">
                             <div class="sp-field">
                                 <label class="sp-label" for="tanggal_keluar">Tanggal ambil</label>
-                                <input type="date" id="tanggal_keluar" class="sp-input" required>
+                                <input type="date" id="tanggal_keluar" class="sp-input"
+                                    value="{{ $tanggalKeluar ?? '' }}" required>
                             </div>
                             <div class="sp-field">
                                 <label class="sp-label" for="tanggal_kembali">Tanggal kembali</label>
-                                <input type="date" id="tanggal_kembali" class="sp-input" required>
+                                <input type="date" id="tanggal_kembali" class="sp-input"
+                                    value="{{ $tanggalKembali ?? '' }}" required>
                             </div>
                         </div>
                         <div class="sp-grid-2">
@@ -213,9 +240,15 @@
             {{-- ───── Kolom Kanan: Ringkasan ───── --}}
             <aside class="sp-col-summary">
                 <div class="sp-summary-card">
+                    @php
+                        $carFoto = $car->foto
+                            ? asset('storage/' . $car->foto)
+                            : 'https://placehold.co/320x180/f1f5f9/94a3b8?text=Foto+Kendaraan';
+                        $carNama = ($car->carModel->brand->name ?? '') . ' ' . ($car->carModel->name ?? $car->name ?? '—');
+                    @endphp
                     <div class="sp-summary-car-img">
-                        <img src="{{ $carImage ?? 'https://placehold.co/320x180/f1f5f9/94a3b8?text=Foto+Kendaraan' }}"
-                            alt="Foto Kendaraan" class="sp-car-img">
+                        <img src="{{ $carFoto }}" alt="{{ $carNama }}" class="sp-car-img"
+                            onerror="this.src='https://placehold.co/320x180/f1f5f9/94a3b8?text=Foto+Kendaraan'">
                         <div class="sp-summary-brand-badge">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -227,14 +260,14 @@
                     </div>
 
                     <div class="sp-summary-body">
-                        <p class="sp-summary-car-name">{{ $selectedCar->name ?? 'New Brio Facelift' }}</p>
+                        <p class="sp-summary-car-name">{{ $carNama }}</p>
                         <p class="sp-summary-location">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                                 <circle cx="12" cy="9" r="2.5" />
                             </svg>
-                            {{ $wilayah ?? 'Lombok' }}
+                            Lombok
                         </p>
 
                         <div class="sp-summary-divider"></div>
@@ -626,6 +659,9 @@
             document.getElementById(id).addEventListener('change', updateSummary)
         );
         document.getElementById('paket').addEventListener('change', updateSummary);
+
+        // Langsung update summary saat halaman load (tanggal & paket sudah ter-prefill)
+        updateSummary();
 
         // Form submit → WhatsApp
         document.getElementById('bookingForm').onsubmit = function (e) {
