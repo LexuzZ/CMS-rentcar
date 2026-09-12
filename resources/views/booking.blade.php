@@ -91,21 +91,7 @@
                     </div>
 
                     {{-- Blok: Buat Akun --}}
-                    <div class="sp-block">
-                        <h2 class="sp-block-title">Buat akun</h2>
-                        <p class="sp-block-hint">Dipakai untuk melihat riwayat pesanan dan promo Anda nanti.</p>
 
-                        <div class="sp-grid-2">
-                            <div class="sp-field">
-                                <label class="sp-label" for="username">Username</label>
-                                <input type="text" id="username" class="sp-input" placeholder="Huruf, angka, titik">
-                            </div>
-                            <div class="sp-field">
-                                <label class="sp-label" for="password">Kata sandi</label>
-                                <input type="password" id="password" class="sp-input" placeholder="Minimal 6 karakter">
-                            </div>
-                        </div>
-                    </div>
 
                     {{-- Blok: Detail Kendaraan --}}
                     <div class="sp-block">
