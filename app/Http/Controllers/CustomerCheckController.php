@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blacklist;
-use App\Models\Car;
-use App\Models\CarModel;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -30,7 +28,7 @@ class CustomerCheckController extends Controller
             return back()
                 ->withInput()
                 ->with('error_blacklist', [
-                    'nik'    => $nik,
+                    'nik' => $nik,
                     'alasan' => $blacklist->alasan,
                 ]);
         }
@@ -49,21 +47,32 @@ class CustomerCheckController extends Controller
             ->with('info', 'NIK tidak terdaftar, silakan isi data penyewa');
     }
 
+    // Ganti method bookingForm di CustomerCheckController
+    // $carModels tidak perlu lagi karena dropdown mobil sudah dihapus
 
-    public function bookingForm()
+    public function bookingForm(Request $request)
     {
-        $customer = Customer::find(session('customer_id'));
-        $carModels = CarModel::with('brand')
-        ->orderBy('name')
-        ->get();
+        $customer = Customer::findOrFail($request->customer_id);
 
-    return view('booking', compact('customer', 'carModels'));
+        // Ambil data kendaraan dari katalog.json berdasarkan car_id
+        $katalog = collect(json_decode(file_get_contents(base_path('katalog.json')), true));
+        $car = $katalog->firstWhere('id', (int) $request->car_id);
+
+        abort_if(! $car, 404, 'Kendaraan tidak ditemukan.');
+
+        return view('booking', [
+            'customer' => $customer,
+            'car' => $car,           // array dari katalog.json
+            'tanggalKeluar' => $request->tanggal_keluar,
+            'tanggalKembali' => $request->tanggal_kembali,
+            'tipeSewa' => $request->tipe_sewa,
+        ]);
     }
+
     public function dataPenyewa()
     {
         return view('form-data-penyewa');
     }
-
 
     public function dataPenyewaPost(Request $request)
     {
@@ -104,6 +113,4 @@ class CustomerCheckController extends Controller
         return redirect()->route('booking.form')
             ->with('success', 'Data penyewa tersimpan ✅');
     }
-
-
 }

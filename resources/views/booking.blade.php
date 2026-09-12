@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selesaikan Pemesanan — Semeton Pesiar Lombok</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 </head>
 
 <body class="sp-body">
@@ -107,40 +105,33 @@
                         </div>
                     </div>
 
-                    {{-- Blok: Detail Kendaraan --}}
+                    {{-- Blok: Paket Sewa --}}
                     <div class="sp-block">
-                        <h2 class="sp-block-title">Detail Kendaraan</h2>
+                        <h2 class="sp-block-title">Paket Sewa</h2>
 
                         <div class="sp-field">
-                            <label class="sp-label" for="mobil">Pilih Mobil</label>
-                            @php $selectedCarName = $car->carModel->name ?? ''; @endphp
-                            <select id="mobil" class="sp-input sp-select" required>
-                                <option value="">Pilih jenis mobil…</option>
-                                @foreach ($carModels as $model)
-                                    <option value="{{ $model->name }}"
-                                        {{ $model->name === $selectedCarName ? 'selected' : '' }}>
-                                        {{ $model->brand->name }} — {{ $model->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="sp-field">
-                            <label class="sp-label" for="paket">Paket Sewa</label>
+                            <label class="sp-label" for="paket">Pilih Paket</label>
                             @php
                                 $paketDefault = match($tipeSewa ?? '') {
-                                    'lepas_kunci'   => 'Lepas Kunci',
-                                    'dengan_sopir'  => 'Dengan Driver',
-                                    default         => '',
+                                    'lepas_kunci'  => 'Lepas Kunci',
+                                    'dengan_sopir' => 'Dengan Driver',
+                                    default        => '',
                                 };
+                                // Hanya tampilkan paket yang relevan dengan tipe_sewa
+                                $bisaLepas = in_array('lepas_kunci', $car['tipe_sewa'] ?? []);
+                                $bisaSopir = in_array('dengan_sopir', $car['tipe_sewa'] ?? []);
                             @endphp
                             <select id="paket" class="sp-input sp-select" required>
                                 <option value="">Pilih paket…</option>
-                                <option value="Lepas Kunci"          {{ $paketDefault === 'Lepas Kunci'         ? 'selected' : '' }}>Lepas Kunci</option>
-                                <option value="Dengan Driver"        {{ $paketDefault === 'Dengan Driver'       ? 'selected' : '' }}>Dengan Driver</option>
-                                <option value="12 Jam Lepas Kunci"   {{ $paketDefault === '12 Jam Lepas Kunci'  ? 'selected' : '' }}>12 Jam (Lepas Kunci)</option>
-                                <option value="12 Jam Dengan Driver" {{ $paketDefault === '12 Jam Dengan Driver'? 'selected' : '' }}>12 Jam (Dengan Driver)</option>
-                                <option value="Paket Tour"           {{ $paketDefault === 'Paket Tour'          ? 'selected' : '' }}>Paket Tour</option>
+                                @if($bisaLepas)
+                                <option value="Lepas Kunci"        {{ $paketDefault === 'Lepas Kunci'        ? 'selected' : '' }}>Lepas Kunci</option>
+                                <option value="12 Jam Lepas Kunci" {{ $paketDefault === '12 Jam Lepas Kunci' ? 'selected' : '' }}>12 Jam (Lepas Kunci)</option>
+                                @endif
+                                @if($bisaSopir)
+                                <option value="Dengan Driver"        {{ $paketDefault === 'Dengan Driver'        ? 'selected' : '' }}>Dengan Driver</option>
+                                <option value="12 Jam Dengan Driver" {{ $paketDefault === '12 Jam Dengan Driver' ? 'selected' : '' }}>12 Jam (Dengan Driver)</option>
+                                @endif
+                                <option value="Paket Tour">Paket Tour</option>
                             </select>
                         </div>
                     </div>
@@ -241,10 +232,10 @@
             <aside class="sp-col-summary">
                 <div class="sp-summary-card">
                     @php
-                        $carFoto = $car->foto
-                            ? asset('storage/' . $car->foto)
-                            : 'https://placehold.co/320x180/f1f5f9/94a3b8?text=Foto+Kendaraan';
-                        $carNama = ($car->carModel->brand->name ?? '') . ' ' . ($car->carModel->name ?? $car->name ?? '—');
+                        $fotoRaw  = $car['foto'] ?? '';
+                        // foto bisa berupa URL atau base64
+                        $carFoto  = $fotoRaw ?: 'https://placehold.co/320x180/f1f5f9/94a3b8?text=Foto+Kendaraan';
+                        $carNama  = ($car['brand'] ?? '') . ' ' . ($car['nama'] ?? '—');
                     @endphp
                     <div class="sp-summary-car-img">
                         <img src="{{ $carFoto }}" alt="{{ $carNama }}" class="sp-car-img"
@@ -269,6 +260,21 @@
                             </svg>
                             Lombok
                         </p>
+                        <div class="sp-summary-chips">
+                            <span class="sp-summary-chip">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                                {{ $car['kapasitas'] ?? '-' }} orang
+                            </span>
+                            <span class="sp-summary-chip">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                                </svg>
+                                {{ strtoupper($car['transmisi'] ?? '-') }}
+                            </span>
+                        </div>
 
                         <div class="sp-summary-divider"></div>
 
@@ -289,27 +295,29 @@
                                 <span class="sp-row-label">Jenis sewa</span>
                                 <span class="sp-row-val" id="sum_paket">—</span>
                             </div>
+                            <div class="sp-summary-row">
+                                <span class="sp-row-label">Harga/hari</span>
+                                <span class="sp-row-val" id="sum_harga_hari">—</span>
+                            </div>
                         </div>
 
                         <p class="sp-summary-note">Dihitung per 24 jam dari jam ambil.</p>
 
-                        <a href="#" class="sp-change-date">
+                        <a href="{{ route('home') }}" class="sp-change-date">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" />
-                                <line x1="16" y1="2" x2="16" y2="6" />
-                                <line x1="8" y1="2" x2="8" y2="6" />
-                                <line x1="3" y1="10" x2="21" y2="10" />
+                                <path d="M18 6L6 18M6 6l12 12"/>
                             </svg>
-                            Ubah tanggal sewa
+                            Ganti kendaraan
                         </a>
 
                         <div class="sp-summary-divider"></div>
 
                         <div class="sp-price-row">
-                            <span class="sp-price-label">Total</span>
-                            <span class="sp-price-val" id="sum_harga">Rp —</span>
+                            <span class="sp-price-label">Total estimasi</span>
+                            <span class="sp-price-val" id="sum_total">Rp —</span>
                         </div>
+                        <p class="sp-summary-note" style="text-align:right;margin-top:-6px">Belum termasuk biaya tambahan</p>
                     </div>
                 </div>
             </aside>
@@ -577,6 +585,22 @@
             font-weight: 600;
             margin-top: -6px;
         }
+        .sp-summary-chips {
+            display: flex;
+            gap: 6px;
+            margin-top: -4px;
+        }
+        .sp-summary-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 100px;
+            background: #f1f5f9;
+            color: #475569;
+        }
 
         .sp-summary-divider { height: 1px; background: #f1f5f9; }
 
@@ -624,35 +648,62 @@
     </style>
 
     <script>
-        // TomSelect for car dropdown
-        new TomSelect('#mobil', { create: false, sortField: { field: 'text', direction: 'asc' } });
+        // Data harga dari katalog JSON (server-side)
+        @php
+            $hargaLepas = $car['harga_lepas_kunci'] ?? 0;
+            $hargaSopir = $car['harga_dengan_sopir'] ?? 0;
+        @endphp
+        const HARGA_LEPAS = {{ $hargaLepas }};
+        const HARGA_SOPIR = {{ $hargaSopir }};
 
-        // Live summary update
+        function formatRp(n) {
+            return 'Rp ' + n.toLocaleString('id-ID');
+        }
+
         function fmtDate(val) {
             if (!val) return '—';
             return new Date(val).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
         }
         function fmtTime(val) { return val ? val + ' WITA' : ''; }
+
         function updateSummary() {
-            const tKeluar = document.getElementById('tanggal_keluar').value;
+            const tKeluar  = document.getElementById('tanggal_keluar').value;
             const tKembali = document.getElementById('tanggal_kembali').value;
-            const jKeluar = document.getElementById('jam_keluar').value;
+            const jKeluar  = document.getElementById('jam_keluar').value;
             const jKembali = document.getElementById('jam_kembali').value;
-            const paket = document.getElementById('paket').value;
+            const paket    = document.getElementById('paket').value;
 
             document.getElementById('sum_keluar').textContent =
-                tKeluar ? fmtDate(tKeluar) + (jKeluar ? ' · ' + fmtTime(jKeluar) : '') : '—';
+                tKeluar  ? fmtDate(tKeluar)  + (jKeluar  ? ' · ' + fmtTime(jKeluar)  : '') : '—';
             document.getElementById('sum_kembali').textContent =
                 tKembali ? fmtDate(tKembali) + (jKembali ? ' · ' + fmtTime(jKembali) : '') : '—';
 
+            let hari = 0;
             if (tKeluar && tKembali) {
-                const diff = Math.round((new Date(tKembali) - new Date(tKeluar)) / 86400000);
-                document.getElementById('sum_durasi').textContent = diff > 0 ? diff + ' hari' : '—';
+                hari = Math.round((new Date(tKembali) - new Date(tKeluar)) / 86400000);
+                document.getElementById('sum_durasi').textContent = hari > 0 ? hari + ' hari' : '—';
             } else {
                 document.getElementById('sum_durasi').textContent = '—';
             }
 
             document.getElementById('sum_paket').textContent = paket || '—';
+
+            // Tentukan harga per hari berdasarkan paket
+            let hargaPerHari = 0;
+            if (paket.includes('Sopir') || paket.includes('Driver')) {
+                hargaPerHari = HARGA_SOPIR;
+            } else if (paket !== '') {
+                hargaPerHari = HARGA_LEPAS;
+            }
+
+            // Harga 12 jam = setengah harga
+            if (paket.includes('12 Jam')) hargaPerHari = Math.round(hargaPerHari / 2);
+
+            document.getElementById('sum_harga_hari').textContent =
+                hargaPerHari > 0 ? formatRp(hargaPerHari) : '—';
+
+            document.getElementById('sum_total').textContent =
+                (hargaPerHari > 0 && hari > 0) ? formatRp(hargaPerHari * hari) : 'Rp —';
         }
 
         ['tanggal_keluar','tanggal_kembali','jam_keluar','jam_kembali'].forEach(id =>
@@ -660,34 +711,35 @@
         );
         document.getElementById('paket').addEventListener('change', updateSummary);
 
-        // Langsung update summary saat halaman load (tanggal & paket sudah ter-prefill)
+        // Langsung update saat load
         updateSummary();
 
         // Form submit → WhatsApp
         document.getElementById('bookingForm').onsubmit = function (e) {
             e.preventDefault();
             const get = id => document.getElementById(id)?.value?.trim() ?? '';
-            const nama = get('nama');
-            const no_hp = get('no_hp');
-            const ktp = "{{ $customer->ktp ?? '' }}";
-            const mobil = get('mobil');
-            const tanggal_keluar = get('tanggal_keluar');
-            const tanggal_kembali = get('tanggal_kembali');
-            const jam_keluar = get('jam_keluar');
-            const jam_kembali = get('jam_kembali');
-            const paket = get('paket');
-            const lokasi_pengantaran = get('lokasi_pengantaran');
+            const nama               = get('nama');
+            const no_hp              = get('no_hp');
+            const ktp                = "{{ $customer->ktp ?? '' }}";
+            const mobilNama          = "{{ ($car['brand'] ?? '') . ' ' . ($car['nama'] ?? '') }}";
+            const tanggal_keluar     = get('tanggal_keluar');
+            const tanggal_kembali    = get('tanggal_kembali');
+            const jam_keluar         = get('jam_keluar');
+            const jam_kembali        = get('jam_kembali');
+            const paket              = get('paket');
+            const lokasi_pengantaran  = get('lokasi_pengantaran');
             const lokasi_pengembalian = get('lokasi_pengembalian');
-            const facebook = get('facebook');
+            const facebook  = get('facebook');
             const instagram = get('instagram');
-            const catatan = get('catatan');
+            const catatan   = get('catatan');
 
-            if (!mobil||!tanggal_keluar||!tanggal_kembali||!jam_keluar||!jam_kembali||!lokasi_pengantaran||!lokasi_pengembalian||!paket) {
+            if (!tanggal_keluar||!tanggal_kembali||!jam_keluar||!jam_kembali||!lokasi_pengantaran||!lokasi_pengembalian||!paket) {
                 alert('Mohon lengkapi semua field wajib!'); return;
             }
 
+            const totalEl = document.getElementById('sum_total').textContent;
             const fmt = d => new Date(d).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
-            const msg = `*--- 🚗 BOOKING RENTAL MOBIL 🚗 ---*\n\n*Nama:* ${nama}\n*NIK:* ${ktp}\n*WhatsApp:* ${no_hp}\n*Facebook:* ${facebook||'-'}\n*Instagram:* ${instagram||'-'}\n\n*DETAIL BOOKING:*\n*Mobil:* ${mobil}\n*Tanggal Keluar:* ${fmt(tanggal_keluar)}\n*Tanggal Kembali:* ${fmt(tanggal_kembali)}\n*Jam Antar:* ${jam_keluar} WITA\n*Jam Kembali:* ${jam_kembali} WITA\n*Paket Sewa:* ${paket}\n*Lokasi Antar:* ${lokasi_pengantaran}\n*Lokasi Pengembalian:* ${lokasi_pengembalian}\n\n*Catatan:*\n${catatan||'-'}\n\n*LAMPIRAN YANG DIPERLUKAN:*\n• Foto tiket pesawat/kapal\n• Foto voucher hotel`;
+            const msg = `*--- 🚗 BOOKING RENTAL MOBIL 🚗 ---*\n\n*Nama:* ${nama}\n*NIK:* ${ktp}\n*WhatsApp:* ${no_hp}\n*Facebook:* ${facebook||'-'}\n*Instagram:* ${instagram||'-'}\n\n*DETAIL BOOKING:*\n*Mobil:* ${mobilNama}\n*Tanggal Keluar:* ${fmt(tanggal_keluar)}\n*Tanggal Kembali:* ${fmt(tanggal_kembali)}\n*Jam Antar:* ${jam_keluar} WITA\n*Jam Kembali:* ${jam_kembali} WITA\n*Paket Sewa:* ${paket}\n*Estimasi Total:* ${totalEl}\n*Lokasi Antar:* ${lokasi_pengantaran}\n*Lokasi Pengembalian:* ${lokasi_pengembalian}\n\n*Catatan:*\n${catatan||'-'}\n\n*LAMPIRAN YANG DIPERLUKAN:*\n• Foto tiket pesawat/kapal\n• Foto voucher hotel`;
             window.open('https://wa.me/6281128948884?text=' + encodeURIComponent(msg));
         };
     </script>
