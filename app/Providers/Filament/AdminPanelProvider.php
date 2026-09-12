@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
 
             // ── Branding ──────────────────────────────────────────
-            ->favicon(asset('SPTLOGO.png'))
+            ->favicon(asset('favicon.ico'))
             ->brandLogo(asset('spt.png'))
             ->brandLogoHeight('4rem')
             ->brandName('Semeton Pesiar')
