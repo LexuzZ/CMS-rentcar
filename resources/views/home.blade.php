@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Semeton Pesiar – Sewa Kendaraan Lombok</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f97316'/%3E%3Cpath d='M6 19h20a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H14l-4 4v3a2 2 0 0 0-4 0v0' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='10' cy='21' r='2.2' fill='%23fff'/%3E%3Ccircle cx='22' cy='21' r='2.2' fill='%23fff'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
@@ -63,40 +65,56 @@
 
                 {{-- Tanggal + Ubah --}}
                 <div class="hp-date-row">
-                    <div class="hp-date-loc">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <div>
-                            <p class="hp-date-micro">Lokasi</p>
-                            <p class="hp-date-val">Lombok</p>
+
+                    {{-- Baris atas: Lokasi + Ubah (di mobile jadi 1 baris penuh) --}}
+                    <div class="hp-date-top">
+                        <div class="hp-date-loc">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            <div>
+                                <p class="hp-date-micro">Lokasi</p>
+                                <p class="hp-date-val">Lombok</p>
+                            </div>
+                        </div>
+                        <button type="submit" class="hp-ubah-btn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Ubah
+                        </button>
+                    </div>
+
+                    {{-- Baris bawah: 2 tanggal side by side --}}
+                    <div class="hp-date-fields">
+                        <div class="hp-date-field">
+                            <p class="hp-date-micro">Tanggal Keluar</p>
+                            <input type="date" name="tanggal_keluar" id="tgl_keluar"
+                                value="{{ request('tanggal_keluar', now()->format('Y-m-d')) }}"
+                                min="{{ now()->format('Y-m-d') }}" class="hp-date-input" onchange="updateMinReturn()">
+                        </div>
+
+                        <div class="hp-date-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+
+                        <div class="hp-date-field">
+                            <p class="hp-date-micro">Tanggal Kembali</p>
+                            <input type="date" name="tanggal_kembali" id="tgl_kembali"
+                                value="{{ request('tanggal_kembali', now()->addDay()->format('Y-m-d')) }}"
+                                min="{{ now()->addDay()->format('Y-m-d') }}" class="hp-date-input">
                         </div>
                     </div>
 
-                    <div class="hp-date-field">
-                        <p class="hp-date-micro">Tanggal Keluar</p>
-                        <input type="date" name="tanggal_keluar" id="tgl_keluar"
-                            value="{{ request('tanggal_keluar', now()->format('Y-m-d')) }}"
-                            min="{{ now()->format('Y-m-d') }}" class="hp-date-input" onchange="updateMinReturn()">
-                    </div>
-
-                    <div class="hp-date-arrow">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </div>
-
-                    <div class="hp-date-field">
-                        <p class="hp-date-micro">Tanggal Kembali</p>
-                        <input type="date" name="tanggal_kembali" id="tgl_kembali"
-                            value="{{ request('tanggal_kembali', now()->addDay()->format('Y-m-d')) }}"
-                            min="{{ now()->addDay()->format('Y-m-d') }}" class="hp-date-input">
-                    </div>
-
-                    <button type="submit" class="hp-ubah-btn">
+                    {{-- Tombol Ubah khusus desktop (disembunyikan di mobile, muncul di ≥768px) --}}
+                    <button type="submit" class="hp-ubah-btn hp-ubah-btn-desktop">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -104,6 +122,7 @@
                         </svg>
                         Ubah
                     </button>
+
                 </div>
 
                 {{-- Search nama --}}
@@ -504,12 +523,20 @@
         /* Date row */
         .hp-date-row {
             display: flex;
-            align-items: stretch;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
             margin-bottom: 10px;
         }
 
+        /* Baris atas: lokasi + tombol ubah */
+        .hp-date-top {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+        }
+
         .hp-date-loc {
+            flex: 1;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -517,7 +544,6 @@
             background: #f8fafc;
             border: 1.5px solid #e2e8f0;
             border-radius: 10px;
-            min-width: 140px;
             color: #f97316;
         }
 
@@ -534,12 +560,21 @@
             color: #0f172a;
         }
 
+        /* Baris bawah: 2 tanggal */
+        .hp-date-fields {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+        }
+
         .hp-date-field {
             flex: 1;
             padding: 10px 14px;
             background: #f8fafc;
             border: 1.5px solid #e2e8f0;
             border-radius: 10px;
+            min-width: 0;
+            /* penting agar tidak overflow di mobile */
         }
 
         .hp-date-field:focus-within {
@@ -557,15 +592,52 @@
             font-family: inherit;
         }
 
+        /* Perkecil font date input di layar sangat sempit */
+        @media (max-width: 380px) {
+            .hp-date-input {
+                font-size: 11px;
+            }
+
+            .hp-date-field {
+                padding: 9px 10px;
+            }
+        }
+
         .hp-date-arrow {
             display: flex;
             align-items: center;
+            flex-shrink: 0;
             color: #cbd5e1;
         }
 
-        @media (max-width: 640px) {
+        /* Sembunyikan panah di mobile sangat sempit */
+        @media (max-width: 360px) {
             .hp-date-arrow {
                 display: none;
+            }
+        }
+
+        /* Desktop: kembalikan ke 1 baris penuh */
+        @media (min-width: 768px) {
+            .hp-date-row {
+                flex-direction: row;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .hp-date-top {
+                flex: 0 0 auto;
+                gap: 10px;
+            }
+
+            .hp-date-top .hp-ubah-btn {
+                display: none;
+                /* sembunyikan tombol Ubah di dalam hp-date-top saat desktop */
+            }
+
+            .hp-date-fields {
+                flex: 1;
+                gap: 10px;
             }
         }
 
@@ -584,10 +656,26 @@
             cursor: pointer;
             transition: background .15s;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .hp-ubah-btn:hover {
             background: #f59e0b;
+        }
+
+        /* Tombol ubah versi desktop (di luar hp-date-top) */
+        .hp-ubah-btn-desktop {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .hp-ubah-btn-desktop {
+                display: flex;
+            }
+
+            .hp-date-top .hp-ubah-btn {
+                display: none;
+            }
         }
 
         /* Search row */
