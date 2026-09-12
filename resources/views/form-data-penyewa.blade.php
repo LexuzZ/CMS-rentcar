@@ -4,44 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Penyewa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <title>Data Penyewa — Semeton Pesiar Lombok</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="fp-body">
+<body class="sp-body">
 
-    {{-- Background decoration --}}
-    <div class="fp-bg-top"></div>
-    <div class="fp-bg-bottom"></div>
-
-    <div class="fp-wrapper">
-
-        {{-- Card --}}
-        <div class="fp-card">
-
-            {{-- Header --}}
-            <div class="fp-header">
-                <div class="fp-header-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
+    {{-- Navbar --}}
+    <header class="sp-nav">
+        <div class="sp-nav-inner">
+            <div class="sp-logo">
+                <div class="sp-logo-mark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 17H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h10l4 4v4a2 2 0 0 1-2 2z" />
+                        <circle cx="7.5" cy="17.5" r="1.5" />
+                        <circle cx="16.5" cy="17.5" r="1.5" />
                     </svg>
                 </div>
-                <div>
-                    <h2 class="fp-title">Form Data Penyewa</h2>
-                    <p class="fp-subtitle">Lengkapi data pelanggan sebelum melanjutkan booking.</p>
-                </div>
+                <span class="sp-logo-text">Semeton Pesiar Lombok</span>
             </div>
+            <a href="#" class="sp-nav-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Masuk
+            </a>
+        </div>
+    </header>
 
-            {{-- Divider --}}
-            <div class="fp-divider"></div>
+    <main class="sp-main">
+        <div class="sp-page-header">
+            <h1 class="sp-page-title">Data Penyewa</h1>
+            <p class="sp-page-sub">Lengkapi data pelanggan sebelum melanjutkan booking.</p>
+        </div>
+
+        <div class="sp-center">
 
             {{-- Flash Info --}}
             @if (session('info'))
-                <div class="fp-alert fp-alert--info">
+                <div class="sp-alert sp-alert--info">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10" />
@@ -54,7 +59,7 @@
 
             {{-- Errors --}}
             @if ($errors->any())
-                <div class="fp-alert fp-alert--error">
+                <div class="sp-alert sp-alert--error">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px">
                         <circle cx="12" cy="12" r="10" />
@@ -72,142 +77,96 @@
                 </div>
             @endif
 
-            {{-- Form --}}
-            <form action="{{ route('data.penyewa.post') }}" method="POST" enctype="multipart/form-data" class="fp-form">
+            <form action="{{ route('data.penyewa.post') }}" method="POST" enctype="multipart/form-data" class="sp-form">
                 @csrf
 
-                {{-- Section: Data Pribadi --}}
-                <p class="fp-section-label">Data Pribadi</p>
+                {{-- Blok: Data Pribadi --}}
+                <div class="sp-block">
+                    <h2 class="sp-block-title">Data Pribadi</h2>
 
-                {{-- KTP --}}
-                <div class="fp-field">
-                    <label class="fp-label" for="ktp">Nomor KTP</label>
-                    <div class="fp-input-wrap">
-                        <span class="fp-input-icon">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="5" width="20" height="14" rx="2" />
-                                <circle cx="8" cy="12" r="2.5" />
-                                <path d="M14 10h4M14 14h4" />
-                            </svg>
-                        </span>
-                        <input type="text" id="ktp" name="ktp" maxlength="16" class="fp-input"
-                            placeholder="16 digit nomor E-KTP" required>
+                    <div class="sp-field">
+                        <label class="sp-label" for="ktp">Nomor KTP</label>
+                        <input type="text" id="ktp" name="ktp" maxlength="16" class="sp-input"
+                            placeholder="16 digit nomor E-KTP" value="{{ old('ktp') }}" required>
+                    </div>
+
+                    <div class="sp-field">
+                        <label class="sp-label" for="nama">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" class="sp-input" placeholder="Sesuai identitas"
+                            value="{{ old('nama') }}" required>
+                    </div>
+
+                    <div class="sp-field">
+                        <label class="sp-label" for="no_telp">Nomor WhatsApp</label>
+                        <input type="tel" id="no_telp" name="no_telp" class="sp-input" placeholder="0812xxxxxxxx"
+                            value="{{ old('no_telp') }}" required>
+                    </div>
+
+                    <div class="sp-field">
+                        <label class="sp-label" for="alamat">Alamat Tinggal</label>
+                        <textarea id="alamat" name="alamat" rows="3" class="sp-input sp-textarea"
+                            placeholder="Jalan, kelurahan, kota…" required>{{ old('alamat') }}</textarea>
                     </div>
                 </div>
 
-                {{-- Nama --}}
-                <div class="fp-field">
-                    <label class="fp-label" for="nama">Nama Lengkap</label>
-                    <div class="fp-input-wrap">
-                        <span class="fp-input-icon">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                <circle cx="12" cy="7" r="4" />
-                            </svg>
-                        </span>
-                        <input type="text" id="nama" name="nama" class="fp-input" placeholder="Sesuai identitas"
-                            required>
+                {{-- Blok: Dokumen --}}
+                <div class="sp-block">
+                    <h2 class="sp-block-title">
+                        Dokumen
+                        <span class="sp-opt">opsional</span>
+                    </h2>
+
+                    <div class="sp-field">
+                        <label class="sp-label" for="lisence">Nomor SIM</label>
+                        <input type="text" id="lisence" name="lisence" class="sp-input"
+                            placeholder="Nomor SIM A / B / C" value="{{ old('lisence') }}">
+                    </div>
+
+                    <div class="sp-upload-row">
+                        {{-- Foto KTP --}}
+                        <div class="sp-field">
+                            <label class="sp-label" for="identity_file">Foto KTP</label>
+                            <label for="identity_file" class="sp-upload" id="ktp-box">
+                                <span class="sp-upload-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                        <circle cx="8.5" cy="8.5" r="1.5" />
+                                        <polyline points="21 15 16 10 5 21" />
+                                    </svg>
+                                </span>
+                                <span class="sp-upload-text" id="ktp-label">Pilih foto KTP</span>
+                                <span class="sp-upload-hint">JPG / PNG</span>
+                                <input type="file" accept="image/*" name="identity_file" id="identity_file"
+                                    class="sp-upload-input" onchange="updateLabel(this,'ktp-label','ktp-box')">
+                            </label>
+                        </div>
+
+                        {{-- Foto SIM --}}
+                        <div class="sp-field">
+                            <label class="sp-label" for="lisence_file">Foto SIM</label>
+                            <label for="lisence_file" class="sp-upload" id="sim-box">
+                                <span class="sp-upload-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" />
+                                        <path d="M16 3h2a2 2 0 0 1 2 2v2M8 3H6a2 2 0 0 0-2 2v2" />
+                                        <circle cx="9" cy="14" r="2" />
+                                        <path d="M13 13h4M13 16h4" />
+                                    </svg>
+                                </span>
+                                <span class="sp-upload-text" id="sim-label">Pilih foto SIM</span>
+                                <span class="sp-upload-hint">JPG / PNG</span>
+                                <input type="file" accept="image/*" name="lisence_file" id="lisence_file"
+                                    class="sp-upload-input" onchange="updateLabel(this,'sim-label','sim-box')">
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                {{-- No Telp --}}
-                <div class="fp-field">
-                    <label class="fp-label" for="no_telp">Nomor WhatsApp</label>
-                    <div class="fp-input-wrap">
-                        <span class="fp-input-icon">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                            </svg>
-                        </span>
-                        <input type="tel" id="no_telp" name="no_telp" class="fp-input" placeholder="0812xxxxxxxx"
-                            required>
-                    </div>
-                </div>
-
-                {{-- Alamat --}}
-                <div class="fp-field">
-                    <label class="fp-label" for="alamat">Alamat Tinggal</label>
-                    <div class="fp-input-wrap fp-input-wrap--textarea">
-                        <span class="fp-input-icon fp-input-icon--top">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                                <circle cx="12" cy="9" r="2.5" />
-                            </svg>
-                        </span>
-                        <textarea id="alamat" name="alamat" rows="3" class="fp-input fp-textarea"
-                            placeholder="Jalan, kelurahan, kota…" required></textarea>
-                    </div>
-                </div>
-
-                {{-- Section: Dokumen --}}
-                <p class="fp-section-label" style="margin-top:8px">Dokumen <span
-                        class="fp-optional-badge">opsional</span></p>
-
-                {{-- SIM --}}
-                <div class="fp-field">
-                    <label class="fp-label" for="lisence">Nomor SIM</label>
-                    <div class="fp-input-wrap">
-                        <span class="fp-input-icon">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="7" width="20" height="14" rx="2" />
-                                <path d="M16 3h2a2 2 0 0 1 2 2v2M8 3H6a2 2 0 0 0-2 2v2" />
-                                <circle cx="9" cy="14" r="2" />
-                                <path d="M13 13h4M13 16h4" />
-                            </svg>
-                        </span>
-                        <input type="text" id="lisence" name="lisence" class="fp-input"
-                            placeholder="Nomor SIM A / B / C">
-                    </div>
-                </div>
-
-                {{-- Upload row --}}
-                <div class="fp-upload-row">
-                    {{-- Foto KTP --}}
-                    <div class="fp-field">
-                        <label class="fp-label" for="identity_file">Foto KTP</label>
-                        <label for="identity_file" class="fp-upload">
-                            <span class="fp-upload-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                    <polyline points="21 15 16 10 5 21" />
-                                </svg>
-                            </span>
-                            <span class="fp-upload-text" id="ktp-label">Pilih foto KTP</span>
-                            <input type="file" accept="image/*" name="identity_file" id="identity_file"
-                                class="fp-upload-input" onchange="updateLabel(this,'ktp-label')">
-                        </label>
-                    </div>
-
-                    {{-- Foto SIM --}}
-                    <div class="fp-field">
-                        <label class="fp-label" for="lisence_file">Foto SIM</label>
-                        <label for="lisence_file" class="fp-upload">
-                            <span class="fp-upload-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                    <polyline points="21 15 16 10 5 21" />
-                                </svg>
-                            </span>
-                            <span class="fp-upload-text" id="sim-label">Pilih foto SIM</span>
-                            <input type="file" accept="image/*" name="lisence_file" id="lisence_file"
-                                class="fp-upload-input" onchange="updateLabel(this,'sim-label')">
-                        </label>
-                    </div>
-                </div>
-
-                {{-- Submit --}}
-                <button type="submit" class="fp-submit">
-                    <span>Simpan & Lanjut Booking</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <button type="submit" class="sp-submit">
+                    <span>Simpan &amp; Lanjut Booking</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
@@ -215,7 +174,7 @@
                 </button>
             </form>
         </div>
-    </div>
+    </main>
 
     <style>
         *,
@@ -226,325 +185,319 @@
             padding: 0;
         }
 
-        .fp-body {
+        .sp-body {
             min-height: 100vh;
-            background: #0f172a;
-            padding: 40px 16px;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: #f8fafc;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #0f172a;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
-        /* Decorative blobs */
-        .fp-bg-top {
-            position: fixed;
-            top: -160px;
-            left: -100px;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+        /* ── Navbar ── */
+        .sp-nav {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .fp-bg-bottom {
-            position: fixed;
-            bottom: -120px;
-            right: -80px;
-            width: 420px;
-            height: 420px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .fp-wrapper {
-            width: 100%;
-            max-width: 520px;
+        .sp-nav-inner {
+            max-width: 1100px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            animation: fp-rise 0.45s cubic-bezier(.22, 1, .36, 1) both;
-        }
-
-        @keyframes fp-rise {
-            from {
-                opacity: 0;
-                transform: translateY(28px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Card */
-        .fp-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 32px 32px 28px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        @media (max-width: 480px) {
-            .fp-card {
-                padding: 24px 20px 22px;
-            }
-        }
-
-        /* Header */
-        .fp-header {
+            padding: 0 24px;
+            height: 56px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
+            justify-content: space-between;
         }
 
-        .fp-header-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            flex-shrink: 0;
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        .sp-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .sp-logo-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
         }
 
-        .fp-title {
-            font-size: 20px;
+        .sp-logo-text {
+            font-size: 13.5px;
             font-weight: 700;
             color: #0f172a;
-            line-height: 1.2;
         }
 
-        .fp-subtitle {
+        .sp-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: #f97316;
+            color: #fff;
             font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .sp-nav-btn:hover {
+            background: #ea580c;
+        }
+
+        /* ── Page header ── */
+        .sp-main {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 36px 24px 60px;
+        }
+
+        .sp-page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .sp-page-sub {
+            font-size: 13.5px;
             color: #64748b;
-            margin-top: 3px;
-            line-height: 1.5;
+            margin-top: 4px;
+            margin-bottom: 28px;
         }
 
-        .fp-divider {
-            height: 1px;
-            background: #f1f5f9;
-            margin-bottom: 20px;
+        .sp-center {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* Alerts */
-        .fp-alert {
+        /* ── Alerts ── */
+        .sp-alert {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            padding: 12px 14px;
+            padding: 13px 15px;
             border-radius: 10px;
             font-size: 13px;
-            margin-bottom: 18px;
             line-height: 1.5;
         }
 
-        .fp-alert--info {
+        .sp-alert--info {
             background: #eff6ff;
             color: #1d4ed8;
             border: 1px solid #bfdbfe;
         }
 
-        .fp-alert--error {
+        .sp-alert--error {
             background: #fef2f2;
             color: #b91c1c;
             border: 1px solid #fecaca;
         }
 
-        .fp-alert svg {
-            flex-shrink: 0;
-            margin-top: 1px;
+        /* ── Form ── */
+        .sp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* Form */
-        .fp-form {
+        .sp-block {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 22px 22px 20px;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        .fp-section-label {
-            font-size: 11px;
+        .sp-block-title {
+            font-size: 15px;
             font-weight: 700;
-            letter-spacing: 0.07em;
-            color: #94a3b8;
-            text-transform: uppercase;
+            color: #0f172a;
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: -4px;
         }
 
-        .fp-optional-badge {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            text-transform: none;
-            color: #64748b;
-            background: #f1f5f9;
-            border-radius: 100px;
-            padding: 1px 8px;
-        }
-
-        .fp-field {
+        /* ── Fields ── */
+        .sp-field {
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
 
-        .fp-label {
+        .sp-label {
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
             color: #374151;
-        }
-
-        /* Input wrapper */
-        .fp-input-wrap {
-            position: relative;
-        }
-
-        .fp-input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
             display: flex;
-            pointer-events: none;
+            align-items: center;
+            gap: 6px;
         }
 
-        .fp-input-icon--top {
-            top: 14px;
-            transform: none;
+        .sp-opt {
+            font-size: 11px;
+            font-weight: 500;
+            color: #94a3b8;
+            background: #f1f5f9;
+            border-radius: 100px;
+            padding: 1px 8px;
         }
 
-        .fp-input {
+        .sp-input {
             width: 100%;
-            padding: 11px 14px 11px 40px;
+            padding: 10px 13px;
             border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 13.5px;
             color: #0f172a;
-            background: #f8fafc;
+            background: #fff;
             font-family: inherit;
-            transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
             outline: none;
+            transition: border-color .15s, box-shadow .15s;
             -webkit-appearance: none;
         }
 
-        .fp-input:hover {
-            border-color: #cbd5e1;
-            background: #fff;
-        }
-
-        .fp-input:focus {
-            border-color: #6366f1;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
-
-        .fp-input::placeholder {
+        .sp-input::placeholder {
             color: #94a3b8;
         }
 
-        .fp-textarea {
-            resize: none;
-            padding-top: 12px;
+        .sp-input:hover {
+            border-color: #cbd5e1;
         }
 
-        /* Upload */
-        .fp-upload-row {
+        .sp-input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
+        }
+
+        .sp-textarea {
+            resize: vertical;
+        }
+
+        /* ── Upload ── */
+        .sp-upload-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        .fp-upload {
+        @media (max-width: 420px) {
+            .sp-upload-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sp-upload {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 18px 12px;
-            border: 1.5px dashed #cbd5e1;
-            border-radius: 12px;
+            gap: 6px;
+            padding: 22px 12px;
+            border: 1.5px dashed #e2e8f0;
+            border-radius: 10px;
             background: #f8fafc;
             cursor: pointer;
-            transition: border-color 0.18s, background 0.18s;
             text-align: center;
+            transition: border-color .15s, background .15s;
         }
 
-        .fp-upload:hover {
-            border-color: #6366f1;
-            background: #eef2ff;
+        .sp-upload:hover {
+            border-color: #f97316;
+            background: #fff7ed;
         }
 
-        .fp-upload-icon {
-            color: #94a3b8;
-            transition: color 0.18s;
+        .sp-upload.is-filled {
+            border-color: #16a34a;
+            background: #f0fdf4;
         }
 
-        .fp-upload:hover .fp-upload-icon {
-            color: #6366f1;
+        .sp-upload-icon {
+            color: #cbd5e1;
+            transition: color .15s;
         }
 
-        .fp-upload-text {
-            font-size: 12px;
+        .sp-upload:hover .sp-upload-icon {
+            color: #f97316;
+        }
+
+        .sp-upload.is-filled .sp-upload-icon {
+            color: #16a34a;
+        }
+
+        .sp-upload-text {
+            font-size: 12.5px;
+            font-weight: 600;
             color: #64748b;
-            font-weight: 500;
             word-break: break-all;
+            line-height: 1.3;
         }
 
-        .fp-upload-input {
+        .sp-upload.is-filled .sp-upload-text {
+            color: #15803d;
+        }
+
+        .sp-upload-hint {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .sp-upload-input {
             display: none;
         }
 
-        /* Submit */
-        .fp-submit {
-            margin-top: 6px;
+        /* ── Submit ── */
+        .sp-submit {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 14px 24px;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            gap: 9px;
+            padding: 14px;
+            background: #f97316;
             color: #fff;
-            font-size: 15px;
-            font-weight: 700;
             border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+            border-radius: 10px;
+            font-size: 14.5px;
+            font-weight: 700;
             font-family: inherit;
+            cursor: pointer;
+            width: 100%;
+            transition: background .15s, transform .15s;
+            box-shadow: 0 4px 14px rgba(249, 115, 22, .3);
         }
 
-        .fp-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.45);
-            filter: brightness(1.06);
+        .sp-submit:hover {
+            background: #ea580c;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, .35);
         }
 
-        .fp-submit:active {
+        .sp-submit:active {
             transform: translateY(0);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
     </style>
 
     <script>
-        function updateLabel(input, labelId) {
-            const el = document.getElementById(labelId);
+        function updateLabel(input, labelId, boxId) {
+            const label = document.getElementById(labelId);
+            const box = document.getElementById(boxId);
             if (input.files && input.files[0]) {
-                el.textContent = input.files[0].name;
-                el.style.color = '#4f46e5';
-                el.style.fontWeight = '600';
+                label.textContent = input.files[0].name;
+                box.classList.add('is-filled');
+            } else {
+                label.textContent = labelId === 'ktp-label' ? 'Pilih foto KTP' : 'Pilih foto SIM';
+                box.classList.remove('is-filled');
             }
         }
     </script>
