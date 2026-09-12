@@ -43,34 +43,7 @@ Route::group(['middleware' => ['web', Authenticate::class]], function () {
     Route::get('/reports/monthly-recap/{year}/{month}/pdf', [PdfController::class, 'downloadMonthlyRecapPdf'])
         ->name('reports.monthly-recap.pdf');
 });
-Route::post('/cek-nik-ajax', function (Request $request) {
-
-    $request->validate([
-        'nik' => ['required', 'digits:16'],
-        'car_id' => ['required', 'integer'],
-    ]);
-
-    $customer = Customer::where('nik', $request->nik)->first();
-
-    if (!$customer) {
-
-        return response()->json([
-            'success' => true,
-            'message' => 'NIK belum terdaftar dan dapat melanjutkan booking.',
-        ]);
-    }
-
-    if ($customer->status === 'blacklist') {
-
-        return response()->json([
-            'success' => false,
-            'message' => 'NIK ini terdaftar dalam daftar hitam dan tidak dapat melakukan booking.',
-        ], 422);
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'NIK berhasil diverifikasi. Silakan lanjutkan booking.',
-    ]);
-
-})->name('cek.nik.ajax');
+Route::post(
+    '/cek-nik-ajax',
+    [HomeController::class, 'cekNikAjax']
+)->name('cek.nik.ajax');
