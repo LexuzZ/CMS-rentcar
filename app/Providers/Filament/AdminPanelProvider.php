@@ -40,10 +40,10 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
 
             // ── Branding ──────────────────────────────────────────
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('sptLOGO.png'))
             ->brandLogo(asset('spt.png'))
             ->brandLogoHeight('4rem')
-            ->brandName('Semeton Pesiar')
+            // ->brandName('Semeton Pesiar')
 
             // ── Theme ─────────────────────────────────────────────
             ->darkMode(true)               // biarkan user pilih sendiri
