@@ -1134,12 +1134,7 @@
             {{-- BUG FIX: href="" → href="{{ route('home') }}" --}}
             <a href="{{ route('home') }}" class="hp-logo">
                 <div class="hp-logo-mark">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 17H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h10l4 4v4a2 2 0 0 1-2 2z" />
-                        <circle cx="7.5" cy="17.5" r="1.5" />
-                        <circle cx="16.5" cy="17.5" r="1.5" />
-                    </svg>
+                    <img src="/public/sptLOGO.png" alt="logo" width="20" height="20">
                 </div>
                 <span class="hp-logo-text">Semeton Pesiar Lombok</span>
             </a>
