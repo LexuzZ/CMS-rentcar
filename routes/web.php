@@ -21,8 +21,6 @@ Route::get('/storage/{path}', function ($path) {
 // Route::get('/{record}/pdf', [ExportController::class, 'download'])->name('invoices.pdf.download');
 Route::get('invoices/{record}/pdf', [ExportController::class, 'download'])
     ->name('invoices.pdf.download');
-Route::get('/order', [CustomerCheckController::class, 'cekNIK'])->name('cek.nik');
-Route::post('/order', [CustomerCheckController::class, 'cekNIKPost'])->name('cek.nik.post');
 Route::get('/penyewa', [CustomerCheckController::class, 'dataPenyewa'])->name('data.penyewa');
 Route::post('/penyewa', [CustomerCheckController::class, 'dataPenyewaPost'])->name('data.penyewa.post');
 Route::get('/', [HomeController::class, 'index'])->name('home');
