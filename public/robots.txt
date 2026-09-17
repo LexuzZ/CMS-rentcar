@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /filament/
 
-Sitemap: https://www.semetonpesiar.com/sitemap.xml
+Sitemap: https://adminsemetonpesiarlombok.id/sitemap.xml
