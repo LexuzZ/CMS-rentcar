@@ -1052,6 +1052,77 @@
             opacity: .6;
             cursor: pointer;
         }
+
+        /* ── SEO Content Section ── */
+        .hp-seo-section {
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 10px;
+        }
+
+        .hp-seo-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 42px 24px 48px;
+        }
+
+        .hp-seo-title {
+            margin: 0 0 12px;
+            font-size: 24px;
+            line-height: 1.35;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.025em;
+        }
+
+        .hp-seo-text {
+            max-width: 760px;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.8;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        /* Tablet */
+        @media (max-width: 767px) {
+            .hp-seo-inner {
+                padding: 34px 20px 40px;
+            }
+
+            .hp-seo-title {
+                font-size: 21px;
+                line-height: 1.4;
+            }
+
+            .hp-seo-text {
+                font-size: 13px;
+                line-height: 1.75;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .hp-seo-section {
+                margin-top: 0;
+            }
+
+            .hp-seo-inner {
+                padding: 30px 16px 36px;
+            }
+
+            .hp-seo-title {
+                font-size: 19px;
+                line-height: 1.4;
+                letter-spacing: -0.015em;
+                margin-bottom: 10px;
+            }
+
+            .hp-seo-text {
+                font-size: 13px;
+                line-height: 1.7;
+            }
+        }
     </style>
 </head>
 
@@ -1352,17 +1423,20 @@
         @endif
 
     </div>
-    {{-- H1 hanya boleh ada 1 per halaman — pindahkan dari card ke sini --}}
-    <section style="max-width:1200px;margin:0 auto;padding:40px 24px 0;color:#374151;">
-        <h1 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:12px;">
-            Sewa Kendaraan di Lombok — Harga Murah, Armada Lengkap
-        </h1>
-        <p style="font-size:14px;line-height:1.8;max-width:720px;">
-            Semeton Pesiar Trans menyediakan layanan rental mobil dan motor di Lombok
-            dengan pilihan lepas kunci maupun dengan sopir berpengalaman.
-            Tersedia untuk area Mataram, Senggigi, Kuta Lombok, dan seluruh Pulau Lombok.
-            Booking online mudah, armada terawat, harga transparan tanpa biaya tersembunyi.
-        </p>
+    {{-- ══ SEO CONTENT ══ --}}
+    <section class="hp-seo-section">
+        <div class="hp-seo-inner">
+            <h1 class="hp-seo-title">
+                Sewa Kendaraan di Lombok — Harga Murah, Armada Lengkap
+            </h1>
+
+            <p class="hp-seo-text">
+                Semeton Pesiar Trans menyediakan layanan rental mobil dan motor di Lombok
+                dengan pilihan lepas kunci maupun dengan sopir berpengalaman.
+                Tersedia untuk area Mataram, Senggigi, Kuta Lombok, dan seluruh Pulau Lombok.
+                Booking online mudah, armada terawat, harga transparan tanpa biaya tersembunyi.
+            </p>
+        </div>
     </section>
 
     {{-- ══ MODAL CEK NIK ══ --}}
