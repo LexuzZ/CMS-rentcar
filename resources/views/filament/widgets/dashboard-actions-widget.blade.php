@@ -23,7 +23,7 @@
             </a>
 
             {{-- Order Via Customer --}}
-            <a href="https://adminsemetonpesiarlombok.id/home" target="_blank" class="qm-card"
+            <a href="https://adminsemetonpesiarlombok.id/" target="_blank" class="qm-card"
                 style="--qm-bg:#faf5ff;--qm-border:#e9d5ff;--qm-bg-dark:#2e1065;--qm-border-dark:#7c3aed33;--qm-icon-bg:#ede9fe;--qm-icon-bg-dark:#3b1f7a;--qm-icon-color:#7c3aed;--qm-icon-color-dark:#c4b5fd;--qm-label:#5b21b6;--qm-label-dark:#ddd6fe;">
                 <span class="qm-icon-wrap">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
