@@ -3,7 +3,7 @@
         "id": 1,
         "nama": "New Avanza",
         "brand": "Toyota",
-        "transmisi": "MT",
+        "transmisi": ["MT", "AT"],
         "kapasitas": 7,
         "harga_lepas_kunci": 350000,
         "harga_dengan_sopir": 750000,
