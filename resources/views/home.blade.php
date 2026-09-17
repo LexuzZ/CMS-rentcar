@@ -5,7 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description"
+        content="Sewa mobil Lombok di Semeton Pesiar. Pilihan rental mobil lepas kunci dan dengan sopir, berbagai armada, harga terjangkau, dan booking online untuk perjalanan di Lombok.">
     <title>Semeton Pesiar – Sewa Kendaraan Lombok</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sewa Mobil Lombok – Lepas Kunci & Dengan Sopir">
+    <meta property="og:description"
+        content="Rental mobil Lombok dengan pilihan lepas kunci dan dengan sopir. Lihat armada, harga, dan booking online di Semeton Pesiar.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ asset('/public/sptLOGO.png') }}">
+    <meta property="og:site_name" content="Semeton Pesiar Lombok">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sewa Mobil Lombok | Semeton Pesiar">
+    <meta name="twitter:description" content="Rental mobil Lombok lepas kunci dan dengan sopir.">
+    <meta name="twitter:image" content="{{ asset('/public/sptLOGO.png') }}">
     <link rel="icon" type="image/x-icon" href="/public/sptLOGO.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
