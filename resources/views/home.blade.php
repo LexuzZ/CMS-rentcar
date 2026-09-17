@@ -2,12 +2,47 @@
 <html lang="id">
 
 <head>
+    @php
+        $isSeoLanding = ! request()->hasAny([
+            'search', 'transmisi', 'sort', 'tipe_sewa',
+            'tanggal_keluar', 'tanggal_kembali', 'page'
+        ]);
+
+        $canonicalUrl = url('/');
+        $seoTitle = 'Sewa Mobil Lombok – Lepas Kunci & Dengan Sopir | Semeton Pesiar';
+        $seoDescription = 'Sewa mobil Lombok di Semeton Pesiar. Pilihan rental mobil lepas kunci dan dengan sopir, berbagai armada, harga transparan, serta booking online untuk perjalanan di Lombok.';
+    @endphp
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Semeton Pesiar – Sewa Kendaraan Lombok</title>
-    <link rel="icon" type="image/x-icon" href="/public/sptLOGO.png">
+    <meta name="description" content="{{ $seoDescription }}">
+    @if($isSeoLanding)
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    @else
+        <meta name="robots" content="noindex,follow">
+    @endif
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    <title>{{ $seoTitle }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('sptLOGO.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:site_name" content="Semeton Pesiar Lombok">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ asset('sptLOGO.png') }}">
+    <meta property="og:image:alt" content="Semeton Pesiar Lombok – Rental Mobil Lombok">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:image" content="{{ asset('sptLOGO.png') }}">
     <style>
         *,
         *::before,
@@ -1012,7 +1047,370 @@
             opacity: .6;
             cursor: pointer;
         }
+        input[type=date]::-webkit-calendar-picker-indicator {
+            opacity: .6;
+            cursor: pointer;
+        }
+
+        /* ── SEO LANDING CONTENT ── */
+        .seo-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 56px;
+        }
+
+        .seo-hero {
+            padding: 44px 0 22px;
+        }
+
+        .seo-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .seo-hero h1 {
+            max-width: 860px;
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.08;
+            letter-spacing: -.035em;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .seo-hero-lead {
+            max-width: 820px;
+            margin-top: 16px;
+            font-size: 16px;
+            line-height: 1.75;
+            color: #475569;
+        }
+
+        .seo-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .seo-btn-primary, .seo-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 17px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .seo-btn-primary {
+            background: #f97316;
+            color: #fff;
+        }
+
+        .seo-btn-secondary {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+        }
+
+        .seo-section {
+            padding: 28px 0 0;
+        }
+
+        .seo-section-head {
+            max-width: 800px;
+            margin-bottom: 16px;
+        }
+
+        .seo-section h2 {
+            font-size: clamp(23px, 3vw, 30px);
+            line-height: 1.2;
+            color: #0f172a;
+            font-weight: 800;
+            letter-spacing: -.02em;
+        }
+
+        .seo-section h3 {
+            font-size: 16px;
+            color: #0f172a;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .seo-section p {
+            color: #64748b;
+            line-height: 1.75;
+            font-size: 14px;
+        }
+
+        .seo-grid-2, .seo-grid-3 {
+            display: grid;
+            gap: 14px;
+        }
+
+        .seo-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .seo-grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .seo-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .seo-card-icon {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .seo-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+            padding-left: 18px;
+        }
+
+        .seo-list li {
+            color: #475569;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .seo-location-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .seo-location-links span {
+            color: #334155;
+            text-decoration: none;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .seo-steps {
+            counter-reset: seo-step;
+        }
+
+        .seo-step {
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .seo-step::before {
+            counter-increment: seo-step;
+            content: counter(seo-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f97316;
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .seo-faq {
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .seo-faq details {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 0;
+        }
+
+        .seo-faq summary {
+            cursor: pointer;
+            list-style: none;
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+            padding-right: 24px;
+            position: relative;
+        }
+
+        .seo-faq summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .seo-faq summary::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            top: -1px;
+            color: #f97316;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .seo-faq details[open] summary::after {
+            content: '−';
+        }
+
+        .seo-faq details p {
+            margin-top: 9px;
+            max-width: 900px;
+        }
+
+        .seo-cta {
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border: 1px solid #fed7aa;
+        }
+
+        @media (max-width: 767px) {
+            .seo-wrap { padding-left: 16px; padding-right: 16px; }
+            .seo-hero { padding-top: 30px; }
+            .seo-grid-2, .seo-grid-3 { grid-template-columns: 1fr; }
+            .seo-hero-actions { flex-direction: column; }
+            .seo-btn-primary, .seo-btn-secondary { width: 100%; }
+        }
     </style>
+
+    @if($isSeoLanding)
+    {{-- Structured data: Organization / LocalBusiness --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "{{ $canonicalUrl }}#business",
+        "name": "Semeton Pesiar Lombok",
+        "url": "{{ $canonicalUrl }}",
+        "telephone": "+6281128948884",
+        "description": @json($seoDescription),
+        "image": "{{ asset('sptLOGO.png') }}",
+        "priceRange": "Rp",
+        "areaServed": [
+            {"@type": "AdministrativeArea", "name": "Lombok"},
+            {"@type": "City", "name": "Mataram"},
+            {"@type": "Place", "name": "Bandara Internasional Lombok"},
+            {"@type": "Place", "name": "Kuta Mandalika"},
+            {"@type": "Place", "name": "Senggigi"}
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "{{ $canonicalUrl }}#website",
+        "url": "{{ $canonicalUrl }}",
+        "name": "Semeton Pesiar Lombok",
+        "inLanguage": "id-ID",
+        "publisher": {"@id": "{{ $canonicalUrl }}#business"}
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Beranda",
+                "item": "{{ $canonicalUrl }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Sewa Mobil Lombok",
+                "item": "{{ $canonicalUrl }}"
+            }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Berapa harga sewa mobil di Lombok?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Harga sewa mobil Lombok menyesuaikan jenis armada, durasi sewa, dan paket yang dipilih. Lihat harga pada daftar kendaraan di halaman ini dan pilih tanggal perjalanan untuk menghitung totalnya."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Apakah tersedia sewa mobil Lombok lepas kunci?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Semeton Pesiar menyediakan pilihan kendaraan dengan paket lepas kunci untuk armada yang memiliki keterangan tersebut. Pilihan tersedia dapat dilihat melalui filter Lepas Kunci."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Apakah bisa sewa mobil dengan sopir di Lombok?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Tersedia pilihan dengan sopir pada kendaraan yang menampilkan label Dengan Sopir. Gunakan filter Dengan Sopir untuk melihat armada yang tersedia."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Apakah bisa booking rental mobil untuk beberapa hari?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Bisa. Pilih tanggal keluar dan tanggal kembali pada form pencarian, kemudian sistem akan menghitung total durasi dan harga berdasarkan kendaraan yang dipilih."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Bagaimana cara booking rental mobil di Semeton Pesiar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pilih tanggal, filter kebutuhan sewa, pilih kendaraan, lalu lakukan pengecekan NIK untuk melanjutkan ke form booking."
+                }
+            }
+        ]
+    }
+    </script>
+    @endif
+
 </head>
 
 <body class="hp-body">
@@ -1034,6 +1432,23 @@
             </a>
         </div>
     </nav>
+
+    @if($isSeoLanding)
+    {{-- ══ SEO LANDING HERO ══ --}}
+    <section class="seo-wrap seo-hero" aria-labelledby="seo-main-title">
+        <span class="seo-eyebrow">Rental Mobil Lombok</span>
+        <h1 id="seo-main-title">Sewa Mobil Lombok – Lepas Kunci &amp; Dengan Sopir</h1>
+        <p class="seo-hero-lead">
+            Semeton Pesiar menyediakan rental mobil di Lombok untuk liburan, perjalanan keluarga,
+            perjalanan bisnis, dan kebutuhan transportasi selama berada di Pulau Lombok.
+            Pilih kendaraan, tentukan tanggal sewa, lalu lanjutkan booking secara online.
+        </p>
+        <div class="seo-hero-actions">
+            <a href="#armada" class="seo-btn-primary">Lihat Armada &amp; Harga</a>
+            <a href="#cara-booking" class="seo-btn-secondary">Cara Booking</a>
+        </div>
+    </section>
+    @endif
 
     {{-- ══ SEARCH / FILTER BAR ══ --}}
     <div class="hp-searchbar">
@@ -1184,7 +1599,20 @@
     </div>
 
     {{-- ══ GRID KARTU ══ --}}
-    <div class="hp-grid-wrap">
+    <div class="hp-grid-wrap" id="armada">
+
+        @if($isSeoLanding)
+        <div class="seo-section" style="padding-top: 0; padding-bottom: 18px;">
+            <div class="seo-section-head">
+                <h2>Rental Mobil Lombok yang Bisa Anda Pilih</h2>
+                <p>
+                    Temukan berbagai pilihan mobil rental di Lombok dengan informasi harga per hari, transmisi,
+                    kapasitas penumpang, serta pilihan lepas kunci atau dengan sopir. Gunakan filter dan tanggal
+                    untuk menyesuaikan kendaraan dengan kebutuhan perjalanan Anda.
+                </p>
+            </div>
+        </div>
+        @endif
 
         <div class="hp-grid-header">
             <h2 class="hp-grid-title">Kendaraan tersedia</h2>
@@ -1236,8 +1664,12 @@
                         {{-- Gambar --}}
                         <div class="hp-card-img-wrap">
                             <img src="{{ $car['foto'] }}"
-                                 alt="{{ $car['brand'] }} {{ $car['nama'] }}"
+                                 alt="Sewa {{ $car['brand'] }} {{ $car['nama'] }} di Lombok"
                                  class="hp-card-img"
+                                 width="400"
+                                 height="300"
+                                 loading="lazy"
+                                 decoding="async"
                                  onerror="this.src='https://placehold.co/400x300/f3f4f6/9ca3af?text=No+Image'">
 
                             @if($car['badge'])
@@ -1313,6 +1745,191 @@
 
     </div>
 
+    @if($isSeoLanding)
+    {{-- ══ SEO CONTENT: LAYANAN ══ --}}
+    <section class="seo-wrap" aria-labelledby="layanan-title">
+        <div class="seo-section">
+            <div class="seo-section-head">
+                <h2 id="layanan-title">Pilihan Sewa Mobil di Lombok</h2>
+                <p>Pilih jenis layanan berdasarkan kebutuhan perjalanan Anda.</p>
+            </div>
+
+            <div class="seo-grid-3">
+                <article class="seo-card">
+                    <div class="seo-card-icon">🚗</div>
+                    <h3>Sewa Mobil Lepas Kunci</h3>
+                    <p>
+                        Cocok untuk Anda yang ingin lebih fleksibel menentukan rute dan waktu perjalanan sendiri.
+                        Gunakan filter <strong>Lepas Kunci</strong> untuk melihat kendaraan yang tersedia.
+                    </p>
+                </article>
+
+                <article class="seo-card">
+                    <div class="seo-card-icon">👨‍✈️</div>
+                    <h3>Rental Mobil Dengan Sopir</h3>
+                    <p>
+                        Pilihan untuk wisata, perjalanan keluarga, kebutuhan bisnis, dan perjalanan antarlokasi di Lombok
+                        tanpa harus mengemudi sendiri.
+                    </p>
+                </article>
+
+                <article class="seo-card">
+                    <div class="seo-card-icon">🕐</div>
+                    <h3>Sewa Berdasarkan Durasi</h3>
+                    <p>
+                        Tentukan tanggal keluar dan tanggal kembali pada pencarian untuk menyesuaikan durasi sewa
+                        dengan itinerary perjalanan Anda.
+                    </p>
+                </article>
+            </div>
+        </div>
+
+        {{-- ══ HARGA / NILAI ══ --}}
+        <div class="seo-section">
+            <div class="seo-grid-2">
+                <article class="seo-card">
+                    <h3>Harga Sewa Mobil Lombok</h3>
+                    <p>
+                        Harga yang tampil pada kartu kendaraan merupakan harga aktif per hari. Total perjalanan
+                        dihitung berdasarkan jumlah hari yang Anda pilih. Karena harga dan ketersediaan dapat berubah,
+                        gunakan tanggal perjalanan untuk melihat informasi yang sedang berlaku.
+                    </p>
+                    <ul class="seo-list">
+                        <li>Pilih tanggal keluar dan tanggal kembali.</li>
+                        <li>Gunakan filter transmisi Matic atau Manual.</li>
+                        <li>Pilih paket Lepas Kunci atau Dengan Sopir.</li>
+                        <li>Lihat estimasi total berdasarkan durasi sewa.</li>
+                    </ul>
+                </article>
+
+                <article class="seo-card">
+                    <h3>Kenapa Memilih Semeton Pesiar?</h3>
+                    <p>
+                        Proses pencarian dibuat sederhana agar pelanggan bisa memilih kendaraan terlebih dahulu
+                        sebelum melanjutkan ke pemeriksaan data penyewa dan form booking.
+                    </p>
+                    <ul class="seo-list">
+                        <li>Katalog kendaraan dengan harga per hari.</li>
+                        <li>Filter berdasarkan kebutuhan sewa dan transmisi.</li>
+                        <li>Booking online dengan tanggal perjalanan.</li>
+                        <li>Pengecekan NIK sebelum melanjutkan pemesanan.</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+
+        {{-- ══ AREA LAYANAN ══ --}}
+        <div class="seo-section" aria-labelledby="lokasi-title">
+            <div class="seo-card">
+                <h2 id="lokasi-title">Layanan Rental Mobil di Lombok</h2>
+                <p>
+                    Semeton Pesiar melayani kebutuhan rental mobil untuk perjalanan di berbagai area populer di Lombok.
+                    Saat menghubungi admin, sampaikan lokasi penjemputan, tujuan, dan tanggal perjalanan agar kebutuhan
+                    transportasi dapat diproses sesuai layanan yang tersedia.
+                </p>
+                <div class="seo-location-links" aria-label="Area layanan Lombok">
+                    <span>Mataram</span>
+                    <span>Bandara Internasional Lombok</span>
+                    <span>Kuta Mandalika</span>
+                    <span>Senggigi</span>
+                    <span>Lombok Barat</span>
+                    <span>Lombok Tengah</span>
+                    <span>Lombok Timur</span>
+                    <span>Lombok Utara</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- ══ CARA BOOKING ══ --}}
+        <div class="seo-section" id="cara-booking" aria-labelledby="cara-title">
+            <div class="seo-section-head">
+                <h2 id="cara-title">Cara Booking Rental Mobil Lombok</h2>
+                <p>Proses dibuat bertahap agar data kendaraan dan tanggal perjalanan dapat diperiksa sebelum booking dilanjutkan.</p>
+            </div>
+
+            <div class="seo-grid-3 seo-steps">
+                <article class="seo-card seo-step">
+                    <h3>Pilih Tanggal</h3>
+                    <p>Tentukan tanggal keluar dan tanggal kembali sesuai rencana perjalanan.</p>
+                </article>
+                <article class="seo-card seo-step">
+                    <h3>Pilih Kendaraan</h3>
+                    <p>Gunakan filter dan daftar kendaraan untuk memilih armada yang sesuai.</p>
+                </article>
+                <article class="seo-card seo-step">
+                    <h3>Cek NIK &amp; Booking</h3>
+                    <p>Masukkan NIK untuk pengecekan data penyewa lalu lanjutkan ke form booking.</p>
+                </article>
+            </div>
+        </div>
+
+        {{-- ══ TIPS MEMILIH MOBIL ══ --}}
+        <div class="seo-section" aria-labelledby="tips-title">
+            <div class="seo-grid-2">
+                <article class="seo-card">
+                    <h3 id="tips-title">Pilih Mobil Sesuai Kebutuhan Perjalanan</h3>
+                    <ul class="seo-list">
+                        <li>Perjalanan berdua atau kelompok kecil dapat mempertimbangkan mobil berukuran kompak.</li>
+                        <li>Untuk keluarga, prioritaskan kapasitas penumpang dan ruang bagasi.</li>
+                        <li>Untuk perjalanan yang membutuhkan kenyamanan lebih, perhatikan kelas dan ukuran kendaraan.</li>
+                        <li>Periksa transmisi sesuai preferensi Anda sebelum booking.</li>
+                    </ul>
+                </article>
+                <article class="seo-card">
+                    <h3>Siapkan Informasi Perjalanan</h3>
+                    <p>
+                        Sebelum booking, siapkan tanggal perjalanan, lokasi penjemputan atau pengantaran,
+                        jumlah penumpang, dan pilihan layanan. Informasi tersebut membantu proses pemesanan berjalan lebih cepat.
+                    </p>
+                </article>
+            </div>
+        </div>
+
+        {{-- ══ FAQ ══ --}}
+        <div class="seo-section seo-faq" aria-labelledby="faq-title">
+            <div class="seo-section-head">
+                <h2 id="faq-title">Pertanyaan Umum Sewa Mobil Lombok</h2>
+                <p>Beberapa pertanyaan yang sering muncul sebelum melakukan booking.</p>
+            </div>
+
+            <details>
+                <summary>Berapa harga sewa mobil di Lombok?</summary>
+                <p>Harga mengikuti kendaraan, paket, durasi, dan ketersediaan. Harga per hari dapat dilihat pada kartu kendaraan setelah Anda menentukan tanggal perjalanan.</p>
+            </details>
+
+            <details>
+                <summary>Apakah tersedia sewa mobil Lombok lepas kunci?</summary>
+                <p>Ya, tersedia untuk kendaraan yang memiliki label Lepas Kunci. Gunakan filter Lepas Kunci pada bagian pencarian untuk menampilkan armada yang sesuai.</p>
+            </details>
+
+            <details>
+                <summary>Apakah tersedia rental mobil Lombok dengan sopir?</summary>
+                <p>Tersedia untuk kendaraan yang memiliki label Dengan Sopir. Anda dapat menggunakan filter Dengan Sopir untuk melihat armada yang tersedia.</p>
+            </details>
+
+            <details>
+                <summary>Apakah bisa menyewa mobil untuk beberapa hari?</summary>
+                <p>Bisa. Tentukan tanggal keluar dan tanggal kembali pada form pencarian. Total durasi dan estimasi harga akan mengikuti tanggal yang Anda pilih.</p>
+            </details>
+
+            <details>
+                <summary>Bagaimana cara booking rental mobil di Semeton Pesiar?</summary>
+                <p>Pilih tanggal, tentukan jenis layanan, pilih kendaraan, kemudian lakukan pengecekan NIK untuk melanjutkan ke form booking.</p>
+            </details>
+        </div>
+
+        {{-- ══ CTA ══ --}}
+        <div class="seo-cta">
+            <h2>Siap Menyewa Mobil di Lombok?</h2>
+            <p style="margin-top:8px;">Tentukan tanggal perjalanan dan pilih kendaraan yang sesuai dari daftar armada di atas.</p>
+            <div class="seo-hero-actions">
+                <a href="#armada" class="seo-btn-primary">Pilih Kendaraan</a>
+                <a href="https://wa.me/6281128948884" target="_blank" rel="noopener noreferrer" class="seo-btn-secondary">Hubungi WhatsApp</a>
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- ══ MODAL CEK NIK ══ --}}
     {{-- BUG FIX: hapus class "hidden" — modal dikontrol murni lewat .show via JS --}}
     <div id="nikModal" class="hp-modal-backdrop">
@@ -1377,8 +1994,9 @@
                 <span class="hp-footer-copy">© {{ date('Y') }} Semeton Pesiar Lombok</span>
             </div>
             <div class="hp-footer-contact">
-                <span>📞 +6281128948884</span>
-                <span>🌐 www.semetonpesiar.com</span>
+                <a href="tel:+6281128948884" style="color:inherit;text-decoration:none;">📞 +62 811-2894-8884</a>
+                <a href="https://wa.me/6281128948884" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">WhatsApp</a>
+                <a href="{{ $canonicalUrl }}" style="color:inherit;text-decoration:none;">🌐 semetonpesiar.com</a>
             </div>
         </div>
     </footer>
