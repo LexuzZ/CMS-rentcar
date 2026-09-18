@@ -99,6 +99,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 14px;
+            margin-top: 8px;
         }
 
         .hp-tipe-btn {
@@ -158,6 +159,7 @@
             display: flex;
             align-items: stretch;
             gap: 8px;
+            margin-top: 4px;
         }
 
         .hp-date-loc {
