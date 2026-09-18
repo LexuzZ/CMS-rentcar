@@ -1242,44 +1242,48 @@
    ══════════════════════════════════════ */
 
         @media (max-width: 767px) {
-
             .hp-hero {
                 min-height: 480px;
 
-                background-position: center;
-            }
-
-            .hp-hero-overlay {
                 background:
                     linear-gradient(180deg,
                         rgba(15, 23, 42, 0.55),
-                        rgba(15, 23, 42, 0.88));
+                        rgba(15, 23, 42, 0.88)),
+                    url('{{ asset('public/images/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
             }
+        }
 
-            .hp-hero-inner {
-                padding: 60px 20px;
-            }
+        .hp-hero-overlay {
+            background:
+                linear-gradient(180deg,
+                    rgba(15, 23, 42, 0.55),
+                    rgba(15, 23, 42, 0.88));
+        }
 
-            .hp-hero-title {
-                font-size: 34px;
-                line-height: 1.18;
-            }
+        .hp-hero-inner {
+            padding: 60px 20px;
+        }
 
-            .hp-hero-text {
-                font-size: 14px;
-                line-height: 1.75;
-            }
+        .hp-hero-title {
+            font-size: 34px;
+            line-height: 1.18;
+        }
 
-            .hp-seo-content-inner {
-                grid-template-columns: 1fr;
-                gap: 36px;
+        .hp-hero-text {
+            font-size: 14px;
+            line-height: 1.75;
+        }
 
-                padding: 42px 20px 46px;
-            }
+        .hp-seo-content-inner {
+            grid-template-columns: 1fr;
+            gap: 36px;
 
-            .hp-seo-title {
-                font-size: 21px;
-            }
+            padding: 42px 20px 46px;
+        }
+
+        .hp-seo-title {
+            font-size: 21px;
+        }
         }
 
 
