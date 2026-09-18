@@ -1020,7 +1020,7 @@
             overflow: hidden;
 
             background:
-                url('{{ asset('storage/jumbotron/lombok-rental.jpg') }}') center center / cover no-repeat;
+                url('{{ asset('storage/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
         }
 
         .hp-hero-overlay {
@@ -1530,7 +1530,7 @@
 
         <div class="hp-hero-inner">
             <span class="hp-hero-badge">
-                🚗 Rental Mobil Lombok
+                Rental Mobil Lombok
             </span>
 
             <h1 class="hp-hero-title">
