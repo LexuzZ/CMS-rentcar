@@ -1020,7 +1020,7 @@
             overflow: hidden;
 
             background:
-                url('{{ asset('storage/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
+                url('{{ asset('images/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
         }
 
         .hp-hero-overlay {
