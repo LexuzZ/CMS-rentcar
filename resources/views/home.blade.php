@@ -1655,6 +1655,30 @@
                     </div>
                     <button type="submit" class="hp-search-btn">Cari</button>
                 </div>
+                <div class="hp-toggle-row">
+                    <button type="button" onclick="setFilter('tipe_sewa', 'lepas_kunci')"
+                        class="hp-tipe-btn {{ $tipeSewa === 'lepas_kunci' ? 'active' : '' }}">
+                        <span class="hp-tipe-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                            </svg>
+                        </span>
+                        Lepas kunci
+                    </button>
+                    <button type="button" onclick="setFilter('tipe_sewa', 'dengan_sopir')"
+                        class="hp-tipe-btn {{ $tipeSewa === 'dengan_sopir' ? 'active' : '' }}">
+                        <span class="hp-tipe-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </span>
+                        Dengan sopir
+                    </button>
+                </div>
 
             </form>
         </div>
@@ -1685,30 +1709,7 @@
             </div>
         </div>
     </div>
-    <div class="hp-toggle-row">
-        <button type="button" onclick="setFilter('tipe_sewa', 'lepas_kunci')"
-            class="hp-tipe-btn {{ $tipeSewa === 'lepas_kunci' ? 'active' : '' }}">
-            <span class="hp-tipe-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" />
-                    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-                </svg>
-            </span>
-            Lepas kunci
-        </button>
-        <button type="button" onclick="setFilter('tipe_sewa', 'dengan_sopir')"
-            class="hp-tipe-btn {{ $tipeSewa === 'dengan_sopir' ? 'active' : '' }}">
-            <span class="hp-tipe-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-            </span>
-            Dengan sopir
-        </button>
-    </div>
+
 
     {{-- ══ GRID KARTU ══ --}}
     <div class="hp-grid-wrap" id="kendaraan">
