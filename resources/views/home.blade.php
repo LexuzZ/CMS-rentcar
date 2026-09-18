@@ -1454,7 +1454,7 @@
             </div>
 
             <div class="hp-maps-cta">
-                <a href="https://maps.app.goo.gl/YourLink" target="_blank" rel="noopener noreferrer"
+                <a href="https://maps.app.goo.gl/b4rduAQFoAvEmCBu5" target="_blank" rel="noopener noreferrer"
                     class="hp-maps-link">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
