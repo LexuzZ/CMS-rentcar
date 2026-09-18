@@ -1249,7 +1249,7 @@
                     linear-gradient(180deg,
                         rgba(15, 23, 42, 0.55),
                         rgba(15, 23, 42, 0.88)),
-                    url('{{ asset('images/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
+                    url('{{ asset('public/images/jumbotron/slider-mobil.png') }}') center center / cover no-repeat;
             }
         }
 
