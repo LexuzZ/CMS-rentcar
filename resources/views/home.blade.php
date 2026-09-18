@@ -1008,70 +1008,330 @@
             cursor: not-allowed;
         }
 
-        /* ── SEO Content ── */
-        .hp-seo-section {
-            background: #fff;
-            border-top: 1px solid #e2e8f0;
-            margin-top: 10px;
+        /* ══════════════════════════════════════
+   JUMBOTRON
+   ══════════════════════════════════════ */
+
+        .hp-hero {
+            position: relative;
+            min-height: 430px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+
+            background:
+                url('{{ asset('storage/jumbotron/lombok-rental.jpg') }}') center center / cover no-repeat;
         }
 
-        .hp-seo-inner {
+        .hp-hero-overlay {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(90deg,
+                    rgba(15, 23, 42, 0.88) 0%,
+                    rgba(15, 23, 42, 0.72) 42%,
+                    rgba(15, 23, 42, 0.35) 100%);
+
+            z-index: 1;
+        }
+
+        .hp-hero-inner {
+            position: relative;
+            z-index: 2;
+
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 42px 24px 48px;
+
+            padding: 72px 24px;
+        }
+
+        .hp-hero-badge {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 7px 13px;
+            margin-bottom: 18px;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hp-hero-title {
+            max-width: 720px;
+
+            margin: 0 0 18px;
+
+            color: #fff;
+
+            font-size: 44px;
+            line-height: 1.13;
+            font-weight: 800;
+
+            letter-spacing: -0.035em;
+        }
+
+        .hp-hero-title span {
+            display: block;
+            color: #fed7aa;
+        }
+
+        .hp-hero-text {
+            max-width: 650px;
+
+            margin: 0 0 28px;
+
+            color: rgba(255, 255, 255, 0.88);
+
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .hp-hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hp-hero-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+            padding: 0 20px;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+
+            text-decoration: none;
+
+            transition:
+                transform .18s ease,
+                background .18s ease,
+                border-color .18s ease;
+        }
+
+        .hp-hero-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hp-hero-btn-primary {
+            background: #f97316;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(249, 115, 22, .25);
+        }
+
+        .hp-hero-btn-primary:hover {
+            background: #ea580c;
+        }
+
+        .hp-hero-btn-secondary {
+            border: 1px solid rgba(255, 255, 255, .35);
+
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+
+            backdrop-filter: blur(8px);
+        }
+
+        .hp-hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, .18);
+            border-color: rgba(255, 255, 255, .55);
+        }
+
+
+        /* ══════════════════════════════════════
+   SEO CONTENT
+   ══════════════════════════════════════ */
+
+        .hp-seo-content {
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .hp-seo-content-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+
+            padding: 54px 24px 60px;
+
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            gap: 50px;
+        }
+
+        .hp-seo-block {
+            min-width: 0;
+        }
+
+        .hp-seo-label {
+            display: inline-block;
+
+            margin-bottom: 9px;
+
+            color: #f97316;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: .08em;
+            text-transform: uppercase;
         }
 
         .hp-seo-title {
-            margin: 0 0 12px;
-            font-size: 24px;
+            margin: 0 0 14px;
+
+            color: #0f172a;
+
+            font-size: 23px;
             line-height: 1.35;
             font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.025em;
+
+            letter-spacing: -0.02em;
         }
 
         .hp-seo-text {
-            max-width: 760px;
-            margin: 0;
+            margin: 0 0 13px;
+
+            color: #64748b;
+
             font-size: 14px;
             line-height: 1.8;
-            color: #64748b;
         }
 
+        .hp-seo-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .hp-seo-text a {
+            color: #ea580c;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .hp-seo-text a:hover {
+            text-decoration: underline;
+        }
+
+        .hp-seo-text strong {
+            color: #334155;
+            font-weight: 700;
+        }
+
+
+        /* ══════════════════════════════════════
+   TABLET
+   ══════════════════════════════════════ */
+
         @media (max-width: 767px) {
-            .hp-seo-inner {
-                padding: 34px 20px 40px;
+
+            .hp-hero {
+                min-height: 480px;
+
+                background-position: center;
+            }
+
+            .hp-hero-overlay {
+                background:
+                    linear-gradient(180deg,
+                        rgba(15, 23, 42, 0.55),
+                        rgba(15, 23, 42, 0.88));
+            }
+
+            .hp-hero-inner {
+                padding: 60px 20px;
+            }
+
+            .hp-hero-title {
+                font-size: 34px;
+                line-height: 1.18;
+            }
+
+            .hp-hero-text {
+                font-size: 14px;
+                line-height: 1.75;
+            }
+
+            .hp-seo-content-inner {
+                grid-template-columns: 1fr;
+                gap: 36px;
+
+                padding: 42px 20px 46px;
             }
 
             .hp-seo-title {
                 font-size: 21px;
-                line-height: 1.4;
+            }
+        }
+
+
+        /* ══════════════════════════════════════
+   MOBILE
+   ══════════════════════════════════════ */
+
+        @media (max-width: 480px) {
+
+            .hp-hero {
+                min-height: 500px;
+            }
+
+            .hp-hero-inner {
+                padding: 48px 16px;
+            }
+
+            .hp-hero-badge {
+                font-size: 11px;
+                padding: 6px 11px;
+                margin-bottom: 14px;
+            }
+
+            .hp-hero-title {
+                font-size: 29px;
+                line-height: 1.18;
+                letter-spacing: -0.025em;
+            }
+
+            .hp-hero-text {
+                font-size: 13px;
+                line-height: 1.7;
+                margin-bottom: 22px;
+            }
+
+            .hp-hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hp-hero-btn {
+                width: 100%;
+            }
+
+            .hp-seo-content-inner {
+                padding: 36px 16px 42px;
+                gap: 30px;
+            }
+
+            .hp-seo-title {
+                font-size: 20px;
             }
 
             .hp-seo-text {
                 font-size: 13px;
                 line-height: 1.75;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hp-seo-section {
-                margin-top: 0;
-            }
-
-            .hp-seo-inner {
-                padding: 30px 16px 36px;
-            }
-
-            .hp-seo-title {
-                font-size: 19px;
-                letter-spacing: -0.015em;
-                margin-bottom: 10px;
-            }
-
-            .hp-seo-text {
-                font-size: 13px;
-                line-height: 1.7;
             }
         }
 
@@ -1263,6 +1523,40 @@
             </a>
         </div>
     </nav>
+    {{-- ══ JUMBOTRON ══ --}}
+    <section class="hp-hero">
+
+        <div class="hp-hero-overlay"></div>
+
+        <div class="hp-hero-inner">
+            <span class="hp-hero-badge">
+                🚗 Rental Mobil Lombok
+            </span>
+
+            <h1 class="hp-hero-title">
+                Sewa Kendaraan di Lombok
+                <span>Harga Murah, Armada Lengkap</span>
+            </h1>
+
+            <p class="hp-hero-text">
+                Nikmati perjalanan di Lombok dengan armada terawat,
+                harga transparan, dan pilihan layanan lepas kunci maupun
+                dengan driver berpengalaman.
+            </p>
+
+            <div class="hp-hero-actions">
+                <a href="#kendaraan" class="hp-hero-btn hp-hero-btn-primary">
+                    Lihat Armada
+                </a>
+
+                <a href="https://wa.me/6281128948884" target="_blank" rel="noopener noreferrer"
+                    class="hp-hero-btn hp-hero-btn-secondary">
+                    Hubungi Kami
+                </a>
+            </div>
+        </div>
+
+    </section>
 
     {{-- ══ SEARCH / FILTER BAR ══ --}}
     <div class="hp-searchbar">
@@ -1537,51 +1831,62 @@
 
     </div>
 
-    {{-- ══ SEO CONTENT ══ --}}
-    {{-- ══ SEO JUMBOTRON ══ --}}
-    <section class="hp-seo-section">
+    <section class="hp-seo-content">
 
-        <div class="hp-seo-inner">
-            <h1 class="hp-seo-title">
-                Sewa Kendaraan di Lombok — Harga Murah, Armada Lengkap
-            </h1>
+        <div class="hp-seo-content-inner">
 
-            <p class="hp-seo-text">
-                <a href="https://adminsemetonpesiarlombok.id/">
-                    Semeton Pesiar Trans
-                </a>
-                hadir sebagai solusi perjalanan yang mengutamakan kenyamanan dan
-                pelayanan prima. Sebagai penyedia jasa sewa mobil dan paket Tour & Travel
-                terpercaya di Lombok, kami berkomitmen menyajikan armada terbaru dengan
-                kondisi yang selalu prima.
-            </p>
+            <div class="hp-seo-block">
+                <span class="hp-seo-label">
+                    SEMETON PESIAR TRANS
+                </span>
 
-            <p class="hp-seo-text">
-                Kami menyediakan berbagai pilihan kendaraan dengan harga kompetitif
-                serta paket wisata yang dirancang untuk memberikan pengalaman perjalanan
-                yang nyaman dan menyenangkan.
-            </p>
-        </div>
+                <h2 class="hp-seo-title">
+                    Rental Mobil Lombok untuk Perjalanan Nyaman
+                </h2>
 
-        <div class="hp-seo-inner">
-            <h2 class="hp-seo-title">
-                Sewa Mobil Lepas Kunci atau Dengan Driver
-            </h2>
+                <p class="hp-seo-text">
+                    <a href="https://adminsemetonpesiarlombok.id/">
+                        Semeton Pesiar Trans
+                    </a>
+                    hadir sebagai solusi perjalanan yang mengutamakan
+                    kenyamanan dan pelayanan prima. Sebagai penyedia jasa
+                    sewa mobil dan paket Tour & Travel di Lombok, kami
+                    menyediakan berbagai pilihan kendaraan dengan kondisi
+                    terawat dan harga yang kompetitif.
+                </p>
 
-            <p class="hp-seo-text">
-                Demi menjawab kebutuhan perjalanan Anda yang beragam,
-                <a href="https://adminsemetonpesiarlombok.id/">
-                    Semeton Pesiar Trans
-                </a>
-                menawarkan dua opsi layanan yang fleksibel.
-            </p>
+                <p class="hp-seo-text">
+                    Kami melayani kebutuhan perjalanan di berbagai wilayah
+                    Lombok, termasuk Mataram, Senggigi, Kuta Lombok dan
+                    berbagai destinasi wisata lainnya.
+                </p>
+            </div>
 
-            <p class="hp-seo-text">
-                Bagi Anda yang menginginkan privasi dan kebebasan menjelajahi Lombok,
-                layanan sewa mobil lepas kunci menjadi pilihan yang fleksibel.
-                Sementara untuk perjalanan yang lebih santai, tersedia layanan sewa mobil
-                dengan driver berpengalaman.
-            </p>
+
+            <div class="hp-seo-block">
+
+                <span class="hp-seo-label">
+                    PILIHAN LAYANAN
+                </span>
+
+                <h2 class="hp-seo-title">
+                    Sewa Mobil Lepas Kunci atau Dengan Driver
+                </h2>
+
+                <p class="hp-seo-text">
+                    Bagi Anda yang menginginkan privasi dan kebebasan dalam
+                    menjelajahi Lombok, tersedia layanan sewa mobil
+                    <strong>lepas kunci</strong>.
+                </p>
+
+                <p class="hp-seo-text">
+                    Sementara bagi Anda yang ingin menikmati perjalanan tanpa
+                    perlu memikirkan rute dan perjalanan, tersedia layanan
+                    <strong>dengan driver berpengalaman</strong>.
+                </p>
+
+            </div>
+
         </div>
 
     </section>
