@@ -216,8 +216,13 @@
         }
 
         @media (max-width: 380px) {
-            .hp-date-input { font-size: 11px; }
-            .hp-date-field { padding: 9px 10px; }
+            .hp-date-input {
+                font-size: 11px;
+            }
+
+            .hp-date-field {
+                padding: 9px 10px;
+            }
         }
 
         .hp-date-arrow {
@@ -228,7 +233,9 @@
         }
 
         @media (max-width: 360px) {
-            .hp-date-arrow { display: none; }
+            .hp-date-arrow {
+                display: none;
+            }
         }
 
         @media (min-width: 768px) {
@@ -237,11 +244,16 @@
                 align-items: stretch;
                 gap: 10px;
             }
+
             .hp-date-top {
                 flex: 0 0 auto;
                 gap: 10px;
             }
-            .hp-date-top .hp-ubah-btn { display: none; }
+
+            .hp-date-top .hp-ubah-btn {
+                display: none;
+            }
+
             .hp-date-fields {
                 flex: 1;
                 gap: 10px;
@@ -266,12 +278,18 @@
             flex-shrink: 0;
         }
 
-        .hp-ubah-btn:hover { background: #f59e0b; }
+        .hp-ubah-btn:hover {
+            background: #f59e0b;
+        }
 
-        .hp-ubah-btn-desktop { display: none; }
+        .hp-ubah-btn-desktop {
+            display: none;
+        }
 
         @media (min-width: 768px) {
-            .hp-ubah-btn-desktop { display: flex; }
+            .hp-ubah-btn-desktop {
+                display: flex;
+            }
         }
 
         /* Search row */
@@ -293,7 +311,9 @@
             color: #94a3b8;
         }
 
-        .hp-search-wrap:focus-within { border-color: #f97316; }
+        .hp-search-wrap:focus-within {
+            border-color: #f97316;
+        }
 
         .hp-search-input {
             flex: 1;
@@ -304,7 +324,9 @@
             font-family: inherit;
         }
 
-        .hp-search-input::placeholder { color: #94a3b8; }
+        .hp-search-input::placeholder {
+            color: #94a3b8;
+        }
 
         .hp-search-btn {
             padding: 10px 22px;
@@ -319,7 +341,9 @@
             transition: background .15s;
         }
 
-        .hp-search-btn:hover { background: #ea580c; }
+        .hp-search-btn:hover {
+            background: #ea580c;
+        }
 
         /* ── Filter bar ── */
         .hp-filter-bar {
@@ -389,7 +413,9 @@
             font-family: inherit;
         }
 
-        .hp-sort-select:focus { border-color: #f97316; }
+        .hp-sort-select:focus {
+            border-color: #f97316;
+        }
 
         /* ── Grid ── */
         .hp-grid-wrap {
@@ -424,11 +450,15 @@
         }
 
         @media (min-width: 768px) {
-            .hp-grid { grid-template-columns: repeat(3, 1fr); }
+            .hp-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         @media (min-width: 1024px) {
-            .hp-grid { grid-template-columns: repeat(4, 1fr); }
+            .hp-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         /* Card */
@@ -469,11 +499,30 @@
             border-radius: 100px;
         }
 
-        .badge-orange { background: #ffedd5; color: #c2410c; }
-        .badge-green  { background: #dcfce7; color: #15803d; }
-        .badge-blue   { background: #dbeafe; color: #1d4ed8; }
-        .badge-purple { background: #ede9fe; color: #7c3aed; }
-        .badge-gray   { background: #f1f5f9; color: #475569; }
+        .badge-orange {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
 
         .hp-badge-tr {
             position: absolute;
@@ -506,7 +555,9 @@
             backdrop-filter: blur(4px);
         }
 
-        .hp-card-body { padding: 14px; }
+        .hp-card-body {
+            padding: 14px;
+        }
 
         .hp-card-brand {
             font-size: 11px;
@@ -594,7 +645,9 @@
             transition: background .15s;
         }
 
-        .hp-card-btn:hover { background: #ea580c; }
+        .hp-card-btn:hover {
+            background: #ea580c;
+        }
 
         /* Empty */
         .hp-empty {
@@ -641,7 +694,9 @@
             transition: background .15s;
         }
 
-        .hp-empty-reset:hover { background: #ea580c; }
+        .hp-empty-reset:hover {
+            background: #ea580c;
+        }
 
         /* ── Pagination ── */
         .hp-pagination {
@@ -650,8 +705,14 @@
             justify-content: center;
         }
 
-        .hp-pagination nav { display: flex; justify-content: center; }
-        .hp-pagination nav > div:first-child { display: none; }
+        .hp-pagination nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        .hp-pagination nav>div:first-child {
+            display: none;
+        }
 
         .hp-pagination .pagination {
             display: flex;
@@ -664,7 +725,9 @@
             justify-content: center;
         }
 
-        .hp-pagination .page-item { line-height: 1; }
+        .hp-pagination .page-item {
+            line-height: 1;
+        }
 
         .hp-pagination .page-link {
             display: inline-flex;
@@ -723,7 +786,9 @@
         }
 
         .hp-pagination .page-item:first-child .page-link,
-        .hp-pagination .page-item:last-child .page-link { padding: 0 14px; }
+        .hp-pagination .page-item:last-child .page-link {
+            padding: 0 14px;
+        }
 
         @media (max-width: 480px) {
             .hp-pagination .page-link {
@@ -747,7 +812,9 @@
             padding: 16px;
         }
 
-        .hp-modal-backdrop.show { display: flex; }
+        .hp-modal-backdrop.show {
+            display: flex;
+        }
 
         .hp-modal {
             width: 100%;
@@ -760,8 +827,15 @@
         }
 
         @keyframes modal-in {
-            from { opacity: 0; transform: scale(.95) translateY(12px); }
-            to   { opacity: 1; transform: scale(1)   translateY(0);    }
+            from {
+                opacity: 0;
+                transform: scale(.95) translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .hp-modal-header {
@@ -800,7 +874,9 @@
             flex-shrink: 0;
         }
 
-        .hp-modal-close:hover { background: rgba(255, 255, 255, .25); }
+        .hp-modal-close:hover {
+            background: rgba(255, 255, 255, .25);
+        }
 
         .hp-modal-body {
             padding: 22px;
@@ -841,7 +917,9 @@
             color: #374151;
         }
 
-        .hp-modal-input-wrap { position: relative; }
+        .hp-modal-input-wrap {
+            position: relative;
+        }
 
         .hp-modal-input {
             width: 100%;
@@ -921,8 +999,14 @@
             transition: background .15s;
         }
 
-        .hp-modal-submit:hover { background: #ea580c; }
-        .hp-modal-submit:disabled { opacity: .65; cursor: not-allowed; }
+        .hp-modal-submit:hover {
+            background: #ea580c;
+        }
+
+        .hp-modal-submit:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+        }
 
         /* ── SEO Content ── */
         .hp-seo-section {
@@ -955,16 +1039,40 @@
         }
 
         @media (max-width: 767px) {
-            .hp-seo-inner { padding: 34px 20px 40px; }
-            .hp-seo-title { font-size: 21px; line-height: 1.4; }
-            .hp-seo-text  { font-size: 13px; line-height: 1.75; }
+            .hp-seo-inner {
+                padding: 34px 20px 40px;
+            }
+
+            .hp-seo-title {
+                font-size: 21px;
+                line-height: 1.4;
+            }
+
+            .hp-seo-text {
+                font-size: 13px;
+                line-height: 1.75;
+            }
         }
 
         @media (max-width: 480px) {
-            .hp-seo-section { margin-top: 0; }
-            .hp-seo-inner   { padding: 30px 16px 36px; }
-            .hp-seo-title   { font-size: 19px; letter-spacing: -0.015em; margin-bottom: 10px; }
-            .hp-seo-text    { font-size: 13px; line-height: 1.7; }
+            .hp-seo-section {
+                margin-top: 0;
+            }
+
+            .hp-seo-inner {
+                padding: 30px 16px 36px;
+            }
+
+            .hp-seo-title {
+                font-size: 19px;
+                letter-spacing: -0.015em;
+                margin-bottom: 10px;
+            }
+
+            .hp-seo-text {
+                font-size: 13px;
+                line-height: 1.7;
+            }
         }
 
         /* ── Google Maps Section ── */
@@ -1054,7 +1162,9 @@
             transition: background .15s;
         }
 
-        .hp-maps-link:hover { background: #ea580c; }
+        .hp-maps-link:hover {
+            background: #ea580c;
+        }
 
         .hp-maps-address {
             font-size: 12.5px;
@@ -1065,16 +1175,37 @@
         }
 
         @media (max-width: 767px) {
-            .hp-maps-inner { padding: 32px 20px 40px; }
-            .hp-maps-title { font-size: 16px; }
-            .hp-maps-frame-wrap { aspect-ratio: 4 / 3; }
+            .hp-maps-inner {
+                padding: 32px 20px 40px;
+            }
+
+            .hp-maps-title {
+                font-size: 16px;
+            }
+
+            .hp-maps-frame-wrap {
+                aspect-ratio: 4 / 3;
+            }
         }
 
         @media (max-width: 480px) {
-            .hp-maps-inner  { padding: 28px 16px 36px; }
-            .hp-maps-header { gap: 10px; }
-            .hp-maps-icon   { width: 36px; height: 36px; border-radius: 9px; }
-            .hp-maps-frame-wrap { aspect-ratio: 3 / 4; }
+            .hp-maps-inner {
+                padding: 28px 16px 36px;
+            }
+
+            .hp-maps-header {
+                gap: 10px;
+            }
+
+            .hp-maps-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 9px;
+            }
+
+            .hp-maps-frame-wrap {
+                aspect-ratio: 3 / 4;
+            }
         }
 
         /* ── Footer ── */
@@ -1143,7 +1274,7 @@
                 {{-- Hidden inputs — satu per parameter, tidak ada duplikat --}}
                 <input type="hidden" name="tipe_sewa" id="hidden-tipe-sewa" value="{{ $tipeSewa }}">
                 <input type="hidden" name="transmisi" id="hidden-transmisi" value="{{ request('transmisi', 'semua') }}">
-                <input type="hidden" name="sort"      id="hidden-sort"      value="{{ request('sort', 'termurah') }}">
+                <input type="hidden" name="sort" id="hidden-sort" value="{{ request('sort', 'termurah') }}">
 
                 {{-- Toggle Lepas Kunci / Dengan Sopir --}}
                 <div class="hp-toggle-row">
@@ -1202,9 +1333,7 @@
                             <p class="hp-date-micro">Tanggal Keluar</p>
                             <input type="date" name="tanggal_keluar" id="tgl_keluar"
                                 value="{{ request('tanggal_keluar', now()->format('Y-m-d')) }}"
-                                min="{{ now()->format('Y-m-d') }}"
-                                class="hp-date-input"
-                                onchange="updateMinReturn()">
+                                min="{{ now()->format('Y-m-d') }}" class="hp-date-input" onchange="updateMinReturn()">
                         </div>
 
                         <div class="hp-date-arrow">
@@ -1218,20 +1347,19 @@
                             <p class="hp-date-micro">Tanggal Kembali</p>
                             <input type="date" name="tanggal_kembali" id="tgl_kembali"
                                 value="{{ request('tanggal_kembali', now()->addDay()->format('Y-m-d')) }}"
-                                min="{{ now()->addDay()->format('Y-m-d') }}"
-                                class="hp-date-input">
+                                min="{{ now()->addDay()->format('Y-m-d') }}" class="hp-date-input">
                         </div>
                     </div>
 
-                    {{-- Tombol Ubah desktop (disembunyikan di <768px via CSS) --}}
-                    <button type="submit" class="hp-ubah-btn hp-ubah-btn-desktop">
+                    {{-- Tombol Ubah desktop (disembunyikan di <768px via CSS) --}} <button type="submit"
+                        class="hp-ubah-btn hp-ubah-btn-desktop">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                         </svg>
                         Ubah
-                    </button>
+                        </button>
 
                 </div>
 
@@ -1268,9 +1396,12 @@
             <div class="hp-filter-group">
                 <span class="hp-filter-label">Urutkan</span>
                 <select onchange="setFilter('sort', this.value)" class="hp-sort-select">
-                    <option value="termurah" {{ request('sort', 'termurah') === 'termurah' ? 'selected' : '' }}>Harga termurah</option>
-                    <option value="termahal" {{ request('sort', 'termurah') === 'termahal' ? 'selected' : '' }}>Harga termahal</option>
-                    <option value="terbaru"  {{ request('sort', 'termurah') === 'terbaru'  ? 'selected' : '' }}>Terbaru</option>
+                    <option value="termurah" {{ request('sort', 'termurah') === 'termurah' ? 'selected' : '' }}>Harga
+                        termurah</option>
+                    <option value="termahal" {{ request('sort', 'termurah') === 'termahal' ? 'selected' : '' }}>Harga
+                        termahal</option>
+                    <option value="terbaru" {{ request('sort', 'termurah') === 'terbaru' ? 'selected' : '' }}>Terbaru
+                    </option>
                 </select>
             </div>
         </div>
@@ -1309,18 +1440,18 @@
             <div class="hp-grid">
                 @foreach($cars as $car)
                     @php
-                        $harga           = $car['harga_aktif'] ?? 0;
-                        $totalHarga      = $harga * $totalHari;
-                        $transmisi       = strtoupper($car['transmisi']);
-                        $badgeStyles     = [
+                        $harga = $car['harga_aktif'] ?? 0;
+                        $totalHarga = $harga * $totalHari;
+                        $transmisi = strtoupper($car['transmisi']);
+                        $badgeStyles = [
                             'orange' => 'badge-orange',
-                            'green'  => 'badge-green',
-                            'blue'   => 'badge-blue',
+                            'green' => 'badge-green',
+                            'blue' => 'badge-blue',
                             'purple' => 'badge-purple',
-                            'gray'   => 'badge-gray',
+                            'gray' => 'badge-gray',
                         ];
-                        $badgeClass      = $badgeStyles[$car['badge_color'] ?? 'gray'] ?? 'badge-gray';
-                        $bisaLepasKunci  = in_array('lepas_kunci',  $car['tipe_sewa'] ?? []);
+                        $badgeClass = $badgeStyles[$car['badge_color'] ?? 'gray'] ?? 'badge-gray';
+                        $bisaLepasKunci = in_array('lepas_kunci', $car['tipe_sewa'] ?? []);
                         $bisaDenganSopir = in_array('dengan_sopir', $car['tipe_sewa'] ?? []);
                     @endphp
 
@@ -1328,9 +1459,7 @@
 
                         {{-- Gambar --}}
                         <div class="hp-card-img-wrap">
-                            <img src="{{ $car['foto'] }}"
-                                alt="{{ $car['brand'] }} {{ $car['nama'] }}"
-                                class="hp-card-img"
+                            <img src="{{ $car['foto'] }}" alt="{{ $car['brand'] }} {{ $car['nama'] }}" class="hp-card-img"
                                 onerror="this.src='https://placehold.co/400x300/f3f4f6/9ca3af?text=No+Image'">
 
                             @if(!empty($car['badge']))
@@ -1415,10 +1544,12 @@
                 Sewa Kendaraan di Lombok — Harga Murah, Armada Lengkap
             </h1>
             <p class="hp-seo-text">
-                Semeton Pesiar Trans menyediakan layanan rental mobil dan motor di Lombok
-                dengan pilihan lepas kunci maupun dengan sopir berpengalaman.
-                Tersedia untuk area Mataram, Senggigi, Kuta Lombok, dan seluruh Pulau Lombok.
-                Booking online mudah, armada terawat, harga transparan tanpa biaya tersembunyi.
+                <a href="https://adminsemetonpesiarlombok.id/">Semeton Pesiar Trans</a> hadir sebagai solusi perjalanan terbaik yang mengutamakan kenyamanan dan
+                pelayanan prima. Sebagai penyedia jasa sewa mobil dan paket Tour & Travel terpercaya di Lombok, kami
+                berkomitmen menyajikan armada terbaru dengan kondisi yang selalu prima. Kami memahami bahwa kenyamanan
+                adalah prioritas Anda saat berlibur, itulah sebabnya kami menawarkan berbagai pilihan kendaraan lengkap
+                dengan harga yang sangat kompetitif tahun ini, serta paket wisata eksklusif yang dirancang khusus untuk
+                pengalaman tak terlupakan
             </p>
         </div>
     </section>
@@ -1429,8 +1560,8 @@
 
             <div class="hp-maps-header">
                 <div class="hp-maps-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                         <circle cx="12" cy="10" r="3" />
                     </svg>
@@ -1446,9 +1577,7 @@
             <div class="hp-maps-frame-wrap">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.964101425894!2d116.08530180000001!3d-8.599445099999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dcdbf0264047f73%3A0x5f1a0bbef364f13!2sSemeton%20Pesiar%20-%20Sewa%20Mobil%20Lombok%20Terpercaya!5e0!3m2!1sid!2sid!4v1789729563043!5m2!1sid!2sid"
-                    allowfullscreen
-                    loading="lazy"
-                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
                     title="Lokasi Semeton Pesiar Trans di Google Maps">
                 </iframe>
             </div>
@@ -1456,16 +1585,16 @@
             <div class="hp-maps-cta">
                 <a href="https://maps.app.goo.gl/b4rduAQFoAvEmCBu5" target="_blank" rel="noopener noreferrer"
                     class="hp-maps-link">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                         <circle cx="12" cy="10" r="3" />
                     </svg>
                     Buka di Google Maps
                 </a>
                 <span class="hp-maps-address">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                         <circle cx="12" cy="10" r="3" />
                     </svg>
@@ -1510,12 +1639,12 @@
                     <p class="hp-modal-hint">NIK digunakan untuk mengecek status data penyewa sebelum booking.</p>
                 </div>
 
-                <div id="nikError"   class="hp-modal-alert hp-modal-alert--error"   style="display:none"></div>
+                <div id="nikError" class="hp-modal-alert hp-modal-alert--error" style="display:none"></div>
                 <div id="nikSuccess" class="hp-modal-alert hp-modal-alert--success" style="display:none"></div>
 
                 <button type="button" id="btnCheckNik" onclick="checkNik()" class="hp-modal-submit">
-                    <svg id="checkNikIcon" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
+                    <svg id="checkNikIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
                         <circle cx="11" cy="11" r="8" />
                         <path d="m21 21-4.3-4.3" />
                     </svg>
@@ -1545,7 +1674,7 @@
     <script>
         // ── Tanggal ──────────────────────────────────────────────────
         function updateMinReturn() {
-            const keluar  = document.getElementById('tgl_keluar');
+            const keluar = document.getElementById('tgl_keluar');
             const kembali = document.getElementById('tgl_kembali');
             if (!keluar.value) return;
 
@@ -1559,9 +1688,9 @@
 
         // ── Filter ───────────────────────────────────────────────────
         const hiddenInputIds = {
-            tipe_sewa : 'hidden-tipe-sewa',
-            transmisi : 'hidden-transmisi',
-            sort      : 'hidden-sort',
+            tipe_sewa: 'hidden-tipe-sewa',
+            transmisi: 'hidden-transmisi',
+            sort: 'hidden-sort',
         };
 
         function setFilter(name, value) {
@@ -1577,11 +1706,11 @@
 
         function openNikModal(carId, carName) {
             selectedCarId = carId;
-            document.getElementById('selectedCarName').textContent  = carName;
-            document.getElementById('modalNik').value               = '';
-            document.getElementById('modalNikCounter').textContent  = '0 / 16';
-            document.getElementById('nikError').style.display       = 'none';
-            document.getElementById('nikSuccess').style.display     = 'none';
+            document.getElementById('selectedCarName').textContent = carName;
+            document.getElementById('modalNik').value = '';
+            document.getElementById('modalNikCounter').textContent = '0 / 16';
+            document.getElementById('nikError').style.display = 'none';
+            document.getElementById('nikSuccess').style.display = 'none';
             document.getElementById('nikModal').classList.add('show');
             document.body.style.overflow = 'hidden';
             setTimeout(() => document.getElementById('modalNik').focus(), 100);
@@ -1612,56 +1741,56 @@
 
         // ── Cek NIK ──────────────────────────────────────────────────
         async function checkNik() {
-            const nik        = document.getElementById('modalNik').value.trim();
-            const errorBox   = document.getElementById('nikError');
+            const nik = document.getElementById('modalNik').value.trim();
+            const errorBox = document.getElementById('nikError');
             const successBox = document.getElementById('nikSuccess');
-            const button     = document.getElementById('btnCheckNik');
+            const button = document.getElementById('btnCheckNik');
             const buttonText = document.getElementById('checkNikText');
 
-            errorBox.style.display   = 'none';
+            errorBox.style.display = 'none';
             successBox.style.display = 'none';
 
             if (nik.length !== 16) {
-                errorBox.textContent   = 'NIK harus terdiri dari 16 digit.';
+                errorBox.textContent = 'NIK harus terdiri dari 16 digit.';
                 errorBox.style.display = 'block';
                 return;
             }
 
             if (!selectedCarId) {
-                errorBox.textContent   = 'Kendaraan belum dipilih.';
+                errorBox.textContent = 'Kendaraan belum dipilih.';
                 errorBox.style.display = 'block';
                 return;
             }
 
-            button.disabled        = true;
+            button.disabled = true;
             buttonText.textContent = 'Memeriksa…';
 
             try {
                 const response = await fetch("{{ route('cek.nik.ajax') }}", {
-                    method  : 'POST',
-                    headers : {
-                        'Content-Type' : 'application/json',
-                        'Accept'       : 'application/json',
-                        'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     },
                     body: JSON.stringify({
                         nik,
-                        car_id          : selectedCarId,
-                        tanggal_keluar  : document.getElementById('tgl_keluar').value,
-                        tanggal_kembali : document.getElementById('tgl_kembali').value,
-                        tipe_sewa       : document.getElementById('hidden-tipe-sewa').value,
+                        car_id: selectedCarId,
+                        tanggal_keluar: document.getElementById('tgl_keluar').value,
+                        tanggal_kembali: document.getElementById('tgl_kembali').value,
+                        tipe_sewa: document.getElementById('hidden-tipe-sewa').value,
                     }),
                 });
 
                 const data = await response.json();
 
                 if (!response.ok || !data.success) {
-                    errorBox.textContent   = data.message ?? 'NIK tidak dapat digunakan.';
+                    errorBox.textContent = data.message ?? 'NIK tidak dapat digunakan.';
                     errorBox.style.display = 'block';
                     return;
                 }
 
-                successBox.textContent   = data.message ?? 'NIK berhasil diverifikasi.';
+                successBox.textContent = data.message ?? 'NIK berhasil diverifikasi.';
                 successBox.style.display = 'block';
 
                 setTimeout(() => {
@@ -1672,18 +1801,18 @@
                     const params = new URLSearchParams(
                         data.registered
                             ? {
-                                customer_id     : data.customer_id,
-                                car_id          : selectedCarId,
-                                tanggal_keluar  : document.getElementById('tgl_keluar').value,
-                                tanggal_kembali : document.getElementById('tgl_kembali').value,
-                                tipe_sewa       : document.getElementById('hidden-tipe-sewa').value,
+                                customer_id: data.customer_id,
+                                car_id: selectedCarId,
+                                tanggal_keluar: document.getElementById('tgl_keluar').value,
+                                tanggal_kembali: document.getElementById('tgl_kembali').value,
+                                tipe_sewa: document.getElementById('hidden-tipe-sewa').value,
                             }
                             : {
-                                ktp             : nik,
-                                car_id          : selectedCarId,
-                                tanggal_keluar  : document.getElementById('tgl_keluar').value,
-                                tanggal_kembali : document.getElementById('tgl_kembali').value,
-                                tipe_sewa       : document.getElementById('hidden-tipe-sewa').value,
+                                ktp: nik,
+                                car_id: selectedCarId,
+                                tanggal_keluar: document.getElementById('tgl_keluar').value,
+                                tanggal_kembali: document.getElementById('tgl_kembali').value,
+                                tipe_sewa: document.getElementById('hidden-tipe-sewa').value,
                             }
                     );
 
@@ -1692,14 +1821,15 @@
 
             } catch (err) {
                 console.error(err);
-                errorBox.textContent   = 'Terjadi kesalahan. Silakan coba lagi.';
+                errorBox.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
                 errorBox.style.display = 'block';
             } finally {
-                button.disabled        = false;
+                button.disabled = false;
                 buttonText.textContent = 'Cek NIK';
             }
         }
     </script>
 
 </body>
+
 </html>
