@@ -1544,12 +1544,29 @@
                 Sewa Kendaraan di Lombok — Harga Murah, Armada Lengkap
             </h1>
             <p class="hp-seo-text">
-                <a href="https://adminsemetonpesiarlombok.id/">Semeton Pesiar Trans</a> hadir sebagai solusi perjalanan terbaik yang mengutamakan kenyamanan dan
+                <a href="https://adminsemetonpesiarlombok.id/">Semeton Pesiar Trans</a> hadir sebagai solusi perjalanan
+                terbaik yang mengutamakan kenyamanan dan
                 pelayanan prima. Sebagai penyedia jasa sewa mobil dan paket Tour & Travel terpercaya di Lombok, kami
                 berkomitmen menyajikan armada terbaru dengan kondisi yang selalu prima. Kami memahami bahwa kenyamanan
                 adalah prioritas Anda saat berlibur, itulah sebabnya kami menawarkan berbagai pilihan kendaraan lengkap
                 dengan harga yang sangat kompetitif tahun ini, serta paket wisata eksklusif yang dirancang khusus untuk
                 pengalaman tak terlupakan
+            </p>
+        </div>
+        <div class="hp-seo-inner">
+            <h1 class="hp-seo-title">
+                Sewa Mobil Lepas Kunci atau Dengan Driver
+            </h1>
+            <p class="hp-seo-text">
+                Demi menjawab kebutuhan perjalanan Anda yang beragam, <a href="https://adminsemetonpesiarlombok.id/">Semeton Pesiar Trans</a> menawarkan dua opsi
+                layanan yang fleksibel. Bagi Anda yang mendambakan privasi dan kebebasan total dalam menjelajahi setiap
+                sudut pulau, layanan sewa mobil lepas kunci adalah pilihan yang sempurna.
+            </p>
+            <p class="hp-seo-text">
+                Namun, jika Anda ingin menikmati setiap momen perjalanan dengan lebih relaks tanpa perlu memikirkan
+                rute, pilihlah layanan sewa mobil dengan driver. Driver berpengalaman kami siap menjadi pemandu
+                perjalanan Anda, memastikan setiap rute yang dilewati aman dan menyenangkan. Sesuaikan pilihan Anda
+                dengan gaya perjalanan impian hanya di <a href="https://www.semetonpesiar.com/">Semeton Pesiar Trans</a>.
             </p>
         </div>
     </section>
