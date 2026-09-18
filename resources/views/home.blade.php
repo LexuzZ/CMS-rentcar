@@ -1702,7 +1702,7 @@
     </div>
 
     {{-- ══ GRID KARTU ══ --}}
-    <div class="hp-grid-wrap">
+    <div class="hp-grid-wrap" id="kendaraan">
 
         <div class="hp-grid-header">
             <h2 class="hp-grid-title">Kendaraan tersedia</h2>
