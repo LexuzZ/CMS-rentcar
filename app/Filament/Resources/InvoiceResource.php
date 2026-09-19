@@ -251,8 +251,8 @@ class InvoiceResource extends Resource
                             // ── Jadwal ──────────────────────────────
                             $text[] = '📅 *JADWAL SEWA*';
                             $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
-                            $text[] = "• Mulai       : {$tglKeluar} Jam {$jamKeluar} WITA";
-                            $text[] = "• Selesai     : {$tglKembali} Jam {$jamKembali} WITA";
+                            $text[] = "• Mulai       : {$tglKeluar} - {$jamKeluar} WITA";
+                            $text[] = "• Selesai     : {$tglKembali} - {$jamKembali} WITA";
                             $text[] = "• Durasi      : *{$totalHari} hari*";
                             $text[] = "• Lokasi Antar: {$pengantaran}";
                             $text[] = "• Lokasi Ambil: {$pengembalian}";
