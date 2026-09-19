@@ -208,6 +208,8 @@ class InvoiceResource extends Resource
                             $tglKembali = $booking->tanggal_kembali
                                 ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y • HH:mm')
                                 : '-';
+                            $jamKeluar = $booking->waktu_keluar ?? '-';
+                            $jamKembali = $booking->waktu_kembali ?? '-';
                             $totalHari = $booking->total_hari ?? 0;
                             $tglDibuat = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('D MMMM Y');
                             $hargaPerHari = $totalHari > 0 ? $biayaSewa / $totalHari : $biayaSewa;
@@ -249,8 +251,8 @@ class InvoiceResource extends Resource
                             // ── Jadwal ──────────────────────────────
                             $text[] = '📅 *JADWAL SEWA*';
                             $text[] = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
-                            $text[] = "• Mulai       : {$tglKeluar}";
-                            $text[] = "• Selesai     : {$tglKembali}";
+                            $text[] = "• Mulai       : {$tglKeluar} Jam {$jamKeluar}";
+                            $text[] = "• Selesai     : {$tglKembali} Jam {$jamKembali}";
                             $text[] = "• Durasi      : *{$totalHari} hari*";
                             $text[] = "• Lokasi Antar: {$pengantaran}";
                             $text[] = "• Lokasi Ambil: {$pengembalian}";
