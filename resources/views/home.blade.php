@@ -1517,6 +1517,258 @@
             opacity: .6;
             cursor: pointer;
         }
+
+        /* ── Modal Pengumuman Pricelist Event ── */
+        .ann-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: rgba(15, 23, 42, .6);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .ann-backdrop.show {
+            display: flex;
+        }
+
+        .ann-modal {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+            animation: ann-in .25s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        @keyframes ann-in {
+            from {
+                opacity: 0;
+                transform: scale(.94) translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .ann-header {
+            background: linear-gradient(135deg, #f97316, #dc2626);
+            padding: 22px 22px 18px;
+            position: relative;
+            text-align: center;
+        }
+
+        .ann-flag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .ann-badge-dot {
+            width: 7px;
+            height: 7px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: ann-blink 1.2s ease-in-out infinite;
+        }
+
+        @keyframes ann-blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .3;
+            }
+        }
+
+        .ann-h-title {
+            font-size: 21px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin: 0 0 5px;
+            letter-spacing: -.02em;
+        }
+
+        .ann-h-sub {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, .82);
+            margin: 0;
+        }
+
+        .ann-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: background .15s;
+        }
+
+        .ann-close:hover {
+            background: rgba(255, 255, 255, .3);
+        }
+
+        .ann-body {
+            padding: 20px;
+        }
+
+        .ann-section-label {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #f97316;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .ann-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .ann-table th {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: 0 10px 8px;
+            text-align: left;
+        }
+
+        .ann-table th:last-child {
+            text-align: right;
+        }
+
+        .ann-table td {
+            font-size: 13px;
+            padding: 9px 10px;
+            border-top: 1px solid #f1f5f9;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .ann-table td:last-child {
+            text-align: right;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .ann-table tr:last-child td {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ann-highlight {
+            background: #fff7ed;
+        }
+
+        .ann-highlight td {
+            color: #c2410c !important;
+        }
+
+        .ann-highlight td:last-child {
+            color: #ea580c !important;
+        }
+
+        .ann-row-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: #ffedd5;
+            color: #c2410c;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .ann-note {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .ann-note strong {
+            color: #334155;
+        }
+
+        .ann-footer-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ann-btn-primary {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background .15s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .ann-btn-primary:hover {
+            background: #ea580c;
+        }
+
+        .ann-btn-ghost {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            font-size: 12.5px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: color .15s;
+        }
+
+        .ann-btn-ghost:hover {
+            color: #64748b;
+        }
     </style>
 </head>
 
@@ -1533,6 +1785,77 @@
             </a>
         </div>
     </nav>
+    {{-- ══ MODAL PENGUMUMAN PRICELIST EVENT ══ --}}
+    <div id="annModal" class="ann-backdrop">
+        <div class="ann-modal">
+            <div class="ann-header">
+                <button class="ann-close" onclick="closeAnnModal()" aria-label="Tutup pengumuman">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="ann-flag">
+                    <span class="ann-badge-dot"></span>
+                    Pengumuman Harga
+                </div>
+                <h2 class="ann-h-title">New Pricelist Event 2025</h2>
+                <p class="ann-h-sub">MotoGP Lombok &middot; Perayaan Akhir Tahun</p>
+            </div>
+            <div class="ann-body">
+                <p class="ann-section-label">Harga Khusus Event (per hari)</p>
+                <table class="ann-table">
+                    <thead>
+                        <tr>
+                            <th>Kendaraan</th>
+                            <th>Normal</th>
+                            <th>Event</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Avanza / Xenia</td>
+                            <td style="color:#94a3b8">350rb</td>
+                            <td>450rb</td>
+                        </tr>
+                        <tr>
+                            <td>Innova Reborn</td>
+                            <td style="color:#94a3b8">500rb</td>
+                            <td>650rb</td>
+                        </tr>
+                        <tr class="ann-highlight">
+                            <td>Fortuner / Pajero <span class="ann-row-badge">TERBATAS</span></td>
+                            <td style="color:#94a3b8">700rb</td>
+                            <td>950rb</td>
+                        </tr>
+                        <tr>
+                            <td>HiAce Premio</td>
+                            <td style="color:#94a3b8">900rb</td>
+                            <td>1.150rb</td>
+                        </tr>
+                        <tr class="ann-highlight">
+                            <td>Elf / Microbus <span class="ann-row-badge">TERBATAS</span></td>
+                            <td style="color:#94a3b8">1.100rb</td>
+                            <td>1.400rb</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="ann-note">
+                    <strong>📌 Berlaku:</strong> 11–15 Oktober 2025 (MotoGP) &amp;
+                    28 Des 2025 – 2 Jan 2026 (Akhir Tahun).<br>
+                    Harga sudah termasuk driver. Lepas kunci <strong>tidak tersedia</strong>
+                    selama periode event. Booking minimal <strong>H‑3</strong>.
+                </div>
+                <div class="ann-footer-btns">
+                    <a href="https://wa.me/6281128948884" target="_blank" rel="noopener noreferrer"
+                        class="ann-btn-primary">
+                        📲 Booking Sekarang via WhatsApp
+                    </a>
+                    <button class="ann-btn-ghost" onclick="closeAnnModal()">Lihat nanti</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {{-- ══ JUMBOTRON ══ --}}
     <section class="hp-hero">
 
@@ -2176,6 +2499,24 @@
                 button.disabled = false;
                 buttonText.textContent = 'Cek NIK';
             }
+        }
+        // ── Modal Pengumuman Event ────────────────────────────────
+        function openAnnModal() {
+            document.getElementById('annModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAnnModal() {
+            document.getElementById('annModal').classList.remove('show');
+            document.body.style.overflow = '';
+            // Simpan di sessionStorage agar tidak muncul lagi setelah ditutup
+            sessionStorage.setItem('ann_closed', '1');
+        }
+        document.getElementById('annModal').addEventListener('click', function (e) {
+            if (e.target === this) closeAnnModal();
+        });
+        // Tampilkan otomatis saat halaman dibuka (sekali per sesi)
+        if (!sessionStorage.getItem('ann_closed')) {
+            setTimeout(openAnnModal, 800);
         }
     </script>
 
