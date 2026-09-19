@@ -203,13 +203,13 @@ class InvoiceResource extends Resource
                             $nopol = $car?->nopol ? " ({$car->nopol})" : '';
 
                             $tglKeluar = $booking->tanggal_keluar
-                                ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y • HH:mm')
+                                ? Carbon::parse($booking->tanggal_keluar)->locale('id')->isoFormat('dddd, D MMMM Y')
                                 : '-';
                             $tglKembali = $booking->tanggal_kembali
-                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y • HH:mm')
+                                ? Carbon::parse($booking->tanggal_kembali)->locale('id')->isoFormat('dddd, D MMMM Y')
                                 : '-';
-                            $jamKeluar = $booking->waktu_keluar ?? '-';
-                            $jamKembali = $booking->waktu_kembali ?? '-';
+                            $jamKeluar = Carbon::parse($booking->waktu_keluar)->locale('id')->isoFormat('HH:mm') ?? '-';
+                            $jamKembali = Carbon::parse($booking->waktu_kembali)->locale('id')->isoFormat('HH:mm') ?? '-';
                             $totalHari = $booking->total_hari ?? 0;
                             $tglDibuat = Carbon::parse($record->tanggal_invoice)->locale('id')->isoFormat('D MMMM Y');
                             $hargaPerHari = $totalHari > 0 ? $biayaSewa / $totalHari : $biayaSewa;
