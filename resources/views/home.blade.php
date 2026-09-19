@@ -1786,7 +1786,7 @@
         </div>
     </nav>
     {{-- ══ MODAL PENGUMUMAN PRICELIST EVENT ══ --}}
-    <div id="annModal" class="ann-backdrop">
+    {{-- <div id="annModal" class="ann-backdrop">
         <div class="ann-modal">
             <div class="ann-header">
                 <button class="ann-close" onclick="closeAnnModal()" aria-label="Tutup pengumuman">
@@ -1855,7 +1855,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     {{-- ══ JUMBOTRON ══ --}}
     <section class="hp-hero">
 
