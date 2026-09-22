@@ -110,7 +110,12 @@ class CustomerCheckController extends Controller
         // simpan session id customer
         session(['customer_id' => $customer->id]);
 
-        return redirect()->route('booking.form')
-            ->with('success', 'Data penyewa tersimpan ✅');
+        return redirect()->route('booking.form', [
+            'customer_id' => $customer->id,
+            'car_id' => session('pending_car_id'),
+            'tanggal_keluar' => session('pending_tanggal_keluar'),
+            'tanggal_kembali' => session('pending_tanggal_kembali'),
+            'tipe_sewa' => session('pending_tipe_sewa'),
+        ])->with('success', 'Data penyewa tersimpan ✅');
     }
 }
