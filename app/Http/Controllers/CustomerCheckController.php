@@ -69,8 +69,16 @@ class CustomerCheckController extends Controller
         ]);
     }
 
-    public function dataPenyewa()
+    public function dataPenyewa(Request $request)
     {
+        // Simpan parameter booking ke session agar tidak hilang
+        session([
+            'pending_car_id' => $request->car_id,
+            'pending_tanggal_keluar' => $request->tanggal_keluar,
+            'pending_tanggal_kembali' => $request->tanggal_kembali,
+            'pending_tipe_sewa' => $request->tipe_sewa,
+        ]);
+
         return view('form-data-penyewa');
     }
 
@@ -108,7 +116,7 @@ class CustomerCheckController extends Controller
         ]);
 
         // simpan session id customer
-        session(['customer_id' => $customer->id]);
+        // session(['customer_id' => $customer->id]);
 
         return redirect()->route('booking.form', [
             'customer_id' => $customer->id,
