@@ -1786,7 +1786,7 @@
         </div>
     </nav>
     {{-- ══ MODAL PENGUMUMAN PRICELIST EVENT ══ --}}
-    {{-- <div id="annModal" class="ann-backdrop">
+    <div id="annModal" class="ann-backdrop">
         <div class="ann-modal">
             <div class="ann-header">
                 <button class="ann-close" onclick="closeAnnModal()" aria-label="Tutup pengumuman">
@@ -1814,48 +1814,39 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Avanza / Xenia</td>
-                            <td style="color:#94a3b8">350rb</td>
+                            <td>Honda Brio</td>
+                            <td style="color:#94a3b8">300rb</td>
                             <td>450rb</td>
                         </tr>
                         <tr>
-                            <td>Innova Reborn</td>
-                            <td style="color:#94a3b8">500rb</td>
-                            <td>650rb</td>
+                            <td>Toyota New Agya</td>
+                            <td style="color:#94a3b8">300rb</td>
+                            <td>450rb</td>
                         </tr>
                         <tr class="ann-highlight">
-                            <td>Fortuner / Pajero <span class="ann-row-badge">TERBATAS</span></td>
-                            <td style="color:#94a3b8">700rb</td>
-                            <td>950rb</td>
+                            <td>Daihatsu Ayla</td>
+                            <td style="color:#94a3b8">275rb</td>
+                            <td>425rb</td>
                         </tr>
                         <tr>
-                            <td>HiAce Premio</td>
-                            <td style="color:#94a3b8">900rb</td>
-                            <td>1.150rb</td>
-                        </tr>
-                        <tr class="ann-highlight">
-                            <td>Elf / Microbus <span class="ann-row-badge">TERBATAS</span></td>
-                            <td style="color:#94a3b8">1.100rb</td>
-                            <td>1.400rb</td>
+                            <td>Toyota Raize</td>
+                            <td style="color:#94a3b8">350rb</td>
+                            <td>500rb</td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="ann-note">
-                    <strong>📌 Berlaku:</strong> 11–15 Oktober 2025 (MotoGP) &amp;
+                    <strong>📌 Berlaku:</strong> 09-13 Oktober 2026 (MotoGP) &amp;
                     28 Des 2025 – 2 Jan 2026 (Akhir Tahun).<br>
                     Harga sudah termasuk driver. Lepas kunci <strong>tidak tersedia</strong>
                     selama periode event. Booking minimal <strong>H‑3</strong>.
                 </div>
                 <div class="ann-footer-btns">
-                    <a href="https://wa.me/6281128948884" target="_blank" rel="noopener noreferrer"
-                        class="ann-btn-primary">
-                        📲 Booking Sekarang via WhatsApp
-                    </a>
                     <button class="ann-btn-ghost" onclick="closeAnnModal()">Lihat nanti</button>
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
     {{-- ══ JUMBOTRON ══ --}}
     <section class="hp-hero">
 
