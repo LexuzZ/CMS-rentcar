@@ -60,7 +60,7 @@ class CustomerCheckController extends Controller
 
         abort_if(! $car, 404, 'Kendaraan tidak ditemukan.');
 
-        return view('booking', [
+        return view('booking.form', [
             'customer' => $customer,
             'car' => $car,           // array dari katalog.json
             'tanggalKeluar' => $request->tanggal_keluar,
