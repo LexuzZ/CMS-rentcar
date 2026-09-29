@@ -280,12 +280,24 @@
             .dark .aw-recap-label {
                 color: #57534e !important;
             }
+
+            .aw-btn.out {
+                background: linear-gradient(135deg, #f97316, #ea580c);
+                box-shadow: 0 4px 16px rgba(249, 115, 22, .35);
+            }
+
+            .aw-btn.out:hover:not(:disabled) {
+                box-shadow: 0 8px 24px rgba(249, 115, 22, .45);
+            }
         </style>
 
         @php
             $todayRecord = \App\Models\Attendance::where('user_id', auth()->id())
                 ->whereDate('date', today())->first();
             $hasCheckedIn = $todayRecord !== null;
+            $hasCheckedOut = $todayRecord?->check_out_time !== null;
+            $workHours = $this->getWorkHours();
+            $earliestOut = $hasCheckedIn ? $this->getEarliestCheckOut($todayRecord) : null;
 
             $monthHadir = \App\Models\Attendance::where('user_id', auth()->id())
                 ->whereMonth('date', now()->month)->whereYear('date', now()->year)
@@ -302,9 +314,10 @@
 
             {{-- ── Status card ── --}}
             @if($hasCheckedIn)
-                <div class="aw-status-card {{ $todayRecord->status === 'terlambat' ? 'late' : 'done' }}">
+                <div
+                    class="aw-status-card {{ $hasCheckedOut ? 'done' : ($todayRecord->status === 'terlambat' ? 'late' : 'done') }}">
                     <div class="aw-status-icon">
-                        @if($todayRecord->status === 'terlambat')
+                        @if($todayRecord->status === 'terlambat' && !$hasCheckedOut)
                             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10" />
@@ -320,12 +333,23 @@
                     </div>
                     <div>
                         <p class="aw-status-title">
-                            {{ $todayRecord->status === 'terlambat' ? '⚠️ Anda Terlambat' : '✅ Sudah Absen' }}
+                            @if($hasCheckedOut)
+                                ✅ Sudah Pulang
+                            @else
+                                {{ $todayRecord->status === 'terlambat' ? '⚠️ Anda Terlambat' : '✅ Sudah Absen' }}
+                            @endif
                         </p>
                         <p class="aw-status-sub">
-                            Tercatat masuk pukul
+                            Masuk pukul
                             <strong>{{ \Carbon\Carbon::parse($todayRecord->check_in_time)->format('H:i') }}</strong>
-                            · Jarak {{ number_format($todayRecord->distance_meters, 0) }} m dari kantor
+                            @if($hasCheckedOut)
+                                · Pulang pukul
+                                <strong>{{ \Carbon\Carbon::parse($todayRecord->check_out_time)->format('H:i') }}</strong>
+                            @else
+                                · Jarak {{ number_format($todayRecord->distance_meters, 0) }} m dari kantor
+                                <br>Durasi kerja {{ $workHours }} jam · bisa pulang mulai
+                                <strong>{{ $earliestOut->format('H:i') }}</strong>
+                            @endif
                         </p>
                     </div>
                 </div>
@@ -372,7 +396,7 @@
             {{-- ── Tombol absen ── --}}
             @if(!$hasCheckedIn)
                 <div class="aw-btn-wrap">
-                    <button class="aw-btn" id="aw-checkin-btn" onclick="awStartCheckIn()">
+                    <button class="aw-btn" id="aw-checkin-btn" onclick="awStartAction('aw-checkin-btn', 'checkIn')">
                         <div class="aw-spinner"></div>
                         <span class="aw-btn-text" style="display:flex;align-items:center;gap:8px;">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -391,6 +415,27 @@
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                     GPS akan diaktifkan · radius {{ \App\Filament\Widgets\AttendanceWidget::MAX_DISTANCE }} m dari kantor
+                </p>
+            @endif
+            @if($hasCheckedIn && !$hasCheckedOut)
+                <div class="aw-btn-wrap">
+                    <button class="aw-btn out" id="aw-checkout-btn" data-earliest="{{ $earliestOut->timestamp * 1000 }}"
+                        onclick="awStartAction('aw-checkout-btn', 'checkOut')" {{ now()->lessThan($earliestOut) ? 'disabled' : '' }}>
+                        <div class="aw-spinner"></div>
+                        <span class="aw-btn-text" style="display:flex;align-items:center;gap:8px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            Absen Pulang
+                        </span>
+                    </button>
+                </div>
+                <p class="aw-gps-note">
+                    Tombol aktif pukul {{ $earliestOut->format('H:i') }} · radius
+                    {{ \App\Filament\Widgets\AttendanceWidget::MAX_DISTANCE }} m dari kantor
                 </p>
             @endif
 
@@ -413,60 +458,60 @@
         </div>
 
         <script>
-            // ── Live clock ──
+            // ── Live clock + auto-enable tombol pulang ──
             (function tick() {
                 const el = document.getElementById('aw-live-time');
+                const now = new Date();
                 if (el) {
-                    const now = new Date();
                     el.textContent = String(now.getHours()).padStart(2, '0')
                         + ':' + String(now.getMinutes()).padStart(2, '0');
                 }
+
+                const outBtn = document.getElementById('aw-checkout-btn');
+                if (outBtn && outBtn.disabled && !outBtn.classList.contains('loading')) {
+                    if (now.getTime() >= parseInt(outBtn.dataset.earliest)) {
+                        outBtn.disabled = false;
+                    }
+                }
+
                 setTimeout(tick, 1000);
             })();
 
-            // ── Show JS-side error (GPS / browser errors) ──
-            function awShowJsError(msg) {
+            function awShowJsError(msg, btnId) {
                 const box = document.getElementById('aw-js-error');
                 const txt = document.getElementById('aw-js-error-text');
                 if (box && txt) { txt.textContent = msg; box.style.display = 'flex'; }
-                awResetBtn();
+                awResetBtn(btnId);
             }
 
-            function awResetBtn() {
-                const btn = document.getElementById('aw-checkin-btn');
+            function awResetBtn(btnId) {
+                const btn = document.getElementById(btnId);
                 if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
             }
 
-            function awStartCheckIn() {
-                const btn = document.getElementById('aw-checkin-btn');
+            // method = 'checkIn' | 'checkOut'
+            function awStartAction(btnId, method) {
+                const btn = document.getElementById(btnId);
                 if (!btn || btn.disabled) return;
 
-                // Sembunyikan error JS lama
                 const jsErr = document.getElementById('aw-js-error');
                 if (jsErr) jsErr.style.display = 'none';
 
-                // Loading state
                 btn.classList.add('loading');
                 btn.disabled = true;
 
                 if (!navigator.geolocation) {
-                    awShowJsError('Browser Anda tidak mendukung GPS. Gunakan Chrome atau Firefox terbaru.');
+                    awShowJsError('Browser Anda tidak mendukung GPS. Gunakan Chrome atau Firefox terbaru.', btnId);
                     return;
                 }
 
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {
-                        const lat = pos.coords.latitude;
-                        const lon = pos.coords.longitude;
-
-                        // Kirim ke Livewire — setelah selesai, Livewire re-render otomatis
-                        @this.checkIn(lat, lon).then(function () {
-                            // Livewire sudah re-render. Kalau masih ada tombol (artinya gagal dari sisi PHP),
-                            // reset loading state-nya.
-                            awResetBtn();
-                        }).catch(function () {
-                            awShowJsError('Terjadi kesalahan koneksi. Coba lagi.');
-                        });
+                        @this.call(method, pos.coords.latitude, pos.coords.longitude)
+                            .then(function () { awResetBtn(btnId); })
+                            .catch(function () {
+                                awShowJsError('Terjadi kesalahan koneksi. Coba lagi.', btnId);
+                            });
                     },
                     function (err) {
                         const msgs = {
@@ -474,7 +519,7 @@
                             2: 'Lokasi tidak tersedia. Pastikan GPS perangkat aktif.',
                             3: 'Permintaan lokasi timeout. Coba lagi.',
                         };
-                        awShowJsError(msgs[err.code] || 'Gagal mendapatkan lokasi.');
+                        awShowJsError(msgs[err.code] || 'Gagal mendapatkan lokasi.', btnId);
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );

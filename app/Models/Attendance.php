@@ -19,6 +19,7 @@ class Attendance extends Model
         'note',
         'ip_address',
         'user_agent',
+        'check_out_time', 'check_out_latitude', 'check_out_longitude', 'check_out_distance_meters',
     ];
 
     protected $casts = [
