@@ -48,15 +48,7 @@ class AttendanceWidget extends Widget
      */
     public function getWorkHours(): int
     {
-        $user = Auth::user();
-
-        foreach (self::JAM_KERJA as $role => $hours) {
-            if ($user->hasRole($role)) {
-                return $hours;
-            }
-        }
-
-        return self::JAM_KERJA_DEFAULT;
+        return self::JAM_KERJA[Auth::user()->role] ?? self::JAM_KERJA_DEFAULT;
     }
 
     public bool $loading = false;
