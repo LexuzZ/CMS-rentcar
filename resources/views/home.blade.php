@@ -1786,7 +1786,7 @@
         </div>
     </nav>
     {{-- ══ MODAL PENGUMUMAN PRICELIST EVENT ══ --}}
-    <div id="annModal" class="ann-backdrop">
+    {{-- <div id="annModal" class="ann-backdrop">
         <div class="ann-modal">
             <div class="ann-header">
                 <button class="ann-close" onclick="closeAnnModal()" aria-label="Tutup pengumuman">
@@ -1799,7 +1799,7 @@
                     <span class="ann-badge-dot"></span>
                     Pengumuman Harga
                 </div>
-                <h2 class="ann-h-title">New Pricelist Event 2025</h2>
+                <h2 class="ann-h-title">New Pricelist Event 2026</h2>
                 <p class="ann-h-sub">MotoGP Lombok &middot; Perayaan Akhir Tahun</p>
             </div>
             <div class="ann-body">
@@ -1846,7 +1846,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     {{-- ══ JUMBOTRON ══ --}}
     <section class="hp-hero">
 
