@@ -99,6 +99,11 @@ class AttendanceResource extends Resource
                     ->time('H:i')
                     ->icon('heroicon-o-clock')
                     ->iconColor('gray'),
+                Tables\Columns\TextColumn::make('check_out_time')
+                    ->label('Jam Keluar')
+                    ->time('H:i')
+                    ->icon('heroicon-o-clock')
+                    ->iconColor('gray'),
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
