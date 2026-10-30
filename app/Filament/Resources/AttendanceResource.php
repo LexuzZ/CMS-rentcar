@@ -127,10 +127,10 @@ class AttendanceResource extends Resource
                     ->color(fn($state) => $state && $state > 50 ? 'danger' : 'success')
                     ->icon('heroicon-o-map-pin'),
 
-                Tables\Columns\TextColumn::make('note')
-                    ->label('Catatan')
-                    ->limit(30)
-                    ->placeholder('—'),
+                // Tables\Columns\TextColumn::make('note')
+                //     ->label('Catatan')
+                //     ->limit(30)
+                //     ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dicatat')
